@@ -1,6 +1,5 @@
 'use client'
 import React, {useEffect, useRef} from "react";
-import {CrossedTextAnimationControls} from "@/app/old-components/CrossedText";
 import {SvgTextAnimationControls} from "@/app/components/AnimatedSvgText";
 import {delay} from "motion/react";
 import {css} from "@emotion/react";
@@ -11,15 +10,15 @@ import {css} from "@emotion/react";
 // const font = Ephesis({weight: '400'});
 
 export default function Banner() {
-    const strikeThroughRef = useRef<CrossedTextAnimationControls>(null);
-    const svgTextRef = useRef<SvgTextAnimationControls>(null);
+    // const strikeThroughRef = useRef<CrossedTextAnimationControls>(null);
+    // const svgTextRef = useRef<SvgTextAnimationControls>(null);
 
-    useEffect(() => {
-        return delay(() => {
-            strikeThroughRef.current?.start();
-            svgTextRef.current?.start();
-        }, 1000);
-    }, []);
+    // useEffect(() => {
+    //     return delay(() => {
+    //         strikeThroughRef.current?.start();
+    //         svgTextRef.current?.start();
+    //     }, 1000);
+    // }, []);
 
     return <section>
         <div css={css`
