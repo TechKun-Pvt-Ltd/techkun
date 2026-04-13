@@ -14,6 +14,20 @@
     --primary-900: color-mix(in oklch, var(--primary-color), black 40%);
     --primary-950: color-mix(in oklch, var(--primary-color), black 50%);
 
+    --secondary-color: oklch(from var(--primary-color) l c calc(h + 20) / 1);
+
+    --secondary-50: color-mix(in oklch, var(--secondary-color), white 50%);
+    --secondary-100: color-mix(in oklch, var(--secondary-color), white 40%);
+    --secondary-200: color-mix(in oklch, var(--secondary-color), white 30%);
+    --secondary-300: color-mix(in oklch, var(--secondary-color), white 20%);
+    --secondary-400: color-mix(in oklch, var(--secondary-color), white 10%);
+    --secondary-500: var(--secondary-color);
+    --secondary-600: color-mix(in oklch, var(--secondary-color), black 10%);
+    --secondary-700: color-mix(in oklch, var(--secondary-color), black 20%);
+    --secondary-800: color-mix(in oklch, var(--secondary-color), black 30%);
+    --secondary-900: color-mix(in oklch, var(--secondary-color), black 40%);
+    --secondary-950: color-mix(in oklch, var(--secondary-color), black 50%);
+
     /*--phi: calc((1 + sqrt(5)) / 2);*/
     /*--step: calc(pow(var(--phi), 1/4) - 1);*/
 
@@ -29,8 +43,8 @@
     /*--primary-900: oklch(from var(--primary-color) calc(l * (1 - 4 * var(--step))) c h);*/
     /*--primary-950: oklch(from var(--primary-color) calc(l * (1 - 5 * var(--step))) c h);*/
 
-    --background: oklch(0.1 0 0);
+    --background: color-mix(in oklch, var(--secondary-color), oklch(0.1 0 0) 95%);
     --foreground: oklch(0.84 0 0);
-    --muted: oklch(0.2 0 0);
+    --muted: color-mix(in oklch, var(--secondary-color), oklch(0.2 0 0) 95%);
     --muted-foreground: oklch(0.72 0 0);
 }

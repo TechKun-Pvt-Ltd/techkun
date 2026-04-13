@@ -32,11 +32,12 @@ const people: {
 export default function Cofounders() {
     return <section>
         <div css={css`
-            padding-block: 144px;
+            padding-block: 288px;
             display: grid;
             grid-template-columns: subgrid;
         `}>
             <h2 css={css`
+                margin-block-end: 192px;
                 grid-column: 1 / -1;
                 text-align: center;
             `}>If we still feel like strangers...</h2>
@@ -44,9 +45,8 @@ export default function Cofounders() {
                 grid-column: 1 / -1;
                 display: grid;
                 grid-template-columns: subgrid;
-                grid-auto-rows: minmax(62.5rem, max-content);
                 align-items: center;
-                column-gap: 2.5rem;
+                gap: 768px 2.5rem;
             `}>
                 {people.map(item => <React.Fragment key={item.title}>
                     <div css={css`

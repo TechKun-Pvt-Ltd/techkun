@@ -24,14 +24,12 @@ export default function TechKunLogo() {
                      width: 100%;
                      aspect-ratio: ${width} / ${height};
                      background: linear-gradient(
-                             75deg,
-                             var(--primary-500) 0%,
-                             var(--primary-500) 40%,
-                             var(--primary-200),
-                             var(--primary-50),
-                             var(--primary-200),
-                             var(--primary-500) 60%,
-                             var(--primary-500) 100%
+                         80deg,
+                         var(--primary-500) 0%,
+                         var(--primary-500) 40%,
+                         var(--primary-200),
+                         var(--primary-500) 60%,
+                         var(--primary-500) 100%
                      ) 100% center / 400% 100%;
 
                      &[data-shimmer="true"] {

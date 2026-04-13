@@ -16,8 +16,8 @@
     }
 
     --navbar-height: 4.8rem;
-    --section-min-height: 896px;
-    --section-basis-height: 1024px;
+    --section-min-height: 768px;
+    /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
 }
 
@@ -63,14 +63,14 @@ body {
         backdrop-filter: blur(10px);
     }
     & > main {
-        --section-clamped-height: clamp(
-            var(--section-min-height),
-            100vh - var(--navbar-height),
-            var(--section-basis-height)
-        );
+        /*--section-clamped-height: clamp(*/
+        /*    var(--section-min-height),*/
+        /*    80vh,*/
+        /*    var(--section-basis-height)*/
+        /*);*/
 
         grid-row: content-start / content-end;
-        grid-auto-rows: minmax(var(--section-clamped-height), max-content);
+        grid-auto-rows: minmax(var(--section-min-height), max-content);
 
         & > section {
             grid-column: 1 / -1;
