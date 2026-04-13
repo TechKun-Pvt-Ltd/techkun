@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "/app/theme/color-variables.scss";
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --primary-50: #{$primary-50};
+    --primary-100: #{$primary-100};
+    --primary-200: #{$primary-200};
+    --primary-300: #{$primary-300};
+    --primary-400: #{$primary-400};
+    --primary-500: #{$primary-500};
+    --primary-600: #{$primary-600};
+    --primary-700: #{$primary-700};
+    --primary-800: #{$primary-800};
+    --primary-900: #{$primary-900};
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #fafafa;
+        --foreground: #ededed;
+    }
+}
+
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+.case-responsive-container {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full;
+}
+
+// Typography
+
+.banner {
+    &-heading {
+        @apply text-4xl lg:text-5xl font-semibold
+    }
+
+    &-subtext {
+        @apply text-lg lg:text-xl
+    }
+}
+
+.section {
+    &-heading {
+        @apply text-3xl lg:text-4xl font-medium
+    }
+
+    &-subtext {
+        @apply text-base lg:text-lg
+    }
+}
+
+.item {
+    &-title {
+        @apply text-2xl lg:text-3xl font-medium
+    }
+
+    &-subtitle {
+        @apply text-sm lg:text-base
+    }
+}
+
+
+.overlay {
+    position: absolute;
+    margin-top: 10px;
+    top: -9999px;
+    left: -9999px;
+}
+
+@keyframes overlay-entry {
+    0% {
+        max-height: 0;
+        overflow: hidden;
+    }
+    100% {
+        max-height: 50vh;
+    }
+}
+
+@keyframes overlay-exit {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+/* Smooth transitions for AOS animations */
+[data-aos] {
+    transition-property: transform, opacity;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    [data-aos] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Optional: Enhance fade-up animation */
+  [data-aos='fade-up'] {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  [data-aos='fade-up'].aos-animate {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Optional: Enhance fade-right and fade-left */
+  [data-aos='fade-right'] {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  [data-aos='fade-right'].aos-animate {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  [data-aos='fade-left'] {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  [data-aos='fade-left'].aos-animate {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Optional: Enhance zoom-in animation */
+  [data-aos='zoom-in'] {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  [data-aos='zoom-in'].aos-animate {
+    transform: scale(1);
+    opacity: 1;
+  }
+/* Add this to your global.css file */
+
+// .particle {
+//     fill: #00FFFF;
+//     opacity: 0.5;
+//     animation: moveParticle 10s linear infinite;
+//   }
+
+//   @keyframes moveParticle {
+//     0% { transform: translate(0, 0); opacity: 0; }
+//     10% { opacity: 0.5; }
+//     90% { opacity: 0.5; }
+//     100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+//   }
+
+//   .animate-dash path {
+//     stroke-dasharray: 50;
+//   }
+@keyframes box-out {
+    0% {
+        padding-right: 0px;
+    }
+    100% {
+        padding-right: 6px;
+    }
+}
+
+@keyframes box-out-down {
+    0% {
+        padding-bottom: 0px;
+    }
+    100% {
+        padding-bottom: 6px;
+    }
+}
+
+@keyframes arrow-out {
+    0% {
+        width: 0px;
+    }
+    100% {
+        width: 38px;
+    }
+}
+
+@keyframes arrow-out-down {
+    0% {
+        height: 0px;
+    }
+    100% {
+        height: 38px;
+    }
+}
+
+@keyframes dataStream {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px) translateY(100px) rotate(var(--rotation, 45deg));
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100px) translateY(-100px) rotate(var(--rotation, 45deg));
+  }
+}

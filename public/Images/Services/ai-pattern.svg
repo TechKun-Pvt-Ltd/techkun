@@ -1,0 +1,42 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="ai-grid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 0 10 L 20 10 M 10 0 L 10 20" stroke="#4B5563" stroke-width="0.5" fill="none" opacity="0.2"/>
+    </pattern>
+    
+    <pattern id="ai-nodes" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <!-- Neural network nodes -->
+      <circle cx="10" cy="10" r="2" fill="#A78BFA" opacity="0.4"/>
+      <circle cx="30" cy="10" r="2" fill="#A78BFA" opacity="0.4"/>
+      <circle cx="20" cy="20" r="2" fill="#A78BFA" opacity="0.4"/>
+      <circle cx="10" cy="30" r="2" fill="#A78BFA" opacity="0.4"/>
+      <circle cx="30" cy="30" r="2" fill="#A78BFA" opacity="0.4"/>
+      
+      <!-- Neural connections -->
+      <path d="M 10 10 L 20 20 L 10 30" stroke="#8B5CF6" stroke-width="0.5" fill="none" opacity="0.3"/>
+      <path d="M 30 10 L 20 20 L 30 30" stroke="#8B5CF6" stroke-width="0.5" fill="none" opacity="0.3"/>
+      <path d="M 10 10 L 30 10" stroke="#8B5CF6" stroke-width="0.5" fill="none" opacity="0.3"/>
+      <path d="M 10 30 L 30 30" stroke="#8B5CF6" stroke-width="0.5" fill="none" opacity="0.3"/>
+    </pattern>
+    
+    <pattern id="ai-circuits" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <!-- Circuit board patterns -->
+      <path d="M 10 30 Q 20 30 20 20 Q 20 10 30 10 L 50 10" stroke="#6366F1" stroke-width="0.8" fill="none" opacity="0.2"/>
+      <path d="M 10 50 Q 30 50 30 30 Q 30 20 40 20 L 50 20" stroke="#6366F1" stroke-width="0.8" fill="none" opacity="0.2"/>
+      
+      <!-- Data points -->
+      <circle cx="30" cy="10" r="1.5" fill="#8B5CF6" opacity="0.3"/>
+      <circle cx="40" cy="20" r="1.5" fill="#8B5CF6" opacity="0.3"/>
+      <circle cx="20" cy="20" r="1.5" fill="#8B5CF6" opacity="0.3"/>
+      <circle cx="30" cy="30" r="1.5" fill="#8B5CF6" opacity="0.3"/>
+      
+      <!-- Binary data representation -->
+      <text x="45" y="40" font-family="monospace" font-size="3" fill="#A78BFA" opacity="0.3">10</text>
+      <text x="15" y="45" font-family="monospace" font-size="3" fill="#A78BFA" opacity="0.3">01</text>
+    </pattern>
+  </defs>
+  
+  <rect width="100" height="100" fill="url(#ai-grid)"/>
+  <rect width="100" height="100" fill="url(#ai-nodes)"/>
+  <rect width="100" height="100" fill="url(#ai-circuits)"/>
+</svg>

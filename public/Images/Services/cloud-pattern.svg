@@ -1,0 +1,24 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="cloud-grid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 20 M 0 0 L 20 20" stroke="#4B5563" stroke-width="0.5" fill="none" opacity="0.15"/>
+    </pattern>
+    <pattern id="cloud-shapes" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <!-- Cloud shape -->
+      <path d="M 30 20 Q 25 15 20 20 Q 15 15 10 20 Q 5 25 10 30 Q 5 35 10 40 Q 15 45 25 40 Q 35 45 45 40 Q 50 35 45 30 Q 50 25 45 20 Q 40 15 35 20 Q 35 15 30 20 Z" 
+            stroke="#60A5FA" stroke-width="0.8" fill="none" opacity="0.25"/>
+      
+      <!-- Server/database icons -->
+      <rect x="20" y="50" width="8" height="12" rx="1" stroke="#818CF8" stroke-width="0.8" fill="none" opacity="0.2"/>
+      <line x1="22" y1="53" x2="26" y2="53" stroke="#818CF8" stroke-width="0.5" opacity="0.2"/>
+      <line x1="22" y1="56" x2="26" y2="56" stroke="#818CF8" stroke-width="0.5" opacity="0.2"/>
+      <line x1="22" y1="59" x2="26" y2="59" stroke="#818CF8" stroke-width="0.5" opacity="0.2"/>
+      
+      <!-- Connection lines -->
+      <path d="M 30 35 L 40 45 L 50 35" stroke="#60A5FA" stroke-width="0.5" fill="none" opacity="0.2" stroke-dasharray="2,2"/>
+    </pattern>
+  </defs>
+  
+  <rect width="100" height="100" fill="url(#cloud-grid)"/>
+  <rect width="100" height="100" fill="url(#cloud-shapes)"/>
+</svg>
