@@ -1,0 +1,36 @@
+:root {
+    color-scheme: dark;
+    --primary-color: oklch(0.56 0.16 256 / 1);
+
+    --primary-50: color-mix(in oklch, var(--primary-color), white 50%);
+    --primary-100: color-mix(in oklch, var(--primary-color), white 40%);
+    --primary-200: color-mix(in oklch, var(--primary-color), white 30%);
+    --primary-300: color-mix(in oklch, var(--primary-color), white 20%);
+    --primary-400: color-mix(in oklch, var(--primary-color), white 10%);
+    --primary-500: var(--primary-color);
+    --primary-600: color-mix(in oklch, var(--primary-color), black 10%);
+    --primary-700: color-mix(in oklch, var(--primary-color), black 20%);
+    --primary-800: color-mix(in oklch, var(--primary-color), black 30%);
+    --primary-900: color-mix(in oklch, var(--primary-color), black 40%);
+    --primary-950: color-mix(in oklch, var(--primary-color), black 50%);
+
+    /*--phi: calc((1 + sqrt(5)) / 2);*/
+    /*--step: calc(pow(var(--phi), 1/4) - 1);*/
+
+    /*--primary-50: oklch(from var(--primary-color) calc(l * (1 + 5 * var(--step))) c h);*/
+    /*--primary-100: oklch(from var(--primary-color) calc(l * (1 + 4 * var(--step))) c h);*/
+    /*--primary-200: oklch(from var(--primary-color) calc(l * (1 + 3 * var(--step))) c h);*/
+    /*--primary-300: oklch(from var(--primary-color) calc(l * (1 + 2 * var(--step))) c h);*/
+    /*--primary-400: oklch(from var(--primary-color) calc(l * (1 + var(--step))) c h);*/
+    /*--primary-500: var(--primary-color);*/
+    /*--primary-600: oklch(from var(--primary-color) calc(l * (1 - var(--step))) c h);*/
+    /*--primary-700: oklch(from var(--primary-color) calc(l * (1 - 2 * var(--step))) c h);*/
+    /*--primary-800: oklch(from var(--primary-color) calc(l * (1 - 3 * var(--step))) c h);*/
+    /*--primary-900: oklch(from var(--primary-color) calc(l * (1 - 4 * var(--step))) c h);*/
+    /*--primary-950: oklch(from var(--primary-color) calc(l * (1 - 5 * var(--step))) c h);*/
+
+    --background: oklch(0.1 0 0);
+    --foreground: oklch(0.84 0 0);
+    --muted: oklch(0.2 0 0);
+    --muted-foreground: oklch(0.72 0 0);
+}

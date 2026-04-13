@@ -1,24 +1,21 @@
-import '@radix-ui/themes/styles.css';
+/** @jsxImportSource react */
+import React from 'react';
 import type { Metadata } from "next";
+import "./styles/globals.css";
+import Header from "@/app/Header";
+import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
-import "./globals.scss";
-import Navbar from "./components/Navbar";
-import { Theme } from '@radix-ui/themes';
-import Footer from "./Footer";
-import NextTopLoader from 'nextjs-toploader';
-import CookieConsent from './components/CookieConsent';
-import MeetUsAtGitex from './meet-us-at-gitex';
+import Footer from "@/app/Footer";
+import Shared from "@/app/Shared";
+// import RootStyleRegistry from "@/lib/root-style-registry";
 
-const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
+const script_12_bt = localFont({
+    src: "./fonts/SCRPT12N.ttf",
+    variable: "--script-12-bt",
+    weight: "100 900"
 });
-const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
-});
+
+const quicksand = Quicksand();
 
 export const metadata: Metadata = {
     title: "TechKun",
@@ -26,22 +23,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-    children,
+    children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <Theme>
-                    <MeetUsAtGitex />
-                    <Navbar />
-                    <NextTopLoader />
+            <body className={`${script_12_bt.variable} ${quicksand.className}`}>
+                {/*<RootStyleRegistry>*/}
+                    <Shared />
+                    <Header />
                     <main className='overflow-hidden'>{children}</main>
-                    <CookieConsent />
-                </Theme>
-                <Footer />
+                    <Footer />
+                {/*</RootStyleRegistry>*/}
             </body>
         </html>
     );

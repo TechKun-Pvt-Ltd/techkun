@@ -1,0 +1,99 @@
+:root {
+    --page-width: 1280px;
+
+    --page-padding: 16px;
+    @media only screen and (min-width: 1440px) {
+        --page-padding: 32px;
+    }
+    @media only screen and (min-width: 1024px) and (max-width: 1440px) {
+        --page-padding: 32px;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        --page-padding: 32px;
+    }
+    @media only screen and (min-width: 425px) and (max-width: 768px) {
+        --page-padding: 32px;
+    }
+
+    --navbar-height: 4.8rem;
+    --section-min-height: 896px;
+    --section-basis-height: 1024px;
+    /*--footer-height: 16rem;*/
+}
+
+html {
+    min-height: 100%;
+}
+/*html {
+    scroll-snap-type: block proximity;
+}*/
+body {
+    height: 100%;
+}
+body {
+    color: var(--foreground);
+    background: var(--background);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    /*shape-rendering: geometricPrecision;*/
+
+    display: grid;
+    grid-template-columns:
+        1fr
+        repeat(6, minmax(0, calc(var(--page-width) / 6)))
+        1fr;
+    grid-template-rows:
+        [nav-start] var(--navbar-height)
+        [nav-end content-start] 1fr
+        [content-end footer-start] max-content
+        [footer-end];
+
+    & > header, main, footer {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: subgrid;
+    }
+    & > header {
+        grid-row: nav-start / nav-end;
+        grid-template-rows: 1fr;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: oklch(from var(--background) l c h / 0.375);
+        backdrop-filter: blur(10px);
+    }
+    & > main {
+        --section-clamped-height: clamp(
+            var(--section-min-height),
+            100vh - var(--navbar-height),
+            var(--section-basis-height)
+        );
+
+        grid-row: content-start / content-end;
+        grid-auto-rows: minmax(var(--section-clamped-height), max-content);
+
+        & > section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: subgrid;
+            grid-template-rows: 1fr;
+        }
+    }
+    & > footer {
+        grid-row: footer-start / footer-end;
+    }
+    & > header > *,
+    & > main > section > *,
+    & > footer > * {
+        padding-inline: var(--page-padding);
+        grid-column: 2 / -2;
+    }
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 0.375rem;
+    padding-inline: 1.25rem;
+    padding-block: 0.25rem;
+}
