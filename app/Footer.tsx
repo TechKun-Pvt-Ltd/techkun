@@ -7,38 +7,38 @@ export default function Footer() {
     return <footer css={css`
         border-top: 1px solid var(--muted);
         grid-template-rows: 1fr max-content;
-        position: relative;
-        overflow: hidden;
-        &::before, &::after {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            margin-inline: auto;
-            width: 62.5%;
-        }
-        &::before {
-            height: 1px;
-            background: linear-gradient(
-                to right,
-                transparent,
-                var(--secondary-950),
-                transparent
-            );
-        }
-        &::after {
-            height: calc(2 * 72px);
-            transform: translateY(-50%);
-            background: radial-gradient(
-                oklch(from var(--secondary-950) l c h / 0.25),
-                transparent 75%
-            );
-        }
     `}>
         <div css={css`
             display: grid;
             grid-template-columns: subgrid;
             align-content: space-between;
             padding-block: 72px 48px;
+            position: relative;
+            overflow: hidden;
+            &::before, &::after {
+                content: "";
+                position: absolute;
+                inset: 0 0 auto 0;
+                margin-inline: auto;
+                width: 90%;
+            }
+            &::before {
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    transparent,
+                    var(--secondary-950),
+                    transparent
+                );
+            }
+            &::after {
+                height: calc(2 * 72px);
+                transform: translateY(-50%);
+                background: radial-gradient(
+                    oklch(from var(--secondary-950) l c h / 0.25),
+                    transparent 75%
+                );
+            }
         `}>
             <div css={css`
                 grid-column: 1 / -1;
@@ -46,6 +46,7 @@ export default function Footer() {
                 justify-content: space-between;
                 align-items: flex-end;
                 gap: 32px;
+                flex-wrap: wrap;
 
                 & > p {
                     font-weight: 500;

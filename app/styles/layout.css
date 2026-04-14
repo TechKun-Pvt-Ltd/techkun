@@ -1,20 +1,6 @@
 :root {
     --page-width: 1280px;
 
-    --page-padding: 16px;
-    @media only screen and (min-width: 1440px) {
-        --page-padding: 32px;
-    }
-    @media only screen and (min-width: 1024px) and (max-width: 1440px) {
-        --page-padding: 32px;
-    }
-    @media only screen and (min-width: 768px) and (max-width: 1024px) {
-        --page-padding: 32px;
-    }
-    @media only screen and (min-width: 425px) and (max-width: 768px) {
-        --page-padding: 32px;
-    }
-
     --navbar-height: 4.8rem;
     --section-min-height: 768px;
     /*--section-basis-height: 1024px;*/
@@ -29,18 +15,20 @@ html {
 }*/
 body {
     height: 100%;
+    /*overflow-x: clip;*/
 }
 body {
     color: var(--foreground);
     background: var(--background);
     margin: 0;
     -webkit-font-smoothing: antialiased;
+    --columns: 6;
     /*shape-rendering: geometricPrecision;*/
 
     display: grid;
     grid-template-columns:
         1fr
-        repeat(6, minmax(0, calc(var(--page-width) / 6)))
+        repeat(var(--columns), minmax(0, calc(var(--page-width) / var(--columns))))
         1fr;
     grid-template-rows:
         [nav-start] var(--navbar-height)

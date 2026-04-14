@@ -5,6 +5,7 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
+import {device} from "@/app/styles/device-breakpoints";
 
 const LOGO_OFFSET = 0.04;
 
@@ -44,24 +45,42 @@ export default function MeetTechKun() {
     }, []);
 
     return <section css={css`
+        //@property --radial-grad-height {
+        //    syntax: "<length-percentage>";
+        //    inherits: false;
+        //    initial-value: 100%;
+        //}
+        //@keyframes morph-grad {
+        //    50% {
+        //        --radial-grad-height: 50%;
+        //    }
+        //    100% {
+        //        --radial-grad-height: 100%;
+        //    }
+        //}
         align-items: center;
         position: relative;
         isolation: isolate;
+        //margin-block-end: -144px;
         &::before {
             content: '';
             z-index: -1;
             position: absolute;
             inset: 0;
             background: radial-gradient(
-                at 50% 50%,
-                transparent 20%,
-                oklch(from var(--primary-950) l c calc(h + 20))
+                ellipse var(--page-width) 62.5% at 50% 50%,
+                transparent,
+                var(--secondary-950) 62.5%,
+                transparent
             );
             mask: linear-gradient(
                 to bottom,
-                transparent,
-                oklch(0 0 0 / 0.5)
+                transparent 25%,
+                oklch(0 0 0 / 0.75) 73.75%,
+                oklch(0 0 0 / 0.75) 76.25%,
+                transparent 97.5%
             );
+            //animation: morph-grad 4s infinite ease-in-out;
         }
     `}>
         <div ref={scope} css={css`
@@ -69,7 +88,7 @@ export default function MeetTechKun() {
             display: grid;
             grid-template-columns: subgrid;
             row-gap: 96px;
-            padding-block: 144px;
+            padding-block: 640px;
         `}>
             <div css={css`
                 grid-column: 1 / -1;
@@ -90,12 +109,21 @@ export default function MeetTechKun() {
                 }
             `}>
                 <div css={css`
-                    width: 40%;
+                    width: 90%;
+                    @media ${device.mobileM} {
+                        width: 70%;
+                    }
+                    @media ${device.tablet} {
+                        width: 50%;
+                    }
+                    @media ${device.laptop} {
+                        width: 30%;
+                    }
                 `}>
                     <svg viewBox={viewBoxString(logoAnimation.viewBox)}
                          css={css`
-                            transform: translateX(-${LOGO_OFFSET * 100}%);
-                        `}
+                             transform: translateX(-${LOGO_OFFSET * 100}%);
+                         `}
                     >
                         <defs>
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">

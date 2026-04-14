@@ -1,8 +1,7 @@
 'use client'
-import React, {useEffect, useRef} from "react";
-import {SvgTextAnimationControls} from "@/app/components/AnimatedSvgText";
-import {delay} from "motion/react";
+import React from "react";
 import {css} from "@emotion/react";
+import {device} from "@/app/styles/device-breakpoints";
 // import AnimatedStrikeThrough from "@/app/components/AnimatedStrikeThrough";
 // import AnimatedLogo from "@/app/components/AnimatedLogo";
 // import {Ephesis} from "next/font/google";
@@ -25,8 +24,24 @@ export default function Banner() {
             display: grid;
             grid-template-columns: subgrid;
             align-items: center;
+            & > div:first-of-type {
+                grid-column: 1 / -1;
+                text-align: center;
+            }
+            & > div:nth-of-type(2) {
+                grid-column: 1 / -1;
+            }
+            @media ${device.tablet} {
+                & > div:first-of-type {
+                    grid-column: span 4;
+                    text-align: revert;
+                }
+                & > div:nth-of-type(2) {
+                    grid-column: span 2;
+                }
+            }
         `}>
-            <div css={{gridColumn: 'span 4'}}>
+            <div>
                 <h1 css={css`
                     //height: 12rem;
                     //font-size: 3rem;
@@ -61,8 +76,7 @@ export default function Banner() {
                 </h1>
             </div>
             <div css={{
-                paddingBlock: '36px',
-                gridColumn: 'span 2'
+                // paddingBlock: '36px',
             }}></div>
         </div>
     </section>;
