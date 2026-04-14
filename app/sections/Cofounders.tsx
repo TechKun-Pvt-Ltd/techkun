@@ -42,39 +42,39 @@ export default function Cofounders() {
                 grid-column: 1 / -1;
                 text-align: center;
             `}>If we still feel like strangers...</h2>
-            <div css={css`
+            <ul css={css`
                 grid-column: 1 / -1;
                 display: grid;
                 grid-template-columns: subgrid;
-                align-items: center;
-                column-gap: 2.5rem;
+                gap: 768px;
 
-                & .person-img, & .person-intro {
+                & > li {
                     grid-column: 1 / -1;
-                }
-                & .person-img {
-                    margin-inline: -16px;
-                    margin-block-end: 48px;
-                }
-                & .person-intro {
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    align-items: center;
+                    gap: 48px;
                     text-align: right;
-                    margin-block-end: 768px;
-                }
-                @media ${device.tablet} {
-                    & .person-img {
-                        grid-column: span 3;
-                        margin-inline: revert;
+
+                    & > .person-img, .person-intro {
+                        grid-column: 1 / -1;
                     }
-                    & .person-intro {
-                        grid-column: span 3;
+                    & > .person-img {
+                        margin-inline: -16px;
+                    }
+                    @media ${device.tablet} {
                         text-align: revert;
-                    }
-                    & .person-img, & .person-intro {
-                        margin-block-end: 768px;
+                        & > .person-img, .person-intro {
+                            grid-column: span round(up, calc(var(--columns) / 2));
+                        }
+                        & > .person-img {
+                            margin-inline: revert;
+                        }
                     }
                 }
+
             `}>
-                {people.map(item => <React.Fragment key={item.title}>
+                {people.map(item => <li key={item.title}>
                     <div className="person-img" css={css`
                         scroll-snap-align: center;
                     `}>
@@ -98,8 +98,8 @@ export default function Cofounders() {
                         <h3 className="text-3xl" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
                         <p className="text-2xl" style={{color: 'oklch(0.625 0 0)'}}>{item.subtitle}</p>
                     </div>
-                </React.Fragment>)}
-            </div>
+                </li>)}
+            </ul>
         </div>
     </section>;
 }
