@@ -16,7 +16,7 @@ export default function Header() {
             justify-content: space-between;
             align-items: center;
         `}>
-            <div className="text-xl" css={css`
+            <div className="display-text" css={css`
                 display: flex;
                 align-items: center;
                 gap: 16px;

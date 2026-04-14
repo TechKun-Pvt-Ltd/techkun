@@ -2,7 +2,8 @@
 import React from "react";
 import logoPath from "@/public/logo-path.json";
 import {css, Global} from "@emotion/react";
-import {device} from "@/app/styles/device-breakpoints";
+import {device} from "@/app/theme/device-breakpoints";
+import {viewBoxString} from "@/app/utils/graphics-utils";
 
 declare module "react" {
     interface HTMLAttributes<T> {
@@ -15,16 +16,21 @@ export default function Shared() {
         <Global styles={css`
             :root {
                 --page-padding: 16px;
-                @media ${device.mobileL} {
-                    --page-padding: 24px;
-                }
-                @media ${device.tablet} {
+                @media ${device.mobileM} {
                     --page-padding: 32px;
+                }
+
+                @media ${device.tablet} {
+                    --base-font-size: 1rem;
+                }
+                @media ${device.laptop} {
+                    --base-font-size: 1.125rem;
                 }
             }
         `} />
         <svg xmlns="http://www.w3.org/2000/svg"
              width="0" height="0" style={{gridArea: 'none', position: 'absolute'}}
+             viewBox={viewBoxString(logoPath.viewBox)}
         >
             <path id="logo-path" d={logoPath.value} />
             <clipPath id="logo-clip-path">

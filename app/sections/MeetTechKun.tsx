@@ -5,7 +5,7 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
-import {device} from "@/app/styles/device-breakpoints";
+import {device} from "@/app/theme/device-breakpoints";
 
 const LOGO_OFFSET = 0.04;
 
@@ -38,30 +38,16 @@ export default function MeetTechKun() {
         const currentX = pathBBox.x + pathBBox.width / 2;
         const currentY = pathBBox.y + pathBBox.height / 2;
         const {viewBox} = logoAnimation;
-        const targetX = viewBox.width / 2 + LOGO_OFFSET * viewBox.width;
+        const targetX = viewBox.width / 2 //+ LOGO_OFFSET * viewBox.width;
         const targetY = viewBox.height / 2;
         x.set(`${((targetX - currentX) / pathBBox.width * 100)}%`);
         y.set(`${((targetY - currentY) / pathBBox.height * 100)}%`);
     }, []);
 
     return <section css={css`
-        //@property --radial-grad-height {
-        //    syntax: "<length-percentage>";
-        //    inherits: false;
-        //    initial-value: 100%;
-        //}
-        //@keyframes morph-grad {
-        //    50% {
-        //        --radial-grad-height: 50%;
-        //    }
-        //    100% {
-        //        --radial-grad-height: 100%;
-        //    }
-        //}
         align-items: center;
         position: relative;
         isolation: isolate;
-        //margin-block-end: -144px;
         &::before {
             content: '';
             z-index: -1;
@@ -80,7 +66,6 @@ export default function MeetTechKun() {
                 oklch(0 0 0 / 0.75) 76.25%,
                 transparent 97.5%
             );
-            //animation: morph-grad 4s infinite ease-in-out;
         }
     `}>
         <div ref={scope} css={css`
@@ -109,20 +94,11 @@ export default function MeetTechKun() {
                 }
             `}>
                 <div css={css`
-                    width: 90%;
-                    @media ${device.mobileM} {
-                        width: 70%;
-                    }
-                    @media ${device.tablet} {
-                        width: 50%;
-                    }
-                    @media ${device.laptop} {
-                        width: 30%;
-                    }
+                    width: clamp(240px, 75%, 360px);
                 `}>
                     <svg viewBox={viewBoxString(logoAnimation.viewBox)}
                          css={css`
-                             transform: translateX(-${LOGO_OFFSET * 100}%);
+                             //transform: translateX(-${LOGO_OFFSET * 100}%);
                          `}
                     >
                         <defs>
@@ -141,7 +117,7 @@ export default function MeetTechKun() {
                                 />
                             </mask>
                         </defs>
-                        <rect x="0%" y="0%" width="100%" height="100%"
+                        <rect x={logoAnimation.viewBox.x} y={logoAnimation.viewBox.y} width="100%" height="100%"
                               fill="url(#gradient)" mask="url(#animated-logo-mask)"
                         ></rect>
                     </svg>
@@ -159,10 +135,11 @@ export default function MeetTechKun() {
                 )}
             </div>
 
-            <h2 css={css`
+            <h2 className="section-title" css={css`
                 grid-column: 1 / -1;
                 text-align: center;
                 //text-shadow: 0 0 2px var(--muted-foreground);
+                transform: translateX(0.5ch);
             `}>Meet TechKun,<br/>where we give your product an identity.</h2>
         </div>
     </section>;

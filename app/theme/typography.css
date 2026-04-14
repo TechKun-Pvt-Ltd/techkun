@@ -1,0 +1,256 @@
+/* ============================================================
+   PRECISE-TYPE TYPESCALE — CSS Custom Properties
+   ============================================================
+   Formulas based on https://precise-type.com models:
+
+   Font Size  (modular scale, equal temperament):
+     font-size = base-font-size × ratio^step
+
+   Line Height (reciprocal model):
+     line-height = font-size × (1 + (base-lh-ratio - 1) × base-font-size / font-size)
+                 = font-size + (base-lh-ratio - 1) × base-font-size
+     Which simplifies to: font-size + --lh-addend
+     where --lh-addend = (base-lh-ratio - 1) × base-font-size  (a constant!)
+
+   Letter Spacing (reciprocal model):
+     letter-spacing = (base-letter-spacing + 3) × base-font-size / font-size − 3
+   ============================================================ */
+
+:root {
+
+    /* ----------------------------------------------------------
+       BASE PARAMETERS — adjust these to reshape the entire scale
+       ---------------------------------------------------------- */
+
+    /* Base font size in px */
+    --base-font-size: 0.875rem;
+
+    /* Scale ratio — choose a musical interval:
+       Minor Second:   1.067  (2 semitones)
+       Major Second:   1.125  (2 semitones × semitone)
+       Minor Third:    1.189
+       Major Third:    1.260  ← a good default for UI
+       Perfect Fourth: 1.333
+       Tritone:        1.414
+       Perfect Fifth:  1.500
+    */
+    --scale-ratio: 1.189;
+
+    /* Base line-height ratio (line-height / font-size at base size).
+       A value of 1.5 means 24px line-height for 16px base. */
+    --base-lh-ratio: 1.5;
+
+    /* Base letter spacing in em at the base font size.
+       0em = no extra tracking; negative values tighten. */
+    --base-letter-spacing: 0.035em;
+
+    /* ----------------------------------------------------------
+       DERIVED CONSTANTS (do not edit — computed from base params)
+       ----------------------------------------------------------
+       The line-height model simplifies beautifully:
+         lh = fs × (1 + (R−1) × base-fs / fs)
+            = fs + (R−1) × base-fs
+       So the difference (lh − fs) is constant across ALL levels.
+       We pre-compute it once as --lh-addend.
+
+       For letter-spacing the reciprocal model needs base-fs/fs,
+       which we embed inline per level using calc().
+    ---------------------------------------------------------- */
+
+    /* Line-height addend = (base-lh-ratio − 1) × base-font-size
+       e.g. (1.5 − 1) × 16px = 8px  */
+    --lh-addend: calc((var(--base-lh-ratio) - 1) * var(--base-font-size));
+
+    /* Letter-spacing numerator = (base-letter-spacing + 3em) × base-font-size
+       The +3 / −3 offset keeps the model well-behaved near zero.
+       NOTE: Because CSS calc() cannot mix em and px across divisions,
+       we express letter-spacing in em relative to each level's font-size.
+       The formula becomes:
+         ls = (base-ls + 0.1875em) × (base-font-size / font-size) − 0.1875em
+       where 0.1875em ≈ 3/16 (the "3" offset expressed as em at 16px base).
+       Adjust --ls-offset if you change --base-font-size. */
+
+
+    /* ==========================================================
+       FONT SIZE  —  font-size = base × ratio^step
+       Steps from base: xs=−2, sm=−1, base=0, lg=+1 … 9xl=+11
+       Pure calc() chains (no pow() needed, widely supported)
+       ========================================================== */
+
+    --font-size-xs:   round(calc(var(--base-font-size) / pow(var(--scale-ratio), 2)), 1px);
+    --font-size-sm:   round(calc(var(--base-font-size) / var(--scale-ratio)), 1px);
+    --font-size-base: round(var(--base-font-size), 1px);
+    --font-size-lg:   round(calc(var(--base-font-size) * var(--scale-ratio)), 1px);
+    --font-size-xl:   round(calc(var(--base-font-size) * pow(var(--scale-ratio), 2)), 1px);
+    --font-size-2xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 3)), 1px);
+    --font-size-3xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 4)), 1px);
+    --font-size-4xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 5)), 1px);
+    --font-size-5xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 6)), 1px);
+    --font-size-6xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 7)), 1px);
+    --font-size-7xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 8)), 1px);
+    --font-size-8xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 9)), 1px);
+    --font-size-9xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 10)), 1px);
+
+
+    /* ==========================================================
+       LINE HEIGHT  —  line-height = font-size + --lh-addend
+       (The addend is constant; see derivation above)
+       ========================================================== */
+
+    --lh-unit: 4px;
+    --line-height-xs:   round(calc(var(--font-size-xs)   + var(--lh-addend)), var(--lh-unit));
+    --line-height-sm:   round(calc(var(--font-size-sm)   + var(--lh-addend)), var(--lh-unit));
+    --line-height-base: round(calc(var(--font-size-base) + var(--lh-addend)), var(--lh-unit));
+    --line-height-lg:   round(calc(var(--font-size-lg)   + var(--lh-addend)), var(--lh-unit));
+    --line-height-xl:   round(calc(var(--font-size-xl)   + var(--lh-addend)), var(--lh-unit));
+    --line-height-2xl:  round(calc(var(--font-size-2xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-3xl:  round(calc(var(--font-size-3xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-4xl:  round(calc(var(--font-size-4xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-5xl:  round(calc(var(--font-size-5xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-6xl:  round(calc(var(--font-size-6xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-7xl:  round(calc(var(--font-size-7xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-8xl:  round(calc(var(--font-size-8xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-9xl:  round(calc(var(--font-size-9xl)  + var(--lh-addend)), var(--lh-unit));
+
+    /* ==========================================================
+       LETTER SPACING  —  reciprocal model (values in em)
+         ls = (base-ls + offset) × (base-font-size / font-size) − offset
+       where offset = 0.1875em  (= 3/16, the stability constant)
+
+       As font-size grows → letter-spacing approaches −offset (tighter).
+       As font-size shrinks → letter-spacing opens up.
+
+       CSS calc() cannot divide by a var() that contains a unit
+       directly, so we express the ratio as a unitless multiplier
+       computed from the font-size px values.  Each level uses
+       the pre-computed font-size var divided into base-font-size.
+
+       Because calc() DOES support  (px / px) → unitless, the
+       formula written below is valid:
+         calc((var(--base-ls) + 0.1875em) * (base-px / level-px) - 0.1875em)
+       but mixing em+px in one calc branch is illegal.  The cleanest
+       portable solution is to keep everything in em-equivalent by
+       treating base-font-size as "1em" reference, expressing the
+       px ratio as a division of two px values (→ unitless), then
+       multiplying by em.  See each variable below.
+       ========================================================== */
+
+    --ls-numerator: calc((var(--base-letter-spacing) + 0.03em) * var(--base-font-size));
+
+    --letter-spacing-xs:   calc((var(--ls-numerator) / var(--font-size-xs))   - 0.03em);
+    --letter-spacing-sm:   calc((var(--ls-numerator) / var(--font-size-sm))   - 0.03em);
+    --letter-spacing-base: calc((var(--ls-numerator) / var(--font-size-base)) - 0.03em);
+    --letter-spacing-lg:   calc((var(--ls-numerator) / var(--font-size-lg))   - 0.03em);
+    --letter-spacing-xl:   calc((var(--ls-numerator) / var(--font-size-xl))   - 0.03em);
+    --letter-spacing-2xl:  calc((var(--ls-numerator) / var(--font-size-2xl))  - 0.03em);
+    --letter-spacing-3xl:  calc((var(--ls-numerator) / var(--font-size-3xl))  - 0.03em);
+    --letter-spacing-4xl:  calc((var(--ls-numerator) / var(--font-size-4xl))  - 0.03em);
+    --letter-spacing-5xl:  calc((var(--ls-numerator) / var(--font-size-5xl))  - 0.03em);
+    --letter-spacing-6xl:  calc((var(--ls-numerator) / var(--font-size-6xl))  - 0.03em);
+    --letter-spacing-7xl:  calc((var(--ls-numerator) / var(--font-size-7xl))  - 0.03em);
+    --letter-spacing-8xl:  calc((var(--ls-numerator) / var(--font-size-8xl))  - 0.03em);
+    --letter-spacing-9xl:  calc((var(--ls-numerator) / var(--font-size-9xl))  - 0.03em);
+
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {
+    margin-block: 0;
+}
+h1 {
+    font-size: var(--font-size-5xl);
+    line-height: var(--line-height-5xl);
+    font-weight: normal;
+}
+h2 {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+    font-weight: normal;
+}
+h3 {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-3xl);
+    font-weight: normal;
+}
+h4 {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
+    font-weight: normal;
+}
+h5 {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    letter-spacing: var(--letter-spacing-xl);
+    font-weight: normal;
+}
+h6 {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
+    font-weight: normal;
+}
+:is(p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre) {
+    font-size: inherit, var(--font-size-base);
+    line-height: inherit, var(--line-height-base);
+    letter-spacing: inherit, var(--letter-spacing-base);
+}
+
+button {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-base);
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.display-text {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    letter-spacing: var(--letter-spacing-xl);
+}
+.hero-heading {
+    font-size: var(--font-size-5xl);
+    line-height: var(--line-height-5xl);
+    letter-spacing: var(--letter-spacing-5xl);
+    font-weight: normal;
+}
+.section-title {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+    letter-spacing: var(--letter-spacing-4xl);
+    font-weight: normal;
+}
+.section-subtitle {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
+    font-weight: normal;
+}
+.item-title {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-3xl);
+    letter-spacing: var(--letter-spacing-3xl);
+    font-weight: normal;
+}
+.item-subtitle {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
+    font-weight: normal;
+}
+
+.text-sm {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    letter-spacing: var(--letter-spacing-sm);
+}
+.text-base {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-base);
+}
+.text-lg {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
+}

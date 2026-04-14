@@ -6,7 +6,7 @@ import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
-import {device} from "@/app/styles/device-breakpoints";
+import {device} from "@/app/theme/device-breakpoints";
 
 const people: {
     title: string;
@@ -37,7 +37,7 @@ export default function Cofounders() {
             display: grid;
             grid-template-columns: subgrid;
         `}>
-            <h2 css={css`
+            <h2 className="section-title" css={css`
                 margin-block-end: 192px;
                 grid-column: 1 / -1;
                 text-align: center;
@@ -45,30 +45,34 @@ export default function Cofounders() {
             <ul css={css`
                 grid-column: 1 / -1;
                 display: grid;
-                grid-template-columns: subgrid;
-                gap: 768px;
+                grid-template-columns: 1fr;
+                grid-auto-rows: auto;
+                justify-content: end;
+                justify-items: center;
+                row-gap: 768px;
 
                 & > li {
-                    grid-column: 1 / -1;
+                    width: 100%;
+                    max-width: 480px;
                     display: grid;
-                    grid-template-columns: subgrid;
+                    grid-template-columns: 1fr;
                     align-items: center;
                     gap: 48px;
                     text-align: right;
 
-                    & > .person-img, .person-intro {
-                        grid-column: 1 / -1;
-                    }
                     & > .person-img {
                         margin-inline: -16px;
+                        min-width: 400px;
+                        width: 100%;
+                        justify-self: end;
                     }
-                    @media ${device.tablet} {
+                    @media ${device.laptop} {
+                        max-width: revert;
+                        grid-template-columns: 1fr 1fr;
                         text-align: revert;
-                        & > .person-img, .person-intro {
-                            grid-column: span round(up, calc(var(--columns) / 2));
-                        }
                         & > .person-img {
                             margin-inline: revert;
+                            //max-width: 480px;
                         }
                     }
                 }
@@ -95,8 +99,8 @@ export default function Cofounders() {
                         </div>*/}
                     </div>
                     <div className="person-intro">
-                        <h3 className="text-3xl" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <p className="text-2xl" style={{color: 'oklch(0.625 0 0)'}}>{item.subtitle}</p>
+                        <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
+                        <p className="item-subtitle" style={{color: 'oklch(0.625 0 0)'}}>{item.subtitle}</p>
                     </div>
                 </li>)}
             </ul>

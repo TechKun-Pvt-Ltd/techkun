@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import React from 'react';
 import type { Metadata } from "next";
-import "./styles/globals.css";
+import "@/app/theme/globals.css";
 import Header from "@/app/Header";
 import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";

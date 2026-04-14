@@ -108,7 +108,7 @@ function ContactOptions() {
         & > button {
             background-color: transparent;
             color: var(--foreground);
-            padding-block: 0.5rem;
+            padding-block: 0.75rem;
             padding-inline: 3.75rem;
             border-radius: 100vw;
             position: relative;
@@ -169,7 +169,6 @@ function ShimmerText(
 ) {
     return <span
         css={css`
-            height: 100%;
             color: transparent;
             background: linear-gradient(
                 45deg,
@@ -197,6 +196,7 @@ function ShimmerText(
 export default function ContactUs() {
     return <section>
         <div css={css`
+            overflow: clip;
             display: grid;
             grid-template-columns: subgrid;
             grid-auto-rows: max-content;
@@ -211,8 +211,8 @@ export default function ContactUs() {
                     margin-block-end: 0.5em;
                 }
             `}>
-                <h2>Enough about us!</h2>
-                <p className="text-2xl">
+                <h2 className="section-title">Enough about us!</h2>
+                <p className="section-subtitle">
                     We're delighted to see you here.<br/>
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>

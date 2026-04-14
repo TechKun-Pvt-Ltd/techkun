@@ -27,9 +27,9 @@ body {
 
     display: grid;
     grid-template-columns:
-        1fr
+        minmax(0, 1fr)
         repeat(var(--columns), minmax(0, calc(var(--page-width) / var(--columns))))
-        1fr;
+        minmax(0, 1fr);
     grid-template-rows:
         [nav-start] var(--navbar-height)
         [nav-end content-start] 1fr
@@ -83,5 +83,5 @@ button {
     border: none;
     border-radius: 0.375rem;
     padding-inline: 1.25rem;
-    padding-block: 0.25rem;
+    padding-block: 0.625rem;
 }

@@ -1,9 +1,9 @@
 import {css} from "@emotion/react";
 import {useEffect, useRef} from "react";
+import {viewBoxString} from "@/app/utils/graphics-utils";
+import logoPath from "@/public/logo-path.json";
 
-const width = 935.02;
-const height = 775;
-const aspectRatio = width / height;
+const aspectRatio = logoPath.viewBox.width / logoPath.viewBox.height;
 
 export default function TechKunLogo() {
     const effectiveWidth = 1.5;
@@ -15,14 +15,14 @@ export default function TechKunLogo() {
 
     return <svg xmlns="http://www.w3.org/2000/svg"
         width={`${effectiveWidth}em`} height={`${effectiveWidth / aspectRatio}em`}
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={viewBoxString(logoPath.viewBox)}
         onMouseEnter={_ => shimmerBgRef.current?.setAttribute('data-shimmer', "true")}
     >
-        <foreignObject clipPath="url(#logo-clip-path)" width={width} height={height}>
+        <foreignObject clipPath="url(#logo-clip-path)" width="100%" height="100%">
             <div ref={shimmerBgRef} xmlns="http://www.w3.org/1999/xhtml"
                  css={css`
                      width: 100%;
-                     aspect-ratio: ${width} / ${height};
+                     height: 100%;
                      background: linear-gradient(
                          80deg,
                          var(--primary-500) 0%,

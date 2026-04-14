@@ -2,10 +2,10 @@
   "duration": 5,
   "fps": 60,
   "viewBox": {
-    "x": 0,
-    "y": 0,
-    "width": 935.02,
-    "height": 775
+    "x": -10,
+    "y": -10,
+    "width": 955.02,
+    "height": 795
   },
   "frames": [
     {

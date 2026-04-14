@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import {css} from "@emotion/react";
-import {device} from "@/app/styles/device-breakpoints";
+import {device} from "@/app/theme/device-breakpoints";
 // import AnimatedStrikeThrough from "@/app/components/AnimatedStrikeThrough";
 // import AnimatedLogo from "@/app/components/AnimatedLogo";
 // import {Ephesis} from "next/font/google";
@@ -42,11 +42,7 @@ export default function Banner() {
             }
         `}>
             <div>
-                <h1 css={css`
-                    //height: 12rem;
-                    //font-size: 3rem;
-                    //position: relative;
-                `}>
+                <h1 className="hero-heading">
                     <span style={{display: 'inline-block', marginBlockEnd: '0.375em'}}>Tired of funding repairs?</span><br/>
                     You're in the right place.
                     {/*<span css={css`*/}
