@@ -109,7 +109,7 @@ function ContactOptions() {
             background-color: transparent;
             color: var(--foreground);
             padding-block: 0.75rem;
-            padding-inline: 3.75rem;
+            padding-inline: 2.5rem;
             border-radius: 100vw;
             position: relative;
 
@@ -196,7 +196,7 @@ function ShimmerText(
 export default function ContactUs() {
     return <section>
         <div css={css`
-            overflow: clip;
+            overflow-x: clip;
             display: grid;
             grid-template-columns: subgrid;
             grid-auto-rows: max-content;

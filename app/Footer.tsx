@@ -20,7 +20,7 @@ export default function Footer() {
                 position: absolute;
                 inset: 0 0 auto 0;
                 margin-inline: auto;
-                width: 90%;
+                width: 100%;
             }
             &::before {
                 height: 1px;
@@ -35,7 +35,7 @@ export default function Footer() {
                 height: calc(2 * 72px);
                 transform: translateY(-50%);
                 background: radial-gradient(
-                    oklch(from var(--secondary-950) l c h / 0.25),
+                    oklch(from var(--secondary-950) l c h / 0.3),
                     transparent 75%
                 );
             }

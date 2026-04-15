@@ -7,8 +7,6 @@ import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
 import {device} from "@/app/theme/device-breakpoints";
 
-const LOGO_OFFSET = 0.04;
-
 export default function MeetTechKun() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
     const x = useMotionValue('0%');
@@ -38,13 +36,14 @@ export default function MeetTechKun() {
         const currentX = pathBBox.x + pathBBox.width / 2;
         const currentY = pathBBox.y + pathBBox.height / 2;
         const {viewBox} = logoAnimation;
-        const targetX = viewBox.width / 2 //+ LOGO_OFFSET * viewBox.width;
+        const targetX = viewBox.width / 2;
         const targetY = viewBox.height / 2;
         x.set(`${((targetX - currentX) / pathBBox.width * 100)}%`);
         y.set(`${((targetY - currentY) / pathBBox.height * 100)}%`);
     }, []);
 
     return <section css={css`
+        overflow-x: clip;
         align-items: center;
         position: relative;
         isolation: isolate;
@@ -96,11 +95,7 @@ export default function MeetTechKun() {
                 <div css={css`
                     width: clamp(240px, 75%, 360px);
                 `}>
-                    <svg viewBox={viewBoxString(logoAnimation.viewBox)}
-                         css={css`
-                             //transform: translateX(-${LOGO_OFFSET * 100}%);
-                         `}
-                    >
+                    <svg viewBox={viewBoxString(logoAnimation.viewBox)}>
                         <defs>
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                 <stop offset="0%" stopColor="var(--primary-500)" />
@@ -109,7 +104,6 @@ export default function MeetTechKun() {
                                 <stop offset="100%" stopColor="oklch(from var(--primary-500) l c calc(h + 40))" />
                             </linearGradient>
                             <mask id="animated-logo-mask">
-                                {/*<rect x="0%" y="0%" width="100%" height="100%" fill="black"></rect>*/}
                                 <motion.path d={logoAnimation.frames[0].value}
                                     initial={{opacity: 0}}
                                     style={{x, y, scale: 0.5}}
@@ -139,7 +133,6 @@ export default function MeetTechKun() {
                 grid-column: 1 / -1;
                 text-align: center;
                 //text-shadow: 0 0 2px var(--muted-foreground);
-                transform: translateX(0.5ch);
             `}>Meet TechKun,<br/>where we give your product an identity.</h2>
         </div>
     </section>;
