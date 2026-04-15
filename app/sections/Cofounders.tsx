@@ -109,21 +109,34 @@ export default function Cofounders() {
                             color: oklch(0.625 0 0);
                             cursor: pointer;
                             text-decoration: none;
+
                             & path {
                                 transition-property: d, stroke;
                                 transition-duration: 0.15s;
-                                transition-timing-function: cubic-bezier(0.215,0.61,0.355,1);
+                                transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
                             }
+
                             &:hover path, &:focus path {
                                 d: path("M 11 1 L 4.3333 1 L 11 1 L 9.5366 7.5041 L 11 1 L 1 9 L 1 9 L 11 1");
                                 stroke: var(--primary-500);
                             }
                         `}>
-                            <svg width="1em" viewBox="0 0 14 10" style={{marginInlineEnd: '10px', marginBlockEnd: '-0.0625em'}}>
-                                <path d="M 13 1 L 1 1 L 4 3.6667 L 7 6.3333 L 13 1 L 13 9 L 1 9 L 1 1" fill="transparent"
-                                    stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" strokeLinecap="round" capHeight="0.25"
+                            <svg width="1em" viewBox="0 0 14 10"
+                                 style={{marginInlineEnd: '10px', marginBlockEnd: '-0.0625em'}}>
+                                <path d="M 13 1 L 1 1 L 1 1 L 7 5.6667 L 13 1 L 13 9 L 1 9 L 1 1"
+                                      fill="transparent"
+                                      stroke="currentColor" strokeWidth="0.75" strokeLinejoin="round"
+                                      strokeLinecap="round" capHeight="0.25"
                                 ></path>
                             </svg>
+                            {/*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"*/}
+                            {/*     fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"*/}
+                            {/*     stroke-linejoin="round" className="lucide lucide-mail-icon lucide-mail"*/}
+                            {/*     style={{marginInlineEnd: '10px', marginBlockEnd: '-0.125em'}}*/}
+                            {/*>*/}
+                            {/*    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>*/}
+                            {/*    <rect x="2" y="4" width="20" height="16" rx="2"/>*/}
+                            {/*</svg>*/}
                             <span>{item.subtitle}</span>
                         </Link>
                     </div>
