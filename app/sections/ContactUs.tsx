@@ -3,6 +3,7 @@ import {css, keyframes} from "@emotion/react";
 import {AnimationSequence, motion, useAnimate} from "motion/react";
 import React, {useCallback, useEffect, useRef} from "react";
 import {AnimationPlaybackControlsWithThen} from "motion";
+import {device} from "@/app/theme/device-breakpoints";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -78,7 +79,7 @@ function ContactOptions() {
         });
     }, []);
 
-    return <motion.div ref={scope} onMouseOver={e => {
+    return <div ref={scope} onMouseOver={e => {
         let element = e.target;
         if (element instanceof HTMLButtonElement)
             element = element.children[0];
@@ -102,16 +103,17 @@ function ContactOptions() {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        width: max-content;
         margin-inline: auto;
+        width: 100%;
 
         & > button {
             background-color: transparent;
             color: var(--foreground);
             padding-block: 0.75rem;
-            padding-inline: 2.5rem;
             border-radius: 100vw;
             position: relative;
+            padding-inline: 0;
+            width: 100%;
 
             &::before {
                 content: '';
@@ -146,6 +148,15 @@ function ContactOptions() {
                 transform: scale(0.98);
             }
         }
+
+        @media ${device.mobileL} {
+            width: max-content;
+
+            & > button {
+                padding-inline: 3rem;
+                width: revert;
+            }
+        }
     `}>
         <motion.button className="text-lg">
             <motion.span initial={{ opacity: 1 }} />
@@ -161,7 +172,7 @@ function ContactOptions() {
             <motion.span initial={{ opacity: 0 }} />
             Chat with us on email
         </motion.button>
-    </motion.div>;
+    </div>;
 }
 
 function ShimmerText(
@@ -212,7 +223,9 @@ export default function ContactUs() {
                 }
             `}>
                 <h2 className="section-title">Enough about us!</h2>
-                <p className="section-subtitle">
+                <p className="section-subtitle" css={css`
+                    color: var(--muted-foreground);
+                `}>
                     We're delighted to see you here.<br/>
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>

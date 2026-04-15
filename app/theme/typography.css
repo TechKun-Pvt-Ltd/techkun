@@ -23,7 +23,7 @@
        ---------------------------------------------------------- */
 
     /* Base font size in px */
-    --base-font-size: 0.875rem;
+    --base-font-size: 1rem;
 
     /* Scale ratio — choose a musical interval:
        Minor Second:   1.067  (2 semitones)
@@ -34,7 +34,7 @@
        Tritone:        1.414
        Perfect Fifth:  1.500
     */
-    --scale-ratio: 1.189;
+    --scale-ratio: 1.125;
 
     /* Base line-height ratio (line-height / font-size at base size).
        A value of 1.5 means 24px line-height for 16px base. */
