@@ -4,6 +4,7 @@ import {AnimationSequence, motion, useAnimate} from "motion/react";
 import React, {useCallback, useEffect, useRef} from "react";
 import {AnimationPlaybackControlsWithThen} from "motion";
 import {device} from "@/app/theme/device-breakpoints";
+import Link from "next/link";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -47,8 +48,9 @@ function ContactOptions() {
     }
 
     useEffect(() => {
-        elementsRef.current.first = scope.current.querySelector("button:nth-of-type(1) > span");
-        elementsRef.current.second = scope.current.querySelector("button:nth-of-type(2) > span");
+        const options = scope.current.querySelectorAll<HTMLSpanElement>(".contact-option > span");
+        elementsRef.current.first = options.item(0);
+        elementsRef.current.second = options.item(1);
         startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
     }, []);
 
@@ -105,8 +107,13 @@ function ContactOptions() {
         gap: 0.75rem;
         margin-inline: auto;
         width: 100%;
+        text-align: center;
 
-        & > button {
+        @media ${device.mobileL} {
+            width: max-content;
+        }
+
+        & .contact-option {
             background-color: transparent;
             color: var(--foreground);
             padding-block: 0.75rem;
@@ -114,6 +121,11 @@ function ContactOptions() {
             position: relative;
             padding-inline: 0;
             width: 100%;
+
+            @media ${device.mobileL} {
+                padding-inline: 3rem;
+                width: revert;
+            }
 
             &::before {
                 content: '';
@@ -148,30 +160,20 @@ function ContactOptions() {
                 transform: scale(0.98);
             }
         }
-
-        @media ${device.mobileL} {
-            width: max-content;
-
-            & > button {
-                padding-inline: 3rem;
-                width: revert;
-            }
-        }
     `}>
-        <motion.button className="text-lg">
+        <button className="contact-option large-text">
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
-        </motion.button>
-        <p className="text-lg" css={css`
-            text-align: center;
+        </button>
+        <p className="large-text" css={css`
             color: var(--muted-foreground);
             text-box-trim: trim-both;
             font-family: var(--script-12-bt), sans-serif;
         `}>or</p>
-        <motion.button className="text-lg">
+        <Link href="mailto:farasat@tech-kun.com" className="contact-option large-text" style={{ textDecoration: 'none' }}>
             <motion.span initial={{ opacity: 0 }} />
             Chat with us on email
-        </motion.button>
+        </Link>
     </div>;
 }
 
@@ -223,9 +225,7 @@ export default function ContactUs() {
                 }
             `}>
                 <h2 className="section-title">Enough about us!</h2>
-                <p className="section-subtitle" css={css`
-                    color: var(--muted-foreground);
-                `}>
+                <p className="section-subtitle">
                     We're delighted to see you here.<br/>
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>

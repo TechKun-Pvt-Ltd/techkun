@@ -23,9 +23,6 @@ export default function Shared() {
                 @media ${device.tablet} {
                     --scale-ratio: 1.189;
                 }
-                //@media ${device.laptop} {
-                    //--base-font-size: 1.125rem;
-                //}
             }
         `} />
         <svg xmlns="http://www.w3.org/2000/svg"

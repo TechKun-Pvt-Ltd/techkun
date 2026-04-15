@@ -153,6 +153,11 @@
 
 }
 
+html {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-base);
+}
 h1, h2, h3, h4, h5, h6, p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {
     margin-block: 0;
 }
@@ -190,9 +195,9 @@ h6 {
     font-weight: normal;
 }
 :is(p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre) {
-    font-size: inherit, var(--font-size-base);
-    line-height: inherit, var(--line-height-base);
-    letter-spacing: inherit, var(--letter-spacing-base);
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
 }
 
 button {
@@ -225,6 +230,7 @@ button {
     line-height: var(--line-height-2xl);
     letter-spacing: var(--letter-spacing-2xl);
     font-weight: normal;
+    color: oklch(0.8 0 0);
 }
 .item-title {
     font-size: var(--font-size-3xl);
@@ -239,17 +245,17 @@ button {
     font-weight: normal;
 }
 
-.text-sm {
+.small-text {
     font-size: var(--font-size-sm);
     line-height: var(--line-height-sm);
     letter-spacing: var(--letter-spacing-sm);
 }
-.text-base {
+.body-text {
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
     letter-spacing: var(--letter-spacing-base);
 }
-.text-lg {
+.large-text {
     font-size: var(--font-size-lg);
     line-height: var(--line-height-lg);
     letter-spacing: var(--letter-spacing-lg);

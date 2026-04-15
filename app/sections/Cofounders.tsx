@@ -7,25 +7,30 @@ import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
 import {device} from "@/app/theme/device-breakpoints";
+import Link from "next/link";
 
 const people: {
     title: string;
     subtitle: string;
+    mail: string;
     image: StaticImageData;
 }[] = [
     {
         title: "Hi, I'm Khizar, the CEO.",
         subtitle: 'khizar@tech-kun.com',
+        mail: 'khizar@tech-kun.com',
         image: khiz
     },
     {
         title: "I'm Uzair, the Managing Director.",
         subtitle: 'farasat@tech-kun.com',
+        mail: 'farasat@tech-kun.com',
         image: uz
     },
     {
         title: "And I'm Naved, the CTO.",
         subtitle: 'naved@tech-kun.com',
+        mail: 'naved@tech-kun.com',
         image: me
     },
 ];
@@ -60,7 +65,7 @@ export default function Cofounders() {
                     gap: 48px;
                     text-align: right;
 
-                    & > .person-img {
+                    & .person-img {
                         margin-inline: -16px;
                         min-width: 400px;
                         width: 100%;
@@ -70,7 +75,7 @@ export default function Cofounders() {
                         max-width: revert;
                         grid-template-columns: 1fr 1fr;
                         text-align: revert;
-                        & > .person-img {
+                        & .person-img {
                             margin-inline: revert;
                             //max-width: 480px;
                         }
@@ -100,7 +105,30 @@ export default function Cofounders() {
                     </div>
                     <div className="person-intro">
                         <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <p className="item-subtitle" style={{color: 'oklch(0.625 0 0)'}}>{item.subtitle}</p>
+                        <Link href={`mailto:${item.mail}`} className="item-subtitle" css={css`
+                            color: oklch(0.625 0 0);
+                            cursor: pointer;
+                            text-decoration: none;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            & path {
+                                transition-property: d, stroke;
+                                transition-duration: 0.15s;
+                                transition-timing-function: cubic-bezier(0.215,0.61,0.355,1);
+                            }
+                            &:hover path {
+                                d: path("M 11 1 L 4.3333 1 L 11 1 L 9.5366 7.5041 L 11 1 L 1 9 L 1 9 L 11 1");
+                                stroke: var(--primary-500);
+                            }
+                        `}>
+                            <svg width="1em" viewBox="0 0 14 10" style={{marginBlockEnd: '-0.125em'}}>
+                                <path d="M 13 1 L 1 1 L 4 3.6667 L 7 6.3333 L 13 1 L 13 9 L 1 9 L 1 1" fill="transparent"
+                                    stroke="currentColor" strokeWidth="0.5" strokeLinejoin="round" strokeLinecap="round" capHeight="0.25"
+                                ></path>
+                            </svg>
+                            <span>{item.subtitle}</span>
+                        </Link>
                     </div>
                 </li>)}
             </ul>
