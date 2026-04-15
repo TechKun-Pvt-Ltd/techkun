@@ -117,26 +117,16 @@ export default function Cofounders() {
                             }
 
                             &:hover path, &:focus path {
-                                d: path("M 11 1 L 4.3333 1 L 11 1 L 9.5366 7.5041 L 11 1 L 1 9 L 1 9 L 11 1");
+                                d: path("M 22 4 C 22 4 22 4 22 4 L 8.6667 4 C 8.6667 4 8.6667 4 8.6667 4 L 22 4 L 19.0732 17.0081 L 22 4 L 2 20 C 2 20 2 20 2 20 L 2 20 C 2 20 2 20 2 20 L 22 4");
                                 stroke: var(--primary-500);
                             }
                         `}>
-                            <svg width="1em" viewBox="0 0 14 10"
-                                 style={{marginInlineEnd: '10px', marginBlockEnd: '-0.0625em'}}>
-                                <path d="M 13 1 L 1 1 L 1 1 L 7 5.6667 L 13 1 L 13 9 L 1 9 L 1 1"
-                                      fill="transparent"
-                                      stroke="currentColor" strokeWidth="0.75" strokeLinejoin="round"
-                                      strokeLinecap="round" capHeight="0.25"
+                            <svg width="1em" viewBox="0 0 24 24"
+                                 style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}>
+                                <path d="M 22 6 C 22 4.8954 21.1046 4 20 4 L 4 4 C 2.8954 4 2 4.8954 2 6 L 2 6 L 12 14 L 22 6 L 22 18 C 22 19.1046 21.1046 20 20 20 L 4 20 C 2.8954 20 2 19.1046 2 18 L 2 6"
+                                      fill="transparent" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" strokeLinecap="round"
                                 ></path>
                             </svg>
-                            {/*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"*/}
-                            {/*     fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"*/}
-                            {/*     stroke-linejoin="round" className="lucide lucide-mail-icon lucide-mail"*/}
-                            {/*     style={{marginInlineEnd: '10px', marginBlockEnd: '-0.125em'}}*/}
-                            {/*>*/}
-                            {/*    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>*/}
-                            {/*    <rect x="2" y="4" width="20" height="16" rx="2"/>*/}
-                            {/*</svg>*/}
                             <span>{item.subtitle}</span>
                         </Link>
                     </div>
