@@ -31,18 +31,18 @@ export default function Button({children, textColor, backgroundColor}: {
         &>svg {
             margin-left: 0.4375em;
             width: 0.6em;
-            &>path {
+            &>.arrow {
                 d: path("M1 1l4 4-4 4 m4 -4h0");
                 transition: d 0.15s cubic-bezier(0.215,0.61,0.355,1);
             }
         }
-        &:hover > svg > path {
+        &:hover .arrow, &:focus .arrow {
             d: path("M5 1l4 4-4 4 m4 -4h-8");
         }
     `}>
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M1 1l4 4-4 4 m4 -4h0"></path>
+            <path className="arrow" d="M1 1l4 4-4 4 m4 -4h0"></path>
         </svg>
     </button>;
 }
