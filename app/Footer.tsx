@@ -49,6 +49,7 @@ export default function Footer() {
                 flex-wrap: wrap;
 
                 & > p {
+                    margin-block-end: 0.25em;
                     font-weight: 500;
                 }
             `}>
@@ -81,7 +82,7 @@ export default function Footer() {
             grid-column: 1 / -1;
             border-top: 1px solid var(--muted);
             text-align: center;
-            color: oklch(0.4 0 0);
+            color: oklch(0.5 0 0);
 
             & > p {
                 margin-block: 8px;
