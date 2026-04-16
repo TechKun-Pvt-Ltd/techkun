@@ -36,7 +36,7 @@ export default function Button({children, textColor, backgroundColor}: {
                 transition: d 0.15s cubic-bezier(0.215,0.61,0.355,1);
             }
         }
-        &:hover .arrow, &:focus .arrow {
+        &:hover .arrow, &:focus-visible .arrow {
             d: path("M5 1l4 4-4 4 m4 -4h-8");
         }
     `}>

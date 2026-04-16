@@ -93,7 +93,7 @@ export default function MeetTechKun() {
                 }
             `}>
                 <div css={css`
-                    width: clamp(240px, 75%, 360px);
+                    width: clamp(240px, 75%, 400px);
                 `}>
                     <svg viewBox={viewBoxString(logoAnimation.viewBox)}>
                         <defs>

@@ -106,17 +106,16 @@ export default function Cofounders() {
                     <div className="person-intro">
                         <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
                         <Link href={`mailto:${item.mail}`} className="item-subtitle" css={css`
-                            color: oklch(0.625 0 0);
                             cursor: pointer;
                             text-decoration: none;
 
                             & path {
                                 transition-property: d, stroke;
-                                transition-duration: 0.15s;
+                                transition-duration: 0.2s;
                                 transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
                             }
 
-                            &:hover path, &:focus path {
+                            &:hover path, &:focus-visible path {
                                 d: path("M 22 2 C 22 2 22 2 22 2 L 2.1378 8.8187 C 2.1378 8.8187 2.1378 8.8187 2.1378 8.8187 L 11.3766 12.6455 C 11.3766 12.6455 11.3766 12.6455 11.3766 12.6455 L 15.2035 21.8843 C 15.2035 21.8843 15.2035 21.8843 15.2035 21.8843 L 22 2 L 11.3766 12.6455 L 2.1378 8.8187");
                                 stroke: var(--primary-500);
                             }

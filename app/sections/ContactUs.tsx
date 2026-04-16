@@ -81,7 +81,7 @@ function ContactOptions() {
         });
     }, []);
 
-    return <div ref={scope} onMouseOver={e => {
+    return <motion.div ref={scope} onMouseOver={e => {
         let element = e.target;
         if (element instanceof HTMLButtonElement)
             element = element.children[0];
@@ -131,7 +131,7 @@ function ContactOptions() {
                 content: '';
                 position: absolute;
                 inset: 0;
-                border: 1px solid var(--muted);
+                border: 1px solid var(--border);
                 border-radius: inherit;
                 transition: transform 0.1s ease-in-out;
             }
@@ -174,7 +174,7 @@ function ContactOptions() {
             <motion.span initial={{ opacity: 0 }} />
             Chat with us on email
         </Link>
-    </div>;
+    </motion.div>;
 }
 
 function ShimmerText(

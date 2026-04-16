@@ -7,7 +7,6 @@ import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
-// import RootStyleRegistry from "@/lib/root-style-registry";
 
 const script_12_bt = localFont({
     src: "./fonts/SCRPT12N.ttf",
@@ -30,12 +29,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${script_12_bt.variable} ${quicksand.className}`}>
-                {/*<RootStyleRegistry>*/}
-                    <Shared />
-                    <Header />
-                    <main className='overflow-hidden'>{children}</main>
-                    <Footer />
-                {/*</RootStyleRegistry>*/}
+                <Shared />
+                <Header />
+                <main className='overflow-hidden'>{children}</main>
+                <Footer />
             </body>
         </html>
     );

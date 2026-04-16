@@ -230,7 +230,7 @@ button {
     line-height: var(--line-height-2xl);
     letter-spacing: var(--letter-spacing-2xl);
     font-weight: normal;
-    color: oklch(0.8 0 0);
+    color: var(--neutral-100);
 }
 .item-title {
     font-size: var(--font-size-3xl);
@@ -243,6 +243,7 @@ button {
     line-height: var(--line-height-2xl);
     letter-spacing: var(--letter-spacing-2xl);
     font-weight: normal;
+    color: var(--neutral-300);
 }
 
 .small-text {

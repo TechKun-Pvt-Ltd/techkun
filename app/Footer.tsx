@@ -5,7 +5,7 @@ import React from "react";
 
 export default function Footer() {
     return <footer css={css`
-        border-top: 1px solid var(--muted);
+        border-top: 1px solid var(--border);
         grid-template-rows: 1fr max-content;
     `}>
         <div css={css`
@@ -80,9 +80,9 @@ export default function Footer() {
         </div>
         <div css={css`
             grid-column: 1 / -1;
-            border-top: 1px solid var(--muted);
+            border-top: 1px solid var(--border);
             text-align: center;
-            color: oklch(0.5 0 0);
+            color: var(--neutral-500);
 
             & > p {
                 margin-block: 8px;

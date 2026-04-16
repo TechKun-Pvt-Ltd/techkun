@@ -6,7 +6,7 @@ import Button from "@/app/components/ui/Button";
 
 export default function Header() {
     return <header css={css`
-        border-bottom: oklch(0.25 0 0) 1px solid;
+        border-bottom: var(--border) 1px solid;
         box-shadow: 0.5px 1px 1px oklch(0 0 0 / 0.7);
     `}>
         <nav css={css`
