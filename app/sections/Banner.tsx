@@ -1,8 +1,8 @@
 'use client'
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {css} from "@emotion/react";
 import {animate, motion, useMotionValue} from "motion/react";
-import {ValueAnimationTransition} from "motion";
+import {AnimationPlaybackControlsWithThen, ValueAnimationTransition} from "motion";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -14,41 +14,48 @@ function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
 }
 
 export default function Banner() {
+    const activeAnimation = useRef<AnimationPlaybackControlsWithThen>(null);
     const strokeDashoffset = useMotionValue(11);
+    function setActiveAnimation(anim: AnimationPlaybackControlsWithThen) {
+        activeAnimation.current?.stop();
+        activeAnimation.current = anim;
+    }
 
     function startIdleAnimation() {
-        animate(strokeDashoffset, [11, -11], {
+        setActiveAnimation(animate(strokeDashoffset, [11, -11], {
             ...SPRING_OPTIONS(2),
             delay: IDLE_ANIMATION_REPEAT_DELAY,
             repeat: Infinity,
             repeatType: 'loop',
             repeatDelay: IDLE_ANIMATION_REPEAT_DELAY
-        });
+        }));
     }
 
     useEffect(() => {
-        animate(strokeDashoffset, [11, -11], SPRING_OPTIONS(2))
-            .finished.then(startIdleAnimation);
+        const animation = animate(strokeDashoffset, [11, -11], SPRING_OPTIONS(2));
+        setActiveAnimation(animation);
+        animation.finished.then(startIdleAnimation);
     }, []);
 
     function fillPath() {
-        strokeDashoffset.stop();
         const value = strokeDashoffset.get();
         if (value >= 0) {
-            animate(strokeDashoffset, 0, SPRING_OPTIONS(value / 11));
+            setActiveAnimation(animate(strokeDashoffset, 0, SPRING_OPTIONS(value / 11)));
             return;
         }
 
-        animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11))
-            .finished.then(() => {
-                animate(strokeDashoffset, [11, 0], SPRING_OPTIONS(1));
-            });
+        const animation = animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11));
+        setActiveAnimation(animation);
+        animation.finished.then(() => {
+            setActiveAnimation(animate(strokeDashoffset, [11, 0], SPRING_OPTIONS(1)));
+        });
     }
     function emptyPath() {
-        strokeDashoffset.stop();
+        // strokeDashoffset.stop();
         const value = strokeDashoffset.get();
-        animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11))
-            .finished.then(startIdleAnimation);
+        const animation = animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11));
+        setActiveAnimation(animation);
+        animation.finished.then(startIdleAnimation);
     }
 
     return <section>
@@ -66,14 +73,14 @@ export default function Banner() {
         `}>
             <div>
                 <h1 className="hero-heading">
-                    <span style={{display: 'inline-block', marginBlockEnd: '0.375em'}}>Tired of funding <span>
+                    <span style={{display: 'inline-block', marginBlockEnd: '0.375em'}}>Tired of funding <pre>
                         repa
                         <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="-1 -12 3.25 13" css={css`
                             margin-block-end: -0.125em;
                             margin-inline: 0.0625em;
                             transform: rotateZ(4deg);
                             transition: transform 0.3s ease-in-out;
-                            span:hover & {
+                            pre:hover & {
                                 transform: rotateZ(-4deg);
                             }
                         `}>
@@ -82,8 +89,8 @@ export default function Banner() {
                             />
                         </svg>
                         rs?
-                    </span></span><br/>
-                    Start funding gro
+                    </pre></span><br/>
+                    Start funding <pre>gro
                     <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10"
                         css={css`
                             width: 1em;
@@ -103,7 +110,7 @@ export default function Banner() {
                             style={{ strokeDashoffset }}
                         />
                     </motion.svg>
-                    th.
+                    th.</pre>
                 </h1>
             </div>
             <div style={{alignSelf: 'stretch'}}>
