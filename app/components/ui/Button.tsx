@@ -1,48 +1,60 @@
 import {ReactNode} from "react";
 import {css} from "@emotion/react";
+import { motion } from "motion/react";
+
+const INITIAL = "initial";
+const FOCUSED = "focused";
+
+const variants = {
+    [INITIAL]: { d: "M1 1l4 4-4 4 m4 -4h0" },
+    [FOCUSED]: { d: "M5 1l4 4-4 4 m4 -4h-8" }
+};
 
 export default function Button({children, textColor, backgroundColor}: {
     children: ReactNode;
     textColor: string;
     backgroundColor: string;
 }) {
-    return <button css={css`
-        color: ${textColor};
-        background-color: transparent;
-        position: relative;
-        isolation: isolate;
-
-        padding-inline: 1.25rem 1rem;
-
-        &::before {
-            content: '';
-            border-radius: inherit;
-            background-color: ${backgroundColor};
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            transition: transform 0.1s ease-in-out;
-        }
-
-        &:active::before {
-            transform: scale(0.97);
-        }
-
-        &>svg {
-            margin-left: 0.4375em;
-            width: 0.6em;
-            &>.arrow {
-                d: path("M1 1l4 4-4 4 m4 -4h0");
-                transition: d 0.15s cubic-bezier(0.215,0.61,0.355,1);
+    return <motion.button
+        css={css`
+            color: ${textColor};
+            background-color: transparent;
+            position: relative;
+            isolation: isolate;
+    
+            padding-inline: 1.25rem 1rem;
+    
+            &::before {
+                content: '';
+                border-radius: inherit;
+                background-color: ${backgroundColor};
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+                transition: transform 0.1s ease-in-out;
             }
-        }
-        &:hover .arrow, &:focus-visible .arrow {
-            d: path("M5 1l4 4-4 4 m4 -4h-8");
-        }
-    `}>
+    
+            &:active::before {
+                transform: scale(0.97);
+            }
+    
+            & > svg {
+                margin-left: 0.4375em;
+                width: 0.6em;
+            }
+        `}
+        initial={INITIAL}
+        whileHover={FOCUSED} whileFocus={FOCUSED}
+    >
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path className="arrow" d="M1 1l4 4-4 4 m4 -4h0"></path>
+            <motion.path className="arrow"
+                variants={variants}
+                transition={{
+                    duration: 0.15,
+                    ease: [0.215, 0.61, 0.355, 1]
+                }}
+            ></motion.path>
         </svg>
-    </button>;
+    </motion.button>;
 }

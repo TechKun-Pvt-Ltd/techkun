@@ -27,7 +27,7 @@
     "next": "16.2.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "svg-path-kit": "./lib/svg-path-kit-1.2.0-beta.6.tgz",
+    "svg-path-kit": "./lib/svg-path-kit-1.2.1-beta.tgz",
     "times-fps": "./lib/times-fps-1.0.0-alpha.tgz"
   },
   "devDependencies": {

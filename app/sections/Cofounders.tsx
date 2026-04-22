@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {css} from "@emotion/react";
 import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
@@ -7,7 +7,41 @@ import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
 import {device} from "@/app/theme/device-breakpoints";
-import Link from "next/link";
+import NextLink from "next/link";
+import {mapEasingToNativeEasing, Easing, motion} from "motion/react";
+
+const Link = motion.create(NextLink);
+
+const emailSendAnimation: {
+    duration: number;
+    easing: Easing;
+    pathData: [string, string];
+} = {
+    duration: 0.2,
+    easing: [0.215, 0.61, 0.355, 1],
+    pathData: [
+        "M 22 6 C 22 4.8954 21.1046 4 20 4 L 4 4 C 2.8954 4 2 4.8954 2 6 L 2 18 C 2 19.1046 2.8954 20 4 20 L 20 20 C 21.1046 20 22 19.1046 22 18 L 22 6 L 12 14 L 2 6",
+        "M 22 2 C 22 2 22 2 22 2 L 4.0295 8.1693 C 3.1583 8.4684 3.1205 9.6865 3.9715 10.039 L 10.9006 12.9091 C 10.9006 12.9091 10.9006 12.9091 10.9006 12.9091 L 13.6505 19.8868 C 13.9882 20.7438 15.2068 20.7271 15.5209 19.8612 L 22 2 L 10.9006 12.9091 L 3.9715 10.039"
+    ]
+};
+
+const EmailSend = motion.create(forwardRef<SVGPathElement>((_, ref) => {
+    return <svg width="1em" viewBox="0 0 24 24"
+        style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}
+    >
+        <motion.path ref={ref}
+            fill="transparent" strokeWidth="1" strokeLinejoin="round" strokeLinecap="round"
+            variants={{
+                initial: { d: emailSendAnimation.pathData[0] },
+                focused: { d: emailSendAnimation.pathData[1] }
+            }}
+            transition={{
+                duration: emailSendAnimation.duration,
+                ease: emailSendAnimation.easing
+            }}
+        ></motion.path>
+    </svg>
+}));
 
 const people: {
     title: string;
@@ -88,44 +122,26 @@ export default function Cofounders() {
                         scroll-snap-align: center;
                     `}>
                         <LogoImageFrame imageData={item.image} />
-                        {/*<div css={css`
-                            top: 0; right: 0;
-                            border-radius: 50%;
-                            height: 100%;
-                            overflow: hidden;
-                            aspect-ratio: 1 / 1;
-                        `}>
-                            <Image css={css`
-                                width: 100%;
-                                height: 100%;
-                                object-fit: cover;
-                                object-position: left top;
-                            `} src={item.image} alt={"logo-framed image"} />
-                        </div>*/}
                     </div>
                     <div className="person-intro">
                         <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <Link href={`mailto:${item.mail}`} className="item-subtitle" css={css`
-                            cursor: pointer;
-                            text-decoration: none;
+                        <Link href={`mailto:${item.mail}`} className="item-subtitle"
+                            css={css`
+                                cursor: pointer;
+                                text-decoration: none;
 
-                            & path {
-                                transition-property: d, stroke;
-                                transition-duration: 0.2s;
-                                transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-                            }
-
-                            &:hover path, &:focus-visible path {
-                                d: path("M 22 2 C 22 2 22 2 22 2 L 2.1378 8.8187 C 2.1378 8.8187 2.1378 8.8187 2.1378 8.8187 L 11.3766 12.6455 C 11.3766 12.6455 11.3766 12.6455 11.3766 12.6455 L 15.2035 21.8843 C 15.2035 21.8843 15.2035 21.8843 15.2035 21.8843 L 22 2 L 11.3766 12.6455 L 2.1378 8.8187");
-                                stroke: var(--primary-500);
-                            }
-                        `}>
-                            <svg width="1em" viewBox="0 0 24 24"
-                                 style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}>
-                                <path d="M 22 6 C 22 4.8954 21.1046 4 20 4 L 4 4 C 2.8954 4 2 4.8954 2 6 L 2 18 C 2 19.1046 2.8954 20 4 20 L 20 20 C 21.1046 20 22 19.1046 22 18 L 22 6 L 12 14 L 2 6"
-                                      fill="transparent" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" strokeLinecap="round"
-                                ></path>
-                            </svg>
+                                & path {
+                                    transition: stroke ${emailSendAnimation.duration}s ${mapEasingToNativeEasing(emailSendAnimation.easing, emailSendAnimation.duration)};
+                                    stroke: currentColor;
+                                }
+                                &:hover path, &:focus-visible path {
+                                    stroke: var(--primary-500);
+                                }
+                            `}
+                            initial="initial"
+                            whileHover="focused" whileFocus="focused"
+                        >
+                            <EmailSend />
                             <span>{item.subtitle}</span>
                         </Link>
                     </div>
