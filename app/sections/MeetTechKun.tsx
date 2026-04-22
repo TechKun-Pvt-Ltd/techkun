@@ -116,7 +116,7 @@ export default function MeetTechKun() {
                                 />
                             </mask>
                         </defs>
-                        <rect x={logoAnimation.viewBox.x} y={logoAnimation.viewBox.y} width="100%" height="100%"
+                        <rect {...logoAnimation.viewBox}
                               fill="url(#gradient)" mask="url(#animated-logo-mask)"
                         ></rect>
                     </svg>

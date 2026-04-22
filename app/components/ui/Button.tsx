@@ -44,7 +44,7 @@ export default function Button({children, textColor, backgroundColor}: {
             }
         `}
         initial={INITIAL}
-        whileHover={FOCUSED} whileFocus={FOCUSED}
+        whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
     >
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">

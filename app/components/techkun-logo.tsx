@@ -18,7 +18,7 @@ export default function TechKunLogo() {
         viewBox={viewBoxString(logoPath.viewBox)}
         onMouseEnter={_ => shimmerBgRef.current?.setAttribute('data-shimmer', "true")}
     >
-        <foreignObject clipPath="url(#logo-clip-path)" width="100%" height="100%">
+        <foreignObject clipPath="url(#logo-clip-path)" {...logoPath.viewBox}>
             <div ref={shimmerBgRef} xmlns="http://www.w3.org/1999/xhtml"
                  css={css`
                      width: 100%;

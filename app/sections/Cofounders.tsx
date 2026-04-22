@@ -24,16 +24,18 @@ const emailSendAnimation: {
         "M 22 2 C 22 2 22 2 22 2 L 4.0295 8.1693 C 3.1583 8.4684 3.1205 9.6865 3.9715 10.039 L 10.9006 12.9091 C 10.9006 12.9091 10.9006 12.9091 10.9006 12.9091 L 13.6505 19.8868 C 13.9882 20.7438 15.2068 20.7271 15.5209 19.8612 L 22 2 L 10.9006 12.9091 L 3.9715 10.039"
     ]
 };
+const INITIAL = "initial";
+const FOCUSED = "focused";
 
 const EmailSend = motion.create(forwardRef<SVGPathElement>((_, ref) => {
     return <svg width="1em" viewBox="0 0 24 24"
-        style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}
+                                          style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}
     >
         <motion.path ref={ref}
             fill="transparent" strokeWidth="1" strokeLinejoin="round" strokeLinecap="round"
             variants={{
-                initial: { d: emailSendAnimation.pathData[0] },
-                focused: { d: emailSendAnimation.pathData[1] }
+                [INITIAL]: { d: emailSendAnimation.pathData[0] },
+                [FOCUSED]: { d: emailSendAnimation.pathData[1] }
             }}
             transition={{
                 duration: emailSendAnimation.duration,
@@ -138,8 +140,8 @@ export default function Cofounders() {
                                     stroke: var(--primary-500);
                                 }
                             `}
-                            initial="initial"
-                            whileHover="focused" whileFocus="focused"
+                            initial={INITIAL}
+                            whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
                         >
                             <EmailSend />
                             <span>{item.subtitle}</span>
