@@ -73,14 +73,14 @@ export default function Banner() {
         `}>
             <div>
                 <h1 className="hero-heading">
-                    <span style={{display: 'inline-block', marginBlockEnd: '0.375em'}}>Tired of funding <pre>
+                    <span style={{display: 'inline-block', marginBlockEnd: '0.375em'}}>Tired of funding <span style={{whiteSpace: 'nowrap'}}>
                         repa
                         <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="-1 -12 3.25 13" css={css`
                             margin-block-end: -0.125em;
                             margin-inline: 0.0625em;
                             transform: rotateZ(4deg);
                             transition: transform 0.3s ease-in-out;
-                            pre:hover & {
+                            span:hover > & {
                                 transform: rotateZ(-4deg);
                             }
                         `}>
@@ -89,8 +89,8 @@ export default function Banner() {
                             />
                         </svg>
                         rs?
-                    </pre></span><br/>
-                    Start funding <pre>gro
+                    </span></span><br/>
+                    Start funding <span style={{whiteSpace: 'nowrap'}}>gro
                     <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10"
                         css={css`
                             width: 1em;
@@ -110,7 +110,7 @@ export default function Banner() {
                             style={{ strokeDashoffset }}
                         />
                     </motion.svg>
-                    th.</pre>
+                    th.</span>
                 </h1>
             </div>
             <div style={{alignSelf: 'stretch'}}>
