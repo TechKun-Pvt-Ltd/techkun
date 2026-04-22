@@ -46,9 +46,9 @@ body {
         grid-template-rows: 1fr;
         position: sticky;
         top: 0;
+        left: 0;
         z-index: 1;
-        background-color: oklch(from var(--background) l c h / 0.375);
-        backdrop-filter: blur(10px);
+        align-items: stretch;
     }
     & > main {
         /*--section-clamped-height: clamp(*/
@@ -59,6 +59,7 @@ body {
 
         grid-row: content-start / content-end;
         grid-auto-rows: minmax(var(--section-min-height), max-content);
+        isolation: isolate;
 
         & > section {
             grid-column: 1 / -1;

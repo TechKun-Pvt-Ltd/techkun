@@ -1,4 +1,3 @@
-// “”
 'use client';
 import {css} from "@emotion/react";
 import React, {useEffect} from "react";
@@ -18,7 +17,13 @@ export default function MeetTechKun() {
 
         inView(heading, () => {
             animate([
-                [flying, { transform: "translate(0, 0) scale(0.5)", opacity: 0 }, { duration: 1, ease: 'easeIn' }],
+                [flying, {
+                    transform: "translate(0, 0) scale(0.5)",
+                    opacity: 0
+                }, {
+                    duration: 1,
+                    ease: 'easeIn'
+                }],
                 [path, { scale: 1, opacity: 1 }, { duration: 1, ease: 'easeOut', at: 0.25 }],
                 [path, { x: "0%", y: "0%" }, { duration: 1, ease: 'easeInOut' }],
                 [

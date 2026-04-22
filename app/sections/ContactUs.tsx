@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useRef} from "react";
 import {AnimationPlaybackControlsWithThen} from "motion";
 import {device} from "@/app/theme/device-breakpoints";
 import Link from "next/link";
+import {AnimationsRecord} from "@/app/utils/animation-utils";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -18,14 +19,13 @@ const rotateConicGradient = keyframes`
 const VISIBILITY_DURATION = 5;
 const FADE_IN_DURATION = 1.2;
 
+const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
+    idle: null, fadeIn: null, fadeOut: null
+};
+
 function ContactOptions() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
-    const animationsRef = useRef<Record<
-        'idleAnimation' | 'fadeIn' | 'fadeOut',
-        AnimationPlaybackControlsWithThen | null
-    >>({
-        idleAnimation: null, fadeIn: null, fadeOut: null
-    });
+    const animationsRef = useRef(initialAnimations);
     const elementsRef = useRef<Record<
         'first' | 'second' | 'hovered' | 'other',
         HTMLSpanElement | null
@@ -40,7 +40,7 @@ function ContactOptions() {
             [first, { opacity: 1 }, { delay: VISIBILITY_DURATION }],
             [second, { opacity: 0 }, { at: `-${FADE_IN_DURATION}`}],
         ];
-        animationsRef.current.idleAnimation = animate(sequence, {
+        animationsRef.current.idle = animate(sequence, {
             repeat: Infinity,
             repeatType: 'loop',
             defaultTransition: { duration: FADE_IN_DURATION, ease: 'easeInOut' }
@@ -55,7 +55,7 @@ function ContactOptions() {
     }, []);
 
     const onHoverStart = useCallback((e: HTMLSpanElement) => {
-        animationsRef.current.idleAnimation?.stop();
+        animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn?.stop();
         if (elementsRef.current.other === e)
             animationsRef.current.fadeOut?.stop();
@@ -68,9 +68,9 @@ function ContactOptions() {
         animationsRef.current.fadeOut = animate(other, { opacity: 0 }, { duration: FADE_IN_DURATION });
     }, []);
     const onHoverEnd = useCallback(() => {
-        animationsRef.current.idleAnimation?.stop();
+        animationsRef.current.idle?.stop();
         const {hovered, other} = elementsRef.current;
-        animationsRef.current.fadeIn!.finished.then(() => {
+        animationsRef.current.fadeIn!.then(() => {
             animationsRef.current.fadeIn?.stop();
             animationsRef.current.fadeIn = null;
             animationsRef.current.fadeOut?.stop();
@@ -81,86 +81,90 @@ function ContactOptions() {
         });
     }, []);
 
-    return <motion.div ref={scope} onMouseOver={e => {
-        let element = e.target;
-        if (element instanceof HTMLButtonElement)
-            element = element.children[0];
-        if (!(element instanceof HTMLSpanElement))
-            return;
-        onHoverStart(element);
-    }} onMouseOut={e => {
-        let element = e.target;
-        if (element instanceof HTMLButtonElement)
-            element = element.children[0];
-        if (!(element instanceof HTMLSpanElement))
-            return;
-        if (elementsRef.current.hovered !== null)
-            onHoverEnd();
-    }} css={css`
-        @property --gradient-angle {
-            syntax: "<angle>";
-            inherits: true;
-            initial-value: 0deg;
-        }
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-inline: auto;
-        width: 100%;
-        text-align: center;
-
-        @media ${device.mobileL} {
-            width: max-content;
-        }
-
-        & .contact-option {
-            background-color: transparent;
-            color: var(--foreground);
-            padding-block: 0.75rem;
-            border-radius: 100vw;
-            position: relative;
-            padding-inline: 0;
+    return <motion.div ref={scope}
+        onMouseOver={e => {
+            let element = e.target;
+            if (element instanceof HTMLButtonElement)
+                element = element.children[0];
+            if (!(element instanceof HTMLSpanElement))
+                return;
+            onHoverStart(element);
+        }}
+        onMouseOut={e => {
+            let element = e.target;
+            if (element instanceof HTMLButtonElement)
+                element = element.children[0];
+            if (!(element instanceof HTMLSpanElement))
+                return;
+            if (elementsRef.current.hovered !== null)
+                onHoverEnd();
+        }}
+        css={css`
+            @property --gradient-angle {
+                syntax: "<angle>";
+                inherits: true;
+                initial-value: 0deg;
+            }
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-inline: auto;
             width: 100%;
+            text-align: center;
 
             @media ${device.mobileL} {
-                padding-inline: 3rem;
-                width: revert;
+                width: max-content;
             }
 
-            &::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                border: 1px solid var(--border);
-                border-radius: inherit;
-                transition: transform 0.1s ease-in-out;
-            }
-            & > span {
-                position: absolute;
-                inset: 0;
+            & .contact-option {
+                background-color: transparent;
+                color: var(--foreground);
+                padding-block: 0.75rem;
+                border-radius: 100vw;
+                position: relative;
+                padding-inline: 0;
                 width: 100%;
-                height: 100%;
-                transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
-                border: 2px solid transparent;
-                border-radius: inherit;
-                background: border-box conic-gradient(
-                    from var(--gradient-angle) at 50% 50%,
-                    var(--primary-200),
-                    var(--primary-800),
-                    transparent,
-                    transparent,
-                    var(--primary-800),
-                    var(--primary-200)
-                ) 50% / 100%;
-                mask: linear-gradient(#000 0 0) padding-box subtract,
-                    linear-gradient(#000 0 0);
-                animation: ${rotateConicGradient} 4s linear infinite;
+    
+                @media ${device.mobileL} {
+                    padding-inline: 3rem;
+                    width: revert;
+                }
+    
+                &::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border: 1px solid var(--border);
+                    border-radius: inherit;
+                    transition: transform 0.1s ease-in-out;
+                }
+                & > span {
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
+                    border: 2px solid transparent;
+                    border-radius: inherit;
+                    background: border-box conic-gradient(
+                        from var(--gradient-angle) at 50% 50%,
+                        var(--primary-200),
+                        var(--primary-800),
+                        transparent,
+                        transparent,
+                        var(--primary-800),
+                        var(--primary-200)
+                    ) 50% / 100%;
+                    mask: linear-gradient(#000 0 0) padding-box subtract,
+                        linear-gradient(#000 0 0);
+                    animation: ${rotateConicGradient} 4s linear infinite;
+                }
+                &:active::before, &:active > span {
+                    transform: scale(0.98);
+                }
             }
-            &:active::before, &:active > span {
-                transform: scale(0.98);
-            }
-        }
-    `}>
+        `}
+    >
         <button className="contact-option large-text">
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us

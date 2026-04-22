@@ -20,8 +20,11 @@ export default function Shared() {
                     --page-padding: 32px;
                 }
 
-                @media ${device.tablet} {
+                @media ${device.mobileL} {
                     --scale-ratio: 1.189;
+                }
+                @media ${device.tablet} {
+                    --scale-ratio: 1.260;
                 }
             }
         `} />
