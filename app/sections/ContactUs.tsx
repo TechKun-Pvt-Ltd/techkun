@@ -54,7 +54,7 @@ function ContactOptions() {
         startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
     }, []);
 
-    const onHoverStart = useCallback((e: HTMLSpanElement) => {
+    function onHoverStart(e: HTMLSpanElement) {
         animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn?.stop();
         if (elementsRef.current.other === e)
@@ -66,8 +66,8 @@ function ContactOptions() {
         elementsRef.current.other = other;
         animationsRef.current.fadeIn = animate(e, { opacity: 1 }, { duration: FADE_IN_DURATION });
         animationsRef.current.fadeOut = animate(other, { opacity: 0 }, { duration: FADE_IN_DURATION });
-    }, []);
-    const onHoverEnd = useCallback(() => {
+    }
+    function onHoverEnd() {
         animationsRef.current.idle?.stop();
         const {hovered, other} = elementsRef.current;
         animationsRef.current.fadeIn!.then(() => {
@@ -79,24 +79,21 @@ function ContactOptions() {
             elementsRef.current.other = null;
             startIdleAnimation(hovered!, other!);
         });
-    }, []);
+    }
 
     return <motion.div ref={scope}
         onMouseOver={e => {
             let element = e.target;
             if (element instanceof HTMLButtonElement)
                 element = element.children[0];
-            if (!(element instanceof HTMLSpanElement))
-                return;
-            onHoverStart(element);
+            if (element instanceof HTMLSpanElement)
+                onHoverStart(element);
         }}
         onMouseOut={e => {
             let element = e.target;
             if (element instanceof HTMLButtonElement)
                 element = element.children[0];
-            if (!(element instanceof HTMLSpanElement))
-                return;
-            if (elementsRef.current.hovered !== null)
+            if (element instanceof HTMLSpanElement && elementsRef.current.hovered !== null)
                 onHoverEnd();
         }}
         css={css`

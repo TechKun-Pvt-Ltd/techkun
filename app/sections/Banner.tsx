@@ -1,8 +1,7 @@
 'use client'
 import React, {useEffect, useRef} from "react";
 import {css} from "@emotion/react";
-import {animate, motion, useMotionValue} from "motion/react";
-import {AnimationPlaybackControlsWithThen, ValueAnimationTransition} from "motion";
+import {animate, motion, useMotionValue, AnimationPlaybackControlsWithThen, ValueAnimationTransition} from "motion/react";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -12,6 +11,12 @@ function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
         duration
     };
 }
+const idleAnimationOptions: ValueAnimationTransition = {
+    ...SPRING_OPTIONS(2),
+    repeat: Infinity,
+    repeatType: 'loop',
+    repeatDelay: IDLE_ANIMATION_REPEAT_DELAY
+};
 
 export default function Banner() {
     const activeAnimation = useRef<AnimationPlaybackControlsWithThen>(null);
@@ -21,20 +26,8 @@ export default function Banner() {
         activeAnimation.current = anim;
     }
 
-    function startIdleAnimation() {
-        setActiveAnimation(animate(strokeDashoffset, [11, -11], {
-            ...SPRING_OPTIONS(2),
-            delay: IDLE_ANIMATION_REPEAT_DELAY,
-            repeat: Infinity,
-            repeatType: 'loop',
-            repeatDelay: IDLE_ANIMATION_REPEAT_DELAY
-        }));
-    }
-
     useEffect(() => {
-        const animation = animate(strokeDashoffset, [11, -11], SPRING_OPTIONS(2));
-        setActiveAnimation(animation);
-        animation.finished.then(startIdleAnimation);
+        setActiveAnimation(animate(strokeDashoffset, [11, -11], idleAnimationOptions));
     }, []);
 
     function fillPath() {
@@ -44,18 +37,18 @@ export default function Banner() {
             return;
         }
 
-        const animation = animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11));
-        setActiveAnimation(animation);
-        animation.finished.then(() => {
-            setActiveAnimation(animate(strokeDashoffset, [11, 0], SPRING_OPTIONS(1)));
-        });
+        setActiveAnimation(animate([
+            [strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11)],
+            [strokeDashoffset, [11, 0], SPRING_OPTIONS(1)]
+        ]));
     }
     function emptyPath() {
-        // strokeDashoffset.stop();
         const value = strokeDashoffset.get();
         const animation = animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11));
         setActiveAnimation(animation);
-        animation.finished.then(startIdleAnimation);
+        animation.finished.then(() =>
+            setActiveAnimation(animate(strokeDashoffset, [11, -11], {...idleAnimationOptions, delay: IDLE_ANIMATION_REPEAT_DELAY}))
+        );
     }
 
     return <section>
