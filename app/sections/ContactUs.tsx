@@ -1,8 +1,7 @@
 'use client';
 import {css, keyframes} from "@emotion/react";
 import {AnimationSequence, motion, useAnimate} from "motion/react";
-import React, {useCallback, useEffect, useRef} from "react";
-import {AnimationPlaybackControlsWithThen} from "motion";
+import React, {useEffect, useRef} from "react";
 import {device} from "@/app/theme/device-breakpoints";
 import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
@@ -48,7 +47,7 @@ function ContactOptions() {
     }
 
     useEffect(() => {
-        const options = scope.current.querySelectorAll<HTMLSpanElement>(".contact-option > span");
+        const options = scope.current.querySelectorAll<HTMLSpanElement>(`.css-${contactOptionCss.name} > span`);
         elementsRef.current.first = options.item(0);
         elementsRef.current.second = options.item(1);
         startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
@@ -81,6 +80,71 @@ function ContactOptions() {
         });
     }
 
+    const containerCss = css`
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-inline: auto;
+        width: 100%;
+        text-align: center;
+
+        @media ${device.mobileL} {
+            width: max-content;
+        }
+    `;
+    const contactOptionCss = css`
+        @property --gradient-angle {
+            syntax: "<angle>";
+            inherits: true;
+            initial-value: 0deg;
+        }
+        background-color: transparent;
+        color: var(--foreground);
+        padding-block: 0.75rem;
+        border-radius: 100vw;
+        position: relative;
+        padding-inline: 0;
+        width: 100%;
+
+        @media ${device.mobileL} {
+            padding-inline: 3rem;
+            width: revert;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--border);
+            border-radius: inherit;
+            transition: transform 0.1s ease-in-out;
+        }
+        & > span {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
+            border: 2px solid transparent;
+            border-radius: inherit;
+            background: border-box conic-gradient(
+                from var(--gradient-angle) at 50% 50%,
+                var(--primary-200),
+                var(--primary-800),
+                transparent,
+                transparent,
+                var(--primary-800),
+                var(--primary-200)
+            ) 50% / 100%;
+            mask: linear-gradient(#000 0 0) padding-box subtract,
+                linear-gradient(#000 0 0);
+            animation: ${rotateConicGradient} 4s linear infinite;
+        }
+        &:active::before, &:active > span {
+            transform: scale(0.98);
+        }
+    `;
+
     return <motion.div ref={scope}
         onMouseOver={e => {
             let element = e.target;
@@ -96,73 +160,9 @@ function ContactOptions() {
             if (element instanceof HTMLSpanElement && elementsRef.current.hovered !== null)
                 onHoverEnd();
         }}
-        css={css`
-            @property --gradient-angle {
-                syntax: "<angle>";
-                inherits: true;
-                initial-value: 0deg;
-            }
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-inline: auto;
-            width: 100%;
-            text-align: center;
-
-            @media ${device.mobileL} {
-                width: max-content;
-            }
-
-            & .contact-option {
-                background-color: transparent;
-                color: var(--foreground);
-                padding-block: 0.75rem;
-                border-radius: 100vw;
-                position: relative;
-                padding-inline: 0;
-                width: 100%;
-    
-                @media ${device.mobileL} {
-                    padding-inline: 3rem;
-                    width: revert;
-                }
-    
-                &::before {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    border: 1px solid var(--border);
-                    border-radius: inherit;
-                    transition: transform 0.1s ease-in-out;
-                }
-                & > span {
-                    position: absolute;
-                    inset: 0;
-                    width: 100%;
-                    height: 100%;
-                    transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
-                    border: 2px solid transparent;
-                    border-radius: inherit;
-                    background: border-box conic-gradient(
-                        from var(--gradient-angle) at 50% 50%,
-                        var(--primary-200),
-                        var(--primary-800),
-                        transparent,
-                        transparent,
-                        var(--primary-800),
-                        var(--primary-200)
-                    ) 50% / 100%;
-                    mask: linear-gradient(#000 0 0) padding-box subtract,
-                        linear-gradient(#000 0 0);
-                    animation: ${rotateConicGradient} 4s linear infinite;
-                }
-                &:active::before, &:active > span {
-                    transform: scale(0.98);
-                }
-            }
-        `}
+        css={containerCss}
     >
-        <button className="contact-option large-text">
+        <button className="large-text" css={contactOptionCss}>
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
@@ -171,7 +171,9 @@ function ContactOptions() {
             text-box-trim: trim-both;
             font-family: var(--script-12-bt), sans-serif;
         `}>or</p>
-        <Link href="mailto:farasat@tech-kun.com" className="contact-option large-text" style={{ textDecoration: 'none' }}>
+        <Link className="large-text" css={contactOptionCss}
+            style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
+        >
             <motion.span initial={{ opacity: 0 }} />
             Chat with us on email
         </Link>
