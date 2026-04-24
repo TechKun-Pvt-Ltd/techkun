@@ -8,13 +8,11 @@ import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
 
+const quicksand = Quicksand();
 const script_12_bt = localFont({
     src: "./fonts/SCRPT12N.ttf",
-    variable: "--script-12-bt",
     weight: "100 900"
 });
-
-const quicksand = Quicksand();
 
 export const metadata: Metadata = {
     title: "TechKun",
@@ -28,7 +26,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${quicksand.className}`}>
+            <body>
                 <Shared />
                 <Header />
                 <main className='overflow-hidden'>{children}</main>
