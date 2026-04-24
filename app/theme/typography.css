@@ -151,6 +151,7 @@
     --letter-spacing-8xl:  calc((var(--ls-numerator) / var(--font-size-8xl))  - 0.03em);
     --letter-spacing-9xl:  calc((var(--ls-numerator) / var(--font-size-9xl))  - 0.03em);
 
+    --script-12-bt: "script_12_bt", "script_12_bt Fallback";
 }
 
 html {
@@ -260,4 +261,8 @@ button {
     font-size: var(--font-size-lg);
     line-height: var(--line-height-lg);
     letter-spacing: var(--letter-spacing-lg);
+}
+
+.cursive-text {
+    font-family: var(--script-12-bt), cursive;
 }

@@ -5,13 +5,20 @@ import React, {useEffect, useRef} from "react";
 import {device} from "@/app/theme/device-breakpoints";
 import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
+import {property} from "@/app/utils/css-property";
+
+const gradientAngle = property("gradient-angle")`
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0deg;
+`;
 
 const rotateConicGradient = keyframes`
     0% {
-        --gradient-angle: 0deg;
+        ${gradientAngle}: 0deg;
     }
     100% {
-        --gradient-angle: 360deg;
+        ${gradientAngle}: 360deg;
     }
 `;
 
@@ -47,7 +54,7 @@ function ContactOptions() {
     }
 
     useEffect(() => {
-        const options = scope.current.querySelectorAll<HTMLSpanElement>(`.css-${contactOptionCss.name} > span`);
+        const options = scope.current.querySelectorAll<HTMLSpanElement>(`.contact-option > span`);
         elementsRef.current.first = options.item(0);
         elementsRef.current.second = options.item(1);
         startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
@@ -93,11 +100,6 @@ function ContactOptions() {
         }
     `;
     const contactOptionCss = css`
-        @property --gradient-angle {
-            syntax: "<angle>";
-            inherits: true;
-            initial-value: 0deg;
-        }
         background-color: transparent;
         color: var(--foreground);
         padding-block: 0.75rem;
@@ -128,7 +130,7 @@ function ContactOptions() {
             border: 2px solid transparent;
             border-radius: inherit;
             background: border-box conic-gradient(
-                from var(--gradient-angle) at 50% 50%,
+                from var(${gradientAngle}) at 50% 50%,
                 var(--primary-200),
                 var(--primary-800),
                 transparent,
@@ -162,16 +164,15 @@ function ContactOptions() {
         }}
         css={containerCss}
     >
-        <button className="large-text" css={contactOptionCss}>
+        <button className="large-text contact-option" css={contactOptionCss}>
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
-        <p className="large-text" css={css`
+        <p className="large-text cursive-text" css={css`
             color: var(--muted-foreground);
             text-box-trim: trim-both;
-            font-family: var(--script-12-bt), sans-serif;
         `}>or</p>
-        <Link className="large-text" css={contactOptionCss}
+        <Link className="large-text contact-option" css={contactOptionCss}
             style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
         >
             <motion.span initial={{ opacity: 0 }} />

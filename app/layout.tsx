@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${script_12_bt.variable} ${quicksand.className}`}>
+            <body className={`${quicksand.className}`}>
                 <Shared />
                 <Header />
                 <main className='overflow-hidden'>{children}</main>
