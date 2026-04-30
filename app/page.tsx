@@ -4,10 +4,12 @@ import Cofounders from "@/app/sections/Cofounders";
 import ContactUs from "@/app/sections/ContactUs";
 import MeetTechKun from "@/app/sections/MeetTechKun";
 import {css} from "@emotion/react";
+import ProblemStatement from "@/app/sections/ProblemStatement";
 
 export default function Home() {
     return <>
         <Banner />
+        <ProblemStatement />
         <MeetTechKun />
         <Cofounders />
         <ContactUs />

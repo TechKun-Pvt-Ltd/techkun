@@ -1,6 +1,8 @@
-@import "colors.css";
-@import "layout.css";
-@import "typography.css";
+@layer layout, typography, colors;
+
+@import "layout.css" layer(layout);
+@import "typography.css" layer(typography);
+@import "colors.css" layer(colors);
 
 :root {
     /*--ease-in-quad: cubic-bezier(.55, .085, .68, .53);*/
@@ -27,6 +29,7 @@
 
 *, *::before, *::after {
     box-sizing: border-box;
+    /*background-color: oklch(0.5 0.2 240 / 0.2);*/
 }
 
 ul {

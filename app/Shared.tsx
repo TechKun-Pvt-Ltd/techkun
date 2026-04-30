@@ -14,22 +14,28 @@ declare module "react" {
 export default function Shared() {
     return <>
         <Global styles={css`
-            :root {
-                --page-padding: 16px;
-                @media ${device.mobileM} {
-                    --page-padding: 32px;
+            @layer layout {
+                :root {
+                    --page-padding: 16px;
+                    @media ${device.mobileM} {
+                        --page-padding: 32px;
+                    }
                 }
+            }
 
-                @media ${device.mobileL} {
-                    --scale-ratio: 1.189;
-                }
-                @media ${device.tablet} {
-                    --scale-ratio: 1.260;
+            @layer typography {
+                :root {
+                    @media ${device.mobileL} {
+                        --scale-ratio: 1.189;
+                    }
+                    @media ${device.tablet} {
+                        --scale-ratio: 1.260;
+                    }
                 }
             }
         `} />
         <svg xmlns="http://www.w3.org/2000/svg"
-             width="0" height="0" style={{gridArea: 'none', position: 'absolute'}}
+             width="0" height="0" style={{gridArea: 'none', position: 'fixed'}}
              viewBox={viewBoxString(logoPath.viewBox)}
         >
             <path id="logo-path" d={logoPath.value} />

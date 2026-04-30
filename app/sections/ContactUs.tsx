@@ -215,13 +215,12 @@ export default function ContactUs() {
         <div css={css`
             overflow-x: clip;
             display: grid;
-            grid-template-columns: subgrid;
+            grid-auto-flow: row;
             grid-auto-rows: max-content;
             row-gap: 4rem;
             align-content: center;
         `}>
             <div css={css`
-                grid-column: 1 / -1;
                 text-align: center;
 
                 & > h2 {
@@ -234,7 +233,7 @@ export default function ContactUs() {
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>
             </div>
-            <div style={{gridColumn: '1 / -1'}}>
+            <div>
                 <ContactOptions />
             </div>
         </div>

@@ -27,10 +27,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <Shared />
                 <Header />
                 <main className='overflow-hidden'>{children}</main>
                 <Footer />
+                <Shared />
             </body>
         </html>
     );

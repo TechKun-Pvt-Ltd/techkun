@@ -216,6 +216,11 @@ button {
     line-height: var(--line-height-xl);
     letter-spacing: var(--letter-spacing-xl);
 }
+.display-lg {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
+}
 .hero-heading {
     font-size: var(--font-size-5xl);
     line-height: var(--line-height-5xl);
@@ -249,6 +254,11 @@ button {
     color: var(--neutral-300);
 }
 
+.text-xs {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+    letter-spacing: var(--letter-spacing-xs);
+}
 .small-text {
     font-size: var(--font-size-sm);
     line-height: var(--line-height-sm);

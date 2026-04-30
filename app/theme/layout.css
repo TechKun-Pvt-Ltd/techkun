@@ -7,6 +7,12 @@
     /*--footer-height: 16rem;*/
 }
 
+@property --page-padding {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0;
+}
+
 html {
     min-height: 100%;
 }
@@ -15,7 +21,6 @@ html {
 }*/
 body {
     height: 100%;
-    /*overflow-x: clip;*/
 }
 body {
     color: var(--foreground);
@@ -28,11 +33,13 @@ body {
     display: grid;
     grid-template-columns:
         minmax(0, 1fr)
-        repeat(var(--columns), minmax(0, calc(var(--page-width) / var(--columns))))
+        [breakout-start] var(--page-padding)
+        [page-start] minmax(0, calc(var(--page-width) - 2 * var(--page-padding))) [page-end]
+        var(--page-padding) [breakout-end]
         minmax(0, 1fr);
     grid-template-rows:
-        [nav-start] var(--navbar-height)
-        [nav-end content-start] 1fr
+        [navbar-start] var(--navbar-height)
+        [navbar-end content-start] 1fr
         [content-end footer-start] max-content
         [footer-end];
 
@@ -42,7 +49,7 @@ body {
         grid-template-columns: subgrid;
     }
     & > header {
-        grid-row: nav-start / nav-end;
+        grid-row: navbar;
         grid-template-rows: 1fr;
         position: sticky;
         top: 0;
@@ -57,7 +64,7 @@ body {
         /*    var(--section-basis-height)*/
         /*);*/
 
-        grid-row: content-start / content-end;
+        grid-row: content;
         grid-auto-rows: minmax(var(--section-min-height), max-content);
         isolation: isolate;
 
@@ -69,13 +76,13 @@ body {
         }
     }
     & > footer {
-        grid-row: footer-start / footer-end;
+        grid-row: footer;
     }
     & > header > *,
     & > main > section > *,
     & > footer > * {
-        padding-inline: var(--page-padding);
-        grid-column: 2 / -2;
+        /*padding-inline: var(--page-padding);*/
+        grid-column: page;
     }
 }
 
