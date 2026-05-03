@@ -29,6 +29,9 @@
 
 *, *::before, *::after {
     box-sizing: border-box;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     /*background-color: oklch(0.5 0.2 240 / 0.2);*/
 }
 

@@ -18,15 +18,15 @@
   "author": "TechKun Pvt Ltd",
   "license": "ISC",
   "bugs": {
-    "ur l": "https://github.com/TechKun-Pvt-Ltd/techkun/issues"
+    "url": "https://github.com/TechKun-Pvt-Ltd/techkun/issues"
   },
   "homepage": "https://github.com/TechKun-Pvt-Ltd/techkun#readme",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "motion": "^12.37.0",
-    "next": "16.2.3",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "next": "^16.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
     "svg-path-kit": "./lib/svg-path-kit-1.2.1-beta.tgz",
     "times-fps": "./lib/times-fps-1.0.0-alpha.tgz"
   },
@@ -34,5 +34,8 @@
     "@types/node": "25.2.3",
     "@types/react": "19.2.14",
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.13"
   }
 }

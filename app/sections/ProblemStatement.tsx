@@ -18,9 +18,17 @@ const sendIcon =
 		/>
 	</svg>;
 
+const slideUp = keyframes`
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+`;
 const scaleUp = keyframes`
 	from {
-		transform: scale(0.5);
+		transform: scale(0.75);
 		opacity: 0;
 	}
 	to {
@@ -28,14 +36,14 @@ const scaleUp = keyframes`
 		opacity: 1;
 	}
 `;
-const blink = keyframes`
-	0% {
-		visibility: visible;
-	}
-	100% {
-		visibility: hidden;
-	}
-`;
+// const blink = keyframes`
+// 	0% {
+// 		visibility: visible;
+// 	}
+// 	100% {
+// 		visibility: hidden;
+// 	}
+// `;
 
 const content: {
 	sent?: boolean;
@@ -93,6 +101,9 @@ const messages: {
 	time: "2:59 AM"
 }];
 
+const MSG_BOX_ANIM_DURATION = 0.4;
+const MSG_BOX_ANIM_DELAY = MSG_BOX_ANIM_DURATION * 0.75;
+
 function ChatWindow() {
 	const messageBoxCss = css`
         align-self: start;
@@ -103,8 +114,10 @@ function ChatWindow() {
         padding: 8px 16px;
         border-radius: 28px;
         corner-shape: superellipse(1.5);
-		animation: ${scaleUp} 0.3s ease-out both;
-		animation-delay: calc((sibling-count() - sibling-index()) * 0.15s);
+		animation: ${scaleUp} ${MSG_BOX_ANIM_DURATION}s ease-out both;
+		animation-delay: calc((sibling-index() - 1) * ${MSG_BOX_ANIM_DELAY}s);
+		//animation-timeline: --vt;
+        //animation-range: entry;
 
         & .msg-time {
             flex-shrink: 0;
@@ -133,16 +146,18 @@ function ChatWindow() {
 	`;
 
 	return <div css={css`
-        border-radius: 64px;
+		--_border-radius: 36px;
+		--_padding: 8px;
+        border-radius: var(--_border-radius);
         corner-shape: squircle;
         width: min(100%, 448px);
         background-color: var(--muted);
-        padding: 8px;
+        padding: var(--_padding);
         display: flex;
         flex-direction: column;
 	`}>
 		<div css={css`
-            padding: 6px 32px 14px;
+            padding: calc(14px - var(--_padding)) 32px 14px;
             display: flex;
             gap: 8px;
 
@@ -164,9 +179,9 @@ function ChatWindow() {
 		<div css={css`
             flex-grow: 1;
             background-color: var(--background);
-            border-radius: 56px;
+            border-radius: calc(var(--_border-radius) - var(--_padding));
             corner-shape: squircle;
-            padding: 8px;
+            padding: 24px 8px;
             display: flex;
             flex-direction: column;
             justify-content: end;
@@ -176,6 +191,10 @@ function ChatWindow() {
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
+				animation: ${slideUp} ${MSG_BOX_ANIM_DURATION + (content.length - 1) * MSG_BOX_ANIM_DELAY}s ease-out both;
+				//view-timeline: --vt;
+				//animation-timeline: --vt;
+				//animation-range: entry;
 			`}>
 				{content.map(msg => <p
 					key={msg.text} css={messageBoxCss}
@@ -202,12 +221,13 @@ function ChatWindow() {
                     flex-grow: 1;
                     align-content: center;
 				`}>
-					<div css={css`
-                        background-color: var(--neutral-500);
-                        width: 1px;
-                        height: calc(100% - 2px);
-						animation: ${blink} 1s steps(2, start) infinite both;
-					`}></div>
+					{/*<div css={css`*/}
+                    {/*    background-color: var(--neutral-500);*/}
+                    {/*    width: 1px;*/}
+                    {/*    height: calc(100% - 2px);*/}
+					{/*	animation: ${blink} 1s steps(2, start) infinite both;*/}
+					{/*`}></div>*/}
+					Type a message
 				</div>
 				{sendIcon}
 			</div>

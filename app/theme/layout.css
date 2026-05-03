@@ -9,7 +9,7 @@
 
 @property --page-padding {
     syntax: "<length>";
-    inherits: false;
+    inherits: true;
     initial-value: 0;
 }
 
@@ -26,9 +26,7 @@ body {
     color: var(--foreground);
     background: var(--background);
     margin: 0;
-    -webkit-font-smoothing: antialiased;
     --columns: 6;
-    /*shape-rendering: geometricPrecision;*/
 
     display: grid;
     grid-template-columns:
