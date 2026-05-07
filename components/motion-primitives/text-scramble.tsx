@@ -1,24 +1,24 @@
 'use client';
 import React, {ForwardedRef, forwardRef, useEffect, useRef} from 'react';
 import {animate, motion, useMotionValue, useTransform} from 'motion/react';
-import {PolymorphicComponentProps} from "@/app/utils/type-utils";
 
 type PolymorphicRef<C extends React.ElementType> =
 	React.ComponentPropsWithRef<C>['ref'];
 
-type TextScrambleOwnProps = {
+type TextScrambleOwnProps<C extends React.ElementType> = {
 	children?: string;
 	duration?: number;
 	characterSet?: string;
+	as?: C;
 	onScrambleComplete?: () => void;
 };
 
-export type TextScrambleProps<C extends React.ElementType = 'p'> =
-	React.PropsWithoutRef<PolymorphicComponentProps<C, TextScrambleOwnProps>>
-	& { ref?: PolymorphicRef<C> };
+export type TextScrambleProps<C extends React.ElementType> =
+	TextScrambleOwnProps<C>
+	& Omit<React.ComponentProps<C>, keyof TextScrambleOwnProps<C>>;
 
 type TextScrambleComponent = <C extends React.ElementType = 'p'>(
-	props: TextScrambleProps<C>
+	props: TextScrambleProps<C> & { ref?: PolymorphicRef<C> }
 ) => React.ReactNode;
 
 const defaultChars =
@@ -36,8 +36,8 @@ export const TextScramble = forwardRef(
 			as,
 			onScrambleComplete,
 			...props
-		}: PolymorphicComponentProps<C, TextScrambleOwnProps>,
-		ref: ForwardedRef<PolymorphicRef<C>>
+		}: TextScrambleProps<C>,
+		ref: PolymorphicRef<C>
 	) => {
 		const Component = (as ?? 'p') as React.ElementType;
 		const MotionComponent = motion.create(Component);
