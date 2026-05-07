@@ -274,6 +274,11 @@ button {
     line-height: var(--line-height-lg);
     letter-spacing: var(--letter-spacing-lg);
 }
+.xl-text {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    letter-spacing: var(--letter-spacing-xl);
+}
 
 .cursive-text {
     font-family: var(--script-12-bt), cursive;
