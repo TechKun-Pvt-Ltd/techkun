@@ -62,7 +62,6 @@ export default function Window(
 		css={css`
 			border: 1px solid var(--border);
 			border-radius: var(${_borderRadius});
-			corner-shape: squircle;
 			background-color: var(--muted);
 			padding: var(${_padding});
 			${minWidth ? `min-width: ${minWidth};` : ""}
@@ -84,7 +83,6 @@ export default function Window(
             flex-grow: 1;
             background-color: var(--background);
             border-radius: calc(var(${_borderRadius}) - var(${_padding}));
-            corner-shape: squircle;
             display: flex;
 			flex-direction: column;
 		`}>{children}</div>

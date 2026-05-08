@@ -1,4 +1,4 @@
-export enum LogType {
+enum LogType {
 	ERROR = "[ERROR]",
 	WARNING = "[WARN]",
 	INFO = "[INFO]"
@@ -57,7 +57,7 @@ export const applicationLogs: Log[] = [
 		logLine("02:11:44.781", "     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)")
 	),
 	errorLog(
-		logLine("02:11:45.992", " Missing lock for job retry-email:8472"),
+		logLine("02:11:45.992", " Error: Missing lock for job retry-email:8472"),
 		logLine("02:11:45.992", "     at Scripts.finishedErrors (/app/node_modules/bullmq/dist/cjs/classes/scripts.js:213:24)")
 	),
 	// {
@@ -65,7 +65,7 @@ export const applicationLogs: Log[] = [
 	// 	message: " BullMQ: Missing lock for job 8472. moveToFinished"
 	// },
 	errorLog(
-		logLine("02:11:47.441", " connect ECONNREFUSED redis:6379"),
+		logLine("02:11:47.441", " Error: connect ECONNREFUSED redis:6379"),
 		logLine("02:11:47.441", "     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {"),
 		logLine("02:11:47.441", "   errno: -111,"),
 		logLine("02:11:47.441", "   code: 'ECONNREFUSED',"),
@@ -81,7 +81,7 @@ export const applicationLogs: Log[] = [
 	// },
 
 	errorLog(
-		logLine("02:11:48.991", " Hydration failed because the initial UI does not match what was rendered on the server."),
+		logLine("02:11:48.991", " Error: Hydration failed because the initial UI does not match what was rendered on the server."),
 		logLine("02:11:48.991", "     at throwOnHydrationMismatch (/app/node_modules/react-dom/cjs/react-dom.development.js:12507:9)")
 	),
 	errorLog(

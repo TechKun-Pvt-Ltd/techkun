@@ -36,14 +36,6 @@ const scaleUp = keyframes`
 		opacity: 1;
 	}
 `;
-// const blink = keyframes`
-// 	0% {
-// 		visibility: visible;
-// 	}
-// 	100% {
-// 		visibility: hidden;
-// 	}
-// `;
 
 const content: Message[] = [{
 	sent: true,
@@ -168,14 +160,6 @@ function MessageComposeBox() {
 			user-select: none;
 			position: relative;
 		`}>
-			{/*<div css={css`*/}
-			{/*	position: absolute;*/}
-			{/*	left: 0;*/}
-			{/*    background-color: var(--primary-500);*/}
-			{/*    width: 1px;*/}
-			{/*    height: calc(100% - 2px);*/}
-			{/*	animation: ${blink} 1s steps(2, start) infinite both;*/}
-			{/*`}></div>*/}
 			Type a message
 		</div>
 		{sendIcon}
