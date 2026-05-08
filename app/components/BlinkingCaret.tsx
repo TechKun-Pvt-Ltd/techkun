@@ -26,7 +26,6 @@ export default forwardRef<BlinkingCaretControls>(function BlinkingCaret(_, ref) 
         background-color: currentColor;
         position: relative;
         top: 0.1em;
-        left: 0.2em;
         background: var(--primary-500);
         animation: ${blink} 1s steps(2, start) infinite;
 

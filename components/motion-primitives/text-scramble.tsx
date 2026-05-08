@@ -80,6 +80,7 @@ export const TextScramble = forwardRef(
 				onComplete() {
 					isAnimating.current = false;
 					prevText.current = text;
+					cursor.set(0);
 					onScrambleComplete?.();
 				},
 			});
