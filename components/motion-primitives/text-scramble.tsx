@@ -1,9 +1,11 @@
 'use client';
-import React, {ForwardedRef, forwardRef, useEffect, useRef} from 'react';
+import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
 import {animate, motion, useMotionValue, useTransform} from 'motion/react';
 
-type PolymorphicRef<C extends React.ElementType> =
-	React.ComponentPropsWithRef<C>['ref'];
+export type TextScrambleRef<C extends React.ElementType> = {
+	scramble(): void;
+	getInnerRef(): React.ComponentRef<C> | null;
+};
 
 type TextScrambleOwnProps<C extends React.ElementType> = {
 	children?: string;
@@ -15,10 +17,10 @@ type TextScrambleOwnProps<C extends React.ElementType> = {
 
 export type TextScrambleProps<C extends React.ElementType> =
 	TextScrambleOwnProps<C>
-	& Omit<React.ComponentProps<C>, keyof TextScrambleOwnProps<C>>;
+	& Omit<React.ComponentPropsWithoutRef<C>, keyof TextScrambleOwnProps<C>>;
 
 type TextScrambleComponent = <C extends React.ElementType = 'p'>(
-	props: TextScrambleProps<C> & { ref?: PolymorphicRef<C> }
+	props: TextScrambleProps<C> & React.RefAttributes<TextScrambleRef<C>>
 ) => React.ReactNode;
 
 const defaultChars =
@@ -29,7 +31,7 @@ const SCRAMBLE_CHAR_COUNT = 4;
 export const TextScramble = forwardRef(
 	<C extends React.ElementType>(
 		{
-			children,
+			children: text = "",
 			duration = 0.8,
 			characterSet = defaultChars,
 			className,
@@ -37,14 +39,14 @@ export const TextScramble = forwardRef(
 			onScrambleComplete,
 			...props
 		}: TextScrambleProps<C>,
-		ref: PolymorphicRef<C>
+		ref: ForwardedRef<TextScrambleRef<C>>
 	) => {
-		const Component = (as ?? 'p') as React.ElementType;
+		const elementRef = useRef<React.ComponentRef<C>>(null);
+		const Component = (as ?? 'p') as C;
 		const MotionComponent = motion.create(Component);
 		const prevText = useRef('');
 		const cursor = useMotionValue(0);
 		const isAnimating = useRef(false);
-		const text = children ?? "";
 
 		const displayText = useTransform(cursor, (c) => {
 			if (c === 0) return prevText.current;
@@ -86,12 +88,15 @@ export const TextScramble = forwardRef(
 			});
 		}
 
-		useEffect(() => {
-			scramble();
-		}, [text]);
+		useImperativeHandle(ref, () => ({
+			scramble,
+			getInnerRef() {
+				return elementRef.current;
+			}
+		}), [text]);
 
 		return (
-			<MotionComponent ref={ref} className={className} {...props}>
+			<MotionComponent ref={elementRef} className={className} {...props}>
 				{displayText}
 			</MotionComponent>
 		);

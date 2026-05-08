@@ -29,7 +29,8 @@ export default function ProblemStatement() {
 			`}>
 				<ScreenComponent borderRadius="36px" padding="8px">
 					<Window title="logs"
-						height="640px"
+						width="50%"
+						height="480px"
 					>
 						<ConsoleWindow />
 					</Window>
