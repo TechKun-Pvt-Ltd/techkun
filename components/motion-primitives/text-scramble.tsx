@@ -32,7 +32,7 @@ export const TextScramble = forwardRef(
 	<C extends React.ElementType>(
 		{
 			children: text = "",
-			duration = 0.8,
+			duration = 1.6,
 			characterSet = defaultChars,
 			className,
 			as,

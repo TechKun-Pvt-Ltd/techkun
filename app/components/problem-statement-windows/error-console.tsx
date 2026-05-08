@@ -20,7 +20,7 @@ export default function ErrorConsole() {
 			clear = delayInSeconds(_ => {
 				setItemIndex(prev => (prev + 1) % texts.length);
 				start();
-			}, 3);
+			}, 3.2);
 		}
 		const stop = inView(scrambleRef.current?.getInnerRef(), () => {
 			setItemIndex(0);
