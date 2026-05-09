@@ -43,11 +43,12 @@ export default function TrigCircle() {
 
 	const letters = Array.from("Precision & care that AI cannot match.");
 	return <div ref={targetRef} css={css`
+		flex-basis: 768px;
 		height: 100%;
 		display: flex;
 		align-items: center;
 	`}>
-		<svg height="768px" viewBox={`${START} ${START} ${SIZE} ${SIZE}`} css={css`
+		<svg viewBox={`${START} ${START} ${SIZE} ${SIZE}`} css={css`
 			will-change: transform;
 		`}>
 			<defs>
@@ -60,7 +61,7 @@ export default function TrigCircle() {
 			</defs>
 			<g
 				fontSize={4}
-				fill="var(--primary-700)" strokeWidth="0"
+				stroke="var(--primary-500)" strokeWidth="0.08"
 				fontFamily="monospace"
 				clipPath="url(#circular-clip-path)"
 				css={css`

@@ -35,6 +35,10 @@
     /*background-color: oklch(0.5 0.2 240 / 0.2);*/
 }
 
+svg, svg * {
+    shape-rendering: geometricPrecision;
+}
+
 ul {
     list-style: none;
     padding-inline-start: 0;
