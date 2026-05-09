@@ -43,13 +43,13 @@ export default function TrigCircle() {
 
 	const letters = Array.from("Precision & care that AI cannot match.");
 	return <div ref={targetRef} css={css`
-		flex-basis: 768px;
-		height: 100%;
-		display: flex;
-		align-items: center;
+        flex-basis: 768px;
+        height: 100%;
+        display: flex;
+        align-items: center;
 	`}>
 		<svg viewBox={`${START} ${START} ${SIZE} ${SIZE}`} css={css`
-			will-change: transform;
+            will-change: transform;
 		`}>
 			<defs>
 				<clipPath id="circular-clip-path">
@@ -65,15 +65,15 @@ export default function TrigCircle() {
 				fontFamily="monospace"
 				clipPath="url(#circular-clip-path)"
 				css={css`
-					text {
-						transform:
-							translate(-50%, 25%)
+                    text {
+                        transform:
+                            translate(-50%, 25%)
                             rotate(calc(95deg + 140deg / ${letters.length} * (sibling-index() - 1)))
                             translateY(${RADIUS + 2.5}px)
-							rotate(180deg);
-						transform-box: fill-box;
-						transform-origin: center;
-					}
+                            rotate(180deg);
+                        transform-box: fill-box;
+                        transform-origin: center;
+                    }
 				`}
 			>
 				{letters.map((letter, i) => <text
@@ -81,8 +81,8 @@ export default function TrigCircle() {
 					x={CENTER} y={CENTER}
 				>{letter}</text>)}
 			</g>
-			<g stroke="var(--muted)" strokeWidth="0.25" fill="none">
-				<circle r={RADIUS} cx={CENTER} cy={CENTER}></circle>
+			<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
+				<circle r={RADIUS} cx={CENTER} cy={CENTER} fill="oklch(from var(--neutral-900) l c h / 0.5)"></circle>
 				<line x1={START} y1={CENTER} x2={END} y2={CENTER}></line>
 				<line x1={CENTER} y1={START} x2={CENTER} y2={END}></line>
 				<motion.line
@@ -109,7 +109,7 @@ export default function TrigCircle() {
 			</g>
 			<motion.circle
 				r={1} cx={xPos} cy={yPos}
-				fill="var(--muted)"
+				fill="var(--neutral-700)"
 			></motion.circle>
 			<motion.text
 				x={CENTER + 2} y={CENTER - 2}
