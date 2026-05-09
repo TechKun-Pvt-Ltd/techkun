@@ -5,11 +5,12 @@ import ScreenComponent from "@/app/components/problem-statement-windows/screen-c
 import Window from "@/app/components/problem-statement-windows/window-component";
 
 export default function ProblemStatement() {
-	return <section>
+	return <section css={css`
+		overflow-x: clip;
+	`}>
 		<div css={css`
-            display: grid;
-            grid-auto-flow: row;
-            grid-auto-rows: auto;
+            display: flex;
+            flex-direction: column;
 		`}>
 			<h2 className="section-title"
 				css={css`

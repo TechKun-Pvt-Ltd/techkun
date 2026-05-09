@@ -25,7 +25,7 @@ export default function ErrorConsole() {
 		const stop = inView(scrambleRef.current?.getInnerRef(), () => {
 			setItemIndex(0);
 			start();
-		}, { margin: "-10%" });
+		}, { margin: "-10% 0%" });
 		return () => {
 			clear?.();
 			stop();
@@ -53,8 +53,9 @@ export default function ErrorConsole() {
             color: var(--neutral-700);
 		`}>
 			<p css={css`
-                display: grid;
                 white-space: pre;
+				user-select: none;
+                display: grid;
                 grid-template-columns: auto 1fr;
 			`}>
 				{applicationLogs.flatMap((log, logIndex) =>
