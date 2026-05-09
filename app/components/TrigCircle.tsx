@@ -79,7 +79,7 @@ export default function TrigCircle() {
 				`}
 			>
 				{letters.map((letter, i) => <motion.text
-					key={i} style={{ '--index': i }}
+					key={i} style={{ '--index': i } as any}
 					x="0" y="4"
 				>{letter}</motion.text>)}
 			</g>
