@@ -43,12 +43,13 @@ export default function TrigCircle() {
 
 	const letters = Array.from("Precision & care that AI cannot match.");
 	return <div ref={targetRef} css={css`
+		position: relative;
         flex-basis: 768px;
         height: 100%;
         display: flex;
         align-items: center;
 	`}>
-		<svg viewBox={`${START} ${START} ${SIZE} ${SIZE}`} css={css`
+		<svg width="100%" viewBox={`${START} ${START} ${SIZE} ${SIZE}`} css={css`
             will-change: transform;
 		`}>
 			<defs>
@@ -60,26 +61,27 @@ export default function TrigCircle() {
 				</clipPath>
 			</defs>
 			<g
-				fontSize={4}
-				stroke="var(--primary-500)" strokeWidth="0.08"
+				fontSize={4} fill="var(--primary-600)"
+				// stroke="var(--primary-500)" strokeWidth="0.08"
 				fontFamily="monospace"
 				clipPath="url(#circular-clip-path)"
 				css={css`
+					--total: ${letters.length};
+					--center: ${CENTER}px;
                     text {
                         transform:
-                            translate(-50%, 25%)
-                            rotate(calc(95deg + 140deg / ${letters.length} * (sibling-index() - 1)))
-                            translateY(${RADIUS + 2.5}px)
-                            rotate(180deg);
+                            translate(calc(var(--center) - 50%), calc(var(--center) - 50%))
+                            rotate(calc(-85deg + 140deg / var(--total) * var(--index)))
+                            translateY(-${RADIUS + 2.5}px);
                         transform-box: fill-box;
-                        transform-origin: center;
+                        transform-origin: 50% 50%;
                     }
 				`}
 			>
-				{letters.map((letter, i) => <text
-					key={i}
-					x={CENTER} y={CENTER}
-				>{letter}</text>)}
+				{letters.map((letter, i) => <motion.text
+					key={i} style={{ '--index': i }}
+					x="0" y="4"
+				>{letter}</motion.text>)}
 			</g>
 			<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
 				<circle r={RADIUS} cx={CENTER} cy={CENTER} fill="oklch(from var(--neutral-900) l c h / 0.5)"></circle>
