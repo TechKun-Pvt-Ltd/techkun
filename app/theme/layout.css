@@ -15,6 +15,7 @@
 
 html {
     min-height: 100%;
+    position: relative; /*Due to a warning from Motion (formerly Framer Motion).*/
 }
 /*html {
     scroll-snap-type: block proximity;

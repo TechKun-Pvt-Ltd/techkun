@@ -4,7 +4,7 @@ import React, {useRef} from "react";
 import {useScroll, useTransform} from "motion/react";
 import {Angle} from "svg-path-kit";
 import RadialReveal from "@/app/components/RadialReveal";
-import SvgCircularText from "@/app/SvgCircularText";
+import SvgCircularText from "@/app/components/SvgCircularText";
 
 const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
@@ -16,15 +16,19 @@ export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 75%", "end 25%"]});
 	const theta = useTransform(scrollYProgress, [0, 1], ANGLE_RANGE);
-	const angle = useTransform(theta, t => Angle.of(t));
+	const angle = useTransform(theta, Angle.of);
 
-	const firstQdrtTxtSwptAngle = 55 * Math.PI / 180;
-	const firstQdrtTxtStrtAngle = useTransform(angle, a => {
-		const angleValue = Math.min(+a, -Math.PI / 2);
-		const startValue = -175 * Math.PI / 180;
-		const diff = (angleValue - startValue) - (firstQdrtTxtSwptAngle - Math.PI / 180);
+	const firstText = "Precision & care";
+	const charAngle = 0.06;
+	const firstTextEndAngle = -(Math.PI / 2 - charAngle * (" care".length + 0.65));
+	const firstTxtSweptAngle = charAngle * firstText.length;
+	const firstTxtStartAngle = useTransform(angle, a => {
+		const angleValue = Math.min(+a, firstTextEndAngle);
+		const startValue = -178 * Math.PI / 180;
+		const diff = (angleValue - startValue) - firstTxtSweptAngle;
 		return diff > 0 ? `${startValue + diff}rad` : `${startValue}rad`;
 	});
+	const secondTxtStartAngle = firstTextEndAngle + charAngle;
 
 	return <section>
 		<div css={css`
@@ -32,7 +36,6 @@ export default function SolutionStatement() {
             justify-content: center;
 		`}>
 			<div ref={targetRef} css={css`
-                position: relative;
                 flex-basis: 768px;
                 height: 100%;
                 display: flex;
@@ -65,15 +68,15 @@ export default function SolutionStatement() {
 								radius={TRIG_CIRCLE_RADIUS + 2.5}
 								centerX={CIRCLE_CENTER}
 								centerY={CIRCLE_CENTER}
-								startAngle={firstQdrtTxtStrtAngle} sweptAngle={`${firstQdrtTxtSwptAngle}rad`}
+								startAngle={firstTxtStartAngle} charAngle={`${charAngle}rad`}
 								fontSize={4}
 								color="var(--primary-600)"
-							>Precision & care</SvgCircularText>
+							>{firstText}</SvgCircularText>
 							<SvgCircularText
 								radius={TRIG_CIRCLE_RADIUS + 2.5}
 								centerX={CIRCLE_CENTER}
 								centerY={CIRCLE_CENTER}
-								startAngle="-86deg" sweptAngle="64deg"
+								startAngle={`${secondTxtStartAngle}rad`} charAngle={`${charAngle}rad`}
 								fontSize={4}
 								color="var(--primary-600)"
 							>{"that AI can't match."}</SvgCircularText>

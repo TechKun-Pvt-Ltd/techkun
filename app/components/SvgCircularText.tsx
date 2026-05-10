@@ -1,6 +1,6 @@
 import React from "react";
 import {css} from "@emotion/react";
-import {motion, MotionStyle, useTransform} from "motion/react";
+import {motion} from "motion/react";
 import {MotionValue} from "motion";
 
 // type CSSAngle = `${number}${'deg' | 'rad' | 'grad' | 'turn'}`;
@@ -8,8 +8,8 @@ export type SvgCircularTextProps = {
 	centerX: number;
 	centerY: number;
 	radius: number;
-	startAngle: number | string | MotionValue<number> | MotionValue<string>;
-	sweptAngle: number | string;
+	startAngle: string | MotionValue<string>;
+	charAngle: string;
 	children?: string | string[];
 	color?: string;
 	fontSize: number | string;
@@ -17,34 +17,34 @@ export type SvgCircularTextProps = {
 
 export default function SvgCircularText({
 	centerX, centerY, radius,
-	startAngle, sweptAngle,
+	startAngle, charAngle,
 	children, color = "currentColor",
-	fontSize, fontFamily = "monospace", ...props
+	fontSize, fontFamily = "monospace",
+	style, ...props
 }: SvgCircularTextProps) {
 	const letters = Array.from(children ?
 		typeof children === "string" ? children :
 			Array.isArray(children) ? (children as any[]).join("") :
 				"" :
 		"");
-	function getTransform(startTheta: number | string) {
-		startTheta = typeof startTheta === "number" ? `${startTheta}deg` : startTheta;
-		const sweptTheta = typeof sweptAngle === "number" ? `${sweptAngle}deg` : sweptAngle;
-		return `
-			translate(calc(${centerX}px - 50%), calc(${centerY}px - 50%))
-			rotate(calc(90deg + ${startTheta} + ${sweptTheta} / ${letters.length} * var(--index)))
-			translateY(-${radius}px)
-		`;
-	}
-	const transform = startAngle instanceof MotionValue ?
-		useTransform(startAngle as MotionValue<string | number>, getTransform) :
-		getTransform(startAngle);
 
-	return <g
+	return <motion.g
 		fill={color} fontFamily={fontFamily}
 		fontSize={fontSize}
-		{...props}
+		{...props as any}
+		style={{
+			...style,
+			'--start-angle': startAngle,
+			'--char-angle': charAngle
+		}}
 		css={css`
+			--center-x: ${centerX}px;
+			--center-y: ${centerY}px;
 			text {
+				transform:
+					translate(calc(var(--center-x) - 50%), calc(var(--center-y) - 50%))
+                	rotate(calc(90deg + var(--start-angle) + var(--char-angle) * (var(--index) + 0.5)))
+                	translateY(-${radius}px);
 				transform-box: fill-box;
 				transform-origin: 50% 50%;
 			}
@@ -56,10 +56,9 @@ export default function SvgCircularText({
 				key={i}
 				x="0" y={fontSize}
 				style={{
-					['--index' as keyof MotionStyle]: i,
-					transform
-				}}
+					'--index': i
+				} as React.CSSProperties}
 			>{letter}</motion.text>
 		)}
-	</g>;
+	</motion.g>;
 };

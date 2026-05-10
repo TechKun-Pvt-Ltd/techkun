@@ -4,6 +4,7 @@ import {css} from "@emotion/react";
 import {round} from "svg-path-kit/numbers";
 import {Angle} from "svg-path-kit";
 import {MotionValue} from "motion";
+import {useMappedValues} from "@/app/utils/use-mapped-values";
 
 const DEFAULT_START = 0;
 const DEFAULT_SIZE = 100;
@@ -33,12 +34,15 @@ export default function TrigCircle({
 	const END = viewBoxStart + viewBoxSize;
 	const CENTER = viewBoxStart + viewBoxSize / 2;
 
-	const thetaStr = useTransform(angle, a => `${+a}rad`);
-
-	const xCoord = useTransform(angle, a => CENTER + radius * a.cosine);
-	const yCoord = useTransform(angle, a => CENTER + radius * a.sine);
-
-	const displayedTheta = useTransform(angle, a => round(+a, 4));
+	const [thetaStr, xCoord, yCoord, displayedTheta] = useMappedValues(angle, a => {
+		const angleValue = +a;
+		return [
+			`${angleValue}rad`,
+			CENTER + radius * a.cosine,
+			CENTER + radius * a.sine,
+			round(angleValue, 4)
+		];
+	});
 
 	const rotatingLineStyles: MotionStyle = {
 		rotate: thetaStr,
