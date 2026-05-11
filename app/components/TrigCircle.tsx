@@ -11,35 +11,36 @@ const DEFAULT_SIZE = 100;
 
 export type TrigCircleProps = {
 	angle: MotionValue<Angle>;
-	viewBoxSize?: number;
-	viewBoxStart?: number;
+	startX?: number;
+	startY?: number;
+	size?: number;
 	radius?: number;
 	strokeColor?: string;
 	fillColor?: string;
 	textColor?: string;
-	children?: SvgChild | SvgChild[];
 };
 
-type SvgChild = React.ReactElement<React.SVGProps<SVGElement>>;
 export default function TrigCircle({
 	angle,
-	viewBoxSize = DEFAULT_SIZE,
-	viewBoxStart = DEFAULT_START,
-	radius = 0.4 * viewBoxSize,
+	size = DEFAULT_SIZE,
+	startX = DEFAULT_START,
+	startY = DEFAULT_START,
+	radius = 0.4 * size,
 	strokeColor = "currentColor",
 	fillColor = "none",
-	textColor = "currentColor",
-	children
+	textColor = "currentColor"
 }: TrigCircleProps) {
-	const END = viewBoxStart + viewBoxSize;
-	const CENTER = viewBoxStart + viewBoxSize / 2;
+	const END_X = startX + size;
+	const END_Y = startY + size;
+	const CENTER_X = startX + size / 2;
+	const CENTER_Y = startY + size / 2;
 
 	const [thetaStr, xCoord, yCoord, displayedTheta] = useMappedValues(angle, a => {
 		const angleValue = +a;
 		return [
 			`${angleValue}rad`,
-			CENTER + radius * a.cosine,
-			CENTER + radius * a.sine,
+			CENTER_X + radius * a.cosine,
+			CENTER_Y + radius * a.sine,
 			round(angleValue, 4)
 		];
 	});
@@ -49,32 +50,29 @@ export default function TrigCircle({
 		transformBox: 'view-box'
 	};
 
-	return <svg width="100%" viewBox={`${viewBoxStart} ${viewBoxStart} ${viewBoxSize} ${viewBoxSize}`} css={css`
-        will-change: transform;
-	`}>
-		{children}
+	return <g>
 		<g stroke={strokeColor} strokeWidth="0.25" fill="none">
-			<circle r={radius} cx={CENTER} cy={CENTER} fill={fillColor}></circle>
-			<line x1={viewBoxStart} y1={CENTER} x2={END} y2={CENTER}></line>
-			<line x1={CENTER} y1={viewBoxStart} x2={CENTER} y2={END}></line>
+			<circle r={radius} cx={CENTER_X} cy={CENTER_Y} fill={fillColor}></circle>
+			<line x1={startX} y1={CENTER_Y} x2={END_X} y2={CENTER_Y}></line>
+			<line x1={CENTER_X} y1={startY} x2={CENTER_X} y2={END_Y}></line>
 			<motion.line
-				x1={CENTER} y1={CENTER}
-				x2={END} y2={CENTER}
+				x1={CENTER_X} y1={CENTER_Y}
+				x2={END_X} y2={CENTER_Y}
 				strokeDasharray="2"
 				style={rotatingLineStyles}
 			></motion.line>
 			<motion.line
-				x1={CENTER} y1={CENTER}
-				x2={CENTER + radius} y2={CENTER}
+				x1={CENTER_X} y1={CENTER_Y}
+				x2={CENTER_X + radius} y2={CENTER_Y}
 				style={rotatingLineStyles}
 			></motion.line>
 			<motion.line
-				x1={xCoord} y1={CENTER}
+				x1={xCoord} y1={CENTER_Y}
 				x2={xCoord} y2={yCoord}
 				strokeDasharray="2"
 			></motion.line>
 			<motion.line
-				x1={CENTER} y1={yCoord}
+				x1={CENTER_X} y1={yCoord}
 				x2={xCoord} y2={yCoord}
 				strokeDasharray="2"
 			></motion.line>
@@ -84,11 +82,11 @@ export default function TrigCircle({
 			fill={strokeColor}
 		></motion.circle>
 		<motion.text
-			x={CENTER + 2} y={CENTER - 2}
+			x={CENTER_X + 2} y={CENTER_Y - 2}
 			fill={textColor}
 			fontSize="2"
 		>
 			{displayedTheta}
 		</motion.text>
-	</svg>;
+	</g>;
 };

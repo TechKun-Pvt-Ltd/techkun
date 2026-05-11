@@ -41,14 +41,9 @@ export default function SolutionStatement() {
                 display: flex;
                 align-items: center;
 			`}>
-				<TrigCircle
-					angle={angle}
-					viewBoxStart={VIEW_BOX_START} viewBoxSize={VIEW_BOX_SIZE}
-					radius={TRIG_CIRCLE_RADIUS}
-					strokeColor="var(--neutral-700)"
-					fillColor="oklch(from var(--neutral-900) l c h / 0.5)"
-					textColor="var(--neutral-500)"
-				>
+				<svg width="100%" viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`} css={css`
+					will-change: transform;
+				`}>
 					<RadialReveal
 						angle={angle} startAngle={ANGLE_RANGE[0]}
 						centerX={CIRCLE_CENTER}
@@ -82,7 +77,16 @@ export default function SolutionStatement() {
 							>{"that AI can't match."}</SvgCircularText>
 						</>}
 					/>
-				</TrigCircle>
+					<TrigCircle
+						angle={angle}
+						startX={VIEW_BOX_START} startY={VIEW_BOX_START}
+						size={VIEW_BOX_SIZE}
+						radius={TRIG_CIRCLE_RADIUS}
+						strokeColor="var(--neutral-700)"
+						fillColor="oklch(from var(--neutral-900) l c h / 0.5)"
+						textColor="var(--neutral-500)"
+					/>
+				</svg>
 			</div>
 		</div>
 	</section>
