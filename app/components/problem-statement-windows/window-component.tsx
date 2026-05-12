@@ -131,6 +131,7 @@ export default function Window(
 	>
 		<div css={css`
 			display: flex;
+			align-items: center;
 		`}>
 			<div css={css`
             	padding: 14px 16px;

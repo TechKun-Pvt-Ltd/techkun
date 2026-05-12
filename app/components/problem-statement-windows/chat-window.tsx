@@ -39,25 +39,25 @@ const scaleUp = keyframes`
 
 const content: Message[] = [{
 	sent: true,
-	text: "Why is that feature missing???",
+	text: "Why is that feature missing❓❓",
 	time: "2:14 AM"
 }, {
 	text: "You said you wanted something simpler.",
 	time: "2:34 AM"
 }, {
 	sent: true,
-	text: "And we explicitly asked you to keep that feature.",
+	text: "And we explicitly asked you to KEEP that feature.",
 	time: "2:35 AM"
 }, {
-	text: "I don't remember you saying that.",
+	text: "I don't remember you saying that. 🙄",
 	time: "2:48 AM"
 }, {
 	sent: true,
-	text: "Remember? Are we supposed to be relying on memory now?",
+	text: "REMEMBER??? Are we supposed to be relying on memory now?",
 	time: "2:48 AM"
 }, {
 	sent: true,
-	text: "Where's the documentation?",
+	text: "Where's the documentation??? 😩",
 	time: "2:49 AM"
 }];
 
