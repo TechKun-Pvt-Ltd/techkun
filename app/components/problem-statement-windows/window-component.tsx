@@ -7,33 +7,85 @@ const _borderRadius = property("_borderRadius")`
 	inherits: true;
 	initial-value: 0;
 `;
-const _padding = property("_padding")`
-	syntax: "<length-percentage>";
-	inherits: true;
-	initial-value: 0;
-`;
 
 const _bgColor = "--_bg-color";
+const _borderColor = "--_border-color";
+const _iconColor = "--_icon-color";
+const _activeBgColor = "--_active-bg-color";
+const _activeBorderColor = "--_active-border-color";
+const _activeIconColor = "--_active-icon-color";
+
+const closeIcon = <svg className="window-control-icon" viewBox="0 0 85.4 85.4" xmlns="http://www.w3.org/2000/svg">
+	<path d="m22.5 57.8 35.3-35.3c1.4-1.4 3.6-1.4 5 0l.1.1c1.4 1.4 1.4 3.6 0 5l-35.3 35.3c-1.4 1.4-3.6 1.4-5 0l-.1-.1c-1.3-1.4-1.3-3.6 0-5z"/>
+	<path d="m27.6 22.5 35.3 35.3c1.4 1.4 1.4 3.6 0 5l-.1.1c-1.4 1.4-3.6 1.4-5 0l-35.3-35.3c-1.4-1.4-1.4-3.6 0-5l.1-.1c1.4-1.3 3.6-1.3 5 0z"/>
+</svg>;
+
+const minimizeIcon = <svg className="window-control-icon" viewBox="0 0 85.4 85.4" xmlns="http://www.w3.org/2000/svg">
+	<path d="m17.8 39.1h49.9c1.9 0 3.5 1.6 3.5 3.5v.1c0 1.9-1.6 3.5-3.5 3.5h-49.9c-1.9 0-3.5-1.6-3.5-3.5v-.1c0-1.9 1.5-3.5 3.5-3.5z"/>
+</svg>;
+
+const maximizeIcon = <svg className="window-control-icon" viewBox="0 0 85.4 85.4" xmlns="http://www.w3.org/2000/svg">
+	<path d="m31.2 20.8h26.7c3.6 0 6.5 2.9 6.5 6.5v26.7zm23.2 43.7h-26.8c-3.6 0-6.5-2.9-6.5-6.5v-26.8z"/>
+</svg>;
+
 function WindowControls() {
 	return <div css={css`
-		padding: calc(14px - var(${_padding})) 32px 14px;
 		display: flex;
 		gap: 8px;
 
-		& > div {
+		.window-control-button {
 			border-radius: 50%;
 			width: 14px;
 			height: 14px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			background-color: var(${_bgColor});
-			transition: background-color 0.1s ease-in-out;
+			border: 1px solid var(${_borderColor});
 		}
-		&:hover > div {
-			background-color: oklch(from var(${_bgColor}) 0.5 c h);
+        .window-control-icon {
+            display: none;
+            fill: var(${_iconColor});
+        }
+        &:hover .window-control-icon {
+            display: revert;
+        }
+		.window-control-button:active {
+			background-color: var(${_activeBgColor});
+			border-color: var(${_activeBorderColor});
+			.window-control-icon {
+				fill: var(${_activeIconColor});
+			}
+		}
+
+		.close-button {
+			${_bgColor}: #ed6a5f;
+			${_borderColor}: #e24b41;
+			${_iconColor}: #460804;
+			${_activeBgColor}: #b15048;
+			${_activeBorderColor}: #a14239;
+			${_activeIconColor}: #170101;
+		}
+		.minimize-button {
+			${_bgColor}: #f6be50;
+			${_borderColor}: #e1a73e;
+			${_iconColor}: #90591d;
+			${_activeBgColor}: #b8923b;
+			${_activeBorderColor}: #a67f36;
+			${_activeIconColor}: #532a0a;
+		}
+		.maximize-button {
+			${_bgColor}: #61c555;
+			${_borderColor}: #2dac2f;
+			${_iconColor}: #2a6218;
+			${_activeBgColor}: #4a9741;
+			${_activeBorderColor}: #428234;
+			${_activeIconColor}: #113107;
 		}
 	`}>
-		<div css={css`${_bgColor}: oklch(0.4 0.1 28);`}/>
-		<div css={css`${_bgColor}: oklch(0.4 0.1 96);`}/>
-		<div css={css`${_bgColor}: oklch(0.4 0.1 140);`}/>
+		<div className="window-control-button close-button">{closeIcon}</div>
+		<div className="window-control-button minimize-button">{minimizeIcon}</div>
+		<div className="window-control-button maximize-button">{maximizeIcon}</div>
 	</div>;
 }
 
@@ -46,6 +98,7 @@ export type WindowProps = {
 	height?: string;
 	maxHeight?: string;
 	inset?: string;
+	titleBar?: ReactNode;
 	children?: ReactNode;
 };
 export default function Window(
@@ -54,16 +107,16 @@ export default function Window(
 		minWidth, width, maxWidth,
 		minHeight, height, maxHeight,
 		inset = "0",
-		children
+		titleBar, children
 	}: WindowProps
 ) {
 	return <div className="window"
 		data-title={title}
 		css={css`
+			overflow: clip;
 			border: 1px solid var(--border);
 			border-radius: var(${_borderRadius});
-			background-color: var(--muted);
-			padding: var(${_padding});
+			background-color: var(--background);
 			${minWidth ? `min-width: ${minWidth};` : ""}
 			${width ? `width: ${width};` : ""}
 			${maxWidth ? `max-width: ${maxWidth};` : ""}
@@ -76,13 +129,25 @@ export default function Window(
 			flex-direction: column;
 		`}
 	>
-		<WindowControls />
 		<div css={css`
-			border: 1px solid var(--border);
+			display: flex;
+		`}>
+			<div css={css`
+            	padding: 14px 16px;
+			`}>
+				<WindowControls />
+			</div>
+			<div css={css`
+				min-width: 0;
+				flex-grow: 1;
+				padding-right: 16px;
+			`}>{titleBar}</div>
+		</div>
+		<div css={css`
 			min-height: 0;
             flex-grow: 1;
             background-color: var(--background);
-            border-radius: calc(var(${_borderRadius}) - var(${_padding}));
+            border-radius: calc(var(${_borderRadius}) - 8px);
             display: flex;
 			flex-direction: column;
 		`}>{children}</div>
@@ -90,6 +155,5 @@ export default function Window(
 }
 
 export const windowCssProperties = {
-	_borderRadius,
-	_padding
+	_borderRadius
 };

@@ -1,12 +1,100 @@
+import React from "react";
 import {css} from "@emotion/react";
 import ErrorConsole from "@/app/components/problem-statement-windows/error-console";
 import ChatWindow from "@/app/components/problem-statement-windows/chat-window";
 import ScreenComponent from "@/app/components/problem-statement-windows/screen-component";
 import Window from "@/app/components/problem-statement-windows/window-component";
+import Image, {StaticImageData} from "next/image";
+import figmaIcon from "@/public/icons/figma-icon.svg";
+import githubIcon from "@/public/icons/github-icon.svg";
+import gmailIcon from "@/public/icons/gmail-icon.svg";
+import notionIcon from "@/public/icons/notion-icon.svg";
+import slackIcon from "@/public/icons/slack-icon.svg";
+import jiraIcon from "@/public/icons/jira-icon.svg";
+import vercelIcon from "@/public/icons/vercel-icon.svg";
+import openaiIcon from "@/public/icons/openai-icon.svg";
+import dummyProfilePic from "@/public/images/dummy-profile-pic.png";
+
+const tabs: {
+	icon: StaticImageData;
+	title: string;
+	notifications?: number;
+	active?: boolean;
+}[] = [
+	{
+		icon: figmaIcon,
+		title: "figma"
+	},
+	{
+		icon: githubIcon,
+		title: "github"
+	},
+	{
+		icon: gmailIcon,
+		title: "gmail",
+		notifications: 96
+	},
+	{
+		icon: notionIcon,
+		title: "notion"
+	},
+	{
+		icon: slackIcon,
+		title: "slack",
+		notifications: 53
+	},
+	{
+		icon: jiraIcon,
+		title: "jira"
+	},
+	{
+		icon: vercelIcon,
+		title: "vercel"
+	},
+	{
+		icon: openaiIcon,
+		title: "chatgpt"
+	},
+];
+
+const tabCloseIcon = <svg className="close-button" xmlns="http://www.w3.org/2000/svg" width="8" height="8"
+						  viewBox="0 0 8 8" fill="currentColor">
+	<path
+		d="M4.70696 3.99999L7.85351 0.85379C8.04883 0.65847 8.04883 0.341795 7.85351 0.14649C7.65819 -0.0488301 7.34151 -0.0488301 7.14621 0.14649L3.99999 3.29302L0.85379 0.14649C0.65847 -0.0488301 0.341795 -0.0488301 0.14649 0.14649C-0.0488144 0.341811 -0.0488301 0.658485 0.14649 0.85379L3.29302 3.99999L0.14649 7.14621C-0.0488301 7.34153 -0.0488301 7.65821 0.14649 7.85351C0.341811 8.04881 0.658485 8.04883 0.85379 7.85351L3.99999 4.70696L7.14619 7.85351C7.34151 8.04883 7.65819 8.04883 7.85349 7.85351C8.04881 7.65819 8.04881 7.34151 7.85349 7.14621L4.70696 3.99999Z"/>
+</svg>;
+
+const backArrow = <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor">
+	<path
+		d="M4.47271 9.32223L0.658909 5.41137C0.601124 5.35211 0.560096 5.28792 0.535827 5.21879C0.511942 5.14966 0.5 5.07559 0.5 4.99658C0.5 4.91757 0.511942 4.8435 0.535827 4.77437C0.560096 4.70524 0.601124 4.64105 0.658909 4.58179L4.47271 0.670929C4.57865 0.562294 4.71098 0.505409 4.8697 0.500273C5.0288 0.495533 5.16613 0.552418 5.2817 0.670929C5.39727 0.779564 5.45756 0.915259 5.46257 1.07801C5.46719 1.24116 5.41172 1.382 5.29615 1.50051L2.46469 4.40403H8.92215C9.08587 4.40403 9.22321 4.46071 9.33416 4.57409C9.44472 4.68786 9.5 4.82869 9.5 4.99658C9.5 5.16447 9.44472 5.3051 9.33416 5.41848C9.22321 5.53225 9.08587 5.58914 8.92215 5.58914H2.46469L5.29615 8.49266C5.40209 8.60129 5.45756 8.73955 5.46257 8.90744C5.46719 9.07534 5.41172 9.2136 5.29615 9.32223C5.19021 9.44074 5.05538 9.5 4.89165 9.5C4.72793 9.5 4.58828 9.44074 4.47271 9.32223Z"
+	/>
+</svg>;
+
+const forwardArrow = <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor">
+	<path
+		d="M4.7183 9.33663C4.61236 9.22772 4.55689 9.08911 4.55188 8.92079C4.54726 8.75247 4.59791 8.61386 4.70385 8.50495L7.53531 5.59406H1.07785C0.914125 5.59406 0.77679 5.53703 0.665843 5.42297C0.555281 5.30931 0.5 5.16832 0.5 5C0.5 4.83168 0.555281 4.69049 0.665843 4.57644C0.77679 4.46277 0.914125 4.40594 1.07785 4.40594H7.53531L4.70385 1.49505C4.59791 1.38614 4.54726 1.24752 4.55188 1.07921C4.55689 0.910891 4.61236 0.772277 4.7183 0.663366C4.82424 0.554455 4.95907 0.5 5.12279 0.5C5.28652 0.5 5.42135 0.554455 5.52729 0.663366L9.34109 4.58416C9.39888 4.63366 9.4399 4.69545 9.46417 4.7695C9.48806 4.84396 9.5 4.92079 9.5 5C9.5 5.07921 9.48806 5.15346 9.46417 5.22277C9.4399 5.29208 9.39888 5.35644 9.34109 5.41584L5.52729 9.33663C5.42135 9.44554 5.28652 9.5 5.12279 9.5C4.95907 9.5 4.82424 9.44554 4.7183 9.33663Z"
+	/>
+</svg>;
+
+const reloadIcon = <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor">
+	<path
+		d="M5 9.5C3.74375 9.5 2.67969 9.06406 1.80781 8.19219C0.935937 7.32031 0.5 6.25625 0.5 5C0.5 3.74375 0.935937 2.67969 1.80781 1.80781C2.67969 0.935937 3.74375 0.5 5 0.5C5.64687 0.5 6.26563 0.633687 6.85625 0.901062C7.44688 1.16806 7.95312 1.55 8.375 2.04688V1.0625C8.375 0.903125 8.429 0.769438 8.537 0.661438C8.64463 0.553813 8.77813 0.5 8.9375 0.5C9.09687 0.5 9.23037 0.553813 9.338 0.661438C9.446 0.769438 9.5 0.903125 9.5 1.0625V3.875C9.5 4.03437 9.446 4.16787 9.338 4.2755C9.23037 4.3835 9.09687 4.4375 8.9375 4.4375H6.125C5.96563 4.4375 5.83213 4.3835 5.7245 4.2755C5.6165 4.16787 5.5625 4.03437 5.5625 3.875C5.5625 3.71563 5.6165 3.58194 5.7245 3.47394C5.83213 3.36631 5.96563 3.3125 6.125 3.3125H7.925C7.625 2.7875 7.21494 2.375 6.69481 2.075C6.17431 1.775 5.60938 1.625 5 1.625C4.0625 1.625 3.26562 1.95313 2.60938 2.60938C1.95313 3.26562 1.625 4.0625 1.625 5C1.625 5.9375 1.95313 6.73438 2.60938 7.39062C3.26562 8.04687 4.0625 8.375 5 8.375C5.64687 8.375 6.24462 8.20381 6.79325 7.86144C7.3415 7.51944 7.75156 7.0625 8.02344 6.49062C8.07031 6.3875 8.14775 6.30087 8.25575 6.23075C8.36338 6.16025 8.47344 6.125 8.58594 6.125C8.80156 6.125 8.96338 6.2 9.07138 6.35C9.179 6.5 9.19062 6.66875 9.10625 6.85625C8.75 7.65313 8.20156 8.29287 7.46094 8.7755C6.72031 9.2585 5.9 9.5 5 9.5Z"
+	/>
+</svg>;
+
+const lockIcon = <svg xmlns="http://www.w3.org/2000/svg" width="8" height="11" viewBox="0 0 8 11" fill="var(--muted)">
+	<path fillRule="evenodd" clipRule="evenodd" d="M3.66673 0C2.0467 0 0.733398 1.35858 0.733398 3.03448V6.06897C0.733398 7.74487 2.0467 9.10345 3.66673 9.10345C5.28678 9.10345 6.60007 7.74487 6.60007 6.06897V3.03448C6.60007 1.35858 5.28678 0 3.66673 0ZM3.66673 0.866993C2.50956 0.866993 1.57149 1.83741 1.57149 3.03448V6.06897C1.57149 7.26603 2.50956 8.23646 3.66673 8.23646C4.82389 8.23646 5.76198 7.26603 5.76198 6.06897V3.03448C5.76198 1.83741 4.82389 0.866993 3.66673 0.866993Z" fill="#8B8A8D"/>
+	<rect y="4.17242" width="7.33333" height="6.82759" rx="0.916667" fill="#8B8A8D"/>
+</svg>;
+
+const threeDotMenu = <svg xmlns="http://www.w3.org/2000/svg" width="3" height="15" viewBox="0 0 3 15" fill="currentColor">
+	<rect width="3" height="3" rx="1.5"/>
+	<rect y="6" width="3" height="3" rx="1.5"/>
+	<rect y="12" width="3" height="3" rx="1.5"/>
+</svg>;
 
 export default function ProblemStatement() {
 	return <section css={css`
-		overflow-x: clip;
+        overflow-x: clip;
 	`}>
 		<div css={css`
             display: flex;
@@ -14,27 +102,136 @@ export default function ProblemStatement() {
 		`}>
 			<h2 className="section-title"
 				css={css`
-					grid-column: 1 / -1;
-					margin-bottom: 96px;
+                    grid-column: 1 / -1;
+                    margin-bottom: 96px;
 				`}
 			>Say goodbye to these nightmares</h2>
 			<div css={css`
                 grid-column: 1 / -1;
-				height: 768px;
+                height: 768px;
 			`}>
-				<ScreenComponent borderRadius="36px" padding="8px">
-					<ErrorConsole />
-					<Window title="tasks"
-						width="min(100%, 512px)"
+				<ScreenComponent borderRadius="24px">
+					<ErrorConsole/>
+					<Window title="chat"
+							width="min(100%, 448px)"
+							minHeight="560px"
+							inset="48px 96px auto auto"
+					>
+						<ChatWindow/>
+					</Window>
+					<Window
+						title="tasks"
+						width="min(100%, 768px)"
 						minHeight="560px"
 						inset="144px 400px auto auto"
-					></Window>
-					<Window title="chat"
-						width="min(100%, 448px)"
-						minHeight="560px"
-						inset="48px 96px auto auto"
+						titleBar={
+							<div className="" css={css`
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+
+                                .tab {
+                                    flex: 1;
+                                    min-width: 16px;
+                                    max-width: 256px;
+                                    padding: 7px 12px;
+
+                                    .tab-contents {
+                                        position: relative;
+                                        overflow: clip;
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                    }
+
+                                    .tab-contents::after {
+                                        content: "";
+                                        position: absolute;
+                                        right: 0;
+                                        height: 100%;
+                                        width: 16px;
+                                        background: linear-gradient(
+                                            to right,
+                                            transparent,
+                                            var(--background)
+                                        );
+                                    }
+
+                                    .favicon {
+                                        height: 1em;
+                                        aspect-ratio: 1 / 1;
+                                        width: auto;
+                                    }
+
+                                    .title {
+                                        flex: 1 1 0;
+                                        white-space: nowrap;
+                                    }
+
+                                    .close-button {
+                                        flex-shrink: 0;
+                                    }
+                                }
+
+                                .separator {
+                                    border-radius: 1px;
+                                    height: 1em;
+                                    width: 2px;
+                                    background: var(--muted);
+                                }
+							`}>
+								{tabs.map(tab => <React.Fragment key={tab.title}>
+									<div className="tab">
+										<div className="tab-contents">
+											<Image className="favicon" src={tab.icon} alt="favicon"/>
+											<p className="title">
+												{tab.notifications && <span>({tab.notifications})</span>} {tab.title}
+											</p>
+										</div>
+										{/*{tabCloseIcon}*/}
+									</div>
+									<div className="separator"></div>
+								</React.Fragment>)}
+							</div>
+						}
 					>
-						<ChatWindow />
+						<div css={css`
+							max-height: 64px;
+                            background: var(--muted);
+                            padding: 4px 16px;
+							display: flex;
+							align-items: center;
+							gap: 12px;
+						`}>
+							{backArrow}
+							{forwardArrow}
+							{reloadIcon}
+							<div css={css`
+								flex-grow: 1;
+								padding: 2px 16px;
+								border-radius: 100vh;
+								background-color: var(--background);
+							`}>
+								{lockIcon}
+							</div>
+							<div css={css`
+								border-radius: 50%;
+								aspect-ratio: 1 / 1;
+								width: 24px;
+								height: auto;
+								overflow: clip;
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								img {
+									width: 100%;
+									height: 100%;
+								}
+							`}>
+								<Image src={dummyProfilePic} alt="profile-pic" />
+							</div>
+							{threeDotMenu}
+						</div>
 					</Window>
 				</ScreenComponent>
 			</div>
