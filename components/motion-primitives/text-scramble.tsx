@@ -1,6 +1,6 @@
 'use client';
 import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
-import {animate, motion, useMotionValue, useTransform} from 'motion/react';
+import {animate, motion, steps, useMotionValue, useTransform} from 'motion/react';
 
 export type TextScrambleRef<C extends React.ElementType> = {
 	scramble(): void;
@@ -23,17 +23,18 @@ type TextScrambleComponent = <C extends React.ElementType = 'p'>(
 	props: TextScrambleProps<C> & React.RefAttributes<TextScrambleRef<C>>
 ) => React.ReactNode;
 
-const defaultChars =
-	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`-=[]\\\';,./~_+{}|:\"<>?!@#$%^&*()";
+// const DEFAULT_CHARS =
+// 	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`-=[]\\\';,./~_+{}|:\"<>?!@#$%^&*()";
+const DEFAULT_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`░▒▓█▀▄■□▪▫●○◆◇◈◊※†‡";
 
-const SCRAMBLE_CHAR_COUNT = 4;
+const SCRAMBLE_CHAR_COUNT = 6;
 
 export const TextScramble = forwardRef(
 	<C extends React.ElementType>(
 		{
 			children: text = "",
 			duration = 1.6,
-			characterSet = defaultChars,
+			characterSet = DEFAULT_CHARS,
 			className,
 			as,
 			onScrambleComplete,
@@ -79,6 +80,7 @@ export const TextScramble = forwardRef(
 			const largerLength = Math.max(prevText.current.length, text.length);
 			animate(cursor, [0, largerLength + SCRAMBLE_CHAR_COUNT], {
 				duration,
+				ease: steps(duration / 0.05),
 				onComplete() {
 					isAnimating.current = false;
 					prevText.current = text;
