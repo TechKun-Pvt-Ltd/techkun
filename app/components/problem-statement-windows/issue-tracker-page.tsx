@@ -209,7 +209,7 @@ export default function IssueTrackerPage() {
 	return <div className="small-text" css={css`
         font-family: sans-serif;
         flex-grow: 1;
-        background: oklch(0.16 0.01 256);
+        //background-color: oklch(0.16 0.01 256);
         padding: 0 16px;
 	`}>
 		{/*<div css={css`*/}

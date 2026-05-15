@@ -98,6 +98,8 @@ export type WindowProps = {
 	height?: string;
 	maxHeight?: string;
 	inset?: string;
+	backgroundColor?: string;
+	backdropFilter?: string;
 	titleBar?: ReactNode;
 	children?: ReactNode;
 };
@@ -107,6 +109,8 @@ export default function Window(
 		minWidth, width, maxWidth,
 		minHeight, height, maxHeight,
 		inset = "0",
+		backgroundColor = "var(--background)",
+		backdropFilter = "none",
 		titleBar, children
 	}: WindowProps
 ) {
@@ -116,13 +120,14 @@ export default function Window(
 			overflow: clip;
 			border: 1px solid var(--border);
 			border-radius: var(${_borderRadius});
-			background-color: var(--background);
-			${minWidth ? `min-width: ${minWidth};` : ""}
-			${width ? `width: ${width};` : ""}
-			${maxWidth ? `max-width: ${maxWidth};` : ""}
-			${minHeight ? `min-height: ${minHeight};` : ""}
-			${height ? `height: ${height};` : ""}
-			${maxHeight ? `max-height: ${maxHeight};` : ""}
+			background-color: ${backgroundColor};
+			backdrop-filter: ${backdropFilter};
+			${minWidth ? `min-width: ${minWidth}` : ""};
+			${width ? `width: ${width}` : ""};
+			${maxWidth ? `max-width: ${maxWidth}` : ""};
+			${minHeight ? `min-height: ${minHeight}` : ""};
+			${height ? `height: ${height}` : ""};
+			${maxHeight ? `max-height: ${maxHeight}` : ""};
 			position: absolute;
 			inset: ${inset};
 			display: flex;
@@ -147,8 +152,9 @@ export default function Window(
 		<div css={css`
 			min-height: 0;
             flex-grow: 1;
-            background-color: var(--background);
-            border-radius: calc(var(${_borderRadius}) - 8px);
+            background-color: oklch(from var(--background) l c h / 0);
+            border-radius: calc(var(${_borderRadius}) - 12px);
+			overflow: clip;
             display: flex;
 			flex-direction: column;
 		`}>{children}</div>

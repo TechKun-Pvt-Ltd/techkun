@@ -1,4 +1,7 @@
 import {css, keyframes} from "@emotion/react";
+import profilePic from "@/public/images/placeholder-profile-pic.png";
+import dummyPic from "@/public/images/dummy-profile-pic.png";
+import Image, {StaticImageData} from "next/image";
 
 const msgDblCheck =
 	<svg viewBox="0 0 16 11" height="11" width="16"
@@ -38,49 +41,65 @@ const scaleUp = keyframes`
 `;
 
 const content: Message[] = [{
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "Why is that feature missing❓❓",
 	time: "2:14 AM"
 }, {
+	profilePic: dummyPic,
+	sender: "Software Agency Guy",
 	text: "You said you wanted something simpler.",
 	time: "2:34 AM"
 }, {
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "And we explicitly asked you to KEEP that feature.",
 	time: "2:35 AM"
 }, {
+	profilePic: dummyPic,
+	sender: "Software Agency Guy",
 	text: "I don't remember you saying that. 🙄",
 	time: "2:48 AM"
 }, {
-	sent: true,
-	text: "REMEMBER??? Are we supposed to be relying on memory now?",
+	profilePic,
+	sender: "You",
+	text: "REMEMBER??? Since when did we start relying on your memory?",
 	time: "2:48 AM"
 }, {
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "Where's the documentation??? 😩",
 	time: "2:49 AM"
 }];
 
 const messages: Message[] = [{
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "You shipped a dozen features this week but they barely work.",
 	time: "2:54 AM"
 }, {
+	profilePic: dummyPic,
+	sender: "Software Agency Guy",
 	text: "All of these are known bugs.",
 	time: "2:56 AM"
 }, {
+	profilePic: dummyPic,
+	sender: "Software Agency Guy",
 	text: "Rest assured, we will fix them later.",
 	time: "2:57 AM"
 }, {
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "Every fix breaks something else.",
 	time: "2:58 AM"
 }, {
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "The system is fragile now.",
 	time: "2:59 AM"
 }, {
-	sent: true,
+	profilePic,
+	sender: "You",
 	text: "How long are you planning to defer this?",
 	time: "2:59 AM"
 }];
@@ -89,58 +108,52 @@ const MSG_BOX_ANIM_DURATION = 0.4;
 const MSG_BOX_ANIM_DELAY = MSG_BOX_ANIM_DURATION * 0.75;
 
 interface Message {
-	sent?: boolean;
+	profilePic: StaticImageData;
+	sender: string;
 	text: string;
 	time: `${number}:${number} ${'AM' | 'PM'}`;
 }
 
 const messageBoxStyles = css`
-	align-self: start;
 	display: flex;
-	align-items: end;
 	gap: 0.5em;
-	background-color: var(--muted);
-	padding: 8px 16px;
-	border-radius: 28px;
-	corner-shape: superellipse(1.5);
+	//background-color: var(--muted);
+	//padding: 8px 16px;
+	//border-radius: 28px;
+	//corner-shape: superellipse(1.5);
 	animation: ${scaleUp} ${MSG_BOX_ANIM_DURATION}s ease-out both;
 	animation-delay: calc((sibling-index() - 1) * ${MSG_BOX_ANIM_DELAY}s);
 	//animation-timeline: --vt;
 	//animation-range: entry;
-
-	& .msg-time {
-		flex-shrink: 0;
+	
+	.msg-sender-pic {
+		width: 2.75em;
+		height: 2.75em;
+		border-radius: 4px;
+	}
+	.msg-head {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.msg-sender {
+		font-weight: bold;
+	}
+	.msg-time {
 		color: var(--muted-foreground);
-	}
-
-	&.sent {
-		align-self: end;
-		margin-left: 12px;
-		transform-origin: right bottom;
-		background-color: var(--primary-950);
-
-		& .msg-dblcheck {
-			margin-inline-start: 0.25em;
-		}
-	}
-
-	&.received {
-		margin-right: 12px;
-		transform-origin: left bottom;
-	}
-
-	&.sent + .received, &.received + .sent {
-		margin-top: 12px;
 	}
 `;
 function MessageBox(msg: Message) {
-	return <p className={msg.sent ? "sent" : "received"} css={messageBoxStyles}>
-		<span className="msg-text">{msg.text}</span>
-		<span className="msg-time small-text">
-			{msg.time}
-			{msg.sent && msgDblCheck}
-		</span>
-	</p>;
+	return <div css={messageBoxStyles}>
+		<Image className="msg-sender-pic" src={msg.profilePic} alt="profile-pic" />
+		<div>
+			<div className="msg-head">
+				<p className="msg-sender">{msg.sender}</p>
+				<p className="msg-time small-text">{msg.time}</p>
+			</div>
+			<p className="msg-body">{msg.text}</p>
+		</div>
+	</div>;
 }
 
 function MessageComposeBox() {
@@ -166,18 +179,18 @@ function MessageComposeBox() {
 	</div>;
 }
 
-export default function ChatWindow() {
+export default function ChatPage() {
 	return <div css={css`
-		padding: 24px 12px;
+		font-family: sans-serif;
+		padding: 18px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 	`}>
 		<div css={css`
-			margin-bottom: 24px;
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
+			gap: 12px;
 			animation: ${slideUp} ${MSG_BOX_ANIM_DURATION + (content.length - 1) * MSG_BOX_ANIM_DELAY}s ease-out both;
 			//view-timeline: --vt;
 			//animation-timeline: --vt;
@@ -185,6 +198,6 @@ export default function ChatWindow() {
 		`}>
 			{content.map(msg => <MessageBox key={msg.text} {...msg} />)}
 		</div>
-		<MessageComposeBox />
+		{/*<MessageComposeBox />*/}
 	</div>;
 }

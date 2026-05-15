@@ -37,9 +37,8 @@ export default function BrowserTabs({ tabs }: { tabs: TabData[] }) {
             }
 
             .favicon {
-                height: 1em;
-                aspect-ratio: 1 / 1;
-                width: auto;
+                width: 1em;
+                height: auto;
             }
 
             .title {
