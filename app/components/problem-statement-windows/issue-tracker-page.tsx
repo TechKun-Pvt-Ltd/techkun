@@ -212,14 +212,6 @@ export default function IssueTrackerPage() {
         //background-color: oklch(0.16 0.01 256);
         padding: 0 16px;
 	`}>
-		{/*<div css={css`*/}
-		{/*	margin-bottom: 16px;*/}
-		{/*`}>*/}
-		{/*	<p css={css`*/}
-		{/*		color: var(--muted-foreground);*/}
-		{/*	`}>Projects / Donut Plains</p>*/}
-		{/*	<p className="body-text">Issues</p>*/}
-		{/*</div>*/}
 		<table cellSpacing="0" css={css`
             width: 100%;
             text-align: left;

@@ -63,12 +63,7 @@ const content: Message[] = [{
 }, {
 	profilePic,
 	sender: "You",
-	text: "REMEMBER??? Since when did we start relying on your memory?",
-	time: "2:48 AM"
-}, {
-	profilePic,
-	sender: "You",
-	text: "Where's the documentation??? 😩",
+	text: "REMEMBER??? Since when did we start relying on your memory?\nWhere's the documentation??? 😩",
 	time: "2:49 AM"
 }];
 
