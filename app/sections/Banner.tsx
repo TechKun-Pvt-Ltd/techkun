@@ -1,22 +1,6 @@
 'use client'
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import {css} from "@emotion/react";
-import {animate, motion, useMotionValue, AnimationPlaybackControlsWithThen, ValueAnimationTransition} from "motion/react";
-
-const IDLE_ANIMATION_REPEAT_DELAY = 8;
-function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
-    return {
-        type: "spring",
-        bounce: 0,
-        duration
-    };
-}
-const idleAnimationOptions: ValueAnimationTransition = {
-    ...SPRING_OPTIONS(2),
-    repeat: Infinity,
-    repeatType: 'loop',
-    repeatDelay: IDLE_ANIMATION_REPEAT_DELAY
-};
 
 export default function Banner() {
     return <section>
