@@ -3,15 +3,17 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/app/theme/globals.css";
 import Header from "@/app/Header";
-import {Quicksand} from "next/font/google";
+import {Quicksand, Rouge_Script} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
 
+// const rouge_script = Rouge_Script({ weight: "400" });
 const quicksand = Quicksand();
 const script_12_bt = localFont({
-    src: "./fonts/SCRPT12N.ttf",
-    weight: "100 900"
+    src: "./fonts/Feelfree.ttf",
+    weight: "100 900",
+    declarations: [{ prop: "size-adjust", value: "180%" }]
 });
 
 export const metadata: Metadata = {
