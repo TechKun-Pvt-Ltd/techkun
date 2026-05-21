@@ -254,6 +254,17 @@ button {
     color: var(--neutral-300);
 }
 
+.text-8xl {
+    font-size: var(--font-size-8xl);
+    line-height: var(--line-height-8xl);
+    letter-spacing: var(--letter-spacing-8xl);
+}
+.text-9xl {
+    font-size: var(--font-size-9xl);
+    line-height: var(--line-height-9xl);
+    letter-spacing: var(--letter-spacing-9xl);
+}
+
 .text-xs {
     font-size: var(--font-size-xs);
     line-height: var(--line-height-xs);
