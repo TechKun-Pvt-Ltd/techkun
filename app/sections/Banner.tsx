@@ -146,6 +146,7 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 				height: 100%;
 				overflow: visible;
 			`}
+			strokeLinecap="round"
 		>
 			<motion.line
 				x1={centerX} y1="0%"
