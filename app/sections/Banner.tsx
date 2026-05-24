@@ -90,12 +90,22 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 		ref={el => {
 			if (!el) return;
 
-			rootBoundingRect.current = el.getBoundingClientRect();
+			function update() {
+				if (!el) return;
+				rootBoundingRect.current = el.getBoundingClientRect();
+			}
+			update();
+			window.addEventListener("scroll", update);
+			window.addEventListener("resize", update);
+			return () => {
+				window.removeEventListener("scroll", update);
+				window.removeEventListener("resize", update);
+			};
 		}}
 		whileHover="hover"
 	>
 		r
-		<span style={{ opacity: 0.1 }}>o</span>
+		<span style={{ opacity: 0.2 }}>o</span>
 		bust
 		<svg css={css`
 			position: absolute;
@@ -106,9 +116,9 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 		`}>
 			<clipPath id={clipId}>
 				<motion.circle
-					r={20} cx={centerX} cy={centerY}
+					r="10%" cx={centerX} cy={centerY}
 					variants={{
-						hover: { r: 40 }
+						hover: { r: "20%" }
 					}}
 				/>
 			</clipPath>
@@ -119,7 +129,7 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 				</text>
 			</mask>
 			<g clipPath={`url(#${clipId})`}>
-				<text mask={`url(#${textMaskId})`} strokeWidth="2" stroke="var(--foreground)" strokeDasharray="8" y="var(--font-size-6xl)">
+				<text mask={`url(#${textMaskId})`} strokeWidth="2" stroke="var(--neutral-500)" y="var(--font-size-6xl)">
 					robust
 				</text>
 				<text y="var(--font-size-6xl)" fill="var(--muted)">
@@ -152,11 +162,11 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 				strokeDasharray="6"
 			/>
 			<motion.circle
-				r={20} cx={centerX} cy={centerY}
+				r="10%" cx={centerX} cy={centerY}
 				variants={{
-					hover: { r: 40 }
+					hover: { r: "20%" }
 				}}
-				stroke="var(--foreground)" strokeWidth="4"
+				stroke="var(--foreground)" strokeWidth="2.5%"
 			/>
 		</svg>
 	</motion.span>;
