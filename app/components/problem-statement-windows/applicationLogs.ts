@@ -58,7 +58,7 @@ export const applicationLogs: Log[] = [
 	),
 	errorLog(
 		logLine("02:11:45.992", " Error: Missing lock for job retry-email:8472"),
-		logLine("02:11:45.992", "     at Scripts.finishedErrors (/app/node_modules/bullmq/dist/cjs/classes/scripts.js:213:24)")
+		logLine("02:11:45.992", "     at Scripts.finishedErrors (/app/node_modules/bullmq/dist/cjs/classes/rough-work.js:213:24)")
 	),
 	// {
 	// 	timestamp: "02:11:45.992",

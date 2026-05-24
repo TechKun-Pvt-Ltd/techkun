@@ -3,7 +3,7 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/app/theme/globals.css";
 import Header from "@/app/Header";
-import {Quicksand, Rouge_Script} from "next/font/google";
+import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
@@ -30,7 +30,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Header />
-                <main className='overflow-hidden'>{children}</main>
+                {children}
                 <Footer />
                 <Shared />
             </body>

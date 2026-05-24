@@ -15,6 +15,7 @@ export type TrigCircleProps = {
 	startY?: number;
 	size?: number;
 	radius?: number;
+	strokeWidth?: number | string;
 	strokeColor?: string;
 	fillColor?: string;
 	textColor?: string;
@@ -26,6 +27,7 @@ export default function TrigCircle({
 	startX = DEFAULT_START,
 	startY = DEFAULT_START,
 	radius = 0.4 * size,
+	strokeWidth = "0.25",
 	strokeColor = "currentColor",
 	fillColor = "none",
 	textColor = "currentColor"
@@ -51,7 +53,7 @@ export default function TrigCircle({
 	};
 
 	return <g>
-		<g stroke={strokeColor} strokeWidth="0.25" fill="none">
+		<g stroke={strokeColor} strokeWidth={strokeWidth} fill="none">
 			<circle r={radius} cx={CENTER_X} cy={CENTER_Y} fill={fillColor}></circle>
 			<line x1={startX} y1={CENTER_Y} x2={END_X} y2={CENTER_Y}></line>
 			<line x1={CENTER_X} y1={startY} x2={CENTER_X} y2={END_Y}></line>
@@ -90,3 +92,7 @@ export default function TrigCircle({
 		</motion.text>
 	</g>;
 };
+
+function TrigCircle2() {
+	return ;
+}
