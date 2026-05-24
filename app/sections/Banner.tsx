@@ -6,6 +6,7 @@ import {useFollowPointer} from "@/app/utils/use-follow-pointer";
 import {usePointerPosition} from "@/app/utils/use-pointer-position";
 import {clamp, SpringOptions} from "motion";
 import {useMappedValues} from "@/app/utils/use-mapped-values";
+import {Point2D, Vector2D} from "svg-path-kit";
 
 function FastSvg() {
 	const id = useId();
@@ -60,8 +61,9 @@ type BoundingRect = {
 	height: number
 };
 
-const springOptions: SpringOptions = { stiffness: 500, damping: 30 };
-const DEFAULT_CENTER: [string, string] = ["23%", "59%"];
+const DEFAULT_CENTER: [number, number] = [0.23, 0.59];
+const DEFAULT_CENTER_STR = DEFAULT_CENTER.map(n => n * 100 + '%') as [string, string];
+const THRESHOLD = 2;
 
 function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.span>) {
 	const rootBoundingRect = useRef<BoundingRect>(initialDomRect);
@@ -72,17 +74,35 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 
 	const centerArr = useTransform<number, [string, string]>([pointer.x, pointer.y], ([vx, vy]) => {
 		if (!(rootBoundingRect.current && rootBoundingRect.current.width && rootBoundingRect.current.height))
-			return DEFAULT_CENTER;
+			return DEFAULT_CENTER_STR;
 
 		const xProgress = (vx - rootBoundingRect.current.x) / rootBoundingRect.current.width;
 		const yProgress = (vy - rootBoundingRect.current.y) / rootBoundingRect.current.height;
-		if (xProgress < 0 || xProgress > 1 || yProgress < 0 || yProgress > 1)
-			return DEFAULT_CENTER;
-		return [`${clamp(0, 1, xProgress) * 100}%`, `${clamp(0, 1, yProgress) * 100}%`];
+		const xDistance = xProgress < 0 ? THRESHOLD + xProgress : xProgress > 1 ? (1 + THRESHOLD) - xProgress : Infinity;
+		const yDistance = yProgress < 0 ? THRESHOLD + yProgress : yProgress > 1 ? (1 + THRESHOLD) - yProgress : Infinity;
+		if (xDistance < 0 || yDistance < 0)
+			return DEFAULT_CENTER_STR;
+		if (!isFinite(xDistance) && !isFinite(yDistance))
+			return [`${clamp(0, 1, xProgress) * 100}%`, `${clamp(0, 1, yProgress) * 100}%`];
+
+		const defaultCenter = Point2D.of(DEFAULT_CENTER[0], DEFAULT_CENTER[1]);
+		let position = Point2D.of(xProgress, yProgress);
+		let radialVector = Vector2D.from(defaultCenter, position);
+		if (xDistance < yDistance) {
+			const x = radialVector.x < 0 ? -defaultCenter.x : 1 - defaultCenter.x;
+			const y = radialVector.slope * x;
+			radialVector = Vector2D.of(x, y);
+			radialVector.scale(xDistance / THRESHOLD);
+		} else {
+			const y = radialVector.y < 0 ? -defaultCenter.y : 1 - defaultCenter.y;
+			const x = y / radialVector.slope;
+			radialVector = Vector2D.of(x, y);
+			radialVector.scale(yDistance / THRESHOLD);
+		}
+		position = defaultCenter.add(radialVector);
+		return [`${position.x * 100}%`, `${position.y * 100}%`];
 	});
-	const center = useMappedValues(centerArr, c => c);
-	const centerX = useSpring(center[0], springOptions);
-	const centerY = useSpring(center[1], springOptions);
+	const [centerX, centerY] = useMappedValues(centerArr, c => c);
 
 	return <motion.span
 		style={{position: 'relative', zIndex: '0', ...style}}
@@ -90,7 +110,14 @@ function Robust({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.
 		ref={el => {
 			if (!el) return;
 
-			rootBoundingRect.current = el.getBoundingClientRect();
+			const updateRect = () => {
+				rootBoundingRect.current = el.getBoundingClientRect();
+			};
+			updateRect();
+			window.addEventListener("resize", updateRect);
+			return () => {
+				window.removeEventListener("resize", updateRect);
+			};
 		}}
 		whileHover="hover"
 	>
