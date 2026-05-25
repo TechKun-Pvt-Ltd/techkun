@@ -168,7 +168,7 @@ function ContactOptions() {
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
-        <p className="large-text cursive-text" css={css`
+        <p className="large-text" css={css`
             color: var(--muted-foreground);
             text-box-trim: trim-both;
         `}>or</p>

@@ -3,49 +3,7 @@ import React, {useId} from "react";
 import {css} from "@emotion/react";
 import Precision from "@/app/components/banner-components/Precision";
 import Beauty from "@/app/components/banner-components/Beauty";
-
-function FastSvg() {
-	const id = useId();
-	const startX = -10;
-	const xStep = 5;
-	const repeatingCharLength = 4;
-	const opacityStep = 0.75 / repeatingCharLength;
-
-	const repeatingCharArray: string[] = new Array(repeatingCharLength).fill("f");
-	const mainText = "fast";
-	const mainTextX = startX + repeatingCharLength * xStep;
-
-	const fontSize = "var(--font-size-6xl)";
-	// const maskId = "text-mask-" + id;
-
-	return <svg css={css`
-        width: 2em;
-        height: 1em;
-        overflow: visible;
-        font-style: italic;
-        //font-weight: 500;
-	`}>
-		{repeatingCharArray.map((char, i) =>
-			<text
-				key={i}
-				opacity={(i + 1) * opacityStep}
-				x={startX + i * xStep} y={fontSize}
-				fill="var(--neutral-200)"
-			>{char}</text>
-		)}
-		{/*<defs>*/}
-		{/*	<mask id={maskId}>*/}
-		{/*		<rect fill="white" x="0%" y="0%" width="100%" height="100%"/>*/}
-		{/*		<text x={mainTextX} y={fontSize}>{mainText}</text>*/}
-		{/*	</mask>*/}
-		{/*</defs>*/}
-		{/*<text x={mainTextX} y={fontSize}*/}
-		{/*	  mask={`url(#${maskId})`}*/}
-		{/*	  strokeWidth="3" stroke="var(--foreground)"*/}
-		{/*>{mainText}</text>*/}
-		<text x={mainTextX} y={fontSize} fill="var(--foreground)">{mainText}</text>
-	</svg>;
-}
+import Identity from "@/app/components/banner-components/Identity";
 
 // const gradientAngle = property("gradient-angle")`
 //     syntax: "<angle>";
@@ -101,10 +59,12 @@ export default function Banner() {
             text-align: center;
 		`}>
 			<h1 className="hero-heading">
-				<span className="text-4xl" style={{display: 'inline-block'}}>We build software<br/>with</span><br/>
+				<span className="text-4xl" style={{display: 'inline-block'}}>
+					We build software<br/>
+					with
+				</span><br/>
 				<span css={css`
 					display: inline-block;
-					margin-block-start: -0.1em;
                     color: var(--neutral-400);
 
                     .plus-icon {
@@ -115,9 +75,9 @@ export default function Banner() {
 						margin-inline-end: 0.05em;
 					}
 				`}>
-					<span style={{display: 'inline-block', marginBlockEnd: '0.2em'}}><Beauty className="precomma"/>, <Precision className="precomma"/>,</span><br/>
+					<span style={{display: 'inline-block', marginBlockEnd: '0.25em'}}><Beauty className="precomma"/>, <Precision className="precomma"/>,</span><br/>
 					<span><Plus/> </span>
-					<span style={{color: "var(--foreground)", marginInlineEnd: '0.5em'}}>identity</span>
+					<Identity style={{ marginInlineEnd: "0.5em" }} />
 				</span>
 			</h1>
 		</div>
