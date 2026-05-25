@@ -222,9 +222,9 @@ button {
     letter-spacing: var(--letter-spacing-2xl);
 }
 .hero-heading {
-    font-size: var(--font-size-4xl);
-    line-height: var(--line-height-4xl);
-    letter-spacing: var(--letter-spacing-4xl);
+    font-size: var(--font-size-6xl);
+    line-height: var(--line-height-6xl);
+    letter-spacing: var(--letter-spacing-6xl);
     font-weight: normal;
 }
 .section-title {

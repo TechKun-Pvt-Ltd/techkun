@@ -4,7 +4,7 @@ import {css} from "@emotion/react";
 import {round} from "svg-path-kit/numbers";
 import {Angle} from "svg-path-kit";
 import {MotionValue} from "motion";
-import {useMappedValues} from "@/app/utils/use-mapped-values";
+import {useMappedValues} from "@/hooks/use-mapped-values";
 
 const DEFAULT_START = 0;
 const DEFAULT_SIZE = 100;

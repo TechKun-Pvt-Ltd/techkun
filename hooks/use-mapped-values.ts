@@ -1,7 +1,7 @@
 import {MotionConfigContext, useIsomorphicLayoutEffect} from "motion/react";
 import {cancelFrame, frame, motionValue, MotionValue} from "motion-dom";
 import {useContext, useEffect, useState} from "react";
-import {useConstant} from "@/app/utils/use-constant";
+import {useConstant} from "@/hooks/use-constant";
 
 type MappedValues<V extends any[]> = {
 	[K in keyof V]: MotionValue<V[K]>;

@@ -18,7 +18,7 @@ import {
 	useTransform
 } from "motion/react";
 
-import {filterMouseEvent, filterPrimaryPointer, usePointerPosition,} from "@/app/utils/use-pointer-position";
+import {filterMouseEvent, filterPrimaryPointer, usePointerPosition,} from "@/hooks/use-pointer-position";
 
 import {animate, MotionNodeAnimationOptions, MotionValue, SpringOptions} from "motion";
 import {createPortal} from "react-dom";
