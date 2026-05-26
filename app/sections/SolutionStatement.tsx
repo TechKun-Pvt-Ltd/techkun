@@ -10,7 +10,7 @@ import {
 	useTransform, ValueAnimationTransition
 } from "motion/react";
 import {Angle} from "svg-path-kit";
-import RadialReveal from "@/app/components/RadialReveal";
+import ConicReveal from "@/app/components/ConicReveal";
 import SvgCircularText from "@/app/components/SvgCircularText";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
@@ -151,7 +151,7 @@ export default function SolutionStatement() {
 						 css={css`
 							 will-change: transform;
 						 `}>
-						<RadialReveal
+						<ConicReveal
 							angle={angle} startAngle={ANGLE_RANGE[0]}
 							centerX={CIRCLE_CENTER}
 							centerY={CIRCLE_CENTER}

@@ -27,7 +27,7 @@ export default function TechKunLogo() {
                          80deg,
                          var(--primary-500) 0%,
                          var(--primary-500) 40%,
-                         var(--primary-200),
+                         var(--primary-100),
                          var(--primary-500) 60%,
                          var(--primary-500) 100%
                      ) 100% center / 400% 100%;

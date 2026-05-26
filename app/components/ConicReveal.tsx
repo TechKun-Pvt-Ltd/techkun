@@ -17,7 +17,7 @@ export type RadialRevealProps = {
 const roundOff = (num: number) => round(num, 4);
 
 type SvgChild = React.ReactElement<React.SVGProps<SVGElement>>;
-export default function RadialReveal({ angle, startAngle: startAngleValue = 0, centerX, centerY, radius, frontLayer, backLayer }: RadialRevealProps) {
+export default function ConicReveal({ angle, startAngle: startAngleValue = 0, centerX, centerY, radius, frontLayer, backLayer }: RadialRevealProps) {
 	const center = Point2D.of(centerX, centerY);
 	const startPolarVector = Vector2D.polar(radius, startAngleValue);
 	const backClipPath = useTransform(

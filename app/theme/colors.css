@@ -1,6 +1,7 @@
 :root {
     color-scheme: dark;
-    --primary-color: oklch(0.56 0.16 256 / 1);
+    --primary-color: oklch(0.56 0.18 256 / 1);
+    /*--primary-color: oklch(0.56 0.2 270);*/
 
     --primary-50: color-mix(in oklch, var(--primary-color), white 50%);
     --primary-100: color-mix(in oklch, var(--primary-color), white 40%);
