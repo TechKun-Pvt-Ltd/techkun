@@ -21,14 +21,18 @@ const lightDown = keyframes`
 const DOT_COUNT = 4;
 const MIN_DELAY = 0.4;
 const DELAY_STEP = 0.1;
+let minDelaySetToZero = false;
 
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
 	return <span
-		style={{color: 'var(--foreground)', cursor: 'pointer', ...style}}
+		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': MIN_DELAY + 's', ...style} as React.CSSProperties}
 		{...props}
 		onClick={ev => {
 			ev.currentTarget.toggleAttribute("data-clicked");
-
+			if (!minDelaySetToZero) {
+				minDelaySetToZero = true;
+				ev.currentTarget.style.setProperty("--min-delay", '0s');
+			}
 		}}
 	>
 		<span css={css`
@@ -45,6 +49,9 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				color: var(--neutral-800);
 			}
 	
+			svg.bulb-icon, svg.dots circle {
+                animation: ${lightUp} 0.2s both;
+			}
 			svg.bulb-icon {
 				top: 0.24em;
 				--_width: 90%;
@@ -52,7 +59,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				transform-origin: center bottom;
 				width: var(--_width);
 				--light-up-color: var(--foreground);
-				animation: ${lightUp} 0.2s ${MIN_DELAY + DOT_COUNT * DELAY_STEP}s both;
+				animation-delay: calc(var(--min-delay) + ${DOT_COUNT * DELAY_STEP}s);
 			}
 			svg.dots {
 				top: calc(0.32em + 1cap - 1ex);
@@ -70,20 +77,15 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 					&:nth-of-type(4) {
 						--light-up-color: var(--tertiary-200);
 					}
-	
-					animation: ${lightUp} 0.2s both;
-					animation-delay: calc(${MIN_DELAY}s + (${DOT_COUNT - 1} - var(--i)) * ${DELAY_STEP}s);
+
+					animation-delay: calc(var(--min-delay) + (${DOT_COUNT - 1} - var(--i)) * ${DELAY_STEP}s);
 				}
 			}
 			[data-clicked] & {
-				svg.bulb-icon {
+				svg.bulb-icon, svg.dots circle {
 					animation-name: ${lightDown};
 					animation-delay: 0s;
 				}
-                svg.dots circle {
-                    animation-name: ${lightDown};
-                    animation-delay: 0s;
-                }
             }
 		`}>
 			i
