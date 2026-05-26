@@ -28,6 +28,20 @@
     --secondary-900: color-mix(in oklch, var(--secondary-color), black 40%);
     --secondary-950: color-mix(in oklch, var(--secondary-color), black 50%);
 
+    --tertiary-color: oklch(from var(--primary-color) l c calc(h + 40) / 1);
+
+    --tertiary-50: color-mix(in oklch, var(--tertiary-color), white 50%);
+    --tertiary-100: color-mix(in oklch, var(--tertiary-color), white 40%);
+    --tertiary-200: color-mix(in oklch, var(--tertiary-color), white 30%);
+    --tertiary-300: color-mix(in oklch, var(--tertiary-color), white 20%);
+    --tertiary-400: color-mix(in oklch, var(--tertiary-color), white 10%);
+    --tertiary-500: var(--tertiary-color);
+    --tertiary-600: color-mix(in oklch, var(--tertiary-color), black 10%);
+    --tertiary-700: color-mix(in oklch, var(--tertiary-color), black 20%);
+    --tertiary-800: color-mix(in oklch, var(--tertiary-color), black 30%);
+    --tertiary-900: color-mix(in oklch, var(--tertiary-color), black 40%);
+    --tertiary-950: color-mix(in oklch, var(--tertiary-color), black 50%);
+
     /*--phi: calc((1 + sqrt(5)) / 2);*/
     /*--step: calc(pow(var(--phi), 1/4) - 1);*/
 

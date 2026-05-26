@@ -1,53 +1,9 @@
 'use client'
-import React, {useId} from "react";
+import React from "react";
 import {css} from "@emotion/react";
 import Precision from "@/app/components/banner-components/Precision";
 import Beauty from "@/app/components/banner-components/Beauty";
 import Identity from "@/app/components/banner-components/Identity";
-
-// const gradientAngle = property("gradient-angle")`
-//     syntax: "<angle>";
-//     inherits: true;
-//     initial-value: 0deg;
-// `;
-//
-// const rotateConicGradient = keyframes`
-//     0% {
-//         ${gradientAngle}: 0deg;
-//     }
-//     100% {
-//         ${gradientAngle}: 360deg;
-//     }
-// `;
-function Delightful() {
-	const id = useId();
-	return <svg css={css`
-        width: 4.2em;
-        height: 1em;
-        overflow: visible;
-	`}>
-		<defs>
-			<mask id={`stroke-mask-${id}`}>
-				<text y="var(--font-size-4xl)" stroke="white" strokeWidth="2">delightful</text>
-			</mask>
-		</defs>
-		<foreignObject mask={`url(#stroke-mask-${id})`} x="-5%" y="-5%" width="110%" height="160%">
-			<div xmlns="http://www.w3.org/1999/xhtml" css={css`
-                width: 100%;
-                height: 100%;
-                //background: conic-gradient(
-                //    from var({gradientAngle}) at 50% 50%,
-                //    var(--secondary-500),
-                //    var(--primary-500),
-                //    var(--primary-500),
-                //    var(--secondary-500)
-                //) 50%/100%;
-                //animation: {rotateConicGradient} 4s linear infinite;
-			`}/>
-		</foreignObject>
-		<text y="var(--font-size-4xl)" fill="var(--background)">delightful</text>
-	</svg>;
-}
 
 export default function Banner() {
 	return <section>
@@ -75,9 +31,11 @@ export default function Banner() {
 						margin-inline-end: 0.05em;
 					}
 				`}>
-					<span style={{display: 'inline-block', marginBlockEnd: '0.25em'}}><Beauty className="precomma"/>, <Precision className="precomma"/>,</span><br/>
+					<span style={{display: 'inline-block', marginBlockEnd: '0.25em'}}>
+						<Beauty className="precomma"/>, <Precision className="precomma"/>,
+					</span><br/>
 					<span><Plus/> </span>
-					<Identity style={{ marginInlineEnd: "0.5em" }} />
+					<span style={{ marginInlineEnd: "0.4em" }}><Identity />.</span>
 				</span>
 			</h1>
 		</div>

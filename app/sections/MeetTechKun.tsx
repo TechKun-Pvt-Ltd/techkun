@@ -105,8 +105,8 @@ export default function MeetTechKun() {
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                 <stop offset="0%" stopColor="var(--primary-500)" />
                                 <stop offset="50%" stopColor="var(--primary-500)" />
-                                <stop offset="75%" stopColor="oklch(from var(--primary-500) l c calc(h + 20))" />
-                                <stop offset="100%" stopColor="oklch(from var(--primary-500) l c calc(h + 40))" />
+                                <stop offset="75%" stopColor="var(--secondary-500)" />
+                                <stop offset="100%" stopColor="var(--tertiary-500)" />
                             </linearGradient>
                             <mask id="animated-logo-mask">
                                 <motion.path d={logoAnimation.frames[0].value}
