@@ -57,7 +57,6 @@ const tabs: TabData[] = [
 export default function ProblemStatement() {
 	return <section css={css`
 		padding-block: 48px;
-        overflow-x: clip;
 	`}>
 		<div css={css`
             display: flex;

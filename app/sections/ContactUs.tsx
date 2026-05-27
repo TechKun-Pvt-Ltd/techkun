@@ -213,7 +213,6 @@ function ShimmerText(
 export default function ContactUs() {
     return <section>
         <div css={css`
-            overflow-x: clip;
             display: grid;
             grid-auto-flow: row;
             grid-auto-rows: max-content;

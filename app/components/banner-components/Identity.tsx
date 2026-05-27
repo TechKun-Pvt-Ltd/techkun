@@ -20,7 +20,7 @@ const lightDown = keyframes`
 
 const DOT_COUNT = 4;
 const MIN_DELAY = 0.4;
-const DELAY_STEP = 0.1;
+const STAGGER = 0.1;
 let minDelaySetToZero = false;
 
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
@@ -59,7 +59,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				transform-origin: center bottom;
 				width: var(--_width);
 				--light-up-color: var(--foreground);
-				animation-delay: calc(var(--min-delay) + ${DOT_COUNT * DELAY_STEP}s);
+				animation-delay: calc(var(--min-delay) + ${DOT_COUNT * STAGGER}s);
 			}
 			svg.dots {
 				top: calc(0.32em + 1cap - 1ex);
@@ -78,7 +78,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 						--light-up-color: var(--tertiary-200);
 					}
 
-					animation-delay: calc(var(--min-delay) + (${DOT_COUNT - 1} - var(--i)) * ${DELAY_STEP}s);
+					animation-delay: calc(var(--min-delay) + (${DOT_COUNT - 1} - var(--i)) * ${STAGGER}s);
 				}
 			}
 			[data-clicked] & {

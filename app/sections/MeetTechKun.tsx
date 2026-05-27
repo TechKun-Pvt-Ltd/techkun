@@ -48,7 +48,6 @@ export default function MeetTechKun() {
     }, []);
 
     return <section css={css`
-        overflow-x: clip;
         align-items: center;
         position: relative;
         isolation: isolate;
