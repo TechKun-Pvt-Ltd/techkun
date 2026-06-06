@@ -133,8 +133,9 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 								css={css`
 									color: var(--neutral-800);
 									height: 100%;
-									vertical-align: text-bottom;
-									-webkit-text-stroke: 1px var(--neutral-800);
+                                    display: flex;
+                                    align-items: center;
+									-webkit-text-stroke: 2px var(--neutral-800);
 								`}
 							>
 								precision
@@ -145,7 +146,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 							y={metrics ? metrics.fontSize : undefined}
 							fill="var(--neutral-800)"
 							stroke="var(--neutral-800)"
-							strokeWidth="1"
+							strokeWidth="2"
 						>
 							precision
 						</text>
