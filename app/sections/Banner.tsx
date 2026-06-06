@@ -19,7 +19,6 @@ export default function Banner() {
             display: flex;
 			flex-direction: column;
             justify-content: space-between;
-			align-items: center;
             padding-block: 96px 48px;
             text-align: center;
 			gap: 64px;
