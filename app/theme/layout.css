@@ -1,16 +1,13 @@
 :root {
-    --page-width: 1280px;
+    --page-max-width: 1280px;
+    --page-padding: clamp(16px, 4vw, 32px);
 
     --navbar-height: 4.8rem;
-    --section-min-height: 896px;
+    --section-min-height: 768px;
+    --section-max-height: 1024px;
+    --section-height: clamp(var(--section-min-height), 100vh - var(--navbar-height), var(--section-max-height));
     /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
-}
-
-@property --page-padding {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
 }
 
 html {
@@ -33,7 +30,7 @@ body {
     grid-template-columns:
         minmax(0, 1fr)
         [breakout-start] var(--page-padding)
-        [page-start] minmax(0, calc(var(--page-width) - 2 * var(--page-padding))) [page-end]
+        [page-start] minmax(0, calc(var(--page-max-width) - 2 * var(--page-padding))) [page-end]
         var(--page-padding) [breakout-end]
         minmax(0, 1fr);
     grid-template-rows:
@@ -64,7 +61,7 @@ body {
         /*);*/
 
         grid-row: content;
-        grid-auto-rows: minmax(var(--section-min-height), max-content);
+        grid-auto-rows: minmax(var(--section-height), max-content);
         isolation: isolate;
 
         & > section {

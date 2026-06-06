@@ -51,13 +51,14 @@ export default function MeetTechKun() {
         align-items: center;
         position: relative;
         isolation: isolate;
+
         &::before {
             content: '';
             z-index: -1;
             position: absolute;
             inset: 0;
             background: radial-gradient(
-                ellipse var(--page-width) 75% at 50% 50%,
+                ellipse var(--page-max-width) 75% at 50% 50%,
                 transparent 12.5%,
                 var(--secondary-950) 62.5%,
                 transparent

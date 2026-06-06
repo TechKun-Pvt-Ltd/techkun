@@ -2,7 +2,7 @@
 import React from "react";
 import logoPath from "@/public/logo-path.json";
 import {css, Global} from "@emotion/react";
-import {device} from "@/app/theme/device-breakpoints";
+import {deviceBreakpoints} from "@/app/theme/device-breakpoints";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 
 declare module "react" {
@@ -14,23 +14,15 @@ declare module "react" {
 export default function Shared() {
     return <>
         <Global styles={css`
-            @layer layout {
+            @layer viewport {
                 :root {
-                    --page-padding: 16px;
-                    @media ${device.mobileM} {
-                        --page-padding: 32px;
-                    }
-                }
-            }
-
-            @layer typography {
-                :root {
-                    @media ${device.mobileL} {
-                        --scale-ratio: 1.189;
-                    }
-                    @media ${device.tablet} {
-                        --scale-ratio: 1.260;
-                    }
+                    --mobile-s: ${deviceBreakpoints.mobileS} !important;
+                    --mobile-m: ${deviceBreakpoints.mobileM} !important;
+                    --mobile-l: ${deviceBreakpoints.mobileL} !important;
+                    --tablet: ${deviceBreakpoints.tablet} !important;
+                    --laptop: ${deviceBreakpoints.laptop} !important;
+                    --laptop-l: ${deviceBreakpoints.laptopL} !important;
+                    --desktop: ${deviceBreakpoints.desktop} !important;
                 }
             }
         `} />

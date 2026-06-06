@@ -1,5 +1,6 @@
-@layer layout, typography, colors;
+@layer viewport, layout, typography, colors;
 
+@import "viewport.css" layer(viewport);
 @import "layout.css" layer(layout);
 @import "typography.css" layer(typography);
 @import "colors.css" layer(colors);

@@ -6,7 +6,6 @@ import Button from "@/app/components/ui/Button";
 
 export default function Header() {
     return <header css={css`
-        border-bottom: var(--border) 1px solid;
         box-shadow: 0.5px 1px 1px oklch(0 0 0 / 0.7);
         background-color: oklch(from var(--background) l c h / 0.375);
         backdrop-filter: blur(10px);

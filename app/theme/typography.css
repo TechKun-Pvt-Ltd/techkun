@@ -34,7 +34,15 @@
        Tritone:        1.414
        Perfect Fifth:  1.500
     */
-    --scale-ratio: 1.125;
+    --min-scale-ratio: 1.125;
+    --max-scale-ratio: 1.260;
+    --scale-ratio: clamp(
+        var(--min-scale-ratio),
+        var(--min-scale-ratio) +
+            (var(--max-scale-ratio) - var(--min-scale-ratio)) *
+                (var(--viewport-width-num) - var(--mobile-s)) / (var(--tablet) - var(--mobile-s)),
+        var(--max-scale-ratio)
+    );
 
     /* Base line-height ratio (line-height / font-size at base size).
        A value of 1.5 means 24px line-height for 16px base. */

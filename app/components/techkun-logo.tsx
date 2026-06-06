@@ -25,11 +25,10 @@ export default function TechKunLogo() {
                      height: 100%;
                      background: linear-gradient(
                          80deg,
-                         var(--primary-500) 0%,
-                         var(--primary-500) 40%,
-                         var(--primary-100),
-                         var(--primary-500) 60%,
-                         var(--primary-500) 100%
+                         var(--primary-500) 45%,
+                         var(--primary-100) 45%,
+                         var(--primary-100) 55%,
+                         var(--primary-500) 55%
                      ) 100% center / 400% 100%;
 
                      &[data-shimmer="true"] {

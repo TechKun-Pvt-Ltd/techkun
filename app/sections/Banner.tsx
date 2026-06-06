@@ -8,16 +8,18 @@ import Identity from "@/app/components/banner-components/Identity";
 export default function Banner() {
 	return <section>
 		<div css={css`
+			min-height: 100%;
             display: flex;
-            justify-content: center;
-            align-items: start;
-            padding-block: 160px 96px;
+			flex-direction: column;
+            justify-content: space-between;
+			align-items: center;
+            padding-block: 96px 48px;
             text-align: center;
+			gap: 64px;
 		`}>
 			<h1 className="hero-heading">
 				<span className="text-4xl" style={{display: 'inline-block'}}>
-					We build software<br/>
-					with
+					We build software<br/>with
 				</span><br/>
 				<span css={css`
 					display: inline-block;
@@ -31,13 +33,21 @@ export default function Banner() {
 						margin-inline-end: 0.05em;
 					}
 				`}>
-					<span style={{display: 'inline-block', marginBlockEnd: '0.25em'}}>
+					<span style={{display: 'inline-block', marginBlockEnd: '0.25em', whiteSpace: 'nowrap'}}>
 						<Beauty className="precomma"/>, <Precision className="precomma"/>,
 					</span><br/>
 					<span><Plus/> </span>
 					<span style={{ marginInlineEnd: "0.4em" }}><Identity />.</span>
 				</span>
 			</h1>
+			<p css={css`
+				color: var(--neutral-600);
+				//border-top: 1px solid var(--border);
+				padding-block-start: 8px;
+				font-weight: 700;
+			`}>
+				Brand research & planning • Design • Engineering • Testing • Launch & maintenance
+			</p>
 		</div>
 	</section>;
 }

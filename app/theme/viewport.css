@@ -1,0 +1,40 @@
+:root {
+    --pixel: 1px !important;
+    --viewport-width-num: calc(100vw / var(--pixel)) !important;
+}
+
+@property --mobile-s {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --mobile-m {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --mobile-l {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --tablet {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --laptop {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --laptop-l {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --desktop {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
