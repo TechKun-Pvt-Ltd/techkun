@@ -55,7 +55,7 @@ export default function Cofounders() {
         text-align: right;
 
         & .person-img {
-            margin-inline: -16px;
+            margin-inline: -8px;
             min-width: 400px;
             width: 100%;
             justify-self: end;
