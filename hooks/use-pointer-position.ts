@@ -21,15 +21,14 @@ function filterPrimaryPointer(handler: (ev: PointerEvent) => any) {
 	});
 }
 
-let pointerX: MotionValue<number>;
-let pointerY: MotionValue<number>;
+let pointerPosition: { x: MotionValue<number>; y: MotionValue<number> };
 
 /**
  * Creates global shared pointer motion values.
  */
 function createPointerPosition() {
-	pointerX = motionValue(0);
-	pointerY = motionValue(0);
+	const pointerX = motionValue(0);
+	const pointerY = motionValue(0);
 
 	let latestX = 0;
 	let latestY = 0;
@@ -51,20 +50,17 @@ function createPointerPosition() {
 			})
 		);
 	}
+	pointerPosition = Object.freeze({ x: pointerX, y: pointerY });
 }
 
 /**
  * Shared hook-like accessor for pointer position motion values.
  */
 function usePointerPosition() {
-	if (!pointerX) {
+	if (!pointerPosition)
 		createPointerPosition();
-	}
 
-	return {
-		x: pointerX,
-		y: pointerY,
-	};
+	return pointerPosition;
 }
 
 export {

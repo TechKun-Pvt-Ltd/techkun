@@ -14,7 +14,7 @@ export default function Banner() {
 	return <section>
 		<div css={css`
 			min-height: 100%;
-			height: 100%;
+			//height: 100%;
 			width: 75%;
 			justify-self: center;
             display: flex;

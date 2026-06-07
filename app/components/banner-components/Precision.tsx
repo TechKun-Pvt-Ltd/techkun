@@ -1,4 +1,4 @@
-import React, {useEffect, useId, useRef, useState} from "react";
+import React, {useEffect, useId, useState} from "react";
 import {motion} from "motion/react";
 import {SpringOptions} from "motion";
 import {css} from "@emotion/react";
@@ -13,11 +13,10 @@ const springOptions: SpringOptions = {stiffness: 500, damping: 30};
 const DEFAULT_CENTER: [string, string] = ["78.6%", "59%"];
 const xBounds: [number, number] = [0, 1];
 
-export default function Precision(props: React.ComponentPropsWithoutRef<typeof motion.span>) {
+export default function Precision(props: React.ComponentPropsWithoutRef<"span">) {
 	const id = useId();
 	const browser = useBrowser();
 
-	const textRef = useRef<SVGTextElement & HTMLSpanElement>(null);
 	const [metrics, setMetrics] = useState<FontMetrics | null>(null);
 
 	const clipId = "clip-" + id;
@@ -29,8 +28,8 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 		if (browser.isNone) return;
 
 		function listener() {
-			if (!textRef.current) return;
-			const styles = getComputedStyle(textRef.current);
+			if (!containerRef.current) return;
+			const styles = getComputedStyle(containerRef.current);
 			const font = styles.font || `
 				${styles.fontStyle}
 				${styles.fontVariant}
@@ -45,7 +44,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 		return () => window.removeEventListener("resize", listener);
 	}, [browser]);
 
-	return <motion.span
+	return <span
 		{...props}
 		css={css`
 			position: relative;
@@ -60,13 +59,16 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 			// }
 		`}
 		ref={containerRef}
-		whileHover="hover"
 	>
 		precisi<span style={{opacity: 0.2}}>o</span>n
-		<span css={css`
-            position: absolute;
-            inset: 0;
-		`}>
+		<motion.span
+			style={{"--x": x, "--y": y, "--r": "0.24em"} as React.CSSProperties}
+			css={css`
+				position: absolute;
+				inset: 0;
+			`}
+			whileHover={{ "--r": "0.72em" }}
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
@@ -78,14 +80,13 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 				strokeLinecap="round"
 			>
 				<defs>
-					<motion.circle
+					<circle
 						id={circleId}
-						r="0.24em" cx={x} cy={y}
-						variants={{
-							hover: {
-								r: "0.72em"
-							}
-						}}
+						r="var(--r)" cx="0" cy="0"
+						css={css`
+							transform-box: view-box;
+							transform: translate(var(--x), var(--y));
+						`}
 					/>
 					<mask id={maskId}>
 						<rect width="100%" height="100%" fill="white"></rect>
@@ -100,7 +101,6 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 						<foreignObject x="0" y="0" width="100%" height="100%">
 							<span
 								xmlns="http://www.w3.org/1999/xhtml"
-								ref={textRef}
 								css={css`
 									color: var(--neutral-800);
 									height: 100%;
@@ -113,7 +113,6 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 							</span>
 						</foreignObject> :
 						<text
-							ref={textRef}
 							y="1em"
 							fill="var(--neutral-800)"
 							stroke="var(--neutral-800)"
@@ -195,14 +194,25 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 					stroke="var(--neutral-400)"
 					strokeWidth="2"
 					strokeDasharray="8"
+					css={css`
+						line {
+							transform-box: view-box;
+							&:first-of-type {
+								transform: translateX(var(--x));
+							}
+							&:nth-of-type(2) {
+								transform: translateY(var(--y));
+							}
+						}
+					`}
 				>
-					<motion.line
-						x1={x} y1="0%"
-						x2={x} y2="100%"
+					<line
+						x1="0" y1="0%"
+						x2="0" y2="100%"
 					/>
-					<motion.line
-						x1={xBounds[0] * 100 + '%'} y1={y}
-						x2={xBounds[1] * 100 + '%'} y2={y}
+					<line
+						x1={xBounds[0] * 100 + '%'} y1="0"
+						x2={xBounds[1] * 100 + '%'} y2="0"
 					/>
 				</g>
 				<use
@@ -210,6 +220,6 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 					stroke="var(--neutral-200)" strokeWidth="2.5%"
 				/>
 			</svg>
-		</span>
-	</motion.span>;
+		</motion.span>
+	</span>;
 }

@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
 import {SpringOptions} from "motion";
 import {useSpring, useTransform} from "motion/react";
 import {usePointerPosition} from "@/hooks/use-pointer-position";
@@ -31,6 +31,7 @@ export function useFollowPointer<T extends HTMLElement>(
 		yBounds?: [number, number];
 	} = {}
 ) {
+	const containerRef = useRef<T>(null);
 	const rootBoundingRect = useRef<BoundingRect>(initialRect);
 	const pointer = usePointerPosition();
 
@@ -48,12 +49,10 @@ export function useFollowPointer<T extends HTMLElement>(
 	const x = useSpring(coordinates[0], springOptions);
 	const y = useSpring(coordinates[1], springOptions);
 
-	const containerRef = (el: T) => {
-		if (!el) return;
-
+	useEffect(() => {
 		function update() {
-			if (!el) return;
-			rootBoundingRect.current = el.getBoundingClientRect();
+			if (!containerRef.current) return;
+			rootBoundingRect.current = containerRef.current.getBoundingClientRect();
 		}
 
 		update();
@@ -63,7 +62,7 @@ export function useFollowPointer<T extends HTMLElement>(
 			window.removeEventListener("scroll", update);
 			window.removeEventListener("resize", update);
 		};
-	};
+	}, []);
 
 	return {
 		pointer,
