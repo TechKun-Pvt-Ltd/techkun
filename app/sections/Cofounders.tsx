@@ -6,7 +6,7 @@ import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
-import {device} from "@/app/theme/device-breakpoints";
+import {device} from "@/app/styles/device-breakpoints";
 import EmailLink from "@/app/components/EmailLink";
 
 const people: {

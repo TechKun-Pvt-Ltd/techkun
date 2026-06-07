@@ -4,7 +4,7 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
-import {device} from "@/app/theme/device-breakpoints";
+import {device} from "@/app/styles/device-breakpoints";
 
 export default function MeetTechKun() {
     const [scope, animate] = useAnimate<HTMLDivElement>();

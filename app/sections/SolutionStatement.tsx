@@ -116,7 +116,7 @@ export default function SolutionStatement() {
 	const secondTxtStartAngle = firstTextEndAngle + charAngle;
 
 	return <section css={css`
-        padding-block: 48px;
+        padding-block: 96px;
 	`}>
 		<div css={css`
             display: flex;

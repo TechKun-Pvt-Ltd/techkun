@@ -2,7 +2,7 @@
 import {css, keyframes} from "@emotion/react";
 import {AnimationSequence, motion, useAnimate} from "motion/react";
 import React, {useEffect, useRef} from "react";
-import {device} from "@/app/theme/device-breakpoints";
+import {device} from "@/app/styles/device-breakpoints";
 import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
 import {property} from "@/app/utils/css-property";

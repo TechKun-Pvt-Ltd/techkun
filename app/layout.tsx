@@ -1,12 +1,13 @@
 /** @jsxImportSource react */
 import React from 'react';
 import type { Metadata } from "next";
-import "@/app/theme/globals.css";
+import "@/app/styles/globals.css";
 import Header from "@/app/Header";
 import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
+import {deviceBreakpoints} from "@/app/styles/device-breakpoints";
 
 // const rouge_script = Rouge_Script({ weight: "400" });
 const quicksand = Quicksand();
@@ -28,6 +29,21 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+            <head>
+                <style>{`
+                    @layer viewport {
+                        :root {
+                            --mobile-s: ${deviceBreakpoints.mobileS} !important;
+                            --mobile-m: ${deviceBreakpoints.mobileM} !important;
+                            --mobile-l: ${deviceBreakpoints.mobileL} !important;
+                            --tablet: ${deviceBreakpoints.tablet} !important;
+                            --laptop: ${deviceBreakpoints.laptop} !important;
+                            --laptop-l: ${deviceBreakpoints.laptopL} !important;
+                            --desktop: ${deviceBreakpoints.desktop} !important;
+                        }
+                    }
+                `}</style>
+            </head>
             <body>
                 <Header />
                 {children}

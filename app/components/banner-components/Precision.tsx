@@ -4,50 +4,7 @@ import {SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
-
-type Metrics = {
-	fontSize: number;
-	baseline: number;
-	ascender: number;
-	descender: number;
-	xHeight: number;
-	capHeight: number;
-};
-
-const measureText = async (el: SVGTextElement): Promise<Metrics> => {
-	await document.fonts.ready;
-
-	const styles = getComputedStyle(el);
-
-	const canvas = document.createElement("canvas");
-	const ctx = canvas.getContext("2d")!;
-
-	const fontSize = parseFloat(styles.fontSize);
-	ctx.font = styles.font || `
-		${styles.fontStyle}
-		${styles.fontVariant}
-		${styles.fontWeight}
-		${styles.fontSize}
-		${styles.fontFamily}
-	`;
-
-	const text = el.textContent || "";
-
-	const mainMetrics = ctx.measureText(text);
-	const xMetrics = ctx.measureText("x");
-	const capMetrics = ctx.measureText("H");
-
-	const baseline = mainMetrics.fontBoundingBoxAscent;
-
-	return {
-		fontSize,
-		baseline,
-		ascender: baseline - mainMetrics.fontBoundingBoxAscent,
-		descender: baseline + mainMetrics.fontBoundingBoxDescent,
-		xHeight: baseline - xMetrics.actualBoundingBoxAscent,
-		capHeight: baseline - capMetrics.actualBoundingBoxAscent
-	};
-};
+import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 68;
@@ -61,7 +18,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 	const browser = useBrowser();
 
 	const textRef = useRef<SVGTextElement & HTMLSpanElement>(null);
-	const [metrics, setMetrics] = useState<Metrics | null>(null);
+	const [metrics, setMetrics] = useState<FontMetrics | null>(null);
 
 	const clipId = "clip-" + id;
 	const maskId = "mask-" + id;
@@ -69,9 +26,23 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
 
 	useEffect(() => {
-		if (browser.isNone || !textRef.current) return;
+		if (browser.isNone) return;
 
-		measureText(textRef.current).then(setMetrics);
+		function listener() {
+			if (!textRef.current) return;
+			const styles = getComputedStyle(textRef.current);
+			const font = styles.font || `
+				${styles.fontStyle}
+				${styles.fontVariant}
+				${styles.fontWeight}
+				${styles.fontSize}
+				${styles.fontFamily}
+			`;
+			measureFont(font).then(setMetrics);
+		}
+		listener();
+		window.addEventListener("resize", listener);
+		return () => window.removeEventListener("resize", listener);
 	}, [browser]);
 
 	return <motion.span
@@ -143,7 +114,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 						</foreignObject> :
 						<text
 							ref={textRef}
-							y={metrics ? metrics.fontSize : undefined}
+							y="1em"
 							fill="var(--neutral-800)"
 							stroke="var(--neutral-800)"
 							strokeWidth="2"
@@ -165,7 +136,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 						<text
 							className="body-text"
 							x={`30%`}
-							y={metrics.descender - 1}
+							y={metrics.descender}
 						>baseline</text>
 					</g>}
 					{metrics && <g
@@ -181,8 +152,8 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 						/>
 
 						<line
-							x1={`${xHeightIndicatorStart - 6}%`}
-							x2={`${xHeightIndicatorStart + 4}%`}
+							x1={`${xHeightIndicatorStart - 2}%`}
+							x2={`${xHeightIndicatorStart + 2}%`}
 							y1={metrics.baseline}
 							y2={metrics.baseline}
 						/>
@@ -193,15 +164,15 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 							y2={metrics.xHeight}
 						/>
 						<line
-							x1={`${xHeightIndicatorStart + 4}%`}
-							x2={`${xHeightIndicatorStart - 6}%`}
+							x1={`${xHeightIndicatorStart + 2}%`}
+							x2={`${xHeightIndicatorStart - 2}%`}
 							y1={metrics.xHeight}
 							y2={metrics.xHeight}
 						/>
 
 						<line
-							x1={`${capHeightIndicatorStart - 6}%`}
-							x2={`${capHeightIndicatorStart + 4}%`}
+							x1={`${capHeightIndicatorStart - 2}%`}
+							x2={`${capHeightIndicatorStart + 2}%`}
 							y1={metrics.baseline}
 							y2={metrics.baseline}
 						/>
@@ -212,8 +183,8 @@ export default function Precision(props: React.ComponentPropsWithoutRef<typeof m
 							y2={metrics.capHeight}
 						/>
 						<line
-							x1={`${capHeightIndicatorStart + 4}%`}
-							x2={`${capHeightIndicatorStart - 6}%`}
+							x1={`${capHeightIndicatorStart + 2}%`}
+							x2={`${capHeightIndicatorStart - 2}%`}
 							y1={metrics.capHeight}
 							y2={metrics.capHeight}
 						/>

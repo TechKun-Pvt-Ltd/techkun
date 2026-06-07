@@ -40,7 +40,7 @@
         var(--min-scale-ratio),
         var(--min-scale-ratio) +
             (var(--max-scale-ratio) - var(--min-scale-ratio)) *
-                (var(--viewport-width-num) - var(--mobile-s)) / (var(--tablet) - var(--mobile-s)),
+                (var(--viewport-width-num) - var(--mobile-s)) / (var(--laptop) - var(--mobile-s)),
         var(--max-scale-ratio)
     );
 

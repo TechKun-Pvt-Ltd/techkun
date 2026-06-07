@@ -45,7 +45,7 @@ export default function ErrorConsole() {
 		);
         font-family: monospace;
 	`}>
-		<p className="xl-text" style={{marginBlockEnd: '1.25em'}}>
+		<p className="xl-text" style={{marginBlockEnd: '1.25em', whiteSpace: 'nowrap'}}>
 			<span css={css`color: var(--muted-foreground);`}>{">\u00A0"}</span>
 			<TextScramble ref={scrambleRef} as="span">{texts[itemIndex] ?? ""}</TextScramble>
 		</p>
