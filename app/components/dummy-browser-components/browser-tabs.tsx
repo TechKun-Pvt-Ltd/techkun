@@ -19,16 +19,21 @@ export default function BrowserTabs({ tabs }: { tabs: TabData[] }) {
         .tab {
 			border-radius: 8px;
             flex: 1;
-            min-width: 16px;
+			display: flex;
+            min-width: 24px;
             max-width: 256px;
-            padding: 7px 12px;
+            padding: 7px 0;
+			
+			.padding {
+				min-width: 4px;
+				flex: 0 1 12px;
+			}
 
             .tab-contents {
-                flex: 1 1 100%;
+				min-width: 0;
+                flex: 1;
                 overflow: clip;
-                display: flex;
-                align-items: center;
-                gap: 8px;
+				padding-left: 8px;
 				mask: linear-gradient(
 					to right,
 					black calc(100% - 16px),
@@ -37,12 +42,12 @@ export default function BrowserTabs({ tabs }: { tabs: TabData[] }) {
             }
 
             .favicon {
+				flex: 0 0 1em;
                 width: 1em;
                 height: auto;
             }
 
             .title {
-                flex: 1 1 0;
                 white-space: nowrap;
             }
         }
@@ -66,12 +71,14 @@ export default function BrowserTabs({ tabs }: { tabs: TabData[] }) {
 	`}>
 		{tabs.map(tab => <React.Fragment key={tab.title}>
 			<div className={`tab ${tab.active ? 'active' : ''}`}>
+				<div className="padding" />
+				<Image className="favicon" src={tab.icon} alt="favicon"/>
 				<div className="tab-contents">
-					<Image className="favicon" src={tab.icon} alt="favicon"/>
 					<p className="title">
 						{tab.notifications && <span>({tab.notifications})</span>} {tab.title}
 					</p>
 				</div>
+				<div className="padding" />
 			</div>
 			<div className="separator"></div>
 		</React.Fragment>)}

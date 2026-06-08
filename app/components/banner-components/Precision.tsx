@@ -5,6 +5,7 @@ import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
+import {frame} from "motion-dom";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 68;
@@ -27,20 +28,19 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	useEffect(() => {
 		if (browser.isNone || !containerRef.current) return;
 
-		const styles = getComputedStyle(containerRef.current);
+		let styles: CSSStyleDeclaration;
 		let lastFont: string;
-		function listener() {
-			const font = styles.font || `
-				${styles.fontStyle}
-				${styles.fontVariant}
-				${styles.fontWeight}
-				${styles.fontSize}
-				${styles.fontFamily}
-			`;
+		function updateMetrics() {
+			if (!styles)
+				styles = getComputedStyle(containerRef.current!);
+			const font = styles.font;
 			if (font === lastFont)
 				return;
 			lastFont = font;
 			measureFont(font).then(setMetrics);
+		}
+		function listener() {
+			frame.setup(updateMetrics);
 		}
 		listener();
 		window.addEventListener("resize", listener);
@@ -67,20 +67,18 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		<motion.span
 			style={{"--x": x, "--y": y} as React.CSSProperties}
 			css={css`
-				@property --scale {
-					syntax: "<number> | <percentage>";
+				@property --r {
+					syntax: "<length-percentage>";
 					inherits: true;
-					initial-value: 1;
+					initial-value: 0;
 				}
 				position: absolute;
 				inset: 0;
+				--r: 0.24em;
 				&:hover {
-					--scale: 3;
+					--r: 0.72em;
 				}
 			`}
-			// whileHover={{
-			// 	"--r": "0.72em"
-			// }}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -95,11 +93,12 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				<defs>
 					<circle
 						id={circleId}
-						r="0.24em" cx="0" cy="0"
+						cx="0" cy="0"
 						css={css`
-							transition: --scale 0.2s ease-in-out;
+							r: var(--r);
+							transition: --r 0.2s ease-in-out;
 							transform-box: view-box;
-							transform: translate(var(--x), var(--y)) scale(var(--scale));
+							transform: translate(var(--x), var(--y));
 						`}
 					/>
 					<mask id={maskId}>
@@ -231,13 +230,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				</g>
 				<use
 					href={`#${circleId}`}
-					// stroke="var(--neutral-200)" strokeWidth="2.5%"
-					css={css`
-						outline: solid var(--neutral-200);
-						outline-width: 0.08em;
-						outline-offset: -0.04em;
-						border-radius: 50%;
-					`}
+					stroke="var(--neutral-200)" strokeWidth="2.5%"
 				/>
 			</svg>
 		</motion.span>

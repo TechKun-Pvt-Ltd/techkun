@@ -28,22 +28,15 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <head>
-                <style>{`
-                    @layer viewport {
-                        :root {
-                            --mobile-s: ${deviceBreakpoints.mobileS} !important;
-                            --mobile-m: ${deviceBreakpoints.mobileM} !important;
-                            --mobile-l: ${deviceBreakpoints.mobileL} !important;
-                            --tablet: ${deviceBreakpoints.tablet} !important;
-                            --laptop: ${deviceBreakpoints.laptop} !important;
-                            --laptop-l: ${deviceBreakpoints.laptopL} !important;
-                            --desktop: ${deviceBreakpoints.desktop} !important;
-                        }
-                    }
-                `}</style>
-            </head>
+        <html lang="en" style={{
+            "--mobile-s": `${deviceBreakpoints.mobileS}px`,
+            "--mobile-m": `${deviceBreakpoints.mobileM}px`,
+            "--mobile-l": `${deviceBreakpoints.mobileL}px`,
+            "--tablet": `${deviceBreakpoints.tablet}px`,
+            "--laptop": `${deviceBreakpoints.laptop}px`,
+            "--laptop-l": `${deviceBreakpoints.laptopL}px`,
+            "--desktop": `${deviceBreakpoints.desktop}px`
+        } as React.CSSProperties}>
             <body>
                 <Header />
                 {children}

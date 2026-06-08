@@ -46,6 +46,7 @@ export default function BrowserToolbar({ url = "" }: {
         gap: 16px;
 		& > svg {
 			color: var(--neutral-600);
+			flex-shrink: 0;
 		}
 	`}>
 		{backArrow}

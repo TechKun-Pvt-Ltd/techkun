@@ -3,6 +3,7 @@ import {SpringOptions} from "motion";
 import {useSpring, useTransform} from "motion/react";
 import {usePointerPosition} from "@/hooks/use-pointer-position";
 import {useMappedValues} from "@/hooks/use-mapped-values";
+import {frame} from "motion-dom";
 
 type BoundingRect = {
 	x: number;
@@ -53,19 +54,25 @@ export function useFollowPointer<T extends HTMLElement>(
 		if (!containerRef.current) return;
 
 		const el = containerRef.current;
-		let elementBottom = el.offsetTop + el.offsetHeight;
-		function update() {
+		let elementBottom: number;
+		function updateRect() {
 			rootBoundingRect.current = el.getBoundingClientRect();
 		}
-
-		update();
-		function scrollListener() {
+		function onScroll() {
 			if (elementBottom - window.scrollY > 0)
-				update();
+				updateRect();
+		}
+		function onResize() {
+			elementBottom = el.offsetTop + el.offsetHeight;
+			updateRect();
+		}
+
+		frame.read(onResize);
+		function scrollListener() {
+			frame.read(onScroll);
 		}
 		function resizeListener() {
-			elementBottom = el.offsetTop + el.offsetHeight;
-			update();
+			frame.read(onResize);
 		}
 		window.addEventListener("scroll", scrollListener);
 		window.addEventListener("resize", resizeListener);

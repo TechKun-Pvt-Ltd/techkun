@@ -9,7 +9,7 @@ export type ScreenComponentProps = {
 
 export default function ScreenComponent(props: ScreenComponentProps) {
 	return <div className="screen" css={css`
-		--scale-factor: clamp(0, (100cqw - 425px) / (1280px - 425px), 1);
+		--scale-factor: clamp(0, (100vw - var(--mobile-l)) / (var(--laptop) - var(--mobile-l)), 1);
 		height: 100%;
         ${windowCssProperties._borderRadius}: ${props.borderRadius};
         position: relative;

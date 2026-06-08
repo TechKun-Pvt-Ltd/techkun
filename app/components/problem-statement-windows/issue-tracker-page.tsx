@@ -206,89 +206,105 @@ const issues: {
 ];
 
 export default function IssueTrackerPage() {
+	const ellipsisCss = css`
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	`;
 	return <div className="small-text" css={css`
         font-family: sans-serif;
         flex-grow: 1;
-        //background-color: oklch(0.16 0.01 256);
         padding: 0 16px;
 	`}>
-		<table cellSpacing="0" css={css`
-            width: 100%;
-            text-align: left;
-
-            th {
-                border: 0 solid var(--border);
-                //border-top-width: 1px;
-                border-bottom-width: 1px;
-            }
-
-            th, td {
-                padding: 8px;
-            }
-
-            .status-tag {
-                width: max-content;
-                font-weight: bold;
-                padding: 2px 6px;
-                border-radius: 4px;
-                background-color: var(--_bg-color);
-                color: var(--_text-color);
-
-                &.todo, &.reopened {
-                    --_bg-color: #282d33;
-                    --_text-color: #9eacbb;
-                }
-
-                &.inprogress {
-                    --_bg-color: #0b2c5c;
-                    --_text-color: #87b0e9;
-                }
-            }
-
-            .priority-tag {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
+		<div css={css`
+			width: 100%;
+			overflow-x: clip;
+            display: flex;
+            flex-direction: row-reverse;
 		`}>
-			<thead>
-			<tr>
-				<th>Key</th>
-				<th>Summary</th>
-				<th>Assignee</th>
-				<th>Status</th>
-				<th>Priority</th>
-				<th>Due date</th>
-			</tr>
-			</thead>
-			<tbody>
-			{issues.map(issue => {
-				return <tr key={issue.key}>
-					<td>{issue.key}</td>
-					<td>{issue.summary}</td>
-					<td>{issue.assignee}</td>
-					<td>
-						<div
-							className={`status-tag ${issue.status === Status.REOPENED ? "reopened" : issue.status === Status.IN_PROGRESS ? "inprogress" : "todo"}`}>{issue.status}</div>
-					</td>
-					<td>
-						<div className="priority-tag">
-							{issue.priority === Priority.BLOCKER ? <>
-								{blockerPriorityIcon}
-								Blocker
-							</> : issue.priority === Priority.HIGHEST ? <>
-								{highestPriorityIcon}
-								Highest
-							</> : <>
-								{highPriorityIcon}
-								High
-							</>}
-						</div>
-					</td>
-					<td style={{color: issue.dueDateProximity === DueDateProximity.CLOSE ? "rgb(255, 204, 77)" : "rgb(255, 133, 137)"}}>{issue.dueDate}</td>
-				</tr>;
-			})}
-			</tbody>
-		</table>
+			<table cellSpacing="0" css={css`
+				min-width: 512px;
+				width: 100%;
+				table-layout: fixed;
+				text-align: left;
+	
+				th {
+					border: 0 solid var(--border);
+					//border-top-width: 1px;
+					border-bottom-width: 1px;
+				}
+	
+				th, td {
+					padding: 8px;
+				}
+	
+				.status-tag {
+					width: min-content;
+					max-width: 100%;
+					font-weight: bold;
+					padding: 2px 6px;
+					border-radius: 4px;
+					background-color: var(--_bg-color);
+					color: var(--_text-color);
+	
+					&.todo, &.reopened {
+						--_bg-color: #282d33;
+						--_text-color: #9eacbb;
+					}
+	
+					&.inprogress {
+						--_bg-color: #0b2c5c;
+						--_text-color: #87b0e9;
+					}
+				}
+	
+				.priority-tag {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+			`}>
+				<thead>
+				<tr>
+					<th css={css`width: 8%;`}>Key</th>
+					<th css={css`width: 16%;`}>Summary</th>
+					<th>Assignee</th>
+					<th>Status</th>
+					<th>Priority</th>
+					<th>Due date</th>
+				</tr>
+				</thead>
+				<tbody>
+				{issues.map(issue => {
+					return <tr key={issue.key}>
+						<td>{issue.key}</td>
+						<td css={ellipsisCss}>{issue.summary}</td>
+						<td>{issue.assignee}</td>
+						<td>
+							<div
+								className={`status-tag ${issue.status === Status.REOPENED ? "reopened" : issue.status === Status.IN_PROGRESS ? "inprogress" : "todo"}`}
+								css={ellipsisCss}
+							>{issue.status}</div>
+						</td>
+						<td>
+							<div className="priority-tag">
+								{issue.priority === Priority.BLOCKER ? <>
+									{blockerPriorityIcon}
+									Blocker
+								</> : issue.priority === Priority.HIGHEST ? <>
+									{highestPriorityIcon}
+									Highest
+								</> : <>
+									{highPriorityIcon}
+									High
+								</>}
+							</div>
+						</td>
+						<td style={{color: issue.dueDateProximity === DueDateProximity.CLOSE ? "rgb(255, 204, 77)" : "rgb(255, 133, 137)"}}>{issue.dueDate}</td>
+					</tr>;
+				})}
+				</tbody>
+			</table>
+		</div>
 	</div>;
 };

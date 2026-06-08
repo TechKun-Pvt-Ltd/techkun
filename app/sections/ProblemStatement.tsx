@@ -17,10 +17,10 @@ import BrowserToolbar from "@/app/components/dummy-browser-components/browser-to
 import IssueTrackerPage from "@/app/components/problem-statement-windows/issue-tracker-page";
 
 const tabs: TabData[] = [
-	{
-		icon: figmaIcon,
-		title: "figma"
-	},
+	// {
+	// 	icon: figmaIcon,
+	// 	title: "figma"
+	// },
 	{
 		icon: githubIcon,
 		title: "github"
@@ -61,7 +61,9 @@ export default function ProblemStatement() {
 		<div css={css`
             display: flex;
             flex-direction: column;
-			gap: 80px;
+			.section-title {
+				margin-block-end: 1.6em;
+			}
 		`}>
 			<h2 className="section-title">Tired of funding <span style={{whiteSpace: 'nowrap'}}>
 				repa
@@ -80,16 +82,14 @@ export default function ProblemStatement() {
 				</svg>
 				rs
 			</span>?</h2>
-			<div css={css`
-                height: 768px;
-			`}>
+			<div>
 				<ScreenComponent borderRadius="24px">
 					<ErrorConsole/>
 					<Window
 						title="tasks"
 						width="min(100%, 768px)"
 						height="640px"
-						inset="48px calc(5% * var(--scale-factor)) auto auto"
+						inset="96px auto auto calc(20% + (28% - 20%) * var(--scale-factor))"
 						titleBar={<BrowserTabs tabs={tabs} />}
 					>
 						<BrowserToolbar url="acme.atlassian.com" />
@@ -99,7 +99,7 @@ export default function ProblemStatement() {
 						title="chat"
 						width="min(100%, 448px)"
 						height="448px"
-						inset="272px auto auto calc(15% * var(--scale-factor))"
+						inset="320px auto auto calc(16% * var(--scale-factor))"
 						backgroundColor="oklch(from var(--background) l c h / 0.9)"
 						backdropFilter="blur(2px)"
 						titleBar={

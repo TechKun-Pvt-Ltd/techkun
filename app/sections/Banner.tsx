@@ -11,12 +11,13 @@ export default function Banner() {
         line-height: 1.4em;
 		color: var(--neutral-300);
 	`;
-	return <section>
+
+	return <section css={css`
+		justify-items: center;
+	`}>
 		<div css={css`
-			min-height: 100%;
-			//height: 100%;
+			min-height: var(--section-height);
 			width: 75%;
-			justify-self: center;
             display: flex;
 			flex-direction: column;
             justify-content: space-between;
@@ -28,7 +29,7 @@ export default function Banner() {
 			<h1 className="hero-heading" css={css`user-select: none;`}>
 				<span style={{ whiteSpace: 'nowrap' }}>We build software</span>
 				<br/>with
-				<span css={keywordCss}> <Beauty className="precomma"/>, <Precision className="precomma"/>, </span>
+				<span css={keywordCss}> <Beauty />, <Precision />, </span>
 				and <span css={keywordCss}><Identity className="keyword" />.</span>
 			</h1>
 			<p css={css`
