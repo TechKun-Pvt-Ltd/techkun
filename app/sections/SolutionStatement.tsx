@@ -77,7 +77,7 @@ function SectionHeading() {
 			<defs>
 				<path id="w-graph"
 					  d="M 1 5 L 2 3 L 4.25 9 L 6 4.5 L 7.75 9 L 11 1 L 9.4216 2.2283 L 11 1 L 11.2746 2.9811"
-					  pathLength="10" strokeWidth="0.5" strokeLinejoin="round" strokeLinecap="round"
+					  pathLength="10" strokeWidth="0.6" strokeLinejoin="round" strokeLinecap="round"
 					  fill="transparent"
 				/>
 			</defs>
@@ -125,11 +125,10 @@ export default function SolutionStatement() {
 		`}>
 			<SectionHeading />
 			<div ref={targetRef} css={css`
-				align-self: stretch;
                 display: flex;
                 justify-content: center;
 				align-items: start;
-				height: 4096px;
+				height: 300vh;
 			`}>
 				<div css={css`
 					position: sticky;
