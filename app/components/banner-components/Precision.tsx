@@ -25,11 +25,11 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
 
 	useEffect(() => {
-		if (browser.isNone) return;
+		if (browser.isNone || !containerRef.current) return;
 
+		const styles = getComputedStyle(containerRef.current);
+		let lastFont: string;
 		function listener() {
-			if (!containerRef.current) return;
-			const styles = getComputedStyle(containerRef.current);
 			const font = styles.font || `
 				${styles.fontStyle}
 				${styles.fontVariant}
@@ -37,6 +37,9 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				${styles.fontSize}
 				${styles.fontFamily}
 			`;
+			if (font === lastFont)
+				return;
+			lastFont = font;
 			measureFont(font).then(setMetrics);
 		}
 		listener();
@@ -62,12 +65,22 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	>
 		precisi<span style={{opacity: 0.2}}>o</span>n
 		<motion.span
-			style={{"--x": x, "--y": y, "--r": "0.24em"} as React.CSSProperties}
+			style={{"--x": x, "--y": y} as React.CSSProperties}
 			css={css`
+				@property --scale {
+					syntax: "<number> | <percentage>";
+					inherits: true;
+					initial-value: 1;
+				}
 				position: absolute;
 				inset: 0;
+				&:hover {
+					--scale: 3;
+				}
 			`}
-			whileHover={{ "--r": "0.72em" }}
+			// whileHover={{
+			// 	"--r": "0.72em"
+			// }}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -82,10 +95,11 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				<defs>
 					<circle
 						id={circleId}
-						r="var(--r)" cx="0" cy="0"
+						r="0.24em" cx="0" cy="0"
 						css={css`
+							transition: --scale 0.2s ease-in-out;
 							transform-box: view-box;
-							transform: translate(var(--x), var(--y));
+							transform: translate(var(--x), var(--y)) scale(var(--scale));
 						`}
 					/>
 					<mask id={maskId}>
@@ -217,7 +231,13 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				</g>
 				<use
 					href={`#${circleId}`}
-					stroke="var(--neutral-200)" strokeWidth="2.5%"
+					// stroke="var(--neutral-200)" strokeWidth="2.5%"
+					css={css`
+						outline: solid var(--neutral-200);
+						outline-width: 0.08em;
+						outline-offset: -0.04em;
+						border-radius: 50%;
+					`}
 				/>
 			</svg>
 		</motion.span>

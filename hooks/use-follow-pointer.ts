@@ -50,17 +50,28 @@ export function useFollowPointer<T extends HTMLElement>(
 	const y = useSpring(coordinates[1], springOptions);
 
 	useEffect(() => {
+		if (!containerRef.current) return;
+
+		const el = containerRef.current;
+		let elementBottom = el.offsetTop + el.offsetHeight;
 		function update() {
-			if (!containerRef.current) return;
-			rootBoundingRect.current = containerRef.current.getBoundingClientRect();
+			rootBoundingRect.current = el.getBoundingClientRect();
 		}
 
 		update();
-		window.addEventListener("scroll", update);
-		window.addEventListener("resize", update);
+		function scrollListener() {
+			if (elementBottom - window.scrollY > 0)
+				update();
+		}
+		function resizeListener() {
+			elementBottom = el.offsetTop + el.offsetHeight;
+			update();
+		}
+		window.addEventListener("scroll", scrollListener);
+		window.addEventListener("resize", resizeListener);
 		return () => {
-			window.removeEventListener("scroll", update);
-			window.removeEventListener("resize", update);
+			window.removeEventListener("scroll", scrollListener);
+			window.removeEventListener("resize", resizeListener);
 		};
 	}, []);
 
