@@ -64,7 +64,7 @@ function SectionHeading() {
 	}
 
 	return <h1 className="section-title">
-		Stop doing that.<br/>Start funding <span style={{whiteSpace: 'nowrap'}}>gro
+		Start funding <span style={{whiteSpace: 'nowrap'}}>gro
 		<motion.svg className="w-graph-svg"
 			xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10"
 			css={css`
@@ -132,14 +132,20 @@ export default function SolutionStatement() {
 			`}>
 				<div css={css`
 					position: sticky;
-					top: calc(var(--navbar-height) + 80px);
-                    width: 100%;
-                    max-width: 768px;
+					top: 0;
+					height: 100vh;
+					--size: clamp(320px, min(var(--page-max-width), 100vw, 100vh - var(--navbar-height)), 768px);
+					margin-block: calc(-1 * (50vh - var(--size) / 2));
+					//min-width: 320px;
+                    width: var(--size);
+                    //max-width: 768px;
 					display: flex;
 					justify-content: center;
 					align-items: center;
+					pointer-events: none;
 				`}>
 					<svg css={css`
+						pointer-events: auto;
 						position: absolute;
 						width: 100vw;
 						height: 10px;
