@@ -26,8 +26,6 @@ export default function LogoImageFrame({imageData, alt}: {imageData: StaticImage
         <svg viewBox={logoPathImageFrame.viewBox} fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d={logoPathImageFrame.value} fill="var(--primary-500)"/>
         </svg>
-        <Image css={css`
-            filter: grayscale(100%) contrast(1.1) brightness(0.9);
-        `} src={imageData} alt={alt ?? "logo-framed image"} />
+        <Image src={imageData} alt={alt ?? "logo-framed image"} />
     </div>;
 }

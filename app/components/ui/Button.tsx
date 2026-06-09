@@ -63,7 +63,7 @@ export default function Button({children, textColor, backgroundColor}: {
         whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
     >
         {children}
-        <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <motion.path className="arrow"
                 d={variants[INITIAL].d}
                 {...(cssSupports.d ? null : { variants, transition })}

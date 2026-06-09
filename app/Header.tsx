@@ -1,8 +1,17 @@
 'use client';
 import React from 'react';
-import { css } from "@emotion/react"
+import {css, keyframes} from "@emotion/react"
 import TechKunLogo from "@/app/components/techkun-logo";
 import Button from "@/app/components/ui/Button";
+
+const moveGradient = keyframes`
+    from {
+        background-position: 100% 50%;
+    }
+    to {
+        background-position: 0 50%;
+    }
+`;
 
 export default function Header() {
     return <header css={css`
@@ -23,7 +32,14 @@ export default function Header() {
                 font-weight: 500;
             `}>
                 <TechKunLogo />
-                <span>TechKun</span>
+                <span css={css`
+                    color: transparent;
+                    background-image: linear-gradient(to right in oklch, var(--foreground) 33.33%, var(--secondary-500), var(--primary-500), transparent 66.66%);
+                    background-size: 300% 100%;
+                    background-position: 100% 50%;
+                    background-clip: text;
+                    animation: ${moveGradient} 1.2s 0.2s ease-in-out both;
+                `}>TechKun</span>
             </div>
             <div>
                 <Button textColor="var(--foreground)"
