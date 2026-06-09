@@ -38,10 +38,10 @@ export default function RootLayout({
             "--desktop": `${deviceBreakpoints.desktop}px`
         } as React.CSSProperties}>
             <body>
+                <Shared />
                 <Header />
                 {children}
                 <Footer />
-                <Shared />
             </body>
         </html>
     );

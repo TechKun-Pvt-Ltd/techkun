@@ -64,7 +64,7 @@ function SectionHeading() {
 	}
 
 	return <h1 className="section-title">
-		Stop doing that.<br/>Start funding <span style={{whiteSpace: 'nowrap'}}>gro
+		Start funding <span style={{whiteSpace: 'nowrap'}}>gro
 		<motion.svg className="w-graph-svg"
 			xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10"
 			css={css`
@@ -77,7 +77,7 @@ function SectionHeading() {
 			<defs>
 				<path id="w-graph"
 					  d="M 1 5 L 2 3 L 4.25 9 L 6 4.5 L 7.75 9 L 11 1 L 9.4216 2.2283 L 11 1 L 11.2746 2.9811"
-					  pathLength="10" strokeWidth="0.5" strokeLinejoin="round" strokeLinecap="round"
+					  pathLength="10" strokeWidth="0.6" strokeLinejoin="round" strokeLinecap="round"
 					  fill="transparent"
 				/>
 			</defs>
@@ -125,22 +125,27 @@ export default function SolutionStatement() {
 		`}>
 			<SectionHeading />
 			<div ref={targetRef} css={css`
-				align-self: stretch;
                 display: flex;
                 justify-content: center;
 				align-items: start;
-				height: 4096px;
+				height: 300vh;
 			`}>
 				<div css={css`
 					position: sticky;
-					top: calc(var(--navbar-height) + 80px);
-                    width: 100%;
-                    max-width: 768px;
+					top: 0;
+					height: 100vh;
+					--size: clamp(320px, min(var(--page-max-width), 100vw, 100vh - var(--navbar-height)), 768px);
+					margin-block: calc(-1 * (50vh - var(--size) / 2));
+					//min-width: 320px;
+                    width: var(--size);
+                    //max-width: 768px;
 					display: flex;
 					justify-content: center;
 					align-items: center;
+					pointer-events: none;
 				`}>
 					<svg css={css`
+						pointer-events: auto;
 						position: absolute;
 						width: 100vw;
 						height: 10px;

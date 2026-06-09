@@ -20,24 +20,41 @@ type SvgChild = React.ReactElement<React.SVGProps<SVGElement>>;
 export default function ConicReveal({ angle, startAngle: startAngleValue = 0, centerX, centerY, radius, frontLayer, backLayer }: RadialRevealProps) {
 	const center = Point2D.of(centerX, centerY);
 	const startPolarVector = Vector2D.polar(radius, startAngleValue);
+	const semicircleThreshold = Angle.of(startAngleValue + Math.PI);
+	const endAngle = Angle.of(startAngleValue + 2 * Math.PI)
+	const semicirclePoint = center.add(Vector2D.polar(radius, semicircleThreshold));
+	const circleEnd = center.add(Vector2D.polar(radius, endAngle));
 	const backClipPath = useTransform(
 		angle,
 		a => {
-			const arcEnd = center.add(startPolarVector);
+			const firstArc = +a < +semicircleThreshold ?
+				`A ${radius} ${radius} 0 0 1 ${roundOff(semicirclePoint.x)} ${roundOff(semicirclePoint.y)}` :
+				`a 0 0 0 0 1 0 0`;
 			return `
 			M ${center.x} ${center.y}
 			l ${roundOff(radius * a.cosine)} ${roundOff(radius * a.sine)}
-			A ${radius} ${radius} 0 ${+a - startAngleValue > Math.PI ? 0 : 1} 1 ${roundOff(arcEnd.x)} ${roundOff(arcEnd.y)}
+			${firstArc}
+			A ${radius} ${radius} 0 0 1 ${roundOff(circleEnd.x)} ${roundOff(circleEnd.y)}
+			Z
 			`;
 		}
 	);
 	const frontClipPath = useTransform(
 		angle,
 		a => {
+			if (+a > +endAngle)
+				a = endAngle;
+
+			const firstArcAngle = +a < +semicircleThreshold ? a : semicircleThreshold;
+			const secondArc = firstArcAngle === semicircleThreshold ?
+				`A ${radius} ${radius} 0 0 1 ${roundOff(center.x + radius * a.cosine)} ${roundOff(center.y + radius * a.sine)}` :
+				`a 0 0 0 0 1 0 0`;
 			return `
 			M ${center.x} ${center.y}
 			l ${roundOff(startPolarVector.x)} ${roundOff(startPolarVector.y)}
-			A ${radius} ${radius} 0 ${+a - startAngleValue > Math.PI ? 1 : 0} 1 ${roundOff(centerX + radius * a.cosine)} ${roundOff(centerY + radius * a.sine)}
+			A ${radius} ${radius} 0 ${+firstArcAngle > Math.PI ? 1 : 0} 1 ${roundOff(center.x + radius * firstArcAngle.cosine)} ${roundOff(center.y + radius * firstArcAngle.sine)}
+			${secondArc}
+			Z
 			`;
 		}
 	);

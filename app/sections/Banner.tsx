@@ -17,7 +17,8 @@ export default function Banner() {
 	`}>
 		<div css={css`
 			min-height: var(--section-height);
-			width: 75%;
+			width: 100%;
+			max-width: 60rem;
             display: flex;
 			flex-direction: column;
             justify-content: space-between;
