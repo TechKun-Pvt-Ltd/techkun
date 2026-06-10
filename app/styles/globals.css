@@ -47,7 +47,7 @@ ul {
 }
 
 @property --i {
-    syntax: "<number> | initial";
+    syntax: "<number> | auto";
     inherits: false;
-    initial-value: initial;
+    initial-value: auto;
 }

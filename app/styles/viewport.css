@@ -1,5 +1,6 @@
 :root {
     --mobile-s-to-laptop: clamp(0, (100vw - var(--mobile-s)) / (var(--laptop) - var(--mobile-s)), 1);
+    --mobile-l-to-laptop: clamp(0, (100vw - var(--mobile-l)) / (var(--laptop) - var(--mobile-l)), 1);
 }
 
 @property --mobile-s {

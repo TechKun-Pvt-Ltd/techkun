@@ -2,7 +2,6 @@
 import React from 'react';
 import {css, keyframes} from "@emotion/react"
 import TechKunLogo from "@/app/components/techkun-logo";
-import Button from "@/app/components/ui/Button";
 
 const moveGradient = keyframes`
     from {
@@ -40,11 +39,6 @@ export default function Header() {
                     background-clip: text;
                     animation: ${moveGradient} 1.2s 0.2s ease-in-out both;
                 `}>TechKun</span>
-            </div>
-            <div>
-                <Button textColor="var(--foreground)"
-                    backgroundColor="var(--primary-800)"
-                >Let's talk</Button>
             </div>
         </nav>
     </header>;
