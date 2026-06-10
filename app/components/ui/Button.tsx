@@ -1,5 +1,5 @@
 'use client'
-import {ReactNode} from "react";
+import React, {ReactNode} from "react";
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import cssSupports from "@/app/utils/css-supports";
@@ -19,14 +19,15 @@ const transition: {
     ease: [0.215, 0.61, 0.355, 1]
 };
 
-export default function Button({children, textColor, backgroundColor}: {
+export default function Button({children, textColor, backgroundColor, ...props}: {
     children: ReactNode;
     textColor: string;
     backgroundColor: string;
-}) {
+} & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
         color: ${textColor};
         background-color: transparent;
+        //text-shadow: 1px 2px 2px var(--neutral-500);
         position: relative;
         isolation: isolate;
 
@@ -39,7 +40,12 @@ export default function Button({children, textColor, backgroundColor}: {
             position: absolute;
             inset: 0;
             z-index: -1;
-            transition: transform 0.1s ease-in-out;
+            transition-property: transform, opacity;
+            transition-duration: 0.1s, 0.3s;
+            transition-timing-function: ease-in-out;
+        }
+        &:hover::before {
+            opacity: 0.8;
         }
 
         &:active::before {
@@ -47,8 +53,9 @@ export default function Button({children, textColor, backgroundColor}: {
         }
 
         & > svg {
-            margin-left: 0.4375em;
+            margin-inline-start: 0.4375em;
             width: 0.6em;
+            //filter: drop-shadow(1px 2px 2px var(--neutral-500));
         }
         
         & .arrow {
@@ -59,8 +66,10 @@ export default function Button({children, textColor, backgroundColor}: {
         }
     `;
 
-    return <motion.button css={buttonCss} initial={INITIAL}
+    return <motion.button
+        css={buttonCss} initial={INITIAL}
         whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
+        {...props}
     >
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

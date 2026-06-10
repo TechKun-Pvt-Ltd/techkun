@@ -89,7 +89,7 @@ export default function ProblemStatement() {
 						title="tasks"
 						width="min(100%, 768px)"
 						height="640px"
-						inset="96px auto auto calc(20% + (28% - 20%) * var(--scale-factor))"
+						inset="96px auto auto calc(20% + (28% - 20%) * var(--mobile-l-to-laptop))"
 						titleBar={<BrowserTabs tabs={tabs} />}
 					>
 						<BrowserToolbar url="acme.atlassian.com" />
@@ -99,7 +99,7 @@ export default function ProblemStatement() {
 						title="chat"
 						width="min(100%, 448px)"
 						height="448px"
-						inset="320px auto auto calc(16% * var(--scale-factor))"
+						inset="320px auto auto calc(16% * var(--mobile-l-to-laptop))"
 						backgroundColor="oklch(from var(--background) l c h / 0.9)"
 						backdropFilter="blur(2px)"
 						titleBar={

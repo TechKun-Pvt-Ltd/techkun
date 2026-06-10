@@ -32,13 +32,7 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
             //    initial-value: 0%;
             //}
             color: transparent;
-            background-image: //linear-gradient(
-                //	5deg,
-                //	transparent calc(var(--gradient-end) - 15%),
-                //	var(--secondary-400) calc(var(--gradient-end) - 10%),
-                //	var(--secondary-400) calc(var(--gradient-end) - 5%),
-                //	transparent var(--gradient-end)
-                //),
+            background-image:
                 radial-gradient(
                     circle at var(--center-x) var(--center-y),
                     var(--secondary-300) 25%,
