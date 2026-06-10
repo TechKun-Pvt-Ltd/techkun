@@ -216,9 +216,9 @@ button {
 }
 
 .display-text {
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-xl);
-    letter-spacing: var(--letter-spacing-xl);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
 }
 .display-lg {
     font-size: var(--font-size-2xl);

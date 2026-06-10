@@ -49,7 +49,6 @@ export default function Footer() {
                 flex-wrap: wrap;
 
                 & > p {
-                    margin-block-end: 0.25em;
                     font-weight: 500;
                 }
             `}>

@@ -48,7 +48,7 @@ body {
         grid-row: navbar;
         grid-template-rows: 1fr;
         position: sticky;
-        top: 0;
+        top: 8px;
         left: 0;
         z-index: 1;
         align-items: center;
