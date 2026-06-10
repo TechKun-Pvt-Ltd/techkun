@@ -231,6 +231,12 @@ button {
     letter-spacing: var(--letter-spacing-5xl);
     font-weight: normal;
 }
+.hero-button {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
+    font-weight: normal;
+}
 .section-title {
     font-size: var(--font-size-4xl);
     line-height: var(--line-height-4xl);
@@ -258,6 +264,16 @@ button {
     color: var(--neutral-300);
 }
 
+.text-lg {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
+}
+.text-xl {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    letter-spacing: var(--letter-spacing-xl);
+}
 .text-2xl {
     font-size: var(--font-size-2xl);
     line-height: var(--line-height-2xl);
