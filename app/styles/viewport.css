@@ -38,3 +38,35 @@
     inherits: true;
     initial-value: 0;
 }
+
+@supports not (opacity: calc(50vw / 100vw)) {
+    @property --num-0 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
+    @property --denom-0 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
+    @property --num-1 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
+    @property --denom-1 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
+    :root {
+        --num-0: calc(100vw - var(--mobile-s));
+        --denom-0: calc(var(--laptop) - var(--mobile-s));
+        --mobile-s-to-laptop: clamp(0, tan(atan2(var(--num-0),var(--denom-0))), 1);
+
+        --num-1: calc(100vw - var(--mobile-l));
+        --denom-1: calc(var(--laptop) - var(--mobile-l));
+        --mobile-l-to-laptop: clamp(0, tan(atan2(var(--num-1),var(--denom-1))), 1);
+    }
+}
