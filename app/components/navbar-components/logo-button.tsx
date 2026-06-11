@@ -52,7 +52,7 @@ export default function LogoButton() {
 			padding-block: 16px;
 			padding-inline: 24px;
 			corner-shape: squircle;
-			background-color: color-mix(in oklch, var(--primary-color), var(--background) 90%);
+			background-color: oklch(from var(--background) 0.14 c h);
 			display: flex;
 			align-items: center;
 			gap: 16px;
