@@ -1,18 +1,16 @@
 import {css} from "@emotion/react";
 import React, {useEffect, useRef, useState} from "react";
 import TechKunLogo from "@/app/components/techkun-logo";
-import { motion } from "motion/react";
+import {motion} from "motion/react";
 
 export default function LogoButton() {
+	const textElement = useRef<HTMLSpanElement>(null);
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
-	const [textState, setTextState] = useState<"unmounted" | "invisible" | "enter" | "exit">("enter");
+	const [textState, setTextState] = useState<"unmounted" | "enter" | "exit" | "visible">("visible");
 
 	function animateIn() {
-		setTextState(prev => {
-			if (prev === "invisible" || prev === "enter") return prev;
-			return "invisible"
-		});
+		setTextState("enter");
 	}
 	function animateOut() {
 		if (textAboveThreshold.current || textHovered.current) return;
@@ -20,8 +18,17 @@ export default function LogoButton() {
 	}
 
 	useEffect(() => {
-		if (textState === "invisible")
-			setTextState("enter");
+		if (textState === "exit") {
+			if (!textElement.current) return;
+
+			const element = textElement.current;
+			const activeTransition = element.getAnimations()
+				.filter(anim => anim instanceof CSSTransition)
+				.find(t => t.transitionProperty === "background-position-x");
+
+			if (!activeTransition)
+				setTextState("unmounted");
+		}
 	}, [textState]);
 
 	useEffect(() => {
@@ -45,7 +52,7 @@ export default function LogoButton() {
 			padding-block: 16px;
 			padding-inline: 24px;
 			corner-shape: squircle;
-			background-color: oklch(from var(--background) 0.12 c h / 0.9);
+			background-color: color-mix(in oklch, var(--primary-color), var(--background) 90%);
 			display: flex;
 			align-items: center;
 			gap: 16px;
@@ -65,6 +72,7 @@ export default function LogoButton() {
 			<TechKunLogo style={{ display: "block" }} />
 		</motion.span>
 		{textState !== "unmounted" && <span
+			ref={textElement}
             css={css`
 				color: transparent;
 				background-image: linear-gradient(
@@ -78,10 +86,13 @@ export default function LogoButton() {
 				background-size: 300% 100%;
 				background-clip: text;
 				background-position-y: 50%;
-				background-position-x: 0;
+
 				transition: background-position-x 0.6s ease-in-out;
-				&[data-state="invisible"] {
-					background-position-x: 100%;
+				background-position-x: 0;
+				&[data-state="enter"] {
+					@starting-style {
+						background-position-x: 100%;
+                    }
 				}
 				&[data-state="exit"] {
 					transition-duration: 0.3s;

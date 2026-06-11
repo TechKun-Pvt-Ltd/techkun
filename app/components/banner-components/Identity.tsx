@@ -69,13 +69,13 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 						--light-up-color: var(--foreground);
 					}
 					&:nth-of-type(2) {
-						--light-up-color: var(--primary-200);
+						--light-up-color: var(--primary-300);
 					}
 					&:nth-of-type(3) {
-						--light-up-color: var(--secondary-200);
+						--light-up-color: var(--secondary-300);
 					}
 					&:nth-of-type(4) {
-						--light-up-color: var(--tertiary-200);
+						--light-up-color: var(--tertiary-300);
 					}
 
 					animation-delay: calc(var(--min-delay) + (${DOT_COUNT - 1} - var(--i)) * ${STAGGER}s);
