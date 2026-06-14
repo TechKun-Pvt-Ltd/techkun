@@ -8,21 +8,16 @@
     --section-height: clamp(var(--section-min-height), 100vh - var(--navbar-height), var(--section-max-height));
     /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
-}
 
-html {
     min-height: 100%;
     position: relative; /*Due to a warning from Motion (formerly Framer Motion).*/
 }
+
 /*html {
     scroll-snap-type: block proximity;
 }*/
 body {
     height: 100%;
-}
-body {
-    color: var(--foreground);
-    background: var(--background);
     margin: 0;
     --columns: 6;
 

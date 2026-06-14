@@ -37,7 +37,7 @@ export default function EmailLink(
             }
 
             &:hover path, &:focus-visible path {
-                stroke: var(--primary-500);
+                stroke: url(#brand-gradient);
                 d: path("${variants[FOCUSED].d}");
             }
 		`}

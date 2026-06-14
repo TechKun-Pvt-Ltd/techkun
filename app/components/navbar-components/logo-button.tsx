@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import TechKunLogo from "@/app/components/techkun-logo";
 import {motion} from "motion/react";
 
-export default function LogoButton() {
+export default function LogoButton({style, ...props}: React.ComponentProps<typeof motion.button>) {
 	const textElement = useRef<HTMLSpanElement>(null);
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
@@ -47,7 +47,7 @@ export default function LogoButton() {
 	return <motion.button
 		layout="size"
 		className="display-text"
-		style={{ borderRadius: '16px' }}
+		style={{ borderRadius: '16px', ...style }}
 		css={css`
 			padding-block: 16px;
 			padding-inline: 24px;
@@ -58,6 +58,8 @@ export default function LogoButton() {
 			gap: 16px;
 			font-weight: 500;
 		`}
+		onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+		{...props}
 		onHoverStart={_ => {
 			textHovered.current = true;
 			animateIn();
@@ -66,7 +68,6 @@ export default function LogoButton() {
 			textHovered.current = false;
 			animateOut();
 		}}
-		onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
 	>
 		<motion.span layout>
 			<TechKunLogo style={{ display: "block" }} />
