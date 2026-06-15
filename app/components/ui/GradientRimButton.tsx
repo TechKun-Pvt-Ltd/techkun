@@ -1,6 +1,6 @@
 'use client'
 import React, {ReactNode} from "react";
-import {css} from "@emotion/react";
+import {css, keyframes} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import cssSupports from "@/app/utils/css-supports";
 
@@ -19,36 +19,61 @@ const transition: {
     ease: [0.215, 0.61, 0.355, 1]
 };
 
-export default function Button({children, textColor, backgroundColor, ...props}: {
+const rotateMaskGradient = keyframes`
+    from {
+        --gradient-angle: -30deg;
+    }
+    to {
+        --gradient-angle: -160deg;
+    }
+`;
+
+export default function GradientRimButton({children, ...props}: {
     children: ReactNode;
-    textColor: string;
-    backgroundColor: string;
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
-        color: ${textColor};
+        color: var(--foreground);
         background-color: transparent;
-        //text-shadow: 1px 2px 2px var(--neutral-500);
         position: relative;
         isolation: isolate;
+        padding-block: 0.8rem;
+        padding-inline: 1.6rem 1.4rem;
+        border-radius: 0.8rem;
 
-        padding-inline: 1.25rem 1rem;
+        animation: ${rotateMaskGradient} linear both;
+        animation-timeline: view();
+        animation-range-start: contain 50%;
 
-        &::before {
+        &::before, &::after {
             content: '';
             border-radius: inherit;
-            background-color: ${backgroundColor};
+            corner-shape: inherit;
             position: absolute;
             inset: 0;
-            z-index: -1;
-            transition-property: transform, opacity;
-            transition-duration: 0.1s, 0.3s;
-            transition-timing-function: ease-in-out;
         }
-        &:hover::before {
-            opacity: 0.8;
+        &::before {
+            z-index: -2;
+            border: 1px solid var(--muted);
+            transition: transform 0.1s ease-in-out;
+        }
+        &::after {
+            z-index: -1;
+            border: 1px solid transparent;
+            mask:
+                content-box linear-gradient(transparent 0 0) subtract,
+                border-box linear-gradient(var(--gradient-angle), black 5%, transparent 25%, transparent 75%, black 95%);
+            background: linear-gradient(
+                var(--gradient-angle),
+                var(--tertiary-500),
+                var(--secondary-500),
+                var(--primary-500) 25%,
+                var(--primary-500) 75%,
+                var(--secondary-500),
+                var(--tertiary-500)
+            ) border-box;
         }
 
-        &:active::before {
+        &:active::before, &:active::after {
             transform: scale(0.97);
         }
 

@@ -22,34 +22,52 @@ const transition: {
 };
 
 export default function EmailLink(
-	{address, text}: { address: string; text: string; }
+	{address, text, iconSide = "left", gap = "10px", iconStrokeWidth = 1, ...props}: {
+		address: string;
+		text: string;
+		iconSide?: "left" | "right";
+		iconStrokeWidth?: string | number;
+		gap?: string;
+	} & React.ComponentProps<typeof MotionLink>
 ) {
-	return <MotionLink href={`mailto:${address}`} className="item-subtitle"
-	 	css={css`
-            cursor: pointer;
-            text-decoration: none;
-
-            & path {
-                transition-property: stroke, d;
-                transition-duration: ${transition.duration}s;
-                transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
-                stroke: currentColor;
-            }
-
-            &:hover path, &:focus-visible path {
-                stroke: url(#brand-gradient);
-                d: path("${variants[FOCUSED].d}");
-            }
-		`}
-	 	initial={INITIAL}
-	 	whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
+	const icon = <svg
+		height="1em" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet"
+		style={{
+			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
+			marginBlockEnd: '-0.18em'
+		}}
 	>
-		<svg width="1em" viewBox="0 0 24 24" style={{marginInlineEnd: '10px', marginBlockEnd: '-0.1875em'}}>
-			<motion.path d={variants[INITIAL].d}
-			 	fill="transparent" strokeWidth="1" strokeLinejoin="round" strokeLinecap="round"
-			 	{...(cssSupports.d ? null : { variants, transition })}
-			></motion.path>
-		</svg>
+		<motion.path
+			d={variants[INITIAL].d}
+		 	fill="transparent" strokeWidth={iconStrokeWidth} strokeLinejoin="round" strokeLinecap="round"
+		 	{...(cssSupports.d ? null : { variants, transition })}
+		></motion.path>
+	</svg>;
+
+	return <MotionLink
+		href={`mailto:${address}`}
+		css={css`
+			cursor: pointer;
+			text-decoration: none;
+			
+			& path {
+			  	transition-property: stroke, d;
+				transition-duration: ${transition.duration}s;
+				transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
+				stroke: currentColor;
+			}
+			
+			&:hover path, &:focus-visible path {
+				stroke: url(#brand-gradient);
+				d: path("${variants[FOCUSED].d}");
+  			}
+		`}
+		{...props}
+		initial={INITIAL}
+		whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
+	>
+		{iconSide === "left" && icon}
 		<span>{text}</span>
+		{iconSide === "right" && icon}
 	</MotionLink>
 };

@@ -91,7 +91,7 @@ export default function Cofounders() {
                     </div>
                     <div className="person-intro">
                         <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <EmailLink address={item.mail} text={item.subtitle} />
+                        <EmailLink className="item-subtitle" address={item.mail} text={item.subtitle} />
                     </div>
                 </li>)}
             </ul>
