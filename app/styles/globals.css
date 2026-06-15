@@ -51,3 +51,9 @@ ul {
     inherits: false;
     initial-value: auto;
 }
+
+@property --gradient-angle {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0deg;
+}

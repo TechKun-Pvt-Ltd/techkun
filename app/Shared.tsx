@@ -15,6 +15,12 @@ export default function Shared() {
              width="0" height="0" style={{gridArea: 'none', position: 'fixed'}}
              viewBox={viewBoxString(logoPath.viewBox)}
         >
+            <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="var(--primary-500)" />
+                <stop offset="50%" stopColor="var(--primary-500)" />
+                <stop offset="75%" stopColor="var(--secondary-500)" />
+                <stop offset="100%" stopColor="var(--tertiary-500)" />
+            </linearGradient>
             <path id="logo-path" d={logoPath.value} />
             <clipPath id="logo-clip-path">
                 <use href="#logo-path"></use>

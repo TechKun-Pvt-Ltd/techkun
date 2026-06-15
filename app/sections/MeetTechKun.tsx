@@ -13,6 +13,7 @@ export default function MeetTechKun() {
     useEffect(() => {
         const heading = scope.current.querySelector('h2');
         const path = scope.current.querySelector("path");
+        const rect = scope.current.querySelector('rect');
         const flying = scope.current.querySelectorAll(".flying");
 
         inView(heading, () => {
@@ -24,7 +25,8 @@ export default function MeetTechKun() {
                     duration: 1,
                     ease: 'easeIn'
                 }],
-                [path, { scale: 1, opacity: 1 }, { duration: 1, ease: 'easeOut', at: 0.25 }],
+                [rect, { opacity: 1 }, { duration: 1, ease: "easeOut", at: 0.25 }],
+                [path, { scale: 1 }, { duration: 1, ease: 'easeOut', at: 0.25 }],
                 [path, { x: "0%", y: "0%" }, { duration: 1, ease: 'easeInOut' }],
                 [
                     path, { d: logoAnimation.frames.map(f => f.value) },
@@ -102,23 +104,18 @@ export default function MeetTechKun() {
                 `}>
                     <svg viewBox={viewBoxString(logoAnimation.viewBox)}>
                         <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="var(--primary-500)" />
-                                <stop offset="50%" stopColor="var(--primary-500)" />
-                                <stop offset="75%" stopColor="var(--secondary-500)" />
-                                <stop offset="100%" stopColor="var(--tertiary-500)" />
-                            </linearGradient>
-                            <mask id="animated-logo-mask">
+                            <clipPath id="animated-logo-clip-path">
                                 <motion.path d={logoAnimation.frames[0].value}
-                                    initial={{opacity: 0}}
                                     style={{x, y, scale: 0.5}}
                                     fill="white"
                                 />
-                            </mask>
+                            </clipPath>
                         </defs>
-                        <rect {...logoAnimation.viewBox}
-                              fill="url(#gradient)" mask="url(#animated-logo-mask)"
-                        ></rect>
+                        <motion.rect
+                            {...logoAnimation.viewBox}
+                            fill="url(#brand-gradient)" clipPath="url(#animated-logo-clip-path)"
+                            initial={{ opacity: 0 }}
+                        ></motion.rect>
                     </svg>
                 </div>
                 {Array.from({length: 5}, (_, i) =>

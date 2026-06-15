@@ -76,4 +76,7 @@
     --muted-foreground: var(--neutral-200);
 
     --border: var(--neutral-800);
+
+    color: var(--foreground);
+    background: var(--background);
 }
