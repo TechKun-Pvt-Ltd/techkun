@@ -25,7 +25,7 @@ export default function Banner() {
 			flex-direction: column;
             justify-content: space-between;
 			align-items: center;
-            padding-block: 96px 48px;
+            padding-block: 84px 48px;
             text-align: center;
 			gap: 64px;
 		`}>
@@ -42,9 +42,12 @@ export default function Banner() {
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
 				<div className="large-text" css={css`
+					padding-inline: 64px;
 					display: flex;
 					gap: 24px;
+					flex-wrap: wrap;
 					align-items: center;
+					justify-content: center;
 				`}>
 					<GradientRimButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit" }}>Let's talk</GradientRimButton>
 					<EmailLink
