@@ -20,9 +20,6 @@ const transition: {
     ease: [0.215, 0.61, 0.355, 1]
 };
 
-const brRadiusProp = "--_border-radius";
-const outsetProp = "--_glow-outset";
-
 const gradientFill = keyframes`
     from {
         --gradient-fill-progress: 0%;
@@ -38,8 +35,6 @@ export default function GradientBorderButton({children, ...props}: {
     children: ReactNode;
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
-        // ${brRadiusProp}: 0.8rem;
-        // ${outsetProp}: 4px;
         color: var(--foreground);
         background-color: transparent;
         position: relative;
@@ -57,15 +52,11 @@ export default function GradientBorderButton({children, ...props}: {
         &::after {
             content: '';
             position: absolute;
-            //inset: calc(-1 * var(${outsetProp}));
             inset: 0;
             z-index: -1;
-            //border: var(${outsetProp}) solid transparent;
-            //border-radius: calc(var(${brRadiusProp}) + var(${outsetProp}));
             border: 1px solid transparent;
             border-radius: inherit;
             corner-shape: inherit;
-            //padding: 1px;
             mask:
                 padding-box linear-gradient(transparent 0 0) subtract,
                 border-box linear-gradient(black 0 0);
@@ -86,7 +77,6 @@ export default function GradientBorderButton({children, ...props}: {
             //    var(--secondary-500),
             //    var(--tertiary-500)
             //) padding-box;
-            //filter: url(#glow);
         }
 
         &:active::after {
@@ -114,15 +104,6 @@ export default function GradientBorderButton({children, ...props}: {
     >
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            {/*<defs>*/}
-            {/*    <filter id="glow">*/}
-            {/*        <feGaussianBlur stdDeviation="2" result="BLUR" />*/}
-            {/*        <feMerge>*/}
-            {/*            <feMergeNode in="BLUR" />*/}
-            {/*            <feMergeNode in="SourceGraphic" />*/}
-            {/*        </feMerge>*/}
-            {/*    </filter>*/}
-            {/*</defs>*/}
             <motion.path className="arrow"
                 d={variants[INITIAL].d}
                 {...(cssSupports.d ? null : { variants, transition })}

@@ -22,6 +22,9 @@ const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
     idle: null, fadeIn: null, fadeOut: null
 };
 
+const brRadiusProp = "--_border-radius";
+const outsetProp = "--_glow-outset";
+
 function ContactOptions() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
     const animationsRef = useRef(initialAnimations);
@@ -81,30 +84,25 @@ function ContactOptions() {
     }
 
     const containerCss = css`
+        ${brRadiusProp}: 100vw;
+        ${outsetProp}: 4px;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         margin-inline: auto;
         width: 100%;
+        max-width: 24rem;
         text-align: center;
 
-        @media ${device.mobileL} {
-            width: max-content;
-        }
     `;
     const contactOptionCss = css`
         background-color: transparent;
         color: var(--foreground);
         padding-block: 0.75rem;
-        border-radius: 100vw;
+        border-radius: var(${brRadiusProp});
         position: relative;
-        padding-inline: 0;
         width: 100%;
-
-        @media ${device.mobileL} {
-            padding-inline: 3rem;
-            width: revert;
-        }
+        white-space: nowrap;
 
         &::before {
             content: '';
@@ -116,24 +114,26 @@ function ContactOptions() {
         }
         & > span {
             position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            inset: calc(-1 * var(${outsetProp}));
+            border: var(${outsetProp}) solid transparent;
+            border-radius: calc(var(${brRadiusProp}) + var(${outsetProp}));
+            padding: 1px;
             transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
-            border: 2px solid transparent;
-            border-radius: inherit;
-            background: border-box conic-gradient(
+            background: padding-box conic-gradient(
                 from var(--gradient-angle) at 50% 50%,
-                var(--primary-200),
+                var(--tertiary-200),
+                var(--secondary-500),
                 var(--primary-800),
-                transparent,
-                transparent,
+                transparent 25%,
+                transparent 75%,
                 var(--primary-800),
-                var(--primary-200)
+                var(--secondary-500),
+                var(--tertiary-200)
             ) 50% / 100%;
-            mask: linear-gradient(#000 0 0) padding-box subtract,
-                linear-gradient(#000 0 0);
+            mask: content-box linear-gradient(#000 0 0) subtract,
+                border-box linear-gradient(#000 0 0);
             animation: ${rotateConicGradient} 4s linear infinite;
+            filter: url(#glow);
         }
         &:active::before, &:active > span {
             transform: scale(0.98);
@@ -157,6 +157,17 @@ function ContactOptions() {
         }}
         css={containerCss}
     >
+        <svg style={{ position: "fixed", width: "0", height: "0" }}>
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="BLUR" />
+                    <feMerge>
+                        <feMergeNode in="BLUR" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+        </svg>
         <button className="large-text contact-option" css={contactOptionCss}>
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
@@ -206,11 +217,12 @@ function ShimmerText(
 export default function ContactUs() {
     return <section>
         <div css={css`
-            display: grid;
-            grid-auto-flow: row;
-            grid-auto-rows: max-content;
+            align-self: end;
+            height: clamp(560px, 75vh, 960px);
+            display: flex;
+            flex-direction: column;
             row-gap: 4rem;
-            align-content: center;
+            justify-content: center;
         `}>
             <div css={css`
                 text-align: center;
