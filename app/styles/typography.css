@@ -207,13 +207,13 @@ h6 {
 /*    letter-spacing: var(--letter-spacing-base);*/
 /*}*/
 
-/*button {*/
-/*    font-size: var(--font-size-base);*/
-/*    line-height: var(--line-height-base);*/
-/*    letter-spacing: var(--letter-spacing-base);*/
-/*    font-family: inherit;*/
-/*    font-weight: 500;*/
-/*}*/
+button {
+    /*font-size: var(--font-size-base);*/
+    /*line-height: var(--line-height-base);*/
+    /*letter-spacing: var(--letter-spacing-base);*/
+    font-family: inherit;
+    font-weight: 500;
+}
 
 .display-text {
     font-size: var(--font-size-lg);

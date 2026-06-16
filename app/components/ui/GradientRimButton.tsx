@@ -21,55 +21,74 @@ const transition: {
 
 const rotateMaskGradient = keyframes`
     from {
-        --gradient-angle: 220deg;
+        --gradient-angle: 160deg;
     }
     to {
-        --gradient-angle: 20deg;
+        --gradient-angle: 10deg;
     }
 `;
+
+const brRadiusProp = "--_border-radius";
+const outsetProp = "--_glow-outset";
 
 export default function GradientRimButton({children, ...props}: {
     children: ReactNode;
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
+        ${brRadiusProp}: 0.8rem;
+        ${outsetProp}: 4px;
         color: var(--foreground);
         background-color: transparent;
         position: relative;
         isolation: isolate;
         padding-block: 0.8rem;
         padding-inline: 1.6rem 1.4rem;
-        border-radius: 0.8rem;
+        border-radius: var(${brRadiusProp});
+        --gradient-angle: 160deg;
 
-        animation: ${rotateMaskGradient} linear both;
-        animation-timeline: view();
+        @supports (animation-timeline: view()) {
+            animation: ${rotateMaskGradient} linear both;
+            animation-timeline: view();
+            animation-range-start: cover 40%;
+        }
 
         &::before, &::after {
             content: '';
-            border-radius: inherit;
             corner-shape: inherit;
             position: absolute;
-            inset: 0;
             transition: transform 0.1s ease-in-out;
         }
         &::before {
+            inset: 0;
             z-index: -2;
-            border: 1px solid var(--muted);
+            border-radius: inherit;
+            border: 1px solid var(--border);
         }
         &::after {
+            inset: calc(-1 * var(${outsetProp}));
             z-index: -1;
-            border: 1px solid transparent;
+            border: var(${outsetProp}) solid transparent;
+            border-radius: calc(var(${brRadiusProp}) + var(${outsetProp}));
+            padding: 1px;
             mask:
                 content-box linear-gradient(transparent 0 0) subtract,
-                border-box linear-gradient(var(--gradient-angle), black 5%, transparent 25%, transparent 75%, black 95%);
+                border-box linear-gradient(black 0 0);
+                //border-box linear-gradient(var(--gradient-angle), black 10%, transparent 30%, transparent 70%, black 90%);
             background: linear-gradient(
-                var(--gradient-angle),
-                var(--tertiary-500),
+                -2deg,
                 var(--secondary-500),
-                var(--primary-500) 25%,
-                var(--primary-500) 75%,
-                var(--secondary-500),
-                var(--tertiary-500)
-            ) border-box;
+                var(--secondary-900) 50%
+            ) padding-box;
+            //background: linear-gradient(
+            //    var(--gradient-angle),
+            //    var(--tertiary-500),
+            //    var(--secondary-500),
+            //    var(--primary-500) 25%,
+            //    var(--primary-500) 75%,
+            //    var(--secondary-500),
+            //    var(--tertiary-500)
+            //) padding-box;
+            //filter: url(#glow);
         }
 
         &:active::before, &:active::after {
@@ -97,6 +116,15 @@ export default function GradientRimButton({children, ...props}: {
     >
         {children}
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="BLUR" />
+                    <feMerge>
+                        <feMergeNode in="BLUR" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
             <motion.path className="arrow"
                 d={variants[INITIAL].d}
                 {...(cssSupports.d ? null : { variants, transition })}
