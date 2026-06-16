@@ -47,6 +47,7 @@ body {
         left: 0;
         z-index: 1;
         align-items: center;
+        overflow-x: clip;
     }
     & > main {
         /*--section-clamped-height: clamp(*/

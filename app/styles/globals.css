@@ -46,6 +46,10 @@ ul {
     margin-block: 0;
 }
 
+::selection {
+    background: var(--primary-950);
+}
+
 @property --i {
     syntax: "<number> | auto";
     inherits: false;
