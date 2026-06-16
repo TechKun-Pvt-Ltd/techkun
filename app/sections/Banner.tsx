@@ -42,17 +42,17 @@ export default function Banner() {
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
 				<div className="large-text" css={css`
-					padding-inline: 64px;
+					padding-inline: 96px;
 					display: flex;
 					gap: 24px;
 					flex-wrap: wrap;
 					align-items: center;
 					justify-content: center;
 				`}>
-					<GradientRimButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit" }}>Let's talk</GradientRimButton>
+					<GradientRimButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit", width: "max-content" }}>Let's get on call</GradientRimButton>
 					<EmailLink
-						style={{ color: "var(--muted-foreground)", fontWeight: "400", fontSize: "1.1em" }}
-						address="mailto:farasat@tech-kun.com" text="or send us an email" iconSide="right"
+						style={{ color: "var(--muted-foreground)", fontWeight: "400", fontSize: "1.1em", width: "max-content" }}
+						address="farasat@tech-kun.com" text="or chat an email" iconSide="right"
 						gap="6px" iconStrokeWidth={1.2}
 					/>
 				</div>
@@ -63,7 +63,7 @@ export default function Banner() {
 				font-weight: 700;
 			`}>
 				{/*Brand research & planning • Design • Engineering • Testing • Launch & maintenance*/}
-				We design and engineer user experiences for your brand.
+				Creating&nbsp;experiences&nbsp;people&nbsp;love and&nbsp;brands&nbsp;they&nbsp;remember.
 			</p>
 		</div>
 	</section>;

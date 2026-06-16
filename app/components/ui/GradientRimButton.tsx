@@ -21,10 +21,10 @@ const transition: {
 
 const rotateMaskGradient = keyframes`
     from {
-        --gradient-angle: -30deg;
+        --gradient-angle: 220deg;
     }
     to {
-        --gradient-angle: -160deg;
+        --gradient-angle: 20deg;
     }
 `;
 
@@ -42,7 +42,6 @@ export default function GradientRimButton({children, ...props}: {
 
         animation: ${rotateMaskGradient} linear both;
         animation-timeline: view();
-        animation-range-start: contain 50%;
 
         &::before, &::after {
             content: '';
@@ -50,11 +49,11 @@ export default function GradientRimButton({children, ...props}: {
             corner-shape: inherit;
             position: absolute;
             inset: 0;
+            transition: transform 0.1s ease-in-out;
         }
         &::before {
             z-index: -2;
             border: 1px solid var(--muted);
-            transition: transform 0.1s ease-in-out;
         }
         &::after {
             z-index: -1;
