@@ -1,17 +1,17 @@
 import React from "react";
-import {css} from "@emotion/react";
+import {css, keyframes} from "@emotion/react";
 import {motion, MotionStyle} from "motion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 
 
-// const gradientMove = keyframes`
-//     0% {
-//         --gradient-end: 0%;
-//     }
-//     66%, 100% {
-//         --gradient-end: 115%;
-//     }
-// `;
+const gradientFill = keyframes`
+    0% {
+        --gradient-fill-progress: -25%;
+    }
+    100% {
+        --gradient-fill-progress: 100%;
+    }
+`;
 const DEFAULT_CENTER: [string, string] = ["55%", "90%"];
 
 export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.span>) {
@@ -26,21 +26,18 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
 		} as React.CSSProperties}
 		{...props}
 		css={css`
-            //@property --gradient-end {
-            //    syntax: "<length-percentage>";
-            //    inherits: false;
-            //    initial-value: 0%;
-            //}
             color: transparent;
             background-image:
                 radial-gradient(
                     circle at var(--center-x) var(--center-y),
-                    var(--secondary-300) 25%,
-                    var(--secondary-500) 25%,
-                    var(--primary-500)
+                    var(--secondary-300) calc(var(--gradient-fill-progress) / 4),
+                    var(--secondary-500) calc(var(--gradient-fill-progress) / 4),
+                    var(--primary-500) var(--gradient-fill-progress),
+					transparent calc(var(--gradient-fill-progress) + 25%)
                 );
+			background-color: var(--neutral-800);
             background-clip: text;
-            //animation: {gradientMove} 4s linear infinite;
+            animation: ${gradientFill} 2.4s 0.4s ease-out both;
 		`}
 	>beauty</motion.span>;
 }

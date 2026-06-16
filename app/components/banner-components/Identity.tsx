@@ -50,7 +50,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 			}
 	
 			svg.bulb-icon, svg.dots circle {
-                animation: ${lightUp} 0.2s both;
+                animation: ${lightUp} 0.4s both;
 			}
 			svg.bulb-icon {
 				top: 0.24em;

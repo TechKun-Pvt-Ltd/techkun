@@ -1,11 +1,20 @@
 'use client'
 import React from "react";
-import {css} from "@emotion/react";
+import {css, keyframes} from "@emotion/react";
 import Precision from "@/app/components/banner-components/Precision";
 import Beauty from "@/app/components/banner-components/Beauty";
 import Identity from "@/app/components/banner-components/Identity";
 import GradientRimButton from "@/app/components/ui/GradientRimButton";
 import EmailLink from "@/app/components/EmailLink";
+
+const gradientFill = keyframes`
+	from {
+		--gradient-fill-progress: 0%;
+	}
+	to {
+		--gradient-fill-progress: 75%;
+	}
+`;
 
 export default function Banner() {
 	const keywordCss = css`
@@ -19,8 +28,9 @@ export default function Banner() {
 		background: radial-gradient(
 			ellipse var(--page-max-width) 100% at 50% 145%,
 			oklch(from var(--secondary-950) l c h / 0.5),
-			transparent 75%
+			transparent var(--gradient-fill-progress)
 		);
+		animation: ${gradientFill} 2.4s ease both;
 	`}>
 		<div css={css`
 			min-height: var(--section-height);

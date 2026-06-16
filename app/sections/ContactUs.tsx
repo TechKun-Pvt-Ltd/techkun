@@ -5,20 +5,13 @@ import React, {useEffect, useRef} from "react";
 import {device} from "@/app/styles/device-breakpoints";
 import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
-import {property} from "@/app/utils/css-property";
-
-const gradientAngle = property("gradient-angle")`
-    syntax: "<angle>";
-    inherits: true;
-    initial-value: 0deg;
-`;
 
 const rotateConicGradient = keyframes`
     0% {
-        ${gradientAngle}: 0deg;
+        --gradient-angle: 0deg;
     }
     100% {
-        ${gradientAngle}: 360deg;
+        --gradient-angle: 360deg;
     }
 `;
 
@@ -130,7 +123,7 @@ function ContactOptions() {
             border: 2px solid transparent;
             border-radius: inherit;
             background: border-box conic-gradient(
-                from var(${gradientAngle}) at 50% 50%,
+                from var(--gradient-angle) at 50% 50%,
                 var(--primary-200),
                 var(--primary-800),
                 transparent,
