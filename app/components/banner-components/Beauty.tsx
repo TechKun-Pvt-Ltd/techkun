@@ -2,8 +2,9 @@ import React from "react";
 import {css, keyframes} from "@emotion/react";
 import {motion, MotionStyle} from "motion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
-
+const { delay, duration } = BANNER_ANIMATION.wordGradientFill;
 const gradientFill = keyframes`
     0% {
         --gradient-fill-progress: -25%;
@@ -12,7 +13,7 @@ const gradientFill = keyframes`
         --gradient-fill-progress: 100%;
     }
 `;
-const DEFAULT_CENTER: [string, string] = ["55%", "90%"];
+const DEFAULT_CENTER: [number, number] = [0.55, 0.9];
 
 export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.span>) {
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER });
@@ -29,7 +30,7 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
             color: transparent;
             background-image:
                 radial-gradient(
-                    circle at var(--center-x) var(--center-y),
+                    circle at calc(var(--center-x) * 100%) calc(var(--center-y) * 100%),
                     var(--secondary-300) calc(var(--gradient-fill-progress) / 4),
                     var(--secondary-500) calc(var(--gradient-fill-progress) / 4),
                     var(--primary-500) var(--gradient-fill-progress),
@@ -37,7 +38,7 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
                 );
 			background-color: var(--neutral-800);
             background-clip: text;
-            animation: ${gradientFill} 2.4s 0.4s ease-out both;
+            animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
 		`}
 	>beauty</motion.span>;
 }

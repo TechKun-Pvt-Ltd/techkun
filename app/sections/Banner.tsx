@@ -4,8 +4,9 @@ import {css, keyframes} from "@emotion/react";
 import Precision from "@/app/components/banner-components/Precision";
 import Beauty from "@/app/components/banner-components/Beauty";
 import Identity from "@/app/components/banner-components/Identity";
-import GradientRimButton from "@/app/components/ui/GradientRimButton";
+import GradientBorderButton from "@/app/components/ui/GradientBorderButton";
 import EmailLink from "@/app/components/EmailLink";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
 const gradientFill = keyframes`
 	from {
@@ -15,7 +16,7 @@ const gradientFill = keyframes`
 		--gradient-fill-progress: 75%;
 	}
 `;
-
+const {bgGradient} = BANNER_ANIMATION;
 export default function Banner() {
 	const keywordCss = css`
         font-size: 1.4em;
@@ -30,7 +31,7 @@ export default function Banner() {
 			oklch(from var(--secondary-950) l c h / 0.5),
 			transparent var(--gradient-fill-progress)
 		);
-		animation: ${gradientFill} 2.4s ease both;
+		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease both;
 	`}>
 		<div css={css`
 			min-height: var(--section-height);
@@ -64,7 +65,9 @@ export default function Banner() {
 					align-items: center;
 					justify-content: center;
 				`}>
-					<GradientRimButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit", width: "max-content" }}>Let's get on call</GradientRimButton>
+					<GradientBorderButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit", width: "max-content" }}>
+						Let's get on call
+					</GradientBorderButton>
 					<EmailLink
 						style={{ color: "oklch(from var(--secondary-color) 0.56 0.05 h)", fontWeight: "500", fontSize: "1.1em", width: "max-content" }}
 						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"

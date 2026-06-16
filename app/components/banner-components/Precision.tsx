@@ -1,17 +1,18 @@
 import React, {useEffect, useId, useState} from "react";
 import {motion} from "motion/react";
-import {SpringOptions} from "motion";
+import {animate, delayInSeconds, SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 import {frame} from "motion-dom";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 68;
 
 const springOptions: SpringOptions = {stiffness: 500, damping: 30};
-const DEFAULT_CENTER: [string, string] = ["78.6%", "59%"];
+const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
 const xBounds: [number, number] = [0, 1];
 
 export default function Precision(props: React.ComponentPropsWithoutRef<"span">) {
@@ -25,6 +26,13 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	const circleId = "circle-" + id;
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
 
+	useEffect(() => {
+		delayInSeconds(() => {
+			const value = y.get();
+			if (value === DEFAULT_CENTER[1])
+				animate(y, [value, value - 0.2, value], { ease: "easeIn" });
+		}, BANNER_ANIMATION.precision.delay);
+	}, []);
 	useEffect(() => {
 		if (browser.isNone || !containerRef.current) return;
 
@@ -98,7 +106,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							r: var(--r);
 							transition: --r 0.2s ease-in-out;
 							transform-box: view-box;
-							transform: translate(var(--x), var(--y));
+							transform: translate(calc(var(--x) * 100%), calc(var(--y) * 100%));
 						`}
 					/>
 					<mask id={maskId}>
@@ -211,10 +219,10 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 						line {
 							transform-box: view-box;
 							&:first-of-type {
-								transform: translateX(var(--x));
+								transform: translateX(calc(var(--x) * 100%));
 							}
 							&:nth-of-type(2) {
-								transform: translateY(var(--y));
+								transform: translateY(calc(var(--y) * 100%));
 							}
 						}
 					`}
