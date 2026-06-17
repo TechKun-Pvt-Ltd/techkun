@@ -1,6 +1,8 @@
 import {css, keyframes} from "@emotion/react";
 import React from "react";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
+const { initialDotsLightUp, dotsLightUp, dotsLightDown } = BANNER_ANIMATION;
 const lightUp = keyframes`
 	from {
 		fill: currentColor;
@@ -19,19 +21,19 @@ const lightDown = keyframes`
 `;
 
 const DOT_COUNT = 4;
-const MIN_DELAY = 0.4;
-const STAGGER = 0.1;
+const INITIAL_MIN_DELAY = initialDotsLightUp.delay;
+const STAGGER = dotsLightUp.stagger;
 let minDelaySetToZero = false;
 
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
 	return <span
-		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': MIN_DELAY + 's', ...style} as React.CSSProperties}
+		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': INITIAL_MIN_DELAY + 's', ...style} as React.CSSProperties}
 		{...props}
 		onClick={ev => {
 			ev.currentTarget.toggleAttribute("data-clicked");
 			if (!minDelaySetToZero) {
 				minDelaySetToZero = true;
-				ev.currentTarget.style.setProperty("--min-delay", '0s');
+				ev.currentTarget.style.setProperty("--min-delay", dotsLightUp.delay + 's');
 			}
 		}}
 	>
@@ -50,7 +52,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 			}
 	
 			svg.bulb-icon, svg.dots circle {
-                animation: ${lightUp} 0.2s both;
+                animation: ${lightUp} ${dotsLightUp.duration}s ease-out both;
 			}
 			svg.bulb-icon {
 				top: 0.24em;
@@ -84,7 +86,8 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 			[data-clicked] & {
 				svg.bulb-icon, svg.dots circle {
 					animation-name: ${lightDown};
-					animation-delay: 0s;
+					animation-duration: ${dotsLightDown.duration}s;
+					animation-delay: ${dotsLightDown.delay + dotsLightDown.stagger}s;
 				}
             }
 		`}>

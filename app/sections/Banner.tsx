@@ -1,12 +1,22 @@
 'use client'
 import React from "react";
-import {css} from "@emotion/react";
+import {css, keyframes} from "@emotion/react";
 import Precision from "@/app/components/banner-components/Precision";
 import Beauty from "@/app/components/banner-components/Beauty";
 import Identity from "@/app/components/banner-components/Identity";
-import GradientRimButton from "@/app/components/ui/GradientRimButton";
+import GradientBorderButton from "@/app/components/ui/GradientBorderButton";
 import EmailLink from "@/app/components/EmailLink";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
+const gradientFill = keyframes`
+	from {
+		--gradient-fill-progress: 0%;
+	}
+	to {
+		--gradient-fill-progress: 75%;
+	}
+`;
+const {bgGradient} = BANNER_ANIMATION;
 export default function Banner() {
 	const keywordCss = css`
         font-size: 1.4em;
@@ -16,6 +26,12 @@ export default function Banner() {
 
 	return <section css={css`
 		justify-items: center;
+		background: radial-gradient(
+			ellipse var(--page-max-width) 100% at 50% 145%,
+			oklch(from var(--secondary-950) l c h / 0.5),
+			transparent var(--gradient-fill-progress)
+		);
+		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease both;
 	`}>
 		<div css={css`
 			min-height: var(--section-height);
@@ -25,7 +41,7 @@ export default function Banner() {
 			flex-direction: column;
             justify-content: space-between;
 			align-items: center;
-            padding-block: 84px 48px;
+            padding-block: 160px 48px;
             text-align: center;
 			gap: 64px;
 		`}>
@@ -33,7 +49,7 @@ export default function Banner() {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-				gap: 64px;
+				gap: 56px;
 			`}>
 				<h1 className="hero-heading" css={css`user-select: none;`}>
 					<span style={{ whiteSpace: 'nowrap' }}>We build software</span>
@@ -41,7 +57,7 @@ export default function Banner() {
 					<span css={keywordCss}> <Beauty />, <Precision />, </span>
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
-				<div className="large-text" css={css`
+				<div className="text-lg" css={css`
 					padding-inline: 96px;
 					display: flex;
 					gap: 24px;
@@ -49,18 +65,20 @@ export default function Banner() {
 					align-items: center;
 					justify-content: center;
 				`}>
-					<GradientRimButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit", width: "max-content" }}>Let's get on call</GradientRimButton>
+					<GradientBorderButton style={{ fontSize: "inherit", lineHeight: "inherit", letterSpacing: "inherit", width: "max-content" }}>
+						Let's get on call
+					</GradientBorderButton>
 					<EmailLink
-						style={{ color: "var(--muted-foreground)", fontWeight: "400", fontSize: "1.1em", width: "max-content" }}
-						address="farasat@tech-kun.com" text="or chat an email" iconSide="right"
-						gap="6px" iconStrokeWidth={1.2}
+						style={{ color: "oklch(from var(--secondary-color) 0.56 0.05 h)", fontWeight: "500", fontSize: "1.1em", width: "max-content" }}
+						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"
+						gap="8px" iconStrokeWidth={1.4}
 					/>
 				</div>
 			</div>
 			<p css={css`
-				color: var(--neutral-600);
+				color: oklch(from var(--secondary-color) 0.48 0.05 h);
 				padding-block-start: 8px;
-				font-weight: 700;
+				font-weight: 500;
 			`}>
 				{/*Brand research & planning • Design • Engineering • Testing • Launch & maintenance*/}
 				Creating&nbsp;experiences&nbsp;people&nbsp;love and&nbsp;brands&nbsp;they&nbsp;remember.

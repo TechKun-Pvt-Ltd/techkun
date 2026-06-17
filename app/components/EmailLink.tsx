@@ -34,7 +34,7 @@ export default function EmailLink(
 		height="1em" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet"
 		style={{
 			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
-			marginBlockEnd: '-0.18em'
+			marginBlockEnd: '-0.16em'
 		}}
 	>
 		<motion.path

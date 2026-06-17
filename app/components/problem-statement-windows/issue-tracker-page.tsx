@@ -211,7 +211,7 @@ export default function IssueTrackerPage() {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	`;
-	return <div className="small-text" css={css`
+	return <div className="text-sm" css={css`
         font-family: sans-serif;
         flex-grow: 1;
         padding: 0 16px;
