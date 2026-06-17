@@ -188,7 +188,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							x2="100%"
 							y1={metrics.baseline}
 							y2={metrics.baseline}
-							strokeDasharray="10"
+							strokeDasharray="4%"
 						/>
 
 						<line
@@ -234,7 +234,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 					mask={`url(#${maskId})`}
 					stroke="var(--neutral-400)"
 					strokeWidth="2"
-					strokeDasharray="8"
+					strokeDasharray="4%"
 					css={css`
 						line {
 							transform-box: view-box;
