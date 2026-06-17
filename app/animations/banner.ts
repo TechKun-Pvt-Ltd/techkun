@@ -1,10 +1,12 @@
+const INITIAL_DELAY = 0.4;
+
 const BANNER_ANIMATION = {
 	wordGradientFill: {
-		delay: 0.4,
+		delay: INITIAL_DELAY,
 		duration: 2.4
 	},
 	initialDotsLightUp: {
-		delay: 0.4
+		delay: INITIAL_DELAY
 	},
 	dotsLightUp: {
 		delay: 0,
@@ -17,7 +19,7 @@ const BANNER_ANIMATION = {
 		stagger: 0
 	},
 	ctaBorderGradient: {
-		delay: 0.4,
+		delay: INITIAL_DELAY,
 		duration: 2.4
 	},
 	bgGradient: {
@@ -25,7 +27,7 @@ const BANNER_ANIMATION = {
 		duration: 2.4
 	},
 	precision: {
-		delay: 2.4
+		delay: 2
 	}
 };
 

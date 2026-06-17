@@ -1,6 +1,6 @@
 import React, {useEffect, useId, useState} from "react";
 import {motion} from "motion/react";
-import {animate, delayInSeconds, SpringOptions} from "motion";
+import {animate, AnimationPlaybackControlsWithThen, delayInSeconds, SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
@@ -27,11 +27,26 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
 
 	useEffect(() => {
-		delayInSeconds(() => {
-			const value = y.get();
-			if (value === DEFAULT_CENTER[1])
-				animate(y, [value, value - 0.2, value], { ease: "easeIn" });
+		const container = containerRef.current!;
+		const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
+		let anim: AnimationPlaybackControlsWithThen;
+		const cancel = delayInSeconds(() => {
+			const value = x.get();
+			anim = animate([
+				[x, [value, 0.1], {ease: "easeInOut", duration: 0.3}],
+				[x, [0.1, 0.9], {ease: "easeInOut", duration: 2}],
+				[x, [0.9, value], {ease: "easeInOut", duration: 0.3}]
+			]);
+			xRay.setAttribute("data-active", "true");
+			delayInSeconds(() => xRay.removeAttribute("data-active"), 2.3);
 		}, BANNER_ANIMATION.precision.delay);
+		function listener() {
+			cancel();
+			anim?.stop();
+			xRay.removeAttribute("data-active");
+			xRay.removeEventListener("pointerenter", listener);
+		}
+		xRay.addEventListener("pointerenter", listener);
 	}, []);
 	useEffect(() => {
 		if (browser.isNone || !containerRef.current) return;
@@ -73,6 +88,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	>
 		precisi<span style={{opacity: 0.2}}>o</span>n
 		<motion.span
+			className="x-ray"
 			style={{"--x": x, "--y": y} as React.CSSProperties}
 			css={css`
 				@property --r {
@@ -83,7 +99,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				position: absolute;
 				inset: 0;
 				--r: 0.24em;
-				&:hover {
+				&:hover, &[data-active] {
 					--r: 0.72em;
 				}
 			`}
