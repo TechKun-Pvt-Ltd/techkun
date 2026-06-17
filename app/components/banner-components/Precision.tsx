@@ -158,21 +158,25 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							precision
 						</text>
 					}
-					{metrics && <g fill="var(--neutral-600)">
+					{metrics && <g fill="var(--neutral-600)" css={css`
+						text {
+							--font-index: calc(-2 + 2 * var(--mobile-s-to-laptop));
+						}
+					`}>
 						<text
-							className="body-text"
-							x={`${xHeightIndicatorStart + 1}%`}
+							className="indexed-font"
+							x={`${xHeightIndicatorStart - 1}%`}
 							y={metrics.xHeight - 8}
 						>x-height</text>
 						<text
-							className="body-text"
-							x={`${capHeightIndicatorStart + 1}%`}
+							className="indexed-font"
+							x={`${capHeightIndicatorStart - 1}%`}
 							y={metrics.capHeight - 8}
 						>cap height</text>
 						<text
-							className="body-text"
+							className="indexed-font"
 							x={`30%`}
-							y={metrics.descender}
+							y={metrics.baseline + 20}
 						>baseline</text>
 					</g>}
 					{metrics && <g

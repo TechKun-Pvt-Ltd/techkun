@@ -168,15 +168,15 @@ function ContactOptions() {
                 </filter>
             </defs>
         </svg>
-        <button className="large-text contact-option" css={contactOptionCss}>
+        <button className="text-lg contact-option" css={contactOptionCss}>
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
-        <p className="large-text" css={css`
+        <p className="text-lg" css={css`
             color: var(--muted-foreground);
             text-box-trim: trim-both;
         `}>or</p>
-        <Link className="large-text contact-option" css={contactOptionCss}
+        <Link className="text-lg contact-option" css={contactOptionCss}
             style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
         >
             <motion.span initial={{ opacity: 0 }} />

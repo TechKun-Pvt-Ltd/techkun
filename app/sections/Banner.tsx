@@ -57,7 +57,7 @@ export default function Banner() {
 					<span css={keywordCss}> <Beauty />, <Precision />, </span>
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
-				<div className="large-text" css={css`
+				<div className="text-lg" css={css`
 					padding-inline: 96px;
 					display: flex;
 					gap: 24px;

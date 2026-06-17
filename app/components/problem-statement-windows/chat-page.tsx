@@ -144,7 +144,7 @@ function MessageBox(msg: Message) {
 		<div>
 			<div className="msg-head">
 				<p className="msg-sender">{msg.sender}</p>
-				<p className="msg-time small-text">{msg.time}</p>
+				<p className="msg-time text-sm">{msg.time}</p>
 			</div>
 			<p className="msg-body">{msg.text}</p>
 		</div>
