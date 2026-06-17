@@ -49,7 +49,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		xRay.addEventListener("pointerenter", listener);
 	}, []);
 	useEffect(() => {
-		if (browser.isNone || !containerRef.current) return;
+		if (!containerRef.current) return;
 
 		let styles: CSSStyleDeclaration;
 		let lastFont: string;
@@ -68,7 +68,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		listener();
 		window.addEventListener("resize", listener);
 		return () => window.removeEventListener("resize", listener);
-	}, [browser]);
+	}, []);
 
 	return <span
 		{...props}
