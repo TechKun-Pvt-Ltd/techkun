@@ -21,28 +21,26 @@ const springLinearEasing = generateLinearEasing(
 
 const EXIT_DURATION = 0.4;
 
+enum TextState {
+	ENTER = "enter",
+	EXIT = "exit",
+	VISIBLE = "visible"
+}
+
 export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof motion.button>) {
 	const textElement = useRef<HTMLSpanElement>(null);
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
-	const [textState, setTextState] = useState<"unmounted" | "enter" | "exit" | "visible">("visible");
+	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
 
 	function animateIn() {
-		setTextState("enter");
+		setTextState(TextState.ENTER);
 	}
 	function animateOut() {
 		// the text element cannot be animated out by other events if it's hovered or above the threshold.
 		if (textAboveThreshold.current || textHovered.current) return;
-
-		const presenceContext = visualElementStore.get(textElement.current)?.presenceContext!;
-		presenceContext.register("exiting-text-" + presenceContext.id);
-		setTextState("exit");
+		setTextState(TextState.EXIT);
 	}
-
-	useEffect(() => {
-		if (textState === "exit")
-			setTextState("unmounted");
-	}, [textState]);
 
 	useEffect(() => {
 		function onScroll() {
@@ -58,19 +56,17 @@ export default function LogoButton({className, style, ...props}: React.Component
 	}, []);
 
 	return <motion.button
-		layout="size"
+		layout
 		className={"display-text " + className}
 		style={{ borderRadius: "16px", ...style }}
-		transition={textState === "unmounted" ? { duration: EXIT_DURATION + 0.1 }: undefined}
+		transition={textState === TextState.EXIT ? { duration: EXIT_DURATION + 0.1 }: undefined}
 		css={css`
 			padding-block: 16px;
 			padding-inline: 24px;
 			background-color: oklch(from var(--background) 0.14 c h);
 			display: flex;
 			align-items: center;
-			gap: 16px;
 			font-weight: 500;
-			position: relative;
 
 			//corner-shape: squircle;
 			//border-radius: 64px;
@@ -92,11 +88,17 @@ export default function LogoButton({className, style, ...props}: React.Component
 		<motion.span layout>
 			<TechKunLogo style={{ display: "block" }} />
 		</motion.span>
-		<AnimatePresence mode="popLayout">
-			{textState !== "unmounted" && <motion.span
+		<motion.span css={css`
+			height: 1lh;
+			position: relative;
+			display: flex;
+			align-items: center;
+		`}>
+			<motion.span
 				ref={textElement}
 				layout
 				css={css`
+					pointer-events: none;
 					color: transparent;
 					background-image: linear-gradient(
 						to right in oklch,
@@ -105,32 +107,27 @@ export default function LogoButton({className, style, ...props}: React.Component
 						var(--primary-500),
 						transparent 66.66%
 					);
-					text-box-trim: trim-both;
+					padding-inline-start: 16px;
 					background-size: 300% 100%;
 					background-clip: text;
 					background-position-y: 50%;
 	
 					transition: background-position-x 0.6s ease-in-out;
 					background-position-x: 0;
-					&[data-state="enter"] {
+					&[data-state=${TextState.ENTER}] {
 						@starting-style {
 							background-position-x: 100%;
 						}
 					}
-					&[data-state="exit"] {
+					&[data-state=${TextState.EXIT}] {
+						position: absolute;
 						transition-timing-function: ${springLinearEasing};
 						transition-duration: ${EXIT_DURATION}s;
 						background-position-x: 100%;
 					}
 				`}
 				data-state={textState}
-				onTransitionEnd={_ => {
-					if (textState !== "exit") return;
-
-					const presenceContext = visualElementStore.get(textElement.current)?.presenceContext!;
-					presenceContext.onExitComplete?.("exiting-text-" + presenceContext.id);
-				}}
-			>TechKun</motion.span>}
-		</AnimatePresence>
+			>TechKun</motion.span>
+		</motion.span>
 	</motion.button>;
 };

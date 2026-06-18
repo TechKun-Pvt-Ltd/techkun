@@ -81,20 +81,19 @@
        Pure calc() chains (no pow() needed, widely supported)
        ========================================================== */
 
-    --font-size-xs:   round(calc(var(--base-font-size) / pow(var(--scale-ratio), 2)), 1px);
-    --font-size-sm:   round(calc(var(--base-font-size) / var(--scale-ratio)), 1px);
-    --font-size-base: round(var(--base-font-size), 1px);
-    --font-size-lg:   round(calc(var(--base-font-size) * var(--scale-ratio)), 1px);
-    --font-size-xl:   round(calc(var(--base-font-size) * pow(var(--scale-ratio), 2)), 1px);
-    --font-size-2xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 3)), 1px);
-    --font-size-3xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 4)), 1px);
-    --font-size-4xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 5)), 1px);
-    --font-size-5xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 6)), 1px);
-    --font-size-6xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 7)), 1px);
-    --font-size-7xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 8)), 1px);
-    --font-size-8xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 9)), 1px);
-    --font-size-9xl:  round(calc(var(--base-font-size) * pow(var(--scale-ratio), 10)), 1px);
-
+    --font-size-neg-2: round(var(--base-font-size) / pow(var(--scale-ratio), 2), 1px);
+    --font-size-neg-1: round(var(--base-font-size) / var(--scale-ratio), 1px);
+    --font-size-0: round(var(--base-font-size), 1px);
+    --font-size-1: round(var(--base-font-size) * var(--scale-ratio), 1px);
+    --font-size-2: round(var(--base-font-size) * pow(var(--scale-ratio), 2), 1px);
+    --font-size-3: round(var(--base-font-size) * pow(var(--scale-ratio), 3), 1px);
+    --font-size-4: round(var(--base-font-size) * pow(var(--scale-ratio), 4), 1px);
+    --font-size-5: round(var(--base-font-size) * pow(var(--scale-ratio), 5), 1px);
+    --font-size-6: round(var(--base-font-size) * pow(var(--scale-ratio), 6), 1px);
+    --font-size-7: round(var(--base-font-size) * pow(var(--scale-ratio), 7), 1px);
+    --font-size-8: round(var(--base-font-size) * pow(var(--scale-ratio), 8), 1px);
+    --font-size-9: round(var(--base-font-size) * pow(var(--scale-ratio), 9), 1px);
+    --font-size-10: round(var(--base-font-size) * pow(var(--scale-ratio), 10), 1px);
 
     /* ==========================================================
        LINE HEIGHT  —  line-height = font-size + --lh-addend
@@ -102,19 +101,19 @@
        ========================================================== */
 
     --lh-unit: 4px;
-    --line-height-xs:   round(calc(var(--font-size-xs)   + var(--lh-addend)), var(--lh-unit));
-    --line-height-sm:   round(calc(var(--font-size-sm)   + var(--lh-addend)), var(--lh-unit));
-    --line-height-base: round(calc(var(--font-size-base) + var(--lh-addend)), var(--lh-unit));
-    --line-height-lg:   round(calc(var(--font-size-lg)   + var(--lh-addend)), var(--lh-unit));
-    --line-height-xl:   round(calc(var(--font-size-xl)   + var(--lh-addend)), var(--lh-unit));
-    --line-height-2xl:  round(calc(var(--font-size-2xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-3xl:  round(calc(var(--font-size-3xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-4xl:  round(calc(var(--font-size-4xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-5xl:  round(calc(var(--font-size-5xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-6xl:  round(calc(var(--font-size-6xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-7xl:  round(calc(var(--font-size-7xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-8xl:  round(calc(var(--font-size-8xl)  + var(--lh-addend)), var(--lh-unit));
-    --line-height-9xl:  round(calc(var(--font-size-9xl)  + var(--lh-addend)), var(--lh-unit));
+    --line-height-neg-2: round(var(--font-size-neg-2) + var(--lh-addend), var(--lh-unit));
+    --line-height-neg-1: round(var(--font-size-neg-1) + var(--lh-addend), var(--lh-unit));
+    --line-height-0: round(var(--font-size-0) + var(--lh-addend), var(--lh-unit));
+    --line-height-1: round(var(--font-size-1) + var(--lh-addend), var(--lh-unit));
+    --line-height-2: round(var(--font-size-2) + var(--lh-addend), var(--lh-unit));
+    --line-height-3: round(var(--font-size-3) + var(--lh-addend), var(--lh-unit));
+    --line-height-4: round(var(--font-size-4) + var(--lh-addend), var(--lh-unit));
+    --line-height-5: round(var(--font-size-5) + var(--lh-addend), var(--lh-unit));
+    --line-height-6: round(var(--font-size-6) + var(--lh-addend), var(--lh-unit));
+    --line-height-7: round(var(--font-size-7) + var(--lh-addend), var(--lh-unit));
+    --line-height-8: round(var(--font-size-8) + var(--lh-addend), var(--lh-unit));
+    --line-height-9: round(var(--font-size-9) + var(--lh-addend), var(--lh-unit));
+    --line-height-10: round(var(--font-size-10) + var(--lh-addend), var(--lh-unit));
 
     /* ==========================================================
        LETTER SPACING  —  reciprocal model (values in em)
@@ -141,27 +140,27 @@
 
     --ls-numerator: calc((var(--base-letter-spacing) + 0.03em) * var(--base-font-size));
 
-    --letter-spacing-xs:   calc((var(--ls-numerator) / var(--font-size-xs))   - 0.03em);
-    --letter-spacing-sm:   calc((var(--ls-numerator) / var(--font-size-sm))   - 0.03em);
-    --letter-spacing-base: calc((var(--ls-numerator) / var(--font-size-base)) - 0.03em);
-    --letter-spacing-lg:   calc((var(--ls-numerator) / var(--font-size-lg))   - 0.03em);
-    --letter-spacing-xl:   calc((var(--ls-numerator) / var(--font-size-xl))   - 0.03em);
-    --letter-spacing-2xl:  calc((var(--ls-numerator) / var(--font-size-2xl))  - 0.03em);
-    --letter-spacing-3xl:  calc((var(--ls-numerator) / var(--font-size-3xl))  - 0.03em);
-    --letter-spacing-4xl:  calc((var(--ls-numerator) / var(--font-size-4xl))  - 0.03em);
-    --letter-spacing-5xl:  calc((var(--ls-numerator) / var(--font-size-5xl))  - 0.03em);
-    --letter-spacing-6xl:  calc((var(--ls-numerator) / var(--font-size-6xl))  - 0.03em);
-    --letter-spacing-7xl:  calc((var(--ls-numerator) / var(--font-size-7xl))  - 0.03em);
-    --letter-spacing-8xl:  calc((var(--ls-numerator) / var(--font-size-8xl))  - 0.03em);
-    --letter-spacing-9xl:  calc((var(--ls-numerator) / var(--font-size-9xl))  - 0.03em);
+    --letter-spacing-neg-2: calc((var(--ls-numerator) / var(--font-size-neg-2)) - 0.03em);
+    --letter-spacing-neg-1: calc((var(--ls-numerator) / var(--font-size-neg-1)) - 0.03em);
+    --letter-spacing-0: calc((var(--ls-numerator) / var(--font-size-0)) - 0.03em);
+    --letter-spacing-1: calc((var(--ls-numerator) / var(--font-size-1)) - 0.03em);
+    --letter-spacing-2: calc((var(--ls-numerator) / var(--font-size-2)) - 0.03em);
+    --letter-spacing-3: calc((var(--ls-numerator) / var(--font-size-3)) - 0.03em);
+    --letter-spacing-4: calc((var(--ls-numerator) / var(--font-size-4)) - 0.03em);
+    --letter-spacing-5: calc((var(--ls-numerator) / var(--font-size-5)) - 0.03em);
+    --letter-spacing-6: calc((var(--ls-numerator) / var(--font-size-6)) - 0.03em);
+    --letter-spacing-7: calc((var(--ls-numerator) / var(--font-size-7)) - 0.03em);
+    --letter-spacing-8: calc((var(--ls-numerator) / var(--font-size-8)) - 0.03em);
+    --letter-spacing-9: calc((var(--ls-numerator) / var(--font-size-9)) - 0.03em);
+    --letter-spacing-10: calc((var(--ls-numerator) / var(--font-size-10)) - 0.03em);
 
     --script-12-bt: "script_12_bt", "script_12_bt Fallback";
 }
 
 html {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-base);
-    letter-spacing: var(--letter-spacing-base);
+    font-size: var(--font-size-0);
+    line-height: var(--line-height-0);
+    letter-spacing: var(--letter-spacing-0);
     font-family: Quicksand, Quicksand Fallback, sans-serif;
     font-style: normal;
 }
@@ -169,36 +168,36 @@ h1, h2, h3, h4, h5, h6, p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, c
     margin-block: 0;
 }
 h1 {
-    font-size: var(--font-size-5xl);
-    line-height: var(--line-height-5xl);
+    font-size: var(--font-size-6);
+    line-height: var(--line-height-6);
     font-weight: normal;
 }
 h2 {
-    font-size: var(--font-size-4xl);
-    line-height: var(--line-height-4xl);
+    font-size: var(--font-size-5);
+    line-height: var(--line-height-5);
     font-weight: normal;
 }
 h3 {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-3xl);
+    font-size: var(--font-size-4);
+    line-height: var(--line-height-4);
     font-weight: normal;
 }
 h4 {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
     font-weight: normal;
 }
 h5 {
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-xl);
-    letter-spacing: var(--letter-spacing-xl);
+    font-size: var(--font-size-2);
+    line-height: var(--line-height-2);
+    letter-spacing: var(--letter-spacing-2);
     font-weight: normal;
 }
 h6 {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
     font-weight: normal;
 }
 /*p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {*/
@@ -207,135 +206,142 @@ h6 {
 /*    letter-spacing: var(--letter-spacing-base);*/
 /*}*/
 
-/*button {*/
-/*    font-size: var(--font-size-base);*/
-/*    line-height: var(--line-height-base);*/
-/*    letter-spacing: var(--letter-spacing-base);*/
-/*    font-family: inherit;*/
-/*    font-weight: 500;*/
-/*}*/
+button {
+    /*font-size: var(--font-size-base);*/
+    /*line-height: var(--line-height-base);*/
+    /*letter-spacing: var(--letter-spacing-base);*/
+    font-family: inherit;
+    font-weight: 500;
+}
 
 .display-text {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
 }
 .display-lg {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
 }
 .hero-heading {
-    font-size: var(--font-size-5xl);
-    line-height: var(--line-height-5xl);
-    letter-spacing: var(--letter-spacing-5xl);
+    font-size: var(--font-size-6);
+    line-height: var(--line-height-6);
+    letter-spacing: var(--letter-spacing-6);
     font-weight: normal;
 }
 .hero-button {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
     font-weight: normal;
 }
 .section-title {
-    font-size: var(--font-size-4xl);
-    line-height: var(--line-height-4xl);
-    letter-spacing: var(--letter-spacing-4xl);
+    font-size: var(--font-size-5);
+    line-height: var(--line-height-5);
+    letter-spacing: var(--letter-spacing-5);
     font-weight: normal;
 }
 .section-subtitle {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
     font-weight: normal;
     color: var(--neutral-100);
 }
 .item-title {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-3xl);
-    letter-spacing: var(--letter-spacing-3xl);
+    font-size: var(--font-size-4);
+    line-height: var(--line-height-4);
+    letter-spacing: var(--letter-spacing-4);
     font-weight: normal;
 }
 .item-subtitle {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
     font-weight: normal;
     color: var(--neutral-300);
 }
 
+.text-xs {
+    font-size: var(--font-size-neg-2);
+    line-height: var(--line-height-neg-2);
+    letter-spacing: var(--letter-spacing-neg-2);
+}
+.text-sm {
+    font-size: var(--font-size-neg-1);
+    line-height: var(--line-height-neg-1);
+    letter-spacing: var(--letter-spacing-neg-1);
+}
+.text-base {
+    font-size: var(--font-size-0);
+    line-height: var(--line-height-0);
+    letter-spacing: var(--letter-spacing-0);
+}
 .text-lg {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
 }
 .text-xl {
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-xl);
-    letter-spacing: var(--letter-spacing-xl);
+    font-size: var(--font-size-2);
+    line-height: var(--line-height-2);
+    letter-spacing: var(--letter-spacing-2);
 }
 .text-2xl {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
 }
 .text-3xl {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-3xl);
-    letter-spacing: var(--letter-spacing-3xl);
+    font-size: var(--font-size-4);
+    line-height: var(--line-height-4);
+    letter-spacing: var(--letter-spacing-4);
 }
 .text-4xl {
-    font-size: var(--font-size-4xl);
-    line-height: var(--line-height-4xl);
-    letter-spacing: var(--letter-spacing-4xl);
+    font-size: var(--font-size-5);
+    line-height: var(--line-height-5);
+    letter-spacing: var(--letter-spacing-5);
 }
 .text-5xl {
-    font-size: var(--font-size-5xl);
-    line-height: var(--line-height-5xl);
-    letter-spacing: var(--letter-spacing-5xl);
+    font-size: var(--font-size-6);
+    line-height: var(--line-height-6);
+    letter-spacing: var(--letter-spacing-6);
 }
 .text-6xl {
-    font-size: var(--font-size-6xl);
-    line-height: var(--line-height-6xl);
-    letter-spacing: var(--letter-spacing-6xl);
+    font-size: var(--font-size-7);
+    line-height: var(--line-height-7);
+    letter-spacing: var(--letter-spacing-7);
 }
 .text-8xl {
-    font-size: var(--font-size-8xl);
-    line-height: var(--line-height-8xl);
-    letter-spacing: var(--letter-spacing-8xl);
+    font-size: var(--font-size-9);
+    line-height: var(--line-height-9);
+    letter-spacing: var(--letter-spacing-9);
 }
 .text-9xl {
-    font-size: var(--font-size-9xl);
-    line-height: var(--line-height-9xl);
-    letter-spacing: var(--letter-spacing-9xl);
-}
-
-.text-xs {
-    font-size: var(--font-size-xs);
-    line-height: var(--line-height-xs);
-    letter-spacing: var(--letter-spacing-xs);
-}
-.small-text {
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-sm);
-    letter-spacing: var(--letter-spacing-sm);
-}
-.body-text {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-base);
-    letter-spacing: var(--letter-spacing-base);
-}
-.large-text {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
-}
-.xl-text {
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-xl);
-    letter-spacing: var(--letter-spacing-xl);
+    font-size: var(--font-size-10);
+    line-height: var(--line-height-10);
+    letter-spacing: var(--letter-spacing-10);
 }
 
 .cursive-text {
     font-family: var(--script-12-bt), cursive;
+}
+
+@property --font-index {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+@property --_font-size {
+    syntax: "<length-percentage>";
+    inherits: false;
+    initial-value: 0;
+}
+
+.indexed-font {
+    --_font-size: round(var(--base-font-size) * pow(var(--scale-ratio), var(--font-index)), 1px);
+    font-size: var(--_font-size);
+    line-height: round(var(--_font-size) + var(--lh-addend), var(--lh-unit));
+    letter-spacing: calc((var(--ls-numerator) / var(--_font-size)) - 0.03em);
 }

@@ -3,6 +3,7 @@ import React, {ReactNode} from "react";
 import {css, keyframes} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import cssSupports from "@/app/utils/css-supports";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -19,16 +20,18 @@ const transition: {
     ease: [0.215, 0.61, 0.355, 1]
 };
 
-const rotateMaskGradient = keyframes`
+const gradientFill = keyframes`
     from {
-        --gradient-angle: 220deg;
+        --gradient-fill-progress: 0%;
     }
     to {
-        --gradient-angle: 20deg;
+        --gradient-fill-progress: 50%;
     }
 `;
 
-export default function GradientRimButton({children, ...props}: {
+const { ctaBorderGradient } = BANNER_ANIMATION;
+
+export default function GradientBorderButton({children, ...props}: {
     children: ReactNode;
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
@@ -40,39 +43,43 @@ export default function GradientRimButton({children, ...props}: {
         padding-inline: 1.6rem 1.4rem;
         border-radius: 0.8rem;
 
-        animation: ${rotateMaskGradient} linear both;
-        animation-timeline: view();
-
-        &::before, &::after {
+        //&::before {
+        //    inset: 0;
+        //    z-index: -2;
+        //    border-radius: inherit;
+        //    border: 1px solid var(--border);
+        //}
+        &::after {
             content: '';
-            border-radius: inherit;
-            corner-shape: inherit;
             position: absolute;
             inset: 0;
-            transition: transform 0.1s ease-in-out;
-        }
-        &::before {
-            z-index: -2;
-            border: 1px solid var(--muted);
-        }
-        &::after {
             z-index: -1;
             border: 1px solid transparent;
+            border-radius: inherit;
+            corner-shape: inherit;
             mask:
-                content-box linear-gradient(transparent 0 0) subtract,
-                border-box linear-gradient(var(--gradient-angle), black 5%, transparent 25%, transparent 75%, black 95%);
+                padding-box linear-gradient(transparent 0 0) subtract,
+                border-box linear-gradient(black 0 0);
+                //border-box linear-gradient(var(--gradient-angle), black 10%, transparent 30%, transparent 70%, black 90%);
             background: linear-gradient(
-                var(--gradient-angle),
-                var(--tertiary-500),
-                var(--secondary-500),
-                var(--primary-500) 25%,
-                var(--primary-500) 75%,
-                var(--secondary-500),
-                var(--tertiary-500)
+                -2deg,
+                var(--secondary-700),
+                var(--secondary-950) var(--gradient-fill-progress)
             ) border-box;
+            transition: transform 0.1s ease-in-out;
+            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
+            //background: linear-gradient(
+            //    var(--gradient-angle),
+            //    var(--tertiary-500),
+            //    var(--secondary-500),
+            //    var(--primary-500) 25%,
+            //    var(--primary-500) 75%,
+            //    var(--secondary-500),
+            //    var(--tertiary-500)
+            //) padding-box;
         }
 
-        &:active::before, &:active::after {
+        &:active::after {
             transform: scale(0.97);
         }
 

@@ -1,17 +1,18 @@
 import React, {useEffect, useId, useState} from "react";
 import {motion} from "motion/react";
-import {SpringOptions} from "motion";
+import {animate, SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 import {frame} from "motion-dom";
+import BANNER_ANIMATION from "@/app/animations/banner";
 
 const xHeightIndicatorStart = 16;
-const capHeightIndicatorStart = 68;
+const capHeightIndicatorStart = 67.25;
 
 const springOptions: SpringOptions = {stiffness: 500, damping: 30};
-const DEFAULT_CENTER: [string, string] = ["78.6%", "59%"];
+const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
 const xBounds: [number, number] = [0, 1];
 
 export default function Precision(props: React.ComponentPropsWithoutRef<"span">) {
@@ -26,18 +27,46 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
 
 	useEffect(() => {
-		if (browser.isNone || !containerRef.current) return;
+		const container = containerRef.current!;
+		const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
+		const value = x.get();
+		let xRayActivated = false;
+		const anim = animate([
+			[x, [value, 0.1], {duration: 0.3}],
+			[x, [0.1, 0.9], {duration: 2}],
+			[x, [0.9, value], {duration: 0.3}]
+		], {
+			delay: BANNER_ANIMATION.precision.delay,
+			defaultTransition: {
+				ease: "easeInOut",
+				onUpdate() {
+					if (anim.time > 0 && anim.time < 2.3 && !xRayActivated) {
+						xRay.setAttribute("data-active", "true");
+						xRayActivated = true;
+					} else if (anim.time >= 2.3 && xRayActivated) {
+						xRay.removeAttribute("data-active");
+						xRayActivated = false;
+					}
+				}
+			}
+		});
+		xRay.addEventListener("pointerenter", () => {
+			anim.stop();
+			xRay.removeAttribute("data-active");
+		}, { once: true });
+	}, []);
+	useEffect(() => {
+		if (!containerRef.current) return;
 
 		let styles: CSSStyleDeclaration;
 		let lastFont: string;
 		function updateMetrics() {
 			if (!styles)
 				styles = getComputedStyle(containerRef.current!);
+
 			const font = styles.font;
-			if (font === lastFont)
-				return;
-			lastFont = font;
-			measureFont(font).then(setMetrics);
+			if (font === lastFont) return;
+			measureFont(lastFont = font).then(setMetrics);
 		}
 		function listener() {
 			frame.setup(updateMetrics);
@@ -45,7 +74,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		listener();
 		window.addEventListener("resize", listener);
 		return () => window.removeEventListener("resize", listener);
-	}, [browser]);
+	}, []);
 
 	return <span
 		{...props}
@@ -65,6 +94,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 	>
 		precisi<span style={{opacity: 0.2}}>o</span>n
 		<motion.span
+			className="x-ray"
 			style={{"--x": x, "--y": y} as React.CSSProperties}
 			css={css`
 				@property --r {
@@ -75,7 +105,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				position: absolute;
 				inset: 0;
 				--r: 0.24em;
-				&:hover {
+				&:hover, &[data-active] {
 					--r: 0.72em;
 				}
 			`}
@@ -98,7 +128,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							r: var(--r);
 							transition: --r 0.2s ease-in-out;
 							transform-box: view-box;
-							transform: translate(var(--x), var(--y));
+							transform: translate(calc(var(--x) * 100%), calc(var(--y) * 100%));
 						`}
 					/>
 					<mask id={maskId}>
@@ -134,21 +164,25 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							precision
 						</text>
 					}
-					{metrics && <g fill="var(--neutral-600)">
+					{metrics && <g fill="var(--neutral-600)" css={css`
+						text {
+							--font-index: calc(-2 + 2 * var(--mobile-s-to-laptop));
+						}
+					`}>
 						<text
-							className="body-text"
-							x={`${xHeightIndicatorStart + 1}%`}
+							className="indexed-font"
+							x={`${xHeightIndicatorStart - 1}%`}
 							y={metrics.xHeight - 8}
 						>x-height</text>
 						<text
-							className="body-text"
-							x={`${capHeightIndicatorStart + 1}%`}
+							className="indexed-font"
+							x={`${capHeightIndicatorStart - 1}%`}
 							y={metrics.capHeight - 8}
 						>cap height</text>
 						<text
-							className="body-text"
+							className="indexed-font"
 							x={`30%`}
-							y={metrics.descender}
+							y={metrics.baseline + 20}
 						>baseline</text>
 					</g>}
 					{metrics && <g
@@ -160,7 +194,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							x2="100%"
 							y1={metrics.baseline}
 							y2={metrics.baseline}
-							strokeDasharray="10"
+							strokeDasharray="4%"
 						/>
 
 						<line
@@ -206,15 +240,15 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 					mask={`url(#${maskId})`}
 					stroke="var(--neutral-400)"
 					strokeWidth="2"
-					strokeDasharray="8"
+					strokeDasharray="4%"
 					css={css`
 						line {
 							transform-box: view-box;
 							&:first-of-type {
-								transform: translateX(var(--x));
+								transform: translateX(calc(var(--x) * 100%));
 							}
 							&:nth-of-type(2) {
-								transform: translateY(var(--y));
+								transform: translateY(calc(var(--y) * 100%));
 							}
 						}
 					`}
