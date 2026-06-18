@@ -68,10 +68,10 @@ export function useFollowPointer<T extends HTMLElement>(
 		}
 		frame.read(onResize);
 
-		const { signal, abort } = new AbortController();
-		window.addEventListener("scroll", () => frame.read(onScroll), { signal });
-		window.addEventListener("resize", () => frame.read(onResize), { signal });
-		return abort;
+		const ctrl = new AbortController();
+		window.addEventListener("scroll", () => frame.read(onScroll), { signal: ctrl.signal });
+		window.addEventListener("resize", () => frame.read(onResize), { signal: ctrl.signal });
+		return () => ctrl.abort();
 	}, []);
 
 	return {

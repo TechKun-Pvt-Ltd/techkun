@@ -1,6 +1,6 @@
 import React, {useEffect, useId, useState} from "react";
 import {motion} from "motion/react";
-import {animate, AnimationPlaybackControlsWithThen, delayInSeconds, SpringOptions} from "motion";
+import {animate, SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {useBrowser} from "@/hooks/use-browser";
@@ -63,11 +63,10 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		function updateMetrics() {
 			if (!styles)
 				styles = getComputedStyle(containerRef.current!);
+
 			const font = styles.font;
-			if (font === lastFont)
-				return;
-			lastFont = font;
-			measureFont(font).then(setMetrics);
+			if (font === lastFont) return;
+			measureFont(lastFont = font).then(setMetrics);
 		}
 		function listener() {
 			frame.setup(updateMetrics);
