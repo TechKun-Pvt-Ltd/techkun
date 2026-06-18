@@ -31,10 +31,10 @@ export default function EmailLink(
 	} & React.ComponentProps<typeof MotionLink>
 ) {
 	const icon = <svg
-		height="1em" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet"
+		height="1em" viewBox="0 0 24 24"
 		style={{
 			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
-			marginBlockEnd: '-0.16em'
+			verticalAlign: '-0.18em'
 		}}
 	>
 		<motion.path

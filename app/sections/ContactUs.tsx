@@ -2,7 +2,6 @@
 import {css, keyframes} from "@emotion/react";
 import {AnimationSequence, motion, useAnimate} from "motion/react";
 import React, {useEffect, useRef} from "react";
-import {device} from "@/app/styles/device-breakpoints";
 import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
 
@@ -174,7 +173,7 @@ function ContactOptions() {
         </button>
         <p className="text-lg" css={css`
             color: var(--muted-foreground);
-            text-box-trim: trim-both;
+            line-height: 1;
         `}>or</p>
         <Link className="text-lg contact-option" css={contactOptionCss}
             style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"

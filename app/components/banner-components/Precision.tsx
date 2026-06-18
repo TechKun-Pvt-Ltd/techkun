@@ -9,7 +9,7 @@ import {frame} from "motion-dom";
 import BANNER_ANIMATION from "@/app/animations/banner";
 
 const xHeightIndicatorStart = 16;
-const capHeightIndicatorStart = 68;
+const capHeightIndicatorStart = 67.25;
 
 const springOptions: SpringOptions = {stiffness: 500, damping: 30};
 const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
