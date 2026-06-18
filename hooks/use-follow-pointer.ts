@@ -66,20 +66,12 @@ export function useFollowPointer<T extends HTMLElement>(
 			elementBottom = el.offsetTop + el.offsetHeight;
 			updateRect();
 		}
-
 		frame.read(onResize);
-		function scrollListener() {
-			frame.read(onScroll);
-		}
-		function resizeListener() {
-			frame.read(onResize);
-		}
-		window.addEventListener("scroll", scrollListener);
-		window.addEventListener("resize", resizeListener);
-		return () => {
-			window.removeEventListener("scroll", scrollListener);
-			window.removeEventListener("resize", resizeListener);
-		};
+
+		const { signal, abort } = new AbortController();
+		window.addEventListener("scroll", () => frame.read(onScroll), { signal });
+		window.addEventListener("resize", () => frame.read(onResize), { signal });
+		return abort;
 	}, []);
 
 	return {
