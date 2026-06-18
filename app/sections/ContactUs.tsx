@@ -95,21 +95,14 @@ function ContactOptions() {
 
     `;
     const contactOptionCss = css`
-        background-color: transparent;
         color: var(--foreground);
         padding-block: 0.75rem;
         border-radius: var(${brRadiusProp});
-        position: relative;
         width: 100%;
         white-space: nowrap;
 
         &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
             border: 1px solid var(--border);
-            border-radius: inherit;
-            transition: transform 0.1s ease-in-out;
         }
         & > span {
             position: absolute;
@@ -167,7 +160,7 @@ function ContactOptions() {
                 </filter>
             </defs>
         </svg>
-        <button className="text-lg contact-option" css={contactOptionCss}>
+        <button className="text-lg contact-option bi-layered-button" css={contactOptionCss}>
             <motion.span initial={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
@@ -175,7 +168,7 @@ function ContactOptions() {
             color: var(--muted-foreground);
             line-height: 1;
         `}>or</p>
-        <Link className="text-lg contact-option" css={contactOptionCss}
+        <Link className="text-lg contact-option bi-layered-button" css={contactOptionCss}
             style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
         >
             <motion.span initial={{ opacity: 0 }} />

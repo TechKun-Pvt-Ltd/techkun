@@ -38,25 +38,30 @@ export default function Banner() {
 			width: 100%;
 			max-width: 60rem;
             display: flex;
-			flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
 			align-items: center;
-            padding-block: 160px 48px;
+            padding-block: 80px 160px;
             text-align: center;
-			gap: 64px;
 		`}>
-			<div css={css`
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-				gap: 56px;
-			`}>
-				<h1 className="hero-heading" css={css`user-select: none;`}>
+			<div>
+				<p className="text-lg" css={css`
+					margin-block-end: 16px;
+					font-weight: 500;
+                    color: oklch(from var(--secondary-color) 0.56 0.05 h);
+				`}>Hello there!</p>
+				<h1 className="hero-heading" css={css`user-select: none; margin-block-end: 56px;`}>
 					<span style={{ whiteSpace: 'nowrap' }}>We build software</span>
 					<br/>with
 					<span css={keywordCss}> <Beauty />, <Precision />, </span>
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
+				<p className="text-lg" css={css`
+                    padding-inline: 96px;
+                    margin-block-end: 32px;
+                    font-weight: 500;
+					white-space: nowrap;
+                    color: oklch(from var(--secondary-color) 0.56 0.05 h);
+				`}>If that resonates...</p>
 				<div className="text-lg" css={css`
 					padding-inline: 96px;
 					display: flex;
@@ -69,20 +74,12 @@ export default function Banner() {
 						Let's get on call
 					</GradientBorderButton>
 					<EmailLink
-						style={{ color: "oklch(from var(--secondary-color) 0.56 0.05 h)", fontWeight: "500", fontSize: "1.1em", width: "max-content" }}
+						style={{ color: "oklch(from var(--secondary-color) 0.56 0.05 h)", fontWeight: "500", width: "max-content" }}
 						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"
 						gap="8px" iconStrokeWidth={1.4}
 					/>
 				</div>
 			</div>
-			<p css={css`
-				color: oklch(from var(--secondary-color) 0.48 0.05 h);
-				padding-block-start: 8px;
-				font-weight: 500;
-			`}>
-				{/*Brand research & planning • Design • Engineering • Testing • Launch & maintenance*/}
-				Creating&nbsp;experiences&nbsp;people&nbsp;love and&nbsp;brands&nbsp;they&nbsp;remember.
-			</p>
 		</div>
 	</section>;
 }

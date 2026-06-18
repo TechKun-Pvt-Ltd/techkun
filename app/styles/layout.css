@@ -3,8 +3,8 @@
     --page-padding: clamp(16px, 4vw, 32px);
 
     --navbar-height: 4.8rem;
-    --section-min-height: 960px;
-    --section-max-height: 1280px;
+    --section-min-height: 768px;
+    --section-max-height: 1120px;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
     /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
@@ -77,12 +77,4 @@ body {
         /*padding-inline: var(--page-padding);*/
         grid-column: page;
     }
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    border-radius: 0.375rem;
-    padding-inline: 1.25rem;
-    padding-block: 0.625rem;
 }

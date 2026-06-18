@@ -47,6 +47,7 @@ ul {
 }
 
 ::selection {
+    color: var(--foreground);
     background: var(--primary-950);
 }
 
@@ -66,4 +67,37 @@ ul {
     syntax: "<length-percentage>";
     inherits: false;
     initial-value: 0%;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.bi-layered-button, .tri-layered-button {
+    background-color: transparent;
+    position: relative;
+    isolation: isolate;
+}
+.bi-layered-button::before {
+    z-index: -1;
+}
+.tri-layered-button {
+    &::before {
+        z-index: -2;
+    }
+    &::after {
+        z-index: -1;
+    }
+}
+.bi-layered-button::before, .tri-layered-button::before, .tri-layered-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    corner-shape: inherit;
+    transition: transform 0.1s ease-in-out;
+}
+.bi-layered-button:active::before, .tri-layered-button:active::before, .tri-layered-button:active::after {
+    transform: scale(0.97);
 }
