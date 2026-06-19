@@ -50,7 +50,7 @@ export default function Banner() {
                     color: oklch(from var(--secondary-color) 0.56 0.05 h);
 				`}>Hello there!</p>
 				<h1 className="hero-heading" css={css`user-select: none; margin-block-end: 56px;`}>
-					<span style={{ whiteSpace: 'nowrap' }}>We build software</span>
+					We&nbsp;build&nbsp;software
 					<br/>with
 					<span css={keywordCss}> <Beauty />, <Precision />, </span>
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
