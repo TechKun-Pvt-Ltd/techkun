@@ -24,23 +24,40 @@ const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
 const brRadiusProp = "--_border-radius";
 const outsetProp = "--_glow-outset";
 
+function splitArray<T>(array: Array<T>, predicate: (item: T) => boolean) {
+    const preceding = [];
+    const succeeding = [];
+
+    let match: T | undefined;
+    for (const item of array) {
+        if (!match && predicate(item)) {
+            match = item;
+            continue;
+        }
+        if (!match) {
+            preceding.push(item);
+            continue;
+        }
+        succeeding.push(item);
+    }
+
+    return [preceding, match, succeeding] as const;
+}
+
 function ContactOptions() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
     const animationsRef = useRef(initialAnimations);
-    const elementsRef = useRef<Record<
-        'first' | 'second' | 'hovered' | 'other',
-        HTMLSpanElement | null
-    >>({
-        first: null, second: null, hovered: null, other: null
-    });
+    const elementsRef = useRef<HTMLElement[]>([]);
+    const hoveredElementRef = useRef<HTMLElement>(null);
 
-    function startIdleAnimation(first: HTMLSpanElement, second: HTMLSpanElement) {
-        const sequence: AnimationSequence = [
-            [first, { opacity: 0 }, { delay: VISIBILITY_DURATION }],
-            [second, { opacity: 1 }, { at: `-${FADE_IN_DURATION}`}],
-            [first, { opacity: 1 }, { delay: VISIBILITY_DURATION }],
-            [second, { opacity: 0 }, { at: `-${FADE_IN_DURATION}`}],
-        ];
+    function startIdleAnimation(elements: HTMLElement[]) {
+        const sequence: AnimationSequence = [];
+        for (let i = 0; i < elements.length; i++) {
+            sequence.push(
+                [elements[i], { opacity: 0 }, { delay: VISIBILITY_DURATION }],
+                [elements[i + 1 === elements.length ? 0 : i + 1], { opacity: 1 }, { at: `-${FADE_IN_DURATION}` }]
+            );
+        }
         animationsRef.current.idle = animate(sequence, {
             repeat: Infinity,
             repeatType: 'loop',
@@ -50,35 +67,32 @@ function ContactOptions() {
 
     useEffect(() => {
         const options = scope.current.querySelectorAll<HTMLSpanElement>(`.contact-option > span`);
-        elementsRef.current.first = options.item(0);
-        elementsRef.current.second = options.item(1);
-        startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
+        elementsRef.current.push(...options);
+        startIdleAnimation(elementsRef.current);
     }, []);
 
-    function onHoverStart(e: HTMLSpanElement) {
+    function onHoverStart(el: HTMLSpanElement) {
         animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn?.stop();
-        if (elementsRef.current.other === e)
+        if (hoveredElementRef.current !== el)
             animationsRef.current.fadeOut?.stop();
 
-        const other = e === elementsRef.current.first ?
-            elementsRef.current.second : elementsRef.current.first;
-        elementsRef.current.hovered = e;
-        elementsRef.current.other = other;
-        animationsRef.current.fadeIn = animate(e, { opacity: 1 }, { duration: FADE_IN_DURATION });
-        animationsRef.current.fadeOut = animate(other, { opacity: 0 }, { duration: FADE_IN_DURATION });
+        hoveredElementRef.current = el;
+        const [beforeHovered, , afterHovered] = splitArray(elementsRef.current, item => item === el);
+        animationsRef.current.fadeIn = animate(el, { opacity: 1 }, { duration: FADE_IN_DURATION });
+        animationsRef.current.fadeOut = animate([...afterHovered, ...beforeHovered], { opacity: 0 }, { duration: FADE_IN_DURATION });
+
+        elementsRef.current = [el, ...afterHovered, ...beforeHovered];
     }
     function onHoverEnd() {
         animationsRef.current.idle?.stop();
-        const {hovered, other} = elementsRef.current;
         animationsRef.current.fadeIn!.then(() => {
             animationsRef.current.fadeIn?.stop();
             animationsRef.current.fadeIn = null;
             animationsRef.current.fadeOut?.stop();
             animationsRef.current.fadeOut = null;
-            elementsRef.current.hovered = null;
-            elementsRef.current.other = null;
-            startIdleAnimation(hovered!, other!);
+            hoveredElementRef.current = null;
+            startIdleAnimation(elementsRef.current);
         });
     }
 
@@ -144,7 +158,7 @@ function ContactOptions() {
             let element = e.target;
             if (element instanceof HTMLButtonElement)
                 element = element.children[0];
-            if (element instanceof HTMLSpanElement && elementsRef.current.hovered !== null)
+            if (element instanceof HTMLSpanElement && hoveredElementRef.current !== null)
                 onHoverEnd();
         }}
         css={containerCss}
