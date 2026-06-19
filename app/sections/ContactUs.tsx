@@ -66,12 +66,22 @@ function ContactOptions() {
     }
 
     useEffect(() => {
-        const options = scope.current.querySelectorAll<HTMLSpanElement>(`.contact-option > span`);
-        elementsRef.current.push(...options);
+        const abortController = new AbortController();
+        const options = scope.current.querySelectorAll<HTMLElement>(`.contact-option`);
+        const children = [];
+        for (const opt of options) {
+            const child = opt.children[0] as HTMLElement;
+            children.push(child);
+            opt.addEventListener("pointerenter", _ => onHoverStart(child), { signal: abortController.signal });
+            opt.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
+        }
+        elementsRef.current.push(...children);
         startIdleAnimation(elementsRef.current);
+
+        return () => abortController.abort();
     }, []);
 
-    function onHoverStart(el: HTMLSpanElement) {
+    function onHoverStart(el: HTMLElement) {
         animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn?.stop();
         if (hoveredElementRef.current !== el)
@@ -85,6 +95,7 @@ function ContactOptions() {
         elementsRef.current = [el, ...afterHovered, ...beforeHovered];
     }
     function onHoverEnd() {
+        if (!hoveredElementRef.current) return;
         animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn!.then(() => {
             animationsRef.current.fadeIn?.stop();
@@ -146,23 +157,7 @@ function ContactOptions() {
         }
     `;
 
-    return <motion.div ref={scope}
-        onMouseOver={e => {
-            let element = e.target;
-            if (element instanceof HTMLButtonElement)
-                element = element.children[0];
-            if (element instanceof HTMLSpanElement)
-                onHoverStart(element);
-        }}
-        onMouseOut={e => {
-            let element = e.target;
-            if (element instanceof HTMLButtonElement)
-                element = element.children[0];
-            if (element instanceof HTMLSpanElement && hoveredElementRef.current !== null)
-                onHoverEnd();
-        }}
-        css={containerCss}
-    >
+    return <motion.div ref={scope} css={containerCss}>
         <svg style={{ position: "fixed", width: "0", height: "0" }}>
             <defs>
                 <filter id="glow">
@@ -175,7 +170,7 @@ function ContactOptions() {
             </defs>
         </svg>
         <button className="text-lg contact-option bi-layered-button" css={contactOptionCss}>
-            <motion.span initial={{ opacity: 1 }} />
+            <span style={{ opacity: 1 }} />
             Schedule a quick call with us
         </button>
         <p className="text-lg" css={css`
@@ -185,7 +180,7 @@ function ContactOptions() {
         <Link className="text-lg contact-option bi-layered-button" css={contactOptionCss}
             style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
         >
-            <motion.span initial={{ opacity: 0 }} />
+            <span style={{ opacity: 0 }} />
             Chat with us on email
         </Link>
     </motion.div>;
