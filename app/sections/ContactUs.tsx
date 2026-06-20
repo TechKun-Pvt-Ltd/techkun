@@ -25,31 +25,10 @@ const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
 const brRadiusProp = "--_border-radius";
 const outsetProp = "--_glow-outset";
 
-function splitArray<T>(array: Array<T>, predicate: (item: T) => boolean) {
-    const preceding = [];
-    const succeeding = [];
-
-    let match: T | undefined;
-    for (const item of array) {
-        if (!match && predicate(item)) {
-            match = item;
-            continue;
-        }
-        if (!match) {
-            preceding.push(item);
-            continue;
-        }
-        succeeding.push(item);
-    }
-
-    return [preceding, match, succeeding] as const;
-}
-
-const HOVER_ANIMATION_OPTIONS = { duration: FADE_IN_DURATION, /*["pseudoElement" as any]: "::after"*/ };
+const HOVER_ANIMATION_OPTIONS = { duration: FADE_IN_DURATION };
 const IDLE_ANIMATION_OPTIONS: SequenceOptions = {
     repeat: Infinity,
     repeatType: 'loop',
-    // ["pseudoElement" as any]: "::after",
     defaultTransition: { duration: FADE_IN_DURATION, ease: 'easeInOut' }
 };
 const opacityProp = "--_gradient-rim-opacity";
@@ -76,7 +55,6 @@ function ContactOptions() {
         const abortController = new AbortController();
         const options = scope.current.querySelectorAll<HTMLElement>(`.contact-option`);
         for (const opt of options) {
-            // const child = opt.children[0] as HTMLElement;
             elementsRef.current.push(opt);
             opt.addEventListener("pointerenter", _ => onHoverStart(opt), { signal: abortController.signal });
             opt.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
@@ -86,18 +64,39 @@ function ContactOptions() {
         return () => abortController.abort();
     }, []);
 
-    function onHoverStart(el: HTMLElement) {
+    function splitByHovered() {
+        const preceding = [];
+        const succeeding = [];
+
+        let match: Element | undefined;
+        for (const item of elementsRef.current) {
+            if (!match && item === hoveredElementRef.current) {
+                match = item;
+                continue;
+            }
+            if (!match) {
+                preceding.push(item);
+                continue;
+            }
+            succeeding.push(item);
+        }
+
+        return [preceding, match, succeeding] as const;
+    }
+
+    function onHoverStart(hovered: HTMLElement) {
         animationsRef.current.idle?.stop();
         animationsRef.current.fadeIn?.stop();
-        if (hoveredElementRef.current !== el)
+        if (hoveredElementRef.current !== hovered)
             animationsRef.current.fadeOut?.stop();
 
-        hoveredElementRef.current = el;
-        const [beforeHovered, , afterHovered] = splitArray(elementsRef.current, item => item === el);
-        animationsRef.current.fadeIn = animate(el, { [opacityProp]: 1 }, HOVER_ANIMATION_OPTIONS);
-        animationsRef.current.fadeOut = animate([...afterHovered, ...beforeHovered], { [opacityProp]: 0 }, HOVER_ANIMATION_OPTIONS);
+        hoveredElementRef.current = hovered;
+        const [beforeHovered, , afterHovered] = splitByHovered();
+        afterHovered.push(...beforeHovered);
+        animationsRef.current.fadeIn = animate(hovered, { [opacityProp]: 1 }, HOVER_ANIMATION_OPTIONS);
+        animationsRef.current.fadeOut = animate(afterHovered, { [opacityProp]: 0 }, HOVER_ANIMATION_OPTIONS);
 
-        elementsRef.current = [el, ...afterHovered, ...beforeHovered];
+        elementsRef.current = [hovered, ...afterHovered];
     }
     function onHoverEnd() {
         if (!hoveredElementRef.current) return;
