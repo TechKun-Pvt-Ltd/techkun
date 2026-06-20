@@ -28,7 +28,6 @@ enum TextState {
 }
 
 export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof motion.button>) {
-	const textElement = useRef<HTMLSpanElement>(null);
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
 	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
@@ -95,7 +94,6 @@ export default function LogoButton({className, style, ...props}: React.Component
 			align-items: center;
 		`}>
 			<motion.span
-				ref={textElement}
 				layout
 				css={css`
 					pointer-events: none;

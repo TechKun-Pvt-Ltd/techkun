@@ -1,9 +1,10 @@
 'use client';
 import {css, keyframes} from "@emotion/react";
-import {AnimationSequence, motion, useAnimate} from "motion/react";
+import {AnimationSequence, motion, SequenceOptions, useAnimate} from "motion/react";
 import React, {useEffect, useRef} from "react";
-import Link from "next/link";
 import {AnimationsRecord} from "@/app/utils/animation-utils";
+import {acceleratedValues} from "motion";
+import {MotionLink} from "@/app/components/MotionLink";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -24,61 +25,91 @@ const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
 const brRadiusProp = "--_border-radius";
 const outsetProp = "--_glow-outset";
 
+const HOVER_ANIMATION_OPTIONS = { duration: FADE_IN_DURATION };
+const IDLE_ANIMATION_OPTIONS: SequenceOptions = {
+    repeat: Infinity,
+    repeatType: 'loop',
+    defaultTransition: { duration: FADE_IN_DURATION, ease: 'easeInOut' }
+};
+const opacityProp = "--_gradient-rim-opacity";
+acceleratedValues.add(opacityProp);
+
 function ContactOptions() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
     const animationsRef = useRef(initialAnimations);
-    const elementsRef = useRef<Record<
-        'first' | 'second' | 'hovered' | 'other',
-        HTMLSpanElement | null
-    >>({
-        first: null, second: null, hovered: null, other: null
-    });
+    const elementsRef = useRef<HTMLElement[]>([]);
+    const hoveredElementRef = useRef<HTMLElement>(null);
 
-    function startIdleAnimation(first: HTMLSpanElement, second: HTMLSpanElement) {
-        const sequence: AnimationSequence = [
-            [first, { opacity: 0 }, { delay: VISIBILITY_DURATION }],
-            [second, { opacity: 1 }, { at: `-${FADE_IN_DURATION}`}],
-            [first, { opacity: 1 }, { delay: VISIBILITY_DURATION }],
-            [second, { opacity: 0 }, { at: `-${FADE_IN_DURATION}`}],
-        ];
-        animationsRef.current.idle = animate(sequence, {
-            repeat: Infinity,
-            repeatType: 'loop',
-            defaultTransition: { duration: FADE_IN_DURATION, ease: 'easeInOut' }
-        });
+    function startIdleAnimation() {
+        const elements = elementsRef.current;
+        const sequence: AnimationSequence = [];
+        for (let i = 0; i < elements.length; i++) {
+            sequence.push(
+                [elements[i], { [opacityProp]: [1, 0] }, { delay: VISIBILITY_DURATION }],
+                [elements[i + 1 === elements.length ? 0 : i + 1], { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
+            );
+        }
+        animationsRef.current.idle = animate(sequence, IDLE_ANIMATION_OPTIONS);
+    }
+    function stopAnimation(key: keyof typeof animationsRef.current) {
+        animationsRef.current[key]?.stop();
+        animationsRef.current[key] = null;
     }
 
     useEffect(() => {
-        const options = scope.current.querySelectorAll<HTMLSpanElement>(`.contact-option > span`);
-        elementsRef.current.first = options.item(0);
-        elementsRef.current.second = options.item(1);
-        startIdleAnimation(elementsRef.current.first!, elementsRef.current.second!);
+        const abortController = new AbortController();
+        const options = scope.current.querySelectorAll<HTMLElement>(`.contact-option`);
+        for (const opt of options) {
+            elementsRef.current.push(opt);
+            opt.addEventListener("pointerenter", _ => onHoverStart(opt), { signal: abortController.signal });
+            opt.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
+        }
+        startIdleAnimation();
+
+        return () => abortController.abort();
     }, []);
 
-    function onHoverStart(e: HTMLSpanElement) {
-        animationsRef.current.idle?.stop();
-        animationsRef.current.fadeIn?.stop();
-        if (elementsRef.current.other === e)
-            animationsRef.current.fadeOut?.stop();
+    function splitByHovered() {
+        const preceding = [];
+        const succeeding = [];
 
-        const other = e === elementsRef.current.first ?
-            elementsRef.current.second : elementsRef.current.first;
-        elementsRef.current.hovered = e;
-        elementsRef.current.other = other;
-        animationsRef.current.fadeIn = animate(e, { opacity: 1 }, { duration: FADE_IN_DURATION });
-        animationsRef.current.fadeOut = animate(other, { opacity: 0 }, { duration: FADE_IN_DURATION });
+        let match: Element | undefined;
+        for (const item of elementsRef.current) {
+            if (!match && item === hoveredElementRef.current) {
+                match = item;
+                continue;
+            }
+            if (!match)
+                preceding.push(item);
+            else
+                succeeding.push(item);
+        }
+
+        return [preceding, match, succeeding] as const;
+    }
+
+    function onHoverStart(hovered: HTMLElement) {
+        stopAnimation("idle");
+        stopAnimation("fadeIn");
+        if (hoveredElementRef.current !== hovered)
+            stopAnimation("fadeOut");
+
+        hoveredElementRef.current = hovered;
+        const [beforeHovered, , afterHovered] = splitByHovered();
+        afterHovered.push(...beforeHovered);
+        animationsRef.current.fadeIn = animate(hovered, { [opacityProp]: 1 }, HOVER_ANIMATION_OPTIONS);
+        animationsRef.current.fadeOut = animate(afterHovered, { [opacityProp]: 0 }, HOVER_ANIMATION_OPTIONS);
+
+        elementsRef.current = [hovered, ...afterHovered];
     }
     function onHoverEnd() {
-        animationsRef.current.idle?.stop();
-        const {hovered, other} = elementsRef.current;
+        if (!hoveredElementRef.current) return;
+        stopAnimation("idle");
         animationsRef.current.fadeIn!.then(() => {
-            animationsRef.current.fadeIn?.stop();
-            animationsRef.current.fadeIn = null;
-            animationsRef.current.fadeOut?.stop();
-            animationsRef.current.fadeOut = null;
-            elementsRef.current.hovered = null;
-            elementsRef.current.other = null;
-            startIdleAnimation(hovered!, other!);
+            stopAnimation("fadeIn");
+            stopAnimation("fadeOut");
+            hoveredElementRef.current = null;
+            startIdleAnimation();
         });
     }
 
@@ -95,29 +126,25 @@ function ContactOptions() {
 
     `;
     const contactOptionCss = css`
-        background-color: transparent;
+        @property ${opacityProp} {
+            syntax: "<number>";
+            inherits: true;
+            initial-value: 0;
+        }
         color: var(--foreground);
         padding-block: 0.75rem;
         border-radius: var(${brRadiusProp});
-        position: relative;
         width: 100%;
         white-space: nowrap;
 
         &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
             border: 1px solid var(--border);
-            border-radius: inherit;
-            transition: transform 0.1s ease-in-out;
         }
-        & > span {
-            position: absolute;
+        &::after {
             inset: calc(-1 * var(${outsetProp}));
             border: var(${outsetProp}) solid transparent;
             border-radius: calc(var(${brRadiusProp}) + var(${outsetProp}));
             padding: 1px;
-            transition: transform 0.1s ease-in-out, opacity 1s ease-in-out;
             background: padding-box conic-gradient(
                 from var(--gradient-angle) at 50% 50%,
                 var(--tertiary-200),
@@ -133,29 +160,14 @@ function ContactOptions() {
                 border-box linear-gradient(#000 0 0);
             animation: ${rotateConicGradient} 4s linear infinite;
             filter: url(#glow);
+            opacity: var(${opacityProp});
         }
-        &:active::before, &:active > span {
+        &:active::before, &:active::after {
             transform: scale(0.98);
         }
     `;
 
-    return <motion.div ref={scope}
-        onMouseOver={e => {
-            let element = e.target;
-            if (element instanceof HTMLButtonElement)
-                element = element.children[0];
-            if (element instanceof HTMLSpanElement)
-                onHoverStart(element);
-        }}
-        onMouseOut={e => {
-            let element = e.target;
-            if (element instanceof HTMLButtonElement)
-                element = element.children[0];
-            if (element instanceof HTMLSpanElement && elementsRef.current.hovered !== null)
-                onHoverEnd();
-        }}
-        css={containerCss}
-    >
+    return <motion.div ref={scope} css={containerCss}>
         <svg style={{ position: "fixed", width: "0", height: "0" }}>
             <defs>
                 <filter id="glow">
@@ -167,20 +179,23 @@ function ContactOptions() {
                 </filter>
             </defs>
         </svg>
-        <button className="text-lg contact-option" css={contactOptionCss}>
-            <motion.span initial={{ opacity: 1 }} />
+        <motion.button
+            className="text-lg contact-option tri-layered-button" css={contactOptionCss}
+            initial={{ [opacityProp]: "1" }}
+        >
             Schedule a quick call with us
-        </button>
+        </motion.button>
         <p className="text-lg" css={css`
             color: var(--muted-foreground);
             line-height: 1;
         `}>or</p>
-        <Link className="text-lg contact-option" css={contactOptionCss}
-            style={{ textDecoration: 'none' }} href="mailto:farasat@tech-kun.com"
+        <MotionLink
+            className="text-lg contact-option tri-layered-button" css={contactOptionCss}
+            initial={{ textDecoration: 'none', [opacityProp]: 0 }}
+            href="mailto:farasat@tech-kun.com"
         >
-            <motion.span initial={{ opacity: 0 }} />
             Chat with us on email
-        </Link>
+        </MotionLink>
     </motion.div>;
 }
 

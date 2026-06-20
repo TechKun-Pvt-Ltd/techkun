@@ -31,32 +31,24 @@ const gradientFill = keyframes`
 
 const { ctaBorderGradient } = BANNER_ANIMATION;
 
-export default function GradientBorderButton({children, ...props}: {
+export default function GradientBorderButton({children, className, ...props}: {
     children: ReactNode;
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
         color: var(--foreground);
-        background-color: transparent;
-        position: relative;
-        isolation: isolate;
         padding-block: 0.8rem;
         padding-inline: 1.6rem 1.4rem;
         border-radius: 0.8rem;
 
-        //&::before {
-        //    inset: 0;
-        //    z-index: -2;
-        //    border-radius: inherit;
-        //    border: 1px solid var(--border);
-        //}
+        &::before {
+            background: linear-gradient(
+                -2deg,
+                var(--secondary-950) -25%,
+                transparent var(--gradient-fill-progress)
+            );
+        }
         &::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: -1;
             border: 1px solid transparent;
-            border-radius: inherit;
-            corner-shape: inherit;
             mask:
                 padding-box linear-gradient(transparent 0 0) subtract,
                 border-box linear-gradient(black 0 0);
@@ -66,8 +58,6 @@ export default function GradientBorderButton({children, ...props}: {
                 var(--secondary-700),
                 var(--secondary-950) var(--gradient-fill-progress)
             ) border-box;
-            transition: transform 0.1s ease-in-out;
-            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
             //background: linear-gradient(
             //    var(--gradient-angle),
             //    var(--tertiary-500),
@@ -78,15 +68,13 @@ export default function GradientBorderButton({children, ...props}: {
             //    var(--tertiary-500)
             //) padding-box;
         }
-
-        &:active::after {
-            transform: scale(0.97);
+        &::before, &::after {
+            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
         }
 
         & > svg {
             margin-inline-start: 0.4375em;
             width: 0.6em;
-            //filter: drop-shadow(1px 2px 2px var(--neutral-500));
         }
         
         & .arrow {
@@ -98,6 +86,7 @@ export default function GradientBorderButton({children, ...props}: {
     `;
 
     return <motion.button
+        className={"tri-layered-button " + className}
         css={buttonCss} initial={INITIAL}
         whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
         {...props}

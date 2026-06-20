@@ -2,10 +2,8 @@
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React from "react";
-import Link from "next/link";
 import cssSupports from "@/app/utils/css-supports";
-
-const MotionLink = motion.create(Link);
+import {MotionLink} from "@/app/components/MotionLink";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
