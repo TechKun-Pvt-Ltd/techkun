@@ -40,7 +40,8 @@ function ContactOptions() {
     const elementsRef = useRef<HTMLElement[]>([]);
     const hoveredElementRef = useRef<HTMLElement>(null);
 
-    function startIdleAnimation(elements: HTMLElement[]) {
+    function startIdleAnimation() {
+        const elements = elementsRef.current;
         const sequence: AnimationSequence = [];
         for (let i = 0; i < elements.length; i++) {
             sequence.push(
@@ -49,6 +50,10 @@ function ContactOptions() {
             );
         }
         animationsRef.current.idle = animate(sequence, IDLE_ANIMATION_OPTIONS);
+    }
+    function stopAnimation(key: keyof typeof animationsRef.current) {
+        animationsRef.current[key]?.stop();
+        animationsRef.current[key] = null;
     }
 
     useEffect(() => {
@@ -59,7 +64,7 @@ function ContactOptions() {
             opt.addEventListener("pointerenter", _ => onHoverStart(opt), { signal: abortController.signal });
             opt.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
         }
-        startIdleAnimation(elementsRef.current);
+        startIdleAnimation();
 
         return () => abortController.abort();
     }, []);
@@ -74,21 +79,20 @@ function ContactOptions() {
                 match = item;
                 continue;
             }
-            if (!match) {
+            if (!match)
                 preceding.push(item);
-                continue;
-            }
-            succeeding.push(item);
+            else
+                succeeding.push(item);
         }
 
         return [preceding, match, succeeding] as const;
     }
 
     function onHoverStart(hovered: HTMLElement) {
-        animationsRef.current.idle?.stop();
-        animationsRef.current.fadeIn?.stop();
+        stopAnimation("idle");
+        stopAnimation("fadeIn");
         if (hoveredElementRef.current !== hovered)
-            animationsRef.current.fadeOut?.stop();
+            stopAnimation("fadeOut");
 
         hoveredElementRef.current = hovered;
         const [beforeHovered, , afterHovered] = splitByHovered();
@@ -100,14 +104,12 @@ function ContactOptions() {
     }
     function onHoverEnd() {
         if (!hoveredElementRef.current) return;
-        animationsRef.current.idle?.stop();
+        stopAnimation("idle");
         animationsRef.current.fadeIn!.then(() => {
-            animationsRef.current.fadeIn?.stop();
-            animationsRef.current.fadeIn = null;
-            animationsRef.current.fadeOut?.stop();
-            animationsRef.current.fadeOut = null;
+            stopAnimation("fadeIn");
+            stopAnimation("fadeOut");
             hoveredElementRef.current = null;
-            startIdleAnimation(elementsRef.current);
+            startIdleAnimation();
         });
     }
 
@@ -143,7 +145,6 @@ function ContactOptions() {
             border: var(${outsetProp}) solid transparent;
             border-radius: calc(var(${brRadiusProp}) + var(${outsetProp}));
             padding: 1px;
-            transition: transform 0.1s ease-in-out;
             background: padding-box conic-gradient(
                 from var(--gradient-angle) at 50% 50%,
                 var(--tertiary-200),
