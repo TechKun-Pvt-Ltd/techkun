@@ -182,7 +182,6 @@ function ContactOptions() {
             className="text-lg contact-option tri-layered-button" css={contactOptionCss}
             initial={{ [opacityProp]: "1" }}
         >
-            {/*<span style={{ opacity: 1 }} />*/}
             Schedule a quick call with us
         </motion.button>
         <p className="text-lg" css={css`
@@ -194,7 +193,6 @@ function ContactOptions() {
             initial={{ textDecoration: 'none', [opacityProp]: 0 }}
             href="mailto:farasat@tech-kun.com"
         >
-            {/*<span style={{ opacity: 0 }} />*/}
             Chat with us on email
         </MotionLink>
     </motion.div>;
