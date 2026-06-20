@@ -55,6 +55,7 @@ function ContactOptions() {
                 [elementStates[i + 1 === elementStates.length ? 0 : i + 1].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
             );
         }
+        // using an internal utility from Motion. Might replace this in the future with something else.
         const animationDefinitions = createAnimationsFromSequence(sequence, IDLE_ANIMATION_OPTIONS);
         for (const state of elementStates) {
             const { keyframes, transition } = animationDefinitions.get(state.element)!;
@@ -63,7 +64,7 @@ function ContactOptions() {
             state.animation = state.element.animate({
                 ...(keyframes as any),
                 offset: options.times,
-                easing: options.times!.map(_ => "ease-in-out")
+                easing: new Array(options.times!.length).fill("ease-in-out")
             }, {
                 duration: options.duration! * 1000,
                 iterations: options.repeat,
