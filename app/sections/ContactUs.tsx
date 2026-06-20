@@ -1,10 +1,9 @@
 'use client';
 import {css, keyframes} from "@emotion/react";
-import {AnimationSequence, motion, SequenceOptions, useAnimate} from "motion/react";
+import {AnimationSequence, SequenceOptions} from "motion/react";
 import React, {useEffect, useRef} from "react";
-import {AnimationsRecord} from "@/app/utils/animation-utils";
-import {acceleratedValues} from "motion";
-import {MotionLink} from "@/app/components/MotionLink";
+import {createAnimationsFromSequence} from "framer-motion/internals";
+import Link from "next/link";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -18,99 +17,136 @@ const rotateConicGradient = keyframes`
 const VISIBILITY_DURATION = 5;
 const FADE_IN_DURATION = 1.2;
 
-const initialAnimations: AnimationsRecord<['idle', 'fadeIn', 'fadeOut']> = {
-    idle: null, fadeIn: null, fadeOut: null
-};
-
-const brRadiusProp = "--_border-radius";
-const outsetProp = "--_glow-outset";
-
-const HOVER_ANIMATION_OPTIONS = { duration: FADE_IN_DURATION };
+const HOVER_ANIMATION_OPTIONS: KeyframeAnimationOptions = { duration: FADE_IN_DURATION * 1000, fill: "both", easing: "ease" };
+// The duration in the following options is in seconds in accordance with Motion's API
 const IDLE_ANIMATION_OPTIONS: SequenceOptions = {
     repeat: Infinity,
     repeatType: 'loop',
     defaultTransition: { duration: FADE_IN_DURATION, ease: 'easeInOut' }
 };
+
+type AnimationType = "idle" | "fadeIn" | "fadeOut";
+type ElementAnimationState = {
+    element: HTMLElement;
+    animation?: Animation;
+    type?: AnimationType;
+};
+
+const brRadiusProp = "--_border-radius";
+const outsetProp = "--_glow-outset";
 const opacityProp = "--_gradient-rim-opacity";
-acceleratedValues.add(opacityProp);
+
+function stopAnimation(anim: Animation) {
+    anim.commitStyles();
+    anim.cancel();
+}
 
 function ContactOptions() {
-    const [scope, animate] = useAnimate<HTMLDivElement>();
-    const animationsRef = useRef(initialAnimations);
-    const elementsRef = useRef<HTMLElement[]>([]);
-    const hoveredElementRef = useRef<HTMLElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const elementStatesRef = useRef<ElementAnimationState[]>([]);
+    const hoveredElementStateRef = useRef<ElementAnimationState>(null);
 
     function startIdleAnimation() {
-        const elements = elementsRef.current;
+        const elementStates = elementStatesRef.current;
         const sequence: AnimationSequence = [];
-        for (let i = 0; i < elements.length; i++) {
+        for (let i = 0; i < elementStates.length; i++) {
             sequence.push(
-                [elements[i], { [opacityProp]: [1, 0] }, { delay: VISIBILITY_DURATION }],
-                [elements[i + 1 === elements.length ? 0 : i + 1], { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
+                [elementStates[i].element, { [opacityProp]: [1, 0] }, { delay: VISIBILITY_DURATION }],
+                [elementStates[i + 1 === elementStates.length ? 0 : i + 1].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
             );
         }
-        animationsRef.current.idle = animate(sequence, IDLE_ANIMATION_OPTIONS);
+        const animationDefinitions = createAnimationsFromSequence(sequence, IDLE_ANIMATION_OPTIONS);
+        for (const state of elementStates) {
+            const { keyframes, transition } = animationDefinitions.get(state.element)!;
+            const options = transition[opacityProp];
+            state.type = "idle";
+            state.animation = state.element.animate({
+                ...(keyframes as any),
+                offset: options.times,
+                easing: options.times!.map(_ => "ease-in-out")
+            }, {
+                duration: options.duration! * 1000,
+                iterations: options.repeat,
+                fill: "both"
+            });
+        }
     }
-    function stopAnimation(key: keyof typeof animationsRef.current) {
-        animationsRef.current[key]?.stop();
-        animationsRef.current[key] = null;
+    function startFadeInAnimation(state: ElementAnimationState) {
+        state.animation && stopAnimation(state.animation);
+        state.type = "fadeIn";
+        state.animation = state.element.animate({ [opacityProp]: 1 }, HOVER_ANIMATION_OPTIONS);
+    }
+    function startFadeOutAnimation(state: ElementAnimationState) {
+        state.animation && stopAnimation(state.animation);
+        state.type = "fadeOut";
+        state.animation = state.element.animate({ [opacityProp]: 0 }, HOVER_ANIMATION_OPTIONS);
+    }
+
+    function stopIdleAnimation() {
+        for (const state of elementStatesRef.current) {
+            if (state.type !== "idle") return;
+            state.animation && stopAnimation(state.animation)
+        }
+    }
+    function stopHoverAnimations() {
+        for (const state of elementStatesRef.current) {
+            if (state.type === "idle") return;
+            state.animation && stopAnimation(state.animation)
+        }
     }
 
     useEffect(() => {
+        if (!containerRef.current) return;
+
         const abortController = new AbortController();
-        const options = scope.current.querySelectorAll<HTMLElement>(`.contact-option`);
-        for (const opt of options) {
-            elementsRef.current.push(opt);
-            opt.addEventListener("pointerenter", _ => onHoverStart(opt), { signal: abortController.signal });
-            opt.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
+        const options = containerRef.current.querySelectorAll<HTMLElement>(`.contact-option`);
+        for (const element of options) {
+            elementStatesRef.current.push({ element });
+            element.addEventListener("pointerenter", _ => onHoverStart(element), { signal: abortController.signal });
+            element.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
         }
         startIdleAnimation();
 
         return () => abortController.abort();
     }, []);
 
-    function splitByHovered() {
-        const preceding = [];
-        const succeeding = [];
+    function onHoverStart(hovered: HTMLElement) {
+        stopIdleAnimation();
 
-        let match: Element | undefined;
-        for (const item of elementsRef.current) {
-            if (!match && item === hoveredElementRef.current) {
-                match = item;
+        // Elements before the hovered element will be moved to the end.
+        const beforeHovered: ElementAnimationState[] = [];
+        const newStates: ElementAnimationState[] = [];
+        let hoveredElementTouched = false;
+        for (const state of elementStatesRef.current) {
+            if (!hoveredElementTouched && state.element === hovered) {
+                hoveredElementTouched = true;
+                // start a new fade-in animation even in the case that the element was already fading in
+                // because `onHoverEnd` would've added an event listener which we do not want to be invoked
+                // since the element is hovered over again
+                startFadeInAnimation(state);
+                newStates.push(hoveredElementStateRef.current = state);
                 continue;
             }
-            if (!match)
-                preceding.push(item);
+
+            if (!state.type || state.type !== "fadeOut")
+                startFadeOutAnimation(state);
+
+            if (!hoveredElementTouched)
+                beforeHovered.push(state);
             else
-                succeeding.push(item);
+                newStates.push(state);
         }
-
-        return [preceding, match, succeeding] as const;
-    }
-
-    function onHoverStart(hovered: HTMLElement) {
-        stopAnimation("idle");
-        stopAnimation("fadeIn");
-        if (hoveredElementRef.current !== hovered)
-            stopAnimation("fadeOut");
-
-        hoveredElementRef.current = hovered;
-        const [beforeHovered, , afterHovered] = splitByHovered();
-        afterHovered.push(...beforeHovered);
-        animationsRef.current.fadeIn = animate(hovered, { [opacityProp]: 1 }, HOVER_ANIMATION_OPTIONS);
-        animationsRef.current.fadeOut = animate(afterHovered, { [opacityProp]: 0 }, HOVER_ANIMATION_OPTIONS);
-
-        elementsRef.current = [hovered, ...afterHovered];
+        // reordered
+        newStates.push(...beforeHovered);
+        elementStatesRef.current = newStates;
     }
     function onHoverEnd() {
-        if (!hoveredElementRef.current) return;
-        stopAnimation("idle");
-        animationsRef.current.fadeIn!.then(() => {
-            stopAnimation("fadeIn");
-            stopAnimation("fadeOut");
-            hoveredElementRef.current = null;
+        if (!hoveredElementStateRef.current) return;
+        hoveredElementStateRef.current.animation?.addEventListener("finish", () => {
+            stopHoverAnimations();
+            hoveredElementStateRef.current = null;
             startIdleAnimation();
-        });
+        }, { once: true });
     }
 
     const containerCss = css`
@@ -123,7 +159,6 @@ function ContactOptions() {
         width: 100%;
         max-width: 24rem;
         text-align: center;
-
     `;
     const contactOptionCss = css`
         @property ${opacityProp} {
@@ -167,7 +202,7 @@ function ContactOptions() {
         }
     `;
 
-    return <motion.div ref={scope} css={containerCss}>
+    return <div ref={containerRef} css={containerCss}>
         <svg style={{ position: "fixed", width: "0", height: "0" }}>
             <defs>
                 <filter id="glow">
@@ -179,24 +214,24 @@ function ContactOptions() {
                 </filter>
             </defs>
         </svg>
-        <motion.button
+        <button
             className="text-lg contact-option tri-layered-button" css={contactOptionCss}
-            initial={{ [opacityProp]: "1" }}
+            style={{ [opacityProp]: "1" } as React.CSSProperties}
         >
             Schedule a quick call with us
-        </motion.button>
+        </button>
         <p className="text-lg" css={css`
             color: var(--muted-foreground);
             line-height: 1;
         `}>or</p>
-        <MotionLink
+        <Link
             className="text-lg contact-option tri-layered-button" css={contactOptionCss}
-            initial={{ textDecoration: 'none', [opacityProp]: 0 }}
+            style={{ textDecoration: 'none', [opacityProp]: 0 } as React.CSSProperties}
             href="mailto:farasat@tech-kun.com"
         >
             Chat with us on email
-        </MotionLink>
-    </motion.div>;
+        </Link>
+    </div>;
 }
 
 function ShimmerText(
