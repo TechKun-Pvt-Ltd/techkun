@@ -6,10 +6,12 @@ import logoPathImageFrame from "@/public/logo-path-image-frame.json";
 export default function LogoImageFrame({imageData, alt}: {imageData: StaticImageData, alt?: string}) {
     return <div css={css`
         position: relative;
-        line-height: 0;
+        & > svg, & > img {
+            display: block;
+        }
         & > img {
             position: absolute;
-            top: -0.5px; bottom: -0.5px; right: -0.5px;
+            inset: -0.5px -0.5px -0.5px auto;
             height: calc(100% + 1px);
             width: auto;
             aspect-ratio: 1 / 1;
@@ -18,8 +20,8 @@ export default function LogoImageFrame({imageData, alt}: {imageData: StaticImage
             object-position: left top;
             mask-image: linear-gradient(
                 to right,
-                rgba(255,255,255,0) 0%,
-                rgba(255,255,255,1) 40%
+                transparent 0%,
+                black 40%
             );
         }
     `}>

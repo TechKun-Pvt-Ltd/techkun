@@ -20,7 +20,7 @@ const {bgGradient} = BANNER_ANIMATION;
 export default function Banner() {
 	const keywordCss = css`
         font-size: 1.4em;
-        line-height: 1.4em;
+        line-height: 1.4;
 		color: var(--neutral-300);
 	`;
 

@@ -50,7 +50,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				}
 			}
 		});
-		xRay.addEventListener("pointerenter", () => {
+		xRay.addEventListener("pointerover", () => {
 			anim.stop();
 			xRay.removeAttribute("data-active");
 		}, { once: true });
@@ -145,11 +145,11 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 							<span
 								xmlns="http://www.w3.org/1999/xhtml"
 								css={css`
-									color: var(--neutral-800);
+									color: var(--neutral-700);
 									height: 100%;
                                     display: flex;
                                     align-items: center;
-									-webkit-text-stroke: 2px var(--neutral-800);
+									-webkit-text-stroke: 2px var(--neutral-700);
 								`}
 							>
 								precision
@@ -157,8 +157,8 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 						</foreignObject> :
 						<text
 							y="1em"
-							fill="var(--neutral-800)"
-							stroke="var(--neutral-800)"
+							fill="var(--neutral-700)"
+							stroke="var(--neutral-700)"
 							strokeWidth="2"
 						>
 							precision

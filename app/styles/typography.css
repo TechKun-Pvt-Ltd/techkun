@@ -1,21 +1,3 @@
-/* ============================================================
-   PRECISE-TYPE TYPESCALE — CSS Custom Properties
-   ============================================================
-   Formulas based on https://precise-type.com models:
-
-   Font Size  (modular scale, equal temperament):
-     font-size = base-font-size × ratio^step
-
-   Line Height (reciprocal model):
-     line-height = font-size × (1 + (base-lh-ratio - 1) × base-font-size / font-size)
-                 = font-size + (base-lh-ratio - 1) × base-font-size
-     Which simplifies to: font-size + --lh-addend
-     where --lh-addend = (base-lh-ratio - 1) × base-font-size  (a constant!)
-
-   Letter Spacing (reciprocal model):
-     letter-spacing = (base-letter-spacing + 3) × base-font-size / font-size − 3
-   ============================================================ */
-
 :root {
 
     /* ----------------------------------------------------------
@@ -24,6 +6,12 @@
 
     /* Base font size in px */
     --base-font-size: 1rem;
+
+    /* Base line-height ratio */
+    --base-lh-ratio: 1.5;
+
+    /* Base letter spacing */
+    --base-letter-spacing: 0.035em;
 
     /* Scale ratio — choose a musical interval:
        Minor Second:   1.067  (2 semitones)
@@ -39,93 +27,45 @@
     --scale-ratio: calc(
         var(--min-scale-ratio) + (var(--max-scale-ratio) - var(--min-scale-ratio)) * var(--mobile-s-to-laptop)
     );
-    --scale-ratio-neg-2: calc(1 / pow(var(--scale-ratio), 2));
-    --scale-ratio-neg-1: calc(1 / var(--scale-ratio));
-    --scale-ratio-0: 1;
-    --scale-ratio-1: var(--scale-ratio);
-    --scale-ratio-2: calc(pow(var(--scale-ratio), 2));
-    --scale-ratio-3: calc(pow(var(--scale-ratio), 3));
-    --scale-ratio-4: calc(pow(var(--scale-ratio), 4));
-    --scale-ratio-5: calc(pow(var(--scale-ratio), 5));
-    --scale-ratio-6: calc(pow(var(--scale-ratio), 6));
-    --scale-ratio-7: calc(pow(var(--scale-ratio), 7));
-    --scale-ratio-8: calc(pow(var(--scale-ratio), 8));
-    --scale-ratio-9: calc(pow(var(--scale-ratio), 9));
-    --scale-ratio-10: calc(pow(var(--scale-ratio), 10));
-
-    /* Base line-height ratio (line-height / font-size at base size).
-       A value of 1.5 means 24px line-height for 16px base. */
-    --base-lh-ratio: 1.5;
-
-    /* Base letter spacing in em at the base font size.
-       0em = no extra tracking; negative values tighten. */
-    --base-letter-spacing: 0.035em;
-
-    /* ----------------------------------------------------------
-       DERIVED CONSTANTS (do not edit — computed from base params)
-       ----------------------------------------------------------
-       The line-height model simplifies beautifully:
-         lh = fs × (1 + (R−1) × base-fs / fs)
-            = fs + (R−1) × base-fs
-       So the difference (lh − fs) is constant across ALL levels.
-       We pre-compute it once as --lh-addend.
-
-       For letter-spacing the reciprocal model needs base-fs/fs,
-       which we embed inline per level using calc().
-    ---------------------------------------------------------- */
-
-    /* Letter-spacing numerator = (base-letter-spacing + 3em) × base-font-size
-       The +3 / −3 offset keeps the model well-behaved near zero.
-       NOTE: Because CSS calc() cannot mix em and px across divisions,
-       we express letter-spacing in em relative to each level's font-size.
-       The formula becomes:
-         ls = (base-ls + 0.1875em) × (base-font-size / font-size) − 0.1875em
-       where 0.1875em ≈ 3/16 (the "3" offset expressed as em at 16px base).
-       Adjust --ls-offset if you change --base-font-size. */
-
 
     /* ==========================================================
        FONT SIZE  —  font-size = base × ratio^step
-       Steps from base: xs=−2, sm=−1, base=0, lg=+1 … 9xl=+11
-       Pure calc() chains (no pow() needed, widely supported)
        ========================================================== */
 
-    --font-size-neg-2: round(var(--base-font-size) * var(--scale-ratio-neg-2), 1px);
-    --font-size-neg-1: round(var(--base-font-size) * var(--scale-ratio-neg-1), 1px);
-    --font-size-0: round(var(--base-font-size) * var(--scale-ratio-0), 1px);
-    --font-size-1: round(var(--base-font-size) * var(--scale-ratio-1), 1px);
-    --font-size-2: round(var(--base-font-size) * var(--scale-ratio-2), 1px);
-    --font-size-3: round(var(--base-font-size) * var(--scale-ratio-3), 1px);
-    --font-size-4: round(var(--base-font-size) * var(--scale-ratio-4), 1px);
-    --font-size-5: round(var(--base-font-size) * var(--scale-ratio-5), 1px);
-    --font-size-6: round(var(--base-font-size) * var(--scale-ratio-6), 1px);
-    --font-size-7: round(var(--base-font-size) * var(--scale-ratio-7), 1px);
-    --font-size-8: round(var(--base-font-size) * var(--scale-ratio-8), 1px);
-    --font-size-9: round(var(--base-font-size) * var(--scale-ratio-9), 1px);
-    --font-size-10: round(var(--base-font-size) * var(--scale-ratio-10), 1px);
+    --font-size-neg-2: round(var(--base-font-size) / pow(var(--scale-ratio), 2), 1px);
+    --font-size-neg-1: round(var(--base-font-size) / var(--scale-ratio), 1px);
+    --font-size-0: var(--base-font-size);
+    --font-size-1: round(var(--base-font-size) * var(--scale-ratio), 1px);
+    --font-size-2: round(var(--base-font-size) * pow(var(--scale-ratio), 2), 1px);
+    --font-size-3: round(var(--base-font-size) * pow(var(--scale-ratio), 3), 1px);
+    --font-size-4: round(var(--base-font-size) * pow(var(--scale-ratio), 4), 1px);
+    --font-size-5: round(var(--base-font-size) * pow(var(--scale-ratio), 5), 1px);
+    --font-size-6: round(var(--base-font-size) * pow(var(--scale-ratio), 6), 1px);
+    --font-size-7: round(var(--base-font-size) * pow(var(--scale-ratio), 7), 1px);
+    --font-size-8: round(var(--base-font-size) * pow(var(--scale-ratio), 8), 1px);
+    --font-size-9: round(var(--base-font-size) * pow(var(--scale-ratio), 9), 1px);
+    --font-size-10: round(var(--base-font-size) * pow(var(--scale-ratio), 10), 1px);
 
     /* ==========================================================
-       LINE HEIGHT  —  line-height = font-size + --lh-addend
-       (The addend is constant; see derivation)
+       LINE HEIGHT  —  line-height-ratio = 1 + --lh-addend / font-size
        ========================================================== */
-    /* Line-height addend = (base-lh-ratio − 1) × base-font-size
-       e.g. (1.5 − 1) × 16px = 8px  */
-    --lh-addend: calc(var(--base-lh-ratio) - 1);
 
+    --lh-addend: calc((var(--base-lh-ratio) - 1) * var(--base-font-size));
     --lh-unit: 0.1;
-    --line-height-neg-2: round(up, 1 + var(--lh-addend) / var(--scale-ratio-neg-2), var(--lh-unit));
-    --line-height-neg-1: round(up, 1 + var(--lh-addend) / var(--scale-ratio-neg-1), var(--lh-unit));
-    --line-height-0: round(up, 1 + var(--lh-addend) / var(--scale-ratio-0), var(--lh-unit));
-    --line-height-1: round(up, 1 + var(--lh-addend) / var(--scale-ratio-1), var(--lh-unit));
-    --line-height-2: round(up, 1 + var(--lh-addend) / var(--scale-ratio-2), var(--lh-unit));
-    --line-height-3: round(up, 1 + var(--lh-addend) / var(--scale-ratio-3), var(--lh-unit));
-    --line-height-4: round(up, 1 + var(--lh-addend) / var(--scale-ratio-4), var(--lh-unit));
-    --line-height-5: round(up, 1 + var(--lh-addend) / var(--scale-ratio-5), var(--lh-unit));
-    --line-height-6: round(up, 1 + var(--lh-addend) / var(--scale-ratio-6), var(--lh-unit));
-    --line-height-7: round(up, 1 + var(--lh-addend) / var(--scale-ratio-7), var(--lh-unit));
-    --line-height-8: round(up, 1 + var(--lh-addend) / var(--scale-ratio-8), var(--lh-unit));
-    --line-height-9: round(up, 1 + var(--lh-addend) / var(--scale-ratio-9), var(--lh-unit));
-    --line-height-10: round(up, 1 + var(--lh-addend) / var(--scale-ratio-10), var(--lh-unit));
+
+    --line-height-neg-2: round(up, 1 + var(--lh-addend) / var(--font-size-neg-2), var(--lh-unit));
+    --line-height-neg-1: round(up, 1 + var(--lh-addend) / var(--font-size-neg-1), var(--lh-unit));
+    --line-height-0: var(--base-lh-ratio);
+    --line-height-1: round(up, 1 + var(--lh-addend) / var(--font-size-1), var(--lh-unit));
+    --line-height-2: round(up, 1 + var(--lh-addend) / var(--font-size-2), var(--lh-unit));
+    --line-height-3: round(up, 1 + var(--lh-addend) / var(--font-size-3), var(--lh-unit));
+    --line-height-4: round(up, 1 + var(--lh-addend) / var(--font-size-4), var(--lh-unit));
+    --line-height-5: round(up, 1 + var(--lh-addend) / var(--font-size-5), var(--lh-unit));
+    --line-height-6: round(up, 1 + var(--lh-addend) / var(--font-size-6), var(--lh-unit));
+    --line-height-7: round(up, 1 + var(--lh-addend) / var(--font-size-7), var(--lh-unit));
+    --line-height-8: round(up, 1 + var(--lh-addend) / var(--font-size-8), var(--lh-unit));
+    --line-height-9: round(up, 1 + var(--lh-addend) / var(--font-size-9), var(--lh-unit));
+    --line-height-10: round(up, 1 + var(--lh-addend) / var(--font-size-10), var(--lh-unit));
 
     /* ==========================================================
        LETTER SPACING  —  reciprocal model (values in em)
@@ -134,36 +74,24 @@
 
        As font-size grows → letter-spacing approaches −offset (tighter).
        As font-size shrinks → letter-spacing opens up.
-
-       CSS calc() cannot divide by a var() that contains a unit
-       directly, so we express the ratio as a unitless multiplier
-       computed from the font-size px values.  Each level uses
-       the pre-computed font-size var divided into base-font-size.
-
-       Because calc() DOES support  (px / px) → unitless, the
-       formula written below is valid:
-         calc((var(--base-ls) + 0.1875em) * (base-px / level-px) - 0.1875em)
-       but mixing em+px in one calc branch is illegal.  The cleanest
-       portable solution is to keep everything in em-equivalent by
-       treating base-font-size as "1em" reference, expressing the
-       px ratio as a division of two px values (→ unitless), then
-       multiplying by em.  See each variable below.
        ========================================================== */
 
-    --ls-numerator: calc(var(--base-letter-spacing) + 0.03em);
-    --letter-spacing-neg-2: calc(var(--ls-numerator) / var(--scale-ratio-neg-2) - 0.03em);
-    --letter-spacing-neg-1: calc(var(--ls-numerator) / var(--scale-ratio-neg-1) - 0.03em);
-    --letter-spacing-0: calc(var(--ls-numerator) / var(--scale-ratio-0) - 0.03em);
-    --letter-spacing-1: calc(var(--ls-numerator) / var(--scale-ratio-1) - 0.03em);
-    --letter-spacing-2: calc(var(--ls-numerator) / var(--scale-ratio-2) - 0.03em);
-    --letter-spacing-3: calc(var(--ls-numerator) / var(--scale-ratio-3) - 0.03em);
-    --letter-spacing-4: calc(var(--ls-numerator) / var(--scale-ratio-4) - 0.03em);
-    --letter-spacing-5: calc(var(--ls-numerator) / var(--scale-ratio-5) - 0.03em);
-    --letter-spacing-6: calc(var(--ls-numerator) / var(--scale-ratio-6) - 0.03em);
-    --letter-spacing-7: calc(var(--ls-numerator) / var(--scale-ratio-7) - 0.03em);
-    --letter-spacing-8: calc(var(--ls-numerator) / var(--scale-ratio-8) - 0.03em);
-    --letter-spacing-9: calc(var(--ls-numerator) / var(--scale-ratio-9) - 0.03em);
-    --letter-spacing-10: calc(var(--ls-numerator) / var(--scale-ratio-10) - 0.03em);
+    --ls-offset: 0.03em;
+    --ls-numerator: calc((var(--base-letter-spacing) + var(--ls-offset)) * var(--base-font-size));
+
+    --letter-spacing-neg-2: calc(var(--ls-numerator) / var(--font-size-neg-2) - var(--ls-offset));
+    --letter-spacing-neg-1: calc(var(--ls-numerator) / var(--font-size-neg-1) - var(--ls-offset));
+    --letter-spacing-0: var(--base-letter-spacing);
+    --letter-spacing-1: calc(var(--ls-numerator) / var(--font-size-1) - var(--ls-offset));
+    --letter-spacing-2: calc(var(--ls-numerator) / var(--font-size-2) - var(--ls-offset));
+    --letter-spacing-3: calc(var(--ls-numerator) / var(--font-size-3) - var(--ls-offset));
+    --letter-spacing-4: calc(var(--ls-numerator) / var(--font-size-4) - var(--ls-offset));
+    --letter-spacing-5: calc(var(--ls-numerator) / var(--font-size-5) - var(--ls-offset));
+    --letter-spacing-6: calc(var(--ls-numerator) / var(--font-size-6) - var(--ls-offset));
+    --letter-spacing-7: calc(var(--ls-numerator) / var(--font-size-7) - var(--ls-offset));
+    --letter-spacing-8: calc(var(--ls-numerator) / var(--font-size-8) - var(--ls-offset));
+    --letter-spacing-9: calc(var(--ls-numerator) / var(--font-size-9) - var(--ls-offset));
+    --letter-spacing-10: calc(var(--ls-numerator) / var(--font-size-10) - var(--ls-offset));
 
     --script-12-bt: "script_12_bt", "script_12_bt Fallback";
 }
@@ -344,15 +272,15 @@ button {
     inherits: false;
     initial-value: 0;
 }
-@property --_scale-ratio {
-    syntax: "<number>";
+@property --_font-size {
+    syntax: "<length-percentage>";
     inherits: false;
     initial-value: 0;
 }
 
 .indexed-font {
-    --_scale-ratio: pow(var(--scale-ratio), var(--font-index));
-    font-size: round(var(--base-font-size) * var(--_scale-ratio), 1px);
-    line-height: round(1 + var(--lh-addend) / var(--_scale-ratio), var(--lh-unit));
-    letter-spacing: calc(var(--ls-numerator) / var(--_scale-ratio) - 0.03em);
+    --_font-size: round(var(--base-font-size) * pow(var(--scale-ratio), var(--font-index)), 1px);
+    font-size: var(--_font-size);
+    line-height: round(1 + var(--lh-addend) / var(--_font-size), var(--lh-unit));
+    letter-spacing: calc(var(--ls-numerator) / var(--_font-size) - var(--ls-offset));
 }

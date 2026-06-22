@@ -36,7 +36,7 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
                     var(--primary-500) var(--gradient-fill-progress),
 					transparent calc(var(--gradient-fill-progress) + 25%)
                 );
-			background-color: var(--neutral-800);
+			background-color: var(--neutral-700);
             background-clip: text;
             animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
 		`}

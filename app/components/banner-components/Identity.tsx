@@ -48,7 +48,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				inset: 0;
 				height: auto;
 				width: 100%;
-				color: var(--neutral-800);
+				color: var(--neutral-700);
 			}
 	
 			svg.bulb-icon, svg.dots circle {
