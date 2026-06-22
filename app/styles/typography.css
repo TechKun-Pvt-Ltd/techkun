@@ -34,7 +34,6 @@
 
     --font-size-neg-2: round(var(--base-font-size) / pow(var(--scale-ratio), 2), 1px);
     --font-size-neg-1: round(var(--base-font-size) / var(--scale-ratio), 1px);
-    --font-size-0: var(--base-font-size);
     --font-size-1: round(var(--base-font-size) * var(--scale-ratio), 1px);
     --font-size-2: round(var(--base-font-size) * pow(var(--scale-ratio), 2), 1px);
     --font-size-3: round(var(--base-font-size) * pow(var(--scale-ratio), 3), 1px);
@@ -55,7 +54,6 @@
 
     --line-height-neg-2: round(up, 1 + var(--lh-addend) / var(--font-size-neg-2), var(--lh-unit));
     --line-height-neg-1: round(up, 1 + var(--lh-addend) / var(--font-size-neg-1), var(--lh-unit));
-    --line-height-0: var(--base-lh-ratio);
     --line-height-1: round(up, 1 + var(--lh-addend) / var(--font-size-1), var(--lh-unit));
     --line-height-2: round(up, 1 + var(--lh-addend) / var(--font-size-2), var(--lh-unit));
     --line-height-3: round(up, 1 + var(--lh-addend) / var(--font-size-3), var(--lh-unit));
@@ -81,7 +79,6 @@
 
     --letter-spacing-neg-2: calc(var(--ls-numerator) / var(--font-size-neg-2) - var(--ls-offset));
     --letter-spacing-neg-1: calc(var(--ls-numerator) / var(--font-size-neg-1) - var(--ls-offset));
-    --letter-spacing-0: var(--base-letter-spacing);
     --letter-spacing-1: calc(var(--ls-numerator) / var(--font-size-1) - var(--ls-offset));
     --letter-spacing-2: calc(var(--ls-numerator) / var(--font-size-2) - var(--ls-offset));
     --letter-spacing-3: calc(var(--ls-numerator) / var(--font-size-3) - var(--ls-offset));
@@ -97,9 +94,9 @@
 }
 
 html {
-    font-size: var(--font-size-0);
-    line-height: var(--line-height-0);
-    letter-spacing: var(--letter-spacing-0);
+    font-size: var(--base-font-size);
+    line-height: var(--base-lh-ratio);
+    letter-spacing: var(--base-letter-spacing);
     font-family: Quicksand, Quicksand Fallback, sans-serif;
     font-style: normal;
 }
@@ -139,16 +136,8 @@ h6 {
     letter-spacing: var(--letter-spacing-1);
     font-weight: normal;
 }
-/*p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {*/
-/*    font-size: var(--font-size-base);*/
-/*    line-height: var(--line-height-base);*/
-/*    letter-spacing: var(--letter-spacing-base);*/
-/*}*/
 
 button {
-    /*font-size: var(--font-size-base);*/
-    /*line-height: var(--line-height-base);*/
-    /*letter-spacing: var(--letter-spacing-base);*/
     font-family: inherit;
     font-weight: 500;
 }
@@ -213,9 +202,9 @@ button {
     letter-spacing: var(--letter-spacing-neg-1);
 }
 .text-base {
-    font-size: var(--font-size-0);
-    line-height: var(--line-height-0);
-    letter-spacing: var(--letter-spacing-0);
+    font-size: var(--base-font-size);
+    line-height: var(--base-lh-ratio);
+    letter-spacing: var(--base-letter-spacing);
 }
 .text-lg {
     font-size: var(--font-size-1);
