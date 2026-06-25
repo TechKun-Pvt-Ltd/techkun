@@ -47,12 +47,12 @@ export default function Banner() {
 				<p className="text-lg" css={css`
 					margin-block-end: 16px;
 					font-weight: 500;
-                    color: oklch(from var(--secondary-color) 0.56 0.05 h);
+                    color: oklch(from var(--neutral-400) l 0.05 h);
 				`}>Hello there!</p>
 				<h1 className="hero-heading" css={css`user-select: none; margin-block-end: 56px;`}>
 					We&nbsp;build&nbsp;software
 					<br/>with
-					<span css={keywordCss}> <Beauty />, <Precision />, </span>
+					<span css={keywordCss}>&nbsp;<Beauty />, <Precision />, </span>
 					and <span css={keywordCss}><Identity className="keyword" />.</span>
 				</h1>
 				<p className="text-lg" css={css`
@@ -60,7 +60,7 @@ export default function Banner() {
                     margin-block-end: 32px;
                     font-weight: 500;
 					white-space: nowrap;
-                    color: oklch(from var(--secondary-color) 0.56 0.05 h);
+                    color: oklch(from var(--neutral-400) l 0.05 h);
 				`}>If that resonates...</p>
 				<div className="text-lg" css={css`
 					padding-inline: 96px;
@@ -74,7 +74,7 @@ export default function Banner() {
 						Let's get on call
 					</GradientBorderButton>
 					<EmailLink
-						style={{ color: "oklch(from var(--secondary-color) 0.56 0.05 h)", fontWeight: "500", width: "max-content" }}
+						style={{ color: "oklch(from var(--neutral-400) l 0.05 h)", fontWeight: "500", width: "max-content" }}
 						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"
 						gap="8px" iconStrokeWidth={1.4}
 					/>

@@ -21,21 +21,19 @@ const lightDown = keyframes`
 `;
 
 const DOT_COUNT = 4;
-const INITIAL_MIN_DELAY = initialDotsLightUp.delay;
 const STAGGER = dotsLightUp.stagger;
-let minDelaySetToZero = false;
 
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
 	return <span
-		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': INITIAL_MIN_DELAY + 's', ...style} as React.CSSProperties}
+		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': initialDotsLightUp.delay + 's', ...style} as React.CSSProperties}
 		{...props}
-		onClick={ev => {
-			ev.currentTarget.toggleAttribute("data-clicked");
-			if (!minDelaySetToZero) {
-				minDelaySetToZero = true;
-				ev.currentTarget.style.setProperty("--min-delay", dotsLightUp.delay + 's');
-			}
+		ref={el => {
+			if (!el) return;
+			const listener = () => el.style.setProperty("--min-delay", dotsLightUp.delay + 's');
+			el.addEventListener("click", listener, { once: true });
+			return () => el.removeEventListener("click", listener);
 		}}
+		onClick={ev => ev.currentTarget.toggleAttribute("data-clicked")}
 	>
 		<span css={css`
 			position: relative;
@@ -91,7 +89,6 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				}
             }
 		`}>
-			i
 			<svg className="icon bulb-icon" xmlns="http://www.w3.org/2000/svg" viewBox="-1 -6 12 15" fill="currentColor">
 				<path
 					d="M 0 0 C 0 -2.7614 2.2386 -5 5 -5 C 7.7614 -5 10 -2.7614 10 0 C 10 1.3261 9.4732 2.5979 8.5355 3.5355 C 7.5979 4.4732 7.0711 5.745 7.0711 7.0711 C 7.0711 7.6234 6.6234 8.0711 6.0711 8.0711 L 3.9289 8.0711 C 3.3766 8.0711 2.9289 7.6234 2.9289 7.0711 C 2.9289 5.745 2.4021 4.4732 1.4645 3.5355 C 0.5268 2.5979 0 1.3261 0 0"
@@ -107,6 +104,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 					/>
 				))}
 			</svg>
+			i
 		</span>
 		dentity
 	</span>;

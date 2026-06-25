@@ -92,7 +92,6 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		`}
 		ref={containerRef}
 	>
-		precisi<span style={{opacity: 0.2}}>o</span>n
 		<motion.span
 			className="x-ray"
 			style={{"--x": x, "--y": y} as React.CSSProperties}
@@ -268,5 +267,6 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 				/>
 			</svg>
 		</motion.span>
+		precisi<span style={{color: "var(--neutral-700)"}}>o</span>n
 	</span>;
 }

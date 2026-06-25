@@ -91,15 +91,14 @@
     --letter-spacing-10: calc(var(--ls-numerator) / var(--font-size-10) - var(--ls-offset));
 
     --script-12-bt: "script_12_bt", "script_12_bt Fallback";
-}
 
-html {
     font-size: var(--base-font-size);
     line-height: var(--base-lh-ratio);
     letter-spacing: var(--base-letter-spacing);
     font-family: Quicksand, Quicksand Fallback, sans-serif;
     font-style: normal;
 }
+
 h1, h2, h3, h4, h5, h6, p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {
     margin-block: 0;
 }
