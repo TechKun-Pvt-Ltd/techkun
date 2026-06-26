@@ -1,44 +1,30 @@
-import {css, keyframes} from "@emotion/react";
+import {css} from "@emotion/react";
 import React from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
 
 const { initialDotsLightUp, dotsLightUp, dotsLightDown } = BANNER_ANIMATION;
-const lightUp = keyframes`
-	from {
-		fill: currentColor;
-	}
-	to {
-		fill: var(--light-up-color);
-	}
-`;
-const lightDown = keyframes`
-	from {
-		fill: var(--light-up-color);
-	}
-	to {
-		fill: currentColor;
-	}
-`;
 
 const DOT_COUNT = 4;
-const STAGGER = dotsLightUp.stagger;
-
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
 	return <span
-		style={{color: 'var(--foreground)', cursor: 'pointer', '--min-delay': initialDotsLightUp.delay + 's', ...style} as React.CSSProperties}
+		style={{color: 'var(--foreground)', cursor: 'pointer', ...style} as React.CSSProperties}
 		{...props}
 		ref={el => {
 			if (!el) return;
-			const listener = () => el.style.setProperty("--min-delay", dotsLightUp.delay + 's');
+			const listener = () => {
+				el!.removeAttribute("data-initial");
+				el = null;
+			};
 			el.addEventListener("click", listener, { once: true });
-			return () => el.removeEventListener("click", listener);
+			return () => el?.removeEventListener("click", listener);
 		}}
+		data-initial
 		onClick={ev => ev.currentTarget.toggleAttribute("data-clicked")}
 	>
 		<span css={css`
 			position: relative;
 			color: transparent;
-	
+
 			svg.icon {
 				transform: translateX(6%);
 				transform-box: view-box;
@@ -48,9 +34,13 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				width: 100%;
 				color: var(--neutral-700);
 			}
-	
+
 			svg.bulb-icon, svg.dots circle {
-                animation: ${lightUp} ${dotsLightUp.duration}s ease-out both;
+				--stagger: ${dotsLightUp.stagger}s;
+                --min-delay: ${dotsLightUp.delay}s;
+				transition: fill ${dotsLightUp.duration}s ease-out;
+                transition-delay: calc(var(--min-delay) + var(--i) * var(--stagger));
+				fill: var(--light-up-color);
 			}
 			svg.bulb-icon {
 				top: 0.24em;
@@ -58,8 +48,8 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				transform: translateX(calc(-1 * (var(--_width) - 100%) / 2 + 8%));
 				transform-origin: center bottom;
 				width: var(--_width);
+
 				--light-up-color: var(--foreground);
-				animation-delay: calc(var(--min-delay) + ${DOT_COUNT * STAGGER}s);
 			}
 			svg.dots {
 				top: calc(0.32em + 1cap - 1ex);
@@ -77,19 +67,30 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 					&:nth-of-type(4) {
 						--light-up-color: var(--tertiary-300);
 					}
-
-					animation-delay: calc(var(--min-delay) + (${DOT_COUNT - 1} - var(--i)) * ${STAGGER}s);
+				}
+			}
+			[data-initial] & {
+				svg.bulb-icon, svg.dots circle {
+					--min-delay: ${initialDotsLightUp.delay}s;
+                    @starting-style {
+                        fill: currentColor;
+                    }
 				}
 			}
 			[data-clicked] & {
 				svg.bulb-icon, svg.dots circle {
-					animation-name: ${lightDown};
-					animation-duration: ${dotsLightDown.duration}s;
-					animation-delay: ${dotsLightDown.delay + dotsLightDown.stagger}s;
+					--stagger: ${dotsLightDown.stagger}s;
+					--min-delay: ${dotsLightDown.delay}s;
+					transition-duration: ${dotsLightDown.duration}s;
+					fill: currentColor;
 				}
             }
 		`}>
-			<svg className="icon bulb-icon" xmlns="http://www.w3.org/2000/svg" viewBox="-1 -6 12 15" fill="currentColor">
+			<svg className="icon bulb-icon"
+				 xmlns="http://www.w3.org/2000/svg"
+				 viewBox="-1 -6 12 15" fill="currentColor"
+				 style={{ "--i": DOT_COUNT } as React.CSSProperties}
+			>
 				<path
 					d="M 0 0 C 0 -2.7614 2.2386 -5 5 -5 C 7.7614 -5 10 -2.7614 10 0 C 10 1.3261 9.4732 2.5979 8.5355 3.5355 C 7.5979 4.4732 7.0711 5.745 7.0711 7.0711 C 7.0711 7.6234 6.6234 8.0711 6.0711 8.0711 L 3.9289 8.0711 C 3.3766 8.0711 2.9289 7.6234 2.9289 7.0711 C 2.9289 5.745 2.4021 4.4732 1.4645 3.5355 C 0.5268 2.5979 0 1.3261 0 0"
 				/>
@@ -100,7 +101,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 						key={i}
 						r="10%" cx="50%"
 						cy={(10 + i * 80 / (DOT_COUNT - 1)) + '%'}
-						style={{ '--i': i } as React.CSSProperties}
+						style={{ '--i': DOT_COUNT - (i + 1) } as React.CSSProperties}
 					/>
 				))}
 			</svg>

@@ -152,7 +152,7 @@ export default function Window(
 		<div css={css`
 			min-height: 0;
             flex-grow: 1;
-            background-color: oklch(from var(--background) l c h / 0);
+            background-color: transparent;
             border-radius: calc(var(${_borderRadius}) - 12px);
 			overflow: clip;
             display: flex;
