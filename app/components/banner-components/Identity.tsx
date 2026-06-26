@@ -5,6 +5,13 @@ import BANNER_ANIMATION from "@/app/animations/banner";
 const { initialDotsLightUp, dotsLightUp, dotsLightDown } = BANNER_ANIMATION;
 
 const DOT_COUNT = 4;
+
+const lightUpColorProp = "--light-up-color";
+const staggerProp = "--stagger";
+const minDelayProp = "--min-delay";
+
+const bulbIconWidthProp = "--_bulb-icon-width";
+
 export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
 	return <span
 		style={{color: 'var(--foreground)', cursor: 'pointer', ...style} as React.CSSProperties}
@@ -36,42 +43,42 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 			}
 
 			svg.bulb-icon, svg.dots circle {
-				--stagger: ${dotsLightUp.stagger}s;
-                --min-delay: ${dotsLightUp.delay}s;
+				${staggerProp}: ${dotsLightUp.stagger}s;
+                ${minDelayProp}: ${dotsLightUp.delay}s;
 				transition: fill ${dotsLightUp.duration}s ease-out;
-                transition-delay: calc(var(--min-delay) + var(--i) * var(--stagger));
-				fill: var(--light-up-color);
+                transition-delay: calc(var(${minDelayProp}) + var(--i) * var(${staggerProp}));
+				fill: var(${lightUpColorProp});
 			}
 			svg.bulb-icon {
 				top: 0.24em;
-				--_width: 90%;
-				transform: translateX(calc(-1 * (var(--_width) - 100%) / 2 + 8%));
+				${bulbIconWidthProp}: 90%;
+				transform: translateX(calc(-1 * (var(${bulbIconWidthProp}) - 100%) / 2 + 8%));
 				transform-origin: center bottom;
-				width: var(--_width);
+				width: var(${bulbIconWidthProp});
 
-				--light-up-color: var(--foreground);
+				${lightUpColorProp}: var(--foreground);
 			}
 			svg.dots {
 				top: calc(0.32em + 1cap - 1ex);
 				height: 1ex;
 				circle {
 					&:nth-of-type(1) {
-						--light-up-color: var(--foreground);
+						${lightUpColorProp}: var(--foreground);
 					}
 					&:nth-of-type(2) {
-						--light-up-color: var(--primary-300);
+						${lightUpColorProp}: var(--primary-300);
 					}
 					&:nth-of-type(3) {
-						--light-up-color: var(--secondary-300);
+						${lightUpColorProp}: var(--secondary-300);
 					}
 					&:nth-of-type(4) {
-						--light-up-color: var(--tertiary-300);
+						${lightUpColorProp}: var(--tertiary-300);
 					}
 				}
 			}
 			[data-initial] & {
 				svg.bulb-icon, svg.dots circle {
-					--min-delay: ${initialDotsLightUp.delay}s;
+					${minDelayProp}: ${initialDotsLightUp.delay}s;
                     @starting-style {
                         fill: currentColor;
                     }
@@ -79,8 +86,8 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 			}
 			[data-clicked] & {
 				svg.bulb-icon, svg.dots circle {
-					--stagger: ${dotsLightDown.stagger}s;
-					--min-delay: ${dotsLightDown.delay}s;
+					${staggerProp}: ${dotsLightDown.stagger}s;
+					${minDelayProp}: ${dotsLightDown.delay}s;
 					transition-duration: ${dotsLightDown.duration}s;
 					fill: currentColor;
 				}
