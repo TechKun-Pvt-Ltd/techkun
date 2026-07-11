@@ -51,8 +51,10 @@ export function useMappedValues<I, const O extends any[]>(
 	 * schedule an update.
 	 */
 	useIsomorphicLayoutEffect(() => {
-		const scheduleUpdate = () => frame.preRender(updateValues, false, true)
-		const unsubscribe = inputValue.on("change", scheduleUpdate);
+		const unsubscribe = inputValue.on(
+			"change",
+			() => frame.preRender(updateValues, false, true)
+		);
 
 		return () => {
 			unsubscribe();

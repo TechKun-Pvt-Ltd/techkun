@@ -4,7 +4,7 @@ import ErrorConsole from "@/app/components/problem-statement-windows/error-conso
 import ChatPage from "@/app/components/problem-statement-windows/chat-page";
 import ScreenComponent from "@/app/components/problem-statement-windows/screen-component";
 import Window from "@/app/components/problem-statement-windows/window-component";
-import figmaIcon from "@/public/icons/figma-icon.svg";
+// import figmaIcon from "@/public/icons/figma-icon.svg";
 import githubIcon from "@/public/icons/github-icon.svg";
 import gmailIcon from "@/public/icons/gmail-icon.svg";
 import notionIcon from "@/public/icons/notion-icon.svg";

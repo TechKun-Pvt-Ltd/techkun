@@ -1,6 +1,6 @@
 import React from "react";
 import {css, keyframes} from "@emotion/react";
-import {motion, MotionStyle} from "motion/react";
+import {motion} from "motion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import BANNER_ANIMATION from "@/app/animations/banner";
 

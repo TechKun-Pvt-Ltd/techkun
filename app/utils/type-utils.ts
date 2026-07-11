@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 type AsProp<C extends React.ElementType> = { as?: C };
 

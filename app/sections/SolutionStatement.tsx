@@ -1,4 +1,3 @@
-import TrigCircle from "@/app/components/TrigCircle";
 import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
 import {
@@ -6,12 +5,11 @@ import {
 	AnimationPlaybackControlsWithThen, inView,
 	motion,
 	useMotionValue,
-	useScroll,
-	useTransform, ValueAnimationTransition
+	useScroll, useTransform, ValueAnimationTransition
 } from "motion/react";
-import {Angle} from "svg-path-kit";
-import ConicReveal from "@/app/components/ConicReveal";
-import SvgCircularText from "@/app/components/SvgCircularText";
+import {Angle, Point2D, Vector2D} from "svg-path-kit";
+import {useConicReveal} from "@/hooks/use-conic-reveal";
+import TrigWheel from "@/app/components/TrigWheel";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -97,6 +95,44 @@ const TRIG_CIRCLE_RADIUS = 0.4 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
 const ANGLE_RANGE: [number, number] = [-Math.PI, Math.PI];
 
+const centerPoint = Point2D.of(CIRCLE_CENTER, CIRCLE_CENTER);
+
+const icons = [
+	{
+		size: 5,
+		position: centerPoint.add(Vector2D.polar(TRIG_CIRCLE_RADIUS, -7 * Math.PI / 8)),
+		render() {
+			return <svg
+				x={this.position.x - this.size / 2} y={this.position.y - this.size * 0.44}
+				width={this.size} height={this.size} viewBox="-6 -6 24 24"
+				fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"
+				strokeLinejoin="round" preserveAspectRatio="xMidYMid"
+			>
+				<path d="M 0 0 C 0 -2.7614 2.2386 -5 5 -5 C 7.7614 -5 10 -2.7614 10 0 C 10 1.3261 9.4732 2.5979 8.5355 3.5355 C 7.5979 4.4732 7.0711 5.745 7.0711 7.0711 C 7.0711 8.2149 6.1438 9.1421 5 9.1421 C 3.8562 9.1421 2.9289 8.2149 2.9289 7.0711 C 2.9289 5.745 2.4021 4.4732 1.4645 3.5355 C 0.5268 2.5979 0 1.3261 0 0 M 6.4645 11.2855 C 6.0761 11.6739 5.5493 11.8921 5 11.8921 C 4.4507 11.8921 3.9239 11.6739 3.5355 11.2855 M 6.0355 14.1147 C 5.3947 14.4846 4.6053 14.4846 3.9645 14.1147"/>
+			</svg>;
+		}
+	},
+	{
+		size: 4,
+		position: centerPoint.add(Vector2D.polar(TRIG_CIRCLE_RADIUS, -6 * Math.PI / 8)),
+		render() {
+			return <svg
+				x={this.position.x - this.size / 2} y={this.position.y - this.size / 2}
+				width={this.size} height={this.size} viewBox="0 0 24 24"
+				fill="none" stroke="currentColor" strokeWidth="2"
+				strokeLinecap="round" strokeLinejoin="round"
+			>
+				<path
+					d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"/>
+				<path d="M14.487 7.858A1 1 0 0 1 14 7V2"/>
+				<path
+					d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"/>
+				<path d="M8 18h1"/>
+			</svg>;
+		}
+	}
+];
+
 const svgSizeProp = "--_svg-size";
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
@@ -104,17 +140,25 @@ export default function SolutionStatement() {
 	const theta = useTransform(scrollYProgress, [0, 1], ANGLE_RANGE);
 	const angle = useTransform(theta, Angle.of);
 
-	const firstText = "Precision & care that AI can't match.";
-	const charAngle = 0.06;
-	const firstTextEndAngle = Math.PI - charAngle * 0.5;//-(Math.PI / 2 - charAngle * (" care".length + 0.65));
-	const firstTxtSweptAngle = charAngle * firstText.length;
-	const firstTxtStartAngle = useTransform(angle, a => {
-		const angleValue = Math.min(+a, firstTextEndAngle);
-		const startValue = -178 * Math.PI / 180;
-		const diff = (angleValue - startValue) - firstTxtSweptAngle;
-		return diff > 0 ? `${startValue + diff}rad` : `${startValue}rad`;
-	});
+	// const firstText = "Precision & care that AI can't match.";
+	// const charAngle = 0.06;
+	// const firstTextEndAngle = Math.PI - charAngle * 0.5;//-(Math.PI / 2 - charAngle * (" care".length + 0.65));
+	// const firstTxtSweptAngle = charAngle * firstText.length;
+	// const firstTxtStartAngle = useTransform(angle, a => {
+	// 	const angleValue = Math.min(+a, firstTextEndAngle);
+	// 	const startValue = -178 * Math.PI / 180;
+	// 	const diff = (angleValue - startValue) - firstTxtSweptAngle;
+	// 	return diff > 0 ? `${startValue + diff}rad` : `${startValue}rad`;
+	// });
 	// const secondTxtStartAngle = firstTextEndAngle + charAngle;
+
+	const [frontClipPath, backClipPath] = useConicReveal({
+		angle: angle,
+		startAngle: ANGLE_RANGE[0],
+		centerX: CIRCLE_CENTER,
+		centerY: CIRCLE_CENTER,
+		radius: TRIG_CIRCLE_RADIUS + 10
+	});
 
 	return <section css={css`
         padding-block: 96px;
@@ -189,32 +233,47 @@ export default function SolutionStatement() {
 							 will-change: transform;
                              width: var(${svgSizeProp});
 						 `}>
-						<ConicReveal
-							angle={angle} startAngle={ANGLE_RANGE[0]}
-							centerX={CIRCLE_CENTER}
-							centerY={CIRCLE_CENTER}
-							radius={TRIG_CIRCLE_RADIUS + 10}
-							frontLayer={<>
-								<SvgCircularText
-									radius={TRIG_CIRCLE_RADIUS + 2.5}
-									centerX={CIRCLE_CENTER}
-									centerY={CIRCLE_CENTER}
-									startAngle={firstTxtStartAngle} charAngle={`${charAngle}rad`}
-									fontSize={4}
-									color="var(--primary-600)"
-								>{firstText}</SvgCircularText>
-							</>}
-						/>
-						<TrigCircle
+						<TrigWheel
 							angle={angle}
 							startX={VIEW_BOX_START} startY={VIEW_BOX_START}
-							size={VIEW_BOX_SIZE}
-							radius={TRIG_CIRCLE_RADIUS}
-							strokeWidth="0.25"
-							strokeColor="var(--neutral-700)"
-							fillColor="oklch(from var(--neutral-900) l c h / 0.5)"
-							textColor="var(--neutral-500)"
-						/>
+							size={VIEW_BOX_SIZE} radius={TRIG_CIRCLE_RADIUS}
+						>
+							<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
+								<TrigWheel.Circle fill="oklch(from var(--neutral-900) l c h / 0.5)" />
+								<TrigWheel.XAxis />
+								<TrigWheel.YAxis />
+								<TrigWheel.ExtendedRotor strokeDasharray="2" />
+								<TrigWheel.Rotor />
+								<TrigWheel.RotorXProjection />
+								<TrigWheel.RotorYProjection />
+							</g>
+							<g clipPath="url(#front-clip-path)">
+								{/*<SvgCircularText*/}
+								{/*	radius={TRIG_CIRCLE_RADIUS + 2.5}*/}
+								{/*	centerX={CIRCLE_CENTER}*/}
+								{/*	centerY={CIRCLE_CENTER}*/}
+								{/*	startAngle={firstTxtStartAngle} charAngle={`${charAngle}rad`}*/}
+								{/*	fontSize={4}*/}
+								{/*	color="var(--primary-600)"*/}
+								{/*>{firstText}</SvgCircularText>*/}
+								{icons.map((icon, i) => (
+									<React.Fragment key={i}>
+										<circle cx={icon.position.x} cy={icon.position.y} r="4" />
+										{icon.render()}
+									</React.Fragment>
+								))}
+							</g>
+							<TrigWheel.RotorTerminal fill="var(--neutral-700)" />
+							<TrigWheel.AngleLabel fontSize="2" fill="var(--neutral-500)" />
+						</TrigWheel>
+						<defs>
+							<clipPath id="back-clip-path">
+								<motion.path d={backClipPath}></motion.path>
+							</clipPath>
+							<clipPath id="front-clip-path">
+								<motion.path d={frontClipPath}></motion.path>
+							</clipPath>
+						</defs>
 					</svg>
 				</div>
 			</div>

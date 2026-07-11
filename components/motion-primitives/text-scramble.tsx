@@ -1,5 +1,5 @@
 'use client';
-import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
+import React, {ForwardedRef, forwardRef, useImperativeHandle, useRef} from 'react';
 import {animate, motion, steps, useMotionValue, useTransform} from 'motion/react';
 
 export type TextScrambleRef<C extends React.ElementType> = {
