@@ -4,6 +4,7 @@ import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React from "react";
 import cssSupports from "@/app/utils/css-supports";
 import {MotionLink} from "@/app/components/MotionLink";
+import {Once} from "@/components/Once";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -35,6 +36,13 @@ export default function EmailLink(
 			verticalAlign: '-0.18em'
 		}}
 	>
+		<Once id="email-link-gradient">
+			<linearGradient id="email-link-gradient" x1="100%" y1="0%" x2="0%" y2="100%">
+				<stop offset="0%" stopColor="var(--primary-500)" />
+				<stop offset="40%" stopColor="var(--primary-500)" />
+				<stop offset="60%" stopColor="var(--tertiary-500)" />
+			</linearGradient>
+		</Once>
 		<motion.path
 			d={variants[INITIAL].d}
 		 	fill="transparent" strokeWidth={iconStrokeWidth} strokeLinejoin="round" strokeLinecap="round"
@@ -42,30 +50,32 @@ export default function EmailLink(
 		></motion.path>
 	</svg>;
 
-	return <MotionLink
-		href={`mailto:${address}`}
-		css={css`
-			cursor: pointer;
-			text-decoration: none;
-			
-			& path {
-			  	transition-property: stroke, d;
-				transition-duration: ${transition.duration}s;
-				transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
-				stroke: currentColor;
-			}
-			
-			&:hover path, &:focus-visible path {
-				stroke: url(#brand-gradient);
-				d: path("${variants[FOCUSED].d}");
-  			}
-		`}
-		{...props}
-		initial={INITIAL}
-		whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
-	>
-		{iconSide === "left" && icon}
-		<span>{text}</span>
-		{iconSide === "right" && icon}
-	</MotionLink>
+	return <>
+		<MotionLink
+			href={`mailto:${address}`}
+			css={css`
+				cursor: pointer;
+				text-decoration: none;
+
+				& path {
+					transition-property: stroke, d;
+					transition-duration: ${transition.duration}s;
+					transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
+					stroke: currentColor;
+				}
+
+				&:hover path, &:focus-visible path {
+					stroke: url(#email-link-gradient);
+					d: path("${variants[FOCUSED].d}");
+				}
+			`}
+			{...props}
+			initial={INITIAL}
+			whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
+		>
+			{iconSide === "left" && icon}
+			<span>{text}</span>
+			{iconSide === "right" && icon}
+		</MotionLink>
+	</>
 };
