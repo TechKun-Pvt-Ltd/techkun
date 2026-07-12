@@ -114,19 +114,19 @@ TrigWheel.RotorTerminal = function RotorTerminal(props: React.ComponentProps<typ
 };
 
 TrigWheel.RotorXProjection = function RotorXProjection(props: React.ComponentProps<typeof motion.line>) {
-	const {centerY, rotorX, rotorY} = useContext(TrigWheelContext);
-	return <motion.line
-		x1={rotorX} y1={centerY}
-		x2={rotorX} y2={rotorY}
-		strokeDasharray="2"
-		{...props}
-	></motion.line>
-};
-
-TrigWheel.RotorYProjection = function RotorYProjection(props: React.ComponentProps<typeof motion.line>) {
 	const {centerX, rotorX, rotorY} = useContext(TrigWheelContext);
 	return <motion.line
 		x1={centerX} y1={rotorY}
+		x2={rotorX} y2={rotorY}
+		strokeDasharray="2"
+		{...props}
+	></motion.line>;
+};
+
+TrigWheel.RotorYProjection = function RotorYProjection(props: React.ComponentProps<typeof motion.line>) {
+	const {centerY, rotorX, rotorY} = useContext(TrigWheelContext);
+	return <motion.line
+		x1={rotorX} y1={centerY}
 		x2={rotorX} y2={rotorY}
 		strokeDasharray="2"
 		{...props}

@@ -233,6 +233,14 @@ export default function SolutionStatement() {
 							 will-change: transform;
                              width: var(${svgSizeProp});
 						 `}>
+						<defs>
+							<clipPath id="back-clip-path">
+								<motion.path d={backClipPath}></motion.path>
+							</clipPath>
+							<clipPath id="front-clip-path">
+								<motion.path d={frontClipPath}></motion.path>
+							</clipPath>
+						</defs>
 						<TrigWheel
 							angle={angle}
 							startX={VIEW_BOX_START} startY={VIEW_BOX_START}
@@ -242,8 +250,6 @@ export default function SolutionStatement() {
 								<TrigWheel.Circle fill="oklch(from var(--neutral-900) l c h / 0.5)" />
 								<TrigWheel.XAxis />
 								<TrigWheel.YAxis />
-								<TrigWheel.ExtendedRotor strokeDasharray="2" />
-								<TrigWheel.Rotor />
 								<TrigWheel.RotorXProjection />
 								<TrigWheel.RotorYProjection />
 							</g>
@@ -263,17 +269,13 @@ export default function SolutionStatement() {
 									</React.Fragment>
 								))}
 							</g>
+							<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
+								<TrigWheel.ExtendedRotor strokeDasharray="2" />
+								<TrigWheel.Rotor />
+							</g>
 							<TrigWheel.RotorTerminal fill="var(--neutral-700)" />
 							<TrigWheel.AngleLabel fontSize="2" fill="var(--neutral-500)" />
 						</TrigWheel>
-						<defs>
-							<clipPath id="back-clip-path">
-								<motion.path d={backClipPath}></motion.path>
-							</clipPath>
-							<clipPath id="front-clip-path">
-								<motion.path d={frontClipPath}></motion.path>
-							</clipPath>
-						</defs>
 					</svg>
 				</div>
 			</div>
