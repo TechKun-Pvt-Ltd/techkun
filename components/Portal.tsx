@@ -3,11 +3,23 @@ import {ReactNode, useEffect, useId, useSyncExternalStore} from "react";
 
 type Listener = (id: string) => void;
 
+function addAbortListener(
+    signal: AbortSignal | undefined,
+    abortListener: VoidFunction
+) {
+    if (signal?.aborted)
+        abortListener();
+    else if (signal)
+        signal.addEventListener("abort", abortListener, { once: true });
+
+    return abortListener;
+}
+
 interface PortalStore {
-    onAdd(listener: Listener): VoidFunction;
-    onRemove(listener: Listener): VoidFunction;
-    onContentChange(listener: Listener): VoidFunction;
-    onContentChange(id: string, listener: Listener): VoidFunction;
+    onAdd(listener: Listener, signal?: AbortSignal): VoidFunction;
+    onRemove(listener: Listener, signal?: AbortSignal): VoidFunction;
+    onContentChange(listener: Listener, signal?: AbortSignal): VoidFunction;
+    onContentChange(id: string, listener: Listener, signal?: AbortSignal): VoidFunction;
     getContent(id: string): ReactNode;
     getAllIds(): string[];
     setContent(id: string, token: string, content: ReactNode): void;
@@ -40,22 +52,22 @@ function createPortalStore(): PortalStore {
     }
 
     return {
-        onAdd(listener) {
+        onAdd(listener, signal) {
             addListeners.add(listener);
-            return () => addListeners.delete(listener);
+            return addAbortListener(signal, () => addListeners.delete(listener));
         },
-        onRemove(listener) {
+        onRemove(listener, signal) {
             removeListeners.add(listener);
-            return () => removeListeners.delete(listener);
+            return addAbortListener(signal, () => removeListeners.delete(listener));
         },
-        onContentChange(...args: [Listener] | [string, Listener]) {
-            if (args.length === 1 && typeof args[0] === "function") {
+        onContentChange(...args: [Listener, signal?: AbortSignal] | [string, Listener, signal?: AbortSignal]) {
+            if (typeof args[0] === "function") {
                 const listener = args[0];
                 contentListeners.add(listener);
-                return () => contentListeners.add(listener);
+                return addAbortListener(args[1] as AbortSignal | undefined, () => contentListeners.delete(listener));
             }
 
-            const [id, listener] = args as [string, Listener];
+            const [id, listener, signal] = args as [string, Listener, signal?: AbortSignal];
 
             let group = contentListenersById.get(id);
             if (!group)
@@ -63,10 +75,13 @@ function createPortalStore(): PortalStore {
 
             group.add(listener);
 
-            return () => {
-                group.delete(listener);
-                if (group.size === 0) contentListenersById.delete(id);
-            };
+            return addAbortListener(
+                signal,
+                () => {
+                    group.delete(listener);
+                    if (group.size === 0) contentListenersById.delete(id);
+                }
+            );
         },
         getContent(id) {
             return contents.get(id);
@@ -158,14 +173,11 @@ function getServerIdsSnapshot() {
 /** Renders every currently registered id's content, in registration order. */
 export function PortalOutlets() {
     function subscribe(listener: VoidFunction) {
-        const offAdd = store.onAdd(listener);
-        const offChange = store.onContentChange(listener);
-        const offRemove = store.onRemove(listener);
-        return () => {
-            offAdd();
-            offChange();
-            offRemove();
-        };
+        const abortController = new AbortController();
+        store.onAdd(listener, abortController.signal);
+        store.onContentChange(listener, abortController.signal);
+        store.onRemove(listener, abortController.signal);
+        return () => abortController.abort();
     }
     return useSyncExternalStore(subscribe, store.getAllIds, getServerIdsSnapshot)
         .map(store.getContent);
