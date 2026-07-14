@@ -13,7 +13,7 @@ const gradientFill = keyframes`
 		--gradient-fill-progress: 0%;
 	}
 	to {
-		--gradient-fill-progress: 75%;
+		--gradient-fill-progress: 100%;
 	}
 `;
 const {bgGradient} = BANNER_ANIMATION;
@@ -27,7 +27,7 @@ export default function Banner() {
 	return <section css={css`
 		justify-items: center;
 		background: radial-gradient(
-			ellipse var(--page-max-width) 100% at 50% 145%,
+			ellipse var(--page-max-width) 75% at 50% 145%,
 			oklch(from var(--secondary-950) l c h / 0.5),
 			transparent var(--gradient-fill-progress)
 		);

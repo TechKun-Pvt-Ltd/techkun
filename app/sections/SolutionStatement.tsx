@@ -2,7 +2,7 @@ import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
 import {
 	animate,
-	AnimationPlaybackControlsWithThen, inView,
+	AnimationPlaybackControlsWithThen, interpolate, inView,
 	motion,
 	useMotionValue,
 	useScroll, useTransform, ValueAnimationTransition
@@ -137,8 +137,8 @@ const svgSizeProp = "--_svg-size";
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 60%", "end 40%"]});
-	const theta = useTransform(scrollYProgress, [0, 1], ANGLE_RANGE);
-	const angle = useTransform(theta, Angle.of);
+	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], ANGLE_RANGE)(sp)));
+	// const angle = useTransform(theta, Angle.of);
 
 	// const firstText = "Precision & care that AI can't match.";
 	// const charAngle = 0.06;

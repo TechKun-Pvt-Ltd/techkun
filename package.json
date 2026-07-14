@@ -24,7 +24,7 @@
   "homepage": "https://github.com/TechKun-Pvt-Ltd/techkun#readme",
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "motion": "^12.38.0",
+    "motion": "^12.42.2",
     "next": "^16.2.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

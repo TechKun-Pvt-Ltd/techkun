@@ -25,7 +25,7 @@ const gradientFill = keyframes`
         --gradient-fill-progress: 0%;
     }
     to {
-        --gradient-fill-progress: 50%;
+        --gradient-fill-progress: 75%;
     }
 `;
 
@@ -41,11 +41,8 @@ export default function GradientBorderButton({children, className, ...props}: {
         border-radius: 0.8rem;
 
         &::before {
-            background: linear-gradient(
-                -2deg,
-                var(--secondary-950) -25%,
-                transparent var(--gradient-fill-progress)
-            );
+            background: var(--secondary-950);
+            opacity: 0.25;
         }
         &::after {
             border: 1px solid transparent;

@@ -1,10 +1,9 @@
 'use client'
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
-import React from "react";
+import React, {useId} from "react";
 import cssSupports from "@/app/utils/css-supports";
 import {MotionLink} from "@/app/components/MotionLink";
-import {Once} from "@/components/Once";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -16,9 +15,12 @@ const transition: {
 	duration: number;
 	easing: Easing;
 } = {
-	duration: 0.2,
+	duration: 0.3,
 	easing: [0.215, 0.61, 0.355, 1]
 };
+
+const gradientColor1Prop = "--_gradient-color-1";
+const gradientColor2Prop = "--_gradient-color-2";
 
 export default function EmailLink(
 	{address, text, iconSide = "left", gap = "10px", iconStrokeWidth = 1, ...props}: {
@@ -29,6 +31,9 @@ export default function EmailLink(
 		gap?: string;
 	} & React.ComponentProps<typeof MotionLink>
 ) {
+	const id = useId();
+	const gradientId = "email-link-gradient" + id;
+
 	const icon = <svg
 		height="1em" viewBox="0 0 24 24"
 		style={{
@@ -36,16 +41,16 @@ export default function EmailLink(
 			verticalAlign: '-0.18em'
 		}}
 	>
-		<Once id="email-link-gradient">
-			<linearGradient id="email-link-gradient" x1="100%" y1="0%" x2="0%" y2="100%">
-				<stop offset="0%" stopColor="var(--primary-500)" />
-				<stop offset="40%" stopColor="var(--primary-500)" />
-				<stop offset="60%" stopColor="var(--tertiary-500)" />
+		<defs>
+			<linearGradient id={gradientId} x1="100%" y1="0%" x2="0%" y2="100%">
+				<stop offset="0%" stopColor={`var(${gradientColor1Prop})`} />
+				<stop offset="40%" stopColor={`var(${gradientColor1Prop})`} />
+				<stop offset="60%" stopColor={`var(${gradientColor2Prop})`} />
 			</linearGradient>
-		</Once>
+		</defs>
 		<motion.path
-			d={variants[INITIAL].d}
-		 	fill="transparent" strokeWidth={iconStrokeWidth} strokeLinejoin="round" strokeLinecap="round"
+			d={variants[INITIAL].d} fill="transparent"
+			stroke="currentColor" strokeWidth={iconStrokeWidth} strokeLinejoin="round" strokeLinecap="round"
 		 	{...(cssSupports.d ? null : { variants, transition })}
 		></motion.path>
 	</svg>;
@@ -54,19 +59,38 @@ export default function EmailLink(
 		<MotionLink
 			href={`mailto:${address}`}
 			css={css`
-				cursor: pointer;
-				text-decoration: none;
-
-				& path {
-					transition-property: stroke, d;
-					transition-duration: ${transition.duration}s;
-					transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
-					stroke: currentColor;
+				@property ${gradientColor1Prop} {
+					syntax: "<color>";
+					inherits: true;
+					initial-value: currentColor;
+				}
+				@property ${gradientColor2Prop} {
+					syntax: "<color>";
+					inherits: true;
+					initial-value: currentColor;
 				}
 
-				&:hover path, &:focus-visible path {
-					stroke: url(#email-link-gradient);
-					d: path("${variants[FOCUSED].d}");
+				cursor: pointer;
+				text-decoration: none;
+				${gradientColor1Prop}: currentColor;
+				${gradientColor2Prop}: currentColor;
+				transition-property: ${gradientColor1Prop}, ${gradientColor2Prop};
+
+				& path {
+					transition-property: d;
+					stroke: url(#${gradientId});
+				}
+				&, & path {
+					transition-duration: ${transition.duration}s;
+					transition-timing-function: ${mapEasingToNativeEasing(transition.easing, transition.duration)};
+				}
+
+				&:hover, &:focus-visible {
+					${gradientColor1Prop}: var(--primary-500);
+					${gradientColor2Prop}: var(--tertiary-500);
+					path {
+						d: path("${variants[FOCUSED].d}");
+					}
 				}
 			`}
 			{...props}
