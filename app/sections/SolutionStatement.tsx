@@ -10,6 +10,7 @@ import {
 import {Angle, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal";
 import TrigWheel from "@/app/components/TrigWheel";
+import {round} from "svg-path-kit/numbers";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -131,7 +132,9 @@ const icons = [
 			</svg>;
 		}
 	}
-];
+].map(({position, ...icon}) => (
+	{ ...icon, position: Point2D.of(round(position.x, 4), round(position.y, 4)) }
+));
 
 const svgSizeProp = "--_svg-size";
 export default function SolutionStatement() {
