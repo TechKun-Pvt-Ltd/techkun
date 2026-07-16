@@ -63,7 +63,7 @@ ul {
     initial-value: 0deg;
 }
 
-@property --gradient-fill-progress {
+@property --gradient-progress {
     syntax: "<length-percentage>";
     inherits: false;
     initial-value: 0%;

@@ -9,15 +9,32 @@ import {
 } from "motion/react";
 import {generateLinearEasing} from "motion";
 
-const springGenerator = spring(undefined, 0.1);
-const calculatedDuration = Math.min(calcGeneratorDuration(springGenerator), maxGeneratorDuration);
-const springLinearEasing = generateLinearEasing(
-	(progress) => springGenerator.next(calculatedDuration * progress).value,
-	calculatedDuration,
+const ENTER_DURATION = 0.6;
+const EXIT_DURATION = 0.4;
+
+const enterSpringGenerator = spring({
+	keyframes: [0, 1],
+	visualDuration: ENTER_DURATION,
+	bounce: 0.1
+});
+const calcEnterDuration = Math.min(calcGeneratorDuration(enterSpringGenerator), maxGeneratorDuration);
+const enterSpringEasing = generateLinearEasing(
+	(progress) => enterSpringGenerator.next(calcEnterDuration * progress).value,
+	calcEnterDuration,
 	30
 );
 
-const EXIT_DURATION = 0.4;
+const exitSpringGenerator = spring({
+	keyframes: [0, 1],
+	visualDuration: EXIT_DURATION,
+	bounce: 0.1
+});
+const calcExitDuration = Math.min(calcGeneratorDuration(exitSpringGenerator), maxGeneratorDuration);
+const exitSpringEasing = generateLinearEasing(
+	(progress) => exitSpringGenerator.next(calcExitDuration * progress).value,
+	calcExitDuration,
+	30
+);
 
 enum TextState {
 	ENTER = "enter",
@@ -56,11 +73,18 @@ export default function LogoButton({className, style, ...props}: React.Component
 		layout
 		className={"display-text " + className}
 		style={{ borderRadius: "16px", ...style }}
-		transition={textState === TextState.EXIT ? { duration: EXIT_DURATION + 0.1 }: undefined}
+		transition={{
+			layout: {
+				type: "spring",
+				// duration: textState === TextState.EXIT ? calcExitDuration / 1000 : calcEnterDuration / 1000,
+				visualDuration: (textState === TextState.EXIT ? EXIT_DURATION + 0.2 : ENTER_DURATION - 0.2),
+				bounce: 0.3
+			}
+		}}
 		css={css`
 			padding-block: 16px;
 			padding-inline: 24px;
-			background-color: oklch(from var(--background) 0.14 c h);
+			background-color: oklch(from var(--background) 0.15 c h);
 			display: flex;
 			align-items: center;
 			font-weight: 500;
@@ -98,28 +122,27 @@ export default function LogoButton({className, style, ...props}: React.Component
 					color: transparent;
 					background-image: linear-gradient(
 						to right in oklch,
-						var(--foreground) 33.33%,
-						var(--secondary-500),
-						var(--primary-500),
-						transparent 66.66%
+						var(--foreground) calc(var(--gradient-progress) - 60%),
+						var(--secondary-500) calc(var(--gradient-progress) - 40%),
+						var(--primary-500) calc(var(--gradient-progress) - 20%),
+						transparent var(--gradient-progress)
 					);
 					padding-inline-start: 16px;
-					background-size: 300% 100%;
 					background-clip: text;
-					background-position-y: 50%;
-	
-					transition: background-position-x 0.6s ease-in-out;
-					background-position-x: 0;
+
+					transition: --gradient-progress ${calcEnterDuration}ms ${enterSpringEasing};
+					--gradient-progress: 160%;
+
 					&[data-state=${TextState.ENTER}] {
 						@starting-style {
-							background-position-x: 100%;
+							--gradient-progress: 0%;
 						}
 					}
 					&[data-state=${TextState.EXIT}] {
 						position: absolute;
-						transition-timing-function: ${springLinearEasing};
-						transition-duration: ${EXIT_DURATION}s;
-						background-position-x: 100%;
+						transition-timing-function: ${exitSpringEasing};
+						transition-duration: ${calcExitDuration}ms;
+						--gradient-progress: 0%;
 					}
 				`}
 				data-state={textState}

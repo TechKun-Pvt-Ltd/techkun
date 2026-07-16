@@ -22,10 +22,10 @@ const transition: {
 
 const gradientFill = keyframes`
     from {
-        --gradient-fill-progress: 0%;
+        --gradient-progress: 0%;
     }
     to {
-        --gradient-fill-progress: 75%;
+        --gradient-progress: 75%;
     }
 `;
 
@@ -53,7 +53,7 @@ export default function GradientBorderButton({children, className, ...props}: {
             background: linear-gradient(
                 -2deg,
                 var(--secondary-700),
-                var(--secondary-950) var(--gradient-fill-progress)
+                var(--secondary-950) var(--gradient-progress)
             ) border-box;
             //background: linear-gradient(
             //    var(--gradient-angle),
@@ -73,7 +73,7 @@ export default function GradientBorderButton({children, className, ...props}: {
             margin-inline-start: 0.4375em;
             width: 0.6em;
         }
-        
+
         & .arrow {
             transition: d ${transition.duration}s ${mapEasingToNativeEasing(transition.ease, transition.duration)};
         }

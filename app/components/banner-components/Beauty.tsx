@@ -6,12 +6,12 @@ import BANNER_ANIMATION from "@/app/animations/banner";
 
 const { delay, duration } = BANNER_ANIMATION.wordGradientFill;
 const gradientFill = keyframes`
-    0% {
-        --gradient-fill-progress: -25%;
-    }
-    100% {
-        --gradient-fill-progress: 100%;
-    }
+	0% {
+		--gradient-progress: -25%;
+	}
+	100% {
+		--gradient-progress: 100%;
+	}
 `;
 const DEFAULT_CENTER: [number, number] = [0.55, 0.9];
 
@@ -27,18 +27,17 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
 		} as React.CSSProperties}
 		{...props}
 		css={css`
-            color: transparent;
-            background-image:
-                radial-gradient(
-                    circle at calc(var(--center-x) * 100%) calc(var(--center-y) * 100%),
-                    var(--secondary-300) calc(var(--gradient-fill-progress) / 4),
-                    var(--secondary-500) calc(var(--gradient-fill-progress) / 4),
-                    var(--primary-500) var(--gradient-fill-progress),
-					transparent calc(var(--gradient-fill-progress) + 25%)
-                );
+			color: transparent;
+			background-image: radial-gradient(
+				circle at calc(var(--center-x) * 100%) calc(var(--center-y) * 100%),
+				var(--secondary-300) calc(var(--gradient-progress) / 4),
+				var(--secondary-500) calc(var(--gradient-progress) / 4),
+				var(--primary-500) var(--gradient-progress),
+				transparent calc(var(--gradient-progress) + 25%)
+			);
 			background-color: var(--neutral-700);
-            background-clip: text;
-            animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
+			background-clip: text;
+			animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
 		`}
 	>beauty</motion.span>;
 }

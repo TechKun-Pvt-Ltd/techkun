@@ -4,6 +4,7 @@ import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React, {useId} from "react";
 import cssSupports from "@/app/utils/css-supports";
 import {MotionLink} from "@/app/components/MotionLink";
+import type {Property} from "csstype";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -23,11 +24,13 @@ const gradientColor1Prop = "--_gradient-color-1";
 const gradientColor2Prop = "--_gradient-color-2";
 
 export default function EmailLink(
-	{address, text, iconSide = "left", gap = "10px", iconStrokeWidth = 1, ...props}: {
+	{address, text, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1, iconVerticalAlign = "-0.16em", ...props}: {
 		address: string;
 		text: string;
+		iconSize?: string | number;
 		iconSide?: "left" | "right";
 		iconStrokeWidth?: string | number;
+		iconVerticalAlign?: Property.VerticalAlign<string | number>;
 		gap?: string;
 	} & React.ComponentProps<typeof MotionLink>
 ) {
@@ -35,10 +38,10 @@ export default function EmailLink(
 	const gradientId = "email-link-gradient" + id;
 
 	const icon = <svg
-		height="1em" viewBox="0 0 24 24"
+		height={iconSize} viewBox="0 0 24 24"
 		style={{
 			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
-			verticalAlign: '-0.18em'
+			verticalAlign: iconVerticalAlign
 		}}
 	>
 		<defs>
