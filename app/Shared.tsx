@@ -18,7 +18,7 @@ export default function Shared() {
             <linearGradient id="brand-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="var(--primary-500)" />
                 <stop offset="50%" stopColor="var(--primary-500)" />
-                <stop offset="75%" stopColor="var(--secondary-500)" />
+                <stop offset="70%" stopColor="var(--secondary-500)" />
                 <stop offset="100%" stopColor="var(--tertiary-500)" />
             </linearGradient>
             <path id="logo-path" d={logoPath.value} />

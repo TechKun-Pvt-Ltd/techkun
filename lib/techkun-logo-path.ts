@@ -2,12 +2,12 @@ import {Angle, fitCubicBezier, fitSplineAtParams, PathBuilder, Point2D, Vector2D
 import {Superellipse} from "svg-path-kit/curves";
 import {
     createFrameSampler,
-    easeInOut,
     Timeline,
     type Interpolator,
     type TimelineInspector, TimelineProgress, getInterpolator, getTimelineInspector
 } from "times-fps";
 import { FrameExporter } from "times-fps/exporter";
+import {spring} from "motion/react";
 
 interface PathProps {
     thickness: number;
@@ -314,13 +314,24 @@ function formLoop(
 const sampler = createFrameSampler(path);
 const outputDirectoryPath = "../public";
 const dynamicImport = new Function("p", "return import(p)");
+// FrameExporter.exportToJson(
+//     sampler.sampleAt(1),
+//     outputDirectoryPath, "logo-path"
+// ).then(async p => await dynamicImport(p, { with: { type: 'json' }}))
+//     .then(r => console.log(r.default));
+const springGenerator = spring(5, 0.2);
+const matchArray = springGenerator.toString().match(/\d+ms/);
+const durStr = matchArray?.[matchArray?.index ?? 0] ?? "0ms";
+const duration = parseInt(durStr);
+const collected = sampler.collect({duration: duration / 1000, easing: t => springGenerator.next(duration * t).value});
+(collected as any)["viewBox"] = {
+    "x": -10,
+    "y": -10,
+    "width": 955.02,
+    "height": 795
+};
 FrameExporter.exportToJson(
-    sampler.sampleAt(1),
-    outputDirectoryPath, "logo-path"
-).then(async p => await dynamicImport(p, { with: { type: 'json' }}))
-    .then(r => console.log(r.default));
-FrameExporter.exportToJson(
-    sampler.collect({duration: 5, easing: easeInOut}),
+    collected,
     outputDirectoryPath, "logo-animation"
 ).then(async p => await dynamicImport(p, { with: { type: 'json' }}))
     .then(r => console.log(r.default));

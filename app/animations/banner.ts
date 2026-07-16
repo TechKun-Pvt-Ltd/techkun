@@ -1,4 +1,4 @@
-const INITIAL_DELAY = 0.4;
+const INITIAL_DELAY = 0.3;
 
 const BANNER_ANIMATION = {
 	wordGradientFill: {
@@ -20,14 +20,14 @@ const BANNER_ANIMATION = {
 	},
 	ctaBorderGradient: {
 		delay: INITIAL_DELAY,
-		duration: 2.4
+		duration: 2
 	},
 	bgGradient: {
 		delay: 0,
 		duration: 2.4
 	},
 	precision: {
-		delay: 2
+		delay: INITIAL_DELAY + 1.6
 	}
 };
 

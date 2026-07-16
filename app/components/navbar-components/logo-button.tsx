@@ -2,12 +2,10 @@ import {css} from "@emotion/react";
 import React, {useEffect, useRef, useState} from "react";
 import TechKunLogo from "@/app/components/techkun-logo";
 import {
-	AnimatePresence,
 	calcGeneratorDuration,
 	maxGeneratorDuration,
 	motion,
-	spring,
-	visualElementStore
+	spring
 } from "motion/react";
 import {generateLinearEasing} from "motion";
 

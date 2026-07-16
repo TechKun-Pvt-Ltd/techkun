@@ -29,7 +29,7 @@ fs.writeFileSync(
 );
 
 fs.writeFileSync(
-	path.join(pkgRoot, "dist/types/internals.d.ts"),
+	path.join(pkgRoot, "dist/internals.d.ts"),
 	`
 import {AnimationSequence, SequenceOptions, AnimationScope, GeneratorFactory, ResolvedAnimationDefinitions} from "./index.d.ts";
 declare function createAnimationsFromSequence(
@@ -43,7 +43,7 @@ declare function createAnimationsFromSequence(
 pkg.exports ??= {};
 
 pkg.exports["./internals"] = {
-	types: "./dist/types/internals.d.ts",
+	types: "./dist/internals.d.ts",
 	import: "./dist/es/internals.mjs",
 	require: "./dist/cjs/internals.cjs",
 	default: "./dist/cjs/internals.cjs"

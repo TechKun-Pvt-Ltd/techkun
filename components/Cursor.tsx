@@ -1,5 +1,5 @@
 import * as React from "react";
-import {HTMLAttributes, useInsertionEffect} from "react";
+import {useInsertionEffect} from "react";
 
 import {noop, pipe} from "motion-utils";
 

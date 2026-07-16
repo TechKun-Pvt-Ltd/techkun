@@ -1,10 +1,9 @@
 'use client';
-import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
+import React, {ForwardedRef, forwardRef, RefObject, useImperativeHandle, useRef} from 'react';
 import {animate, motion, steps, useMotionValue, useTransform} from 'motion/react';
 
-export type TextScrambleRef<C extends React.ElementType> = {
+export type TextScrambleRef = {
 	scramble(): void;
-	getInnerRef(): React.ComponentRef<C> | null;
 };
 
 type TextScrambleOwnProps<C extends React.ElementType> = {
@@ -12,6 +11,7 @@ type TextScrambleOwnProps<C extends React.ElementType> = {
 	duration?: number;
 	characterSet?: string;
 	as?: C;
+	innerRef?: RefObject<React.ComponentRef<C> | null>;
 	onScrambleComplete?: () => void;
 };
 
@@ -20,7 +20,7 @@ export type TextScrambleProps<C extends React.ElementType> =
 	& Omit<React.ComponentPropsWithoutRef<C>, keyof TextScrambleOwnProps<C>>;
 
 type TextScrambleComponent = <C extends React.ElementType = 'p'>(
-	props: TextScrambleProps<C> & React.RefAttributes<TextScrambleRef<C>>
+	props: TextScrambleProps<C> & React.RefAttributes<TextScrambleRef>
 ) => React.ReactNode;
 
 // const DEFAULT_CHARS =
@@ -36,13 +36,12 @@ export const TextScramble = forwardRef(
 			duration = 1.6,
 			characterSet = DEFAULT_CHARS,
 			className,
-			as,
+			as, innerRef,
 			onScrambleComplete,
 			...props
 		}: TextScrambleProps<C>,
-		ref: ForwardedRef<TextScrambleRef<C>>
+		ref: ForwardedRef<TextScrambleRef>
 	) => {
-		const elementRef = useRef<React.ComponentRef<C>>(null);
 		const Component = (as ?? 'p') as C;
 		const MotionComponent = motion.create(Component);
 		const prevText = useRef('');
@@ -90,15 +89,10 @@ export const TextScramble = forwardRef(
 			});
 		}
 
-		useImperativeHandle(ref, () => ({
-			scramble,
-			getInnerRef() {
-				return elementRef.current;
-			}
-		}), [text]);
+		useImperativeHandle(ref, () => ({ scramble }), [text]);
 
 		return (
-			<MotionComponent ref={elementRef} className={className} {...props}>
+			<MotionComponent ref={innerRef} className={className} {...props}>
 				{displayText}
 			</MotionComponent>
 		);

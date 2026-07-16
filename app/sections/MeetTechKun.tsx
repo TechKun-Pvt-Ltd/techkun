@@ -4,7 +4,6 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
-import {device} from "@/app/styles/device-breakpoints";
 
 export default function MeetTechKun() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
@@ -22,15 +21,14 @@ export default function MeetTechKun() {
                     transform: "translate(0, 0) scale(0.5)",
                     opacity: 0
                 }, {
-                    duration: 1,
-                    ease: 'easeIn'
+                    type: "spring", visualDuration: 1.5, bounce: 0.2, delay(i, total) { return 0.1 * (total - i); }
                 }],
-                [rect, { opacity: 1 }, { duration: 1, ease: "easeOut", at: 0.25 }],
-                [path, { scale: 1 }, { duration: 1, ease: 'easeOut', at: 0.25 }],
-                [path, { x: "0%", y: "0%" }, { duration: 1, ease: 'easeInOut' }],
+                [rect, { opacity: 1 }, { type: "spring", visualDuration: 1.5, bounce: 0.2, at: 1 }],
+                [path, { scale: 1 }, { type: "spring", visualDuration: 1.5, bounce: 0.2, at: 1 }],
+                [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-1.5' }],
                 [
                     path, { d: logoAnimation.frames.map(f => f.value) },
-                    { duration: logoAnimation.duration, ease: 'linear', at: '-0.5'}
+                    { duration: logoAnimation.duration, ease: 'linear', at: '-0.75'}
                 ]
             ]);
         });
