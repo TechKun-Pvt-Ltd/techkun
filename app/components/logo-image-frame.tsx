@@ -3,29 +3,36 @@ import Image, {StaticImageData} from "next/image";
 import {css} from "@emotion/react";
 import logoPathImageFrame from "@/public/logo-path-image-frame.json";
 import {Once} from "@/components/Once";
+import React from "react";
 
-export default function LogoImageFrame({imageData, alt}: {imageData: StaticImageData, alt?: string}) {
-    return <div css={css`
-        position: relative;
-        & > svg, & > img {
-            display: block;
-        }
-        & > img {
-            position: absolute;
-            inset: -0.5px -0.5px -0.5px auto;
-            height: calc(100% + 1px);
-            width: auto;
-            aspect-ratio: 1 / 1;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: left top;
-            mask-image: linear-gradient(
-                to right,
-                transparent 0%,
-                black 40%
-            );
-        }
-    `}>
+export default function LogoImageFrame({imageData, alt, ...props}: {
+    imageData: StaticImageData;
+    alt?: string;
+} & React.HTMLAttributes<HTMLDivElement>) {
+    return <div
+        {...props}
+        css={css`
+            position: relative;
+            & > svg, & > img {
+                display: block;
+            }
+            & > img {
+                position: absolute;
+                inset: -0.5px -0.5px -0.5px auto;
+                height: calc(100% + 1px);
+                width: auto;
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+                object-fit: cover;
+                object-position: left top;
+                mask-image: linear-gradient(
+                    to right,
+                    transparent 0%,
+                    black 40%
+                );
+            }
+        `}
+    >
         <svg viewBox={logoPathImageFrame.viewBox} fill="none" xmlns="http://www.w3.org/2000/svg">
             <Once id="logo-image-frame">
                 <defs>

@@ -14,24 +14,28 @@ const people: {
     subtitle: string;
     mail: string;
     image: StaticImageData;
+    imageAlt: string;
 }[] = [
     {
-        title: "Hi, I'm Khizar, the CEO.",
+        title: "Hi, I'm\u00A0Khizar, the\u00A0CEO.",
         subtitle: 'khizar@tech-kun.com',
         mail: 'khizar@tech-kun.com',
-        image: khiz
+        image: khiz,
+        imageAlt: "The image of the CEO, Khizar."
     },
     {
-        title: "I'm Uzair, the\u00A0Managing\u00A0Director.",
+        title: "I'm\u00A0Uzair, the Managing\u00A0Director.",
         subtitle: 'farasat@tech-kun.com',
         mail: 'farasat@tech-kun.com',
-        image: uz
+        image: uz,
+        imageAlt: "The image of the managing director, Uzair."
     },
     {
-        title: "And I'm Naved, the CTO.",
+        title: "And I'm\u00A0Naved, the\u00A0CTO.",
         subtitle: 'naved@tech-kun.com',
         mail: 'naved@tech-kun.com',
-        image: me
+        image: me,
+        imageAlt: "The image of the CTO, Naved."
     },
 ];
 
@@ -41,31 +45,46 @@ export default function Cofounders() {
         display: grid;
         grid-template-columns: 1fr;
         grid-auto-rows: auto;
-        justify-content: end;
-        justify-items: center;
+        justify-content: start;
+        //justify-items: center;
         row-gap: 768px;
     `;
     const liCss = css`
+        min-width: 0;
         width: 100%;
-        max-width: 480px;
+        max-width: 640px;
         display: grid;
         grid-template-columns: 1fr;
         align-items: center;
         gap: 48px;
-        text-align: right;
+        //text-align: right;
 
+        & .person-intro {
+            grid-row: 2 / span 1;
+        }
         & .person-img {
-            margin-inline: -8px;
-            min-width: 400px;
+            grid-row: 1 / span 1;
+            //margin-inline: -8px;
             width: 100%;
+            min-width: 0;
             justify-self: end;
+            display: flex;
+            justify-content: end;
         }
         @media ${device.laptop} {
             max-width: revert;
-            grid-template-columns: 1fr 1fr;
-            text-align: revert;
+            grid-template-columns: 1fr 2fr;
+            //text-align: revert;
+            & .person-intro {
+                grid-row: revert;
+                h3.item-title {
+                    margin-block-start: 240px;
+                }
+            }
             & .person-img {
-                margin-inline: revert;
+                grid-row: revert;
+                //margin-inline: revert;
+                justify-self: revert;
                 //max-width: 480px;
             }
         }
@@ -80,18 +99,22 @@ export default function Cofounders() {
             <h2 className="section-title" css={css`
                 margin-block-end: 192px;
                 grid-column: 1 / -1;
-                text-align: center;
             `}>If we still feel like strangers...</h2>
             <ul css={ulCss}>
                 {people.map(item => <li key={item.title} css={liCss}>
+                    <div className="person-intro">
+                        <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
+                        <EmailLink
+                            className="item-subtitle"
+                            style={{ whiteSpace: "nowrap" }}
+                            address={item.mail} text={item.subtitle}
+                            iconSize="0.8em" iconVerticalAlign="-0.1em"
+                        />
+                    </div>
                     <div className="person-img" css={css`
                         scroll-snap-align: center;
                     `}>
-                        <LogoImageFrame imageData={item.image} />
-                    </div>
-                    <div className="person-intro">
-                        <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <EmailLink className="item-subtitle" address={item.mail} text={item.subtitle} iconSize="0.8em" iconVerticalAlign="-0.1em" />
+                        <LogoImageFrame imageData={item.image} alt={item.imageAlt} style={{minWidth: "400px", flex: "1"}} />
                     </div>
                 </li>)}
             </ul>
