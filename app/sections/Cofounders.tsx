@@ -22,7 +22,7 @@ const people: {
         image: khiz
     },
     {
-        title: "I'm Uzair, the Managing Director.",
+        title: "I'm Uzair, the\u00A0Managing\u00A0Director.",
         subtitle: 'farasat@tech-kun.com',
         mail: 'farasat@tech-kun.com',
         image: uz
@@ -91,7 +91,7 @@ export default function Cofounders() {
                     </div>
                     <div className="person-intro">
                         <h3 className="item-title" style={{marginBlockEnd: '0.25em'}}>{item.title}</h3>
-                        <EmailLink className="item-subtitle" address={item.mail} text={item.subtitle} />
+                        <EmailLink className="item-subtitle" address={item.mail} text={item.subtitle} iconSize="0.8em" iconVerticalAlign="-0.1em" />
                     </div>
                 </li>)}
             </ul>
