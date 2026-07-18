@@ -4,7 +4,6 @@ import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React, {useId} from "react";
 import cssSupports from "@/app/utils/css-supports";
 import {MotionLink} from "@/app/components/MotionLink";
-import type {Property} from "csstype";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -24,13 +23,12 @@ const gradientColor1Prop = "--_gradient-color-1";
 const gradientColor2Prop = "--_gradient-color-2";
 
 export default function EmailLink(
-	{address, text, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1, iconVerticalAlign = "-0.16em", ...props}: {
+	{address, text, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1.6, ...props}: {
 		address: string;
 		text: string;
 		iconSize?: string | number;
 		iconSide?: "left" | "right";
 		iconStrokeWidth?: string | number;
-		iconVerticalAlign?: Property.VerticalAlign<string | number>;
 		gap?: string;
 	} & React.ComponentProps<typeof MotionLink>
 ) {
@@ -41,14 +39,13 @@ export default function EmailLink(
 		height={iconSize} viewBox="0 0 24 24"
 		style={{
 			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
-			verticalAlign: iconVerticalAlign
+			verticalAlign: `calc(-1 * (${typeof iconSize === "number" ? iconSize + "px" : iconSize} / 2 - 0.5cap))`
 		}}
 	>
 		<defs>
 			<linearGradient id={gradientId} x1="100%" y1="0%" x2="0%" y2="100%">
-				<stop offset="0%" stopColor={`var(${gradientColor1Prop})`} />
-				<stop offset="40%" stopColor={`var(${gradientColor1Prop})`} />
-				<stop offset="60%" stopColor={`var(${gradientColor2Prop})`} />
+				<stop offset="20%" stopColor={`var(${gradientColor1Prop})`} />
+				<stop offset="80%" stopColor={`var(${gradientColor2Prop})`} />
 			</linearGradient>
 		</defs>
 		<motion.path

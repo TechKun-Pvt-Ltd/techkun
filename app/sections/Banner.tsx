@@ -76,7 +76,7 @@ export default function Banner() {
 					<EmailLink
 						style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content" }}
 						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"
-						gap="8px" iconStrokeWidth={1.4}
+						gap="8px" iconStrokeWidth={1.6}
 					/>
 				</div>
 			</div>
