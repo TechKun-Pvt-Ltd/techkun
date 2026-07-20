@@ -2,7 +2,7 @@
 import Image, {StaticImageData} from "next/image";
 import {css} from "@emotion/react";
 import logoPathImageFrame from "@/public/logo-path-image-frame.json";
-import {Once} from "@/components/Once";
+import {Once, useRenderOnce} from "@/components/Once";
 import React from "react";
 
 const LOGO_IMAGE_FRAME_ID = "logo-image-frame";
@@ -37,16 +37,18 @@ export default function LogoImageFrame({imageData, alt, ...props}: {
         `}
     >
         <svg viewBox={logoPathImageFrame.viewBox} fill="none" xmlns="http://www.w3.org/2000/svg">
-            <Once id="logo-image-frame">
+            <Once id="logo-image-frame-gradient">
                 <defs>
                     <linearGradient id={LOGO_IMAGE_FRAME_GRADIENT_ID} x1="0%" y1="0%" x2="100%" y2="0%">
                         <stop offset="20%" stopColor="var(--primary-500)" />
                         <stop offset="50%" stopColor="var(--secondary-500)" />
                     </linearGradient>
-                    <path id={LOGO_IMAGE_FRAME_ID} d={logoPathImageFrame.value} fill={`url(#${LOGO_IMAGE_FRAME_GRADIENT_ID})`}/>
                 </defs>
             </Once>
-            <use href={"#" + LOGO_IMAGE_FRAME_ID} />
+            {useRenderOnce("logo-image-frame") ?
+                <path id={LOGO_IMAGE_FRAME_ID} d={logoPathImageFrame.value} fill={`url(#${LOGO_IMAGE_FRAME_GRADIENT_ID})`}/> :
+                <use href={"#" + LOGO_IMAGE_FRAME_ID}/>
+            }
         </svg>
         <Image src={imageData} alt={alt ?? "logo-framed image"} />
     </div>;

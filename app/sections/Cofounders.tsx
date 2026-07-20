@@ -1,5 +1,5 @@
 'use client';
-import React, {ReactNode} from 'react';
+import React, {useRef} from 'react';
 import {css} from "@emotion/react";
 import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
@@ -8,8 +8,8 @@ import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
 import {device} from "@/app/styles/device-breakpoints";
 import EmailLink from "@/app/components/EmailLink";
-import {LINKEDIN_ICON_HREF, X_ICON_HREF} from "@/app/Shared";
-import {PathBuilder, Point2D} from "svg-path-kit";
+import {LINKEDIN_LOGO_CLIP_PATH_HREF, X_LOGO_CLIP_PATH_HREF} from "@/app/Shared";
+import Link from "next/link";
 
 const people: {
     title: string;
@@ -18,7 +18,7 @@ const people: {
     image: StaticImageData;
     imageAlt: string;
     links: {
-        icon: ReactNode;
+        linkName: string;
         link: string;
     }[];
 }[] = [
@@ -29,10 +29,10 @@ const people: {
         image: khiz,
         imageAlt: "The image of the CEO, Khizar.",
         links: [{
-            icon: <use href={LINKEDIN_ICON_HREF} />,
+            linkName: "linkedin",
             link: "https://www.linkedin.com/in/khizar-shakir-932003210/"
         }, {
-            icon: <use href={X_ICON_HREF} />,
+            linkName: "x",
             link: "https://x.com/navedm1424"
         }]
     },
@@ -43,11 +43,11 @@ const people: {
         image: uz,
         imageAlt: "The image of the managing director, Uzair.",
         links: [{
-            icon: <use href={LINKEDIN_ICON_HREF} />,
+            linkName: "linkedin",
             link: "https://www.linkedin.com/in/mirza-farasat-89baba288/"
         }, {
-            icon: <use href={X_ICON_HREF} />,
-            link: "https://x.com/navedm1424"
+            linkName: "x",
+            link: "https://x.com/MFarasat22794"
         }]
     },
     {
@@ -57,10 +57,10 @@ const people: {
         image: me,
         imageAlt: "The image of the CTO, Naved.",
         links: [{
-            icon: <use href={LINKEDIN_ICON_HREF} />,
+            linkName: "linkedin",
             link: "https://www.linkedin.com/in/navedm1424/"
         }, {
-            icon: <use href={X_ICON_HREF} />,
+            linkName: "x",
             link: "https://x.com/navedm1424"
         }]
     },
@@ -116,6 +116,8 @@ const people: {
 // }
 
 export default function Cofounders() {
+    const ulRef = useRef<HTMLUListElement>(null);
+
     const ulCss = css`
         grid-column: 1 / -1;
         display: grid;
@@ -167,12 +169,57 @@ export default function Cofounders() {
         }
     `;
 
-    const linksCss = css`
+    const gradientColor1Prop = "--_gradient-color-1";
+    const gradientColor2Prop = "--_gradient-color-2";
+
+    const contactsCss = css`
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
         gap: 16px;
+
+        .links {
+            display: flex;
+            gap: inherit;
+        }
+
+        .links .icon {
+            @property ${gradientColor1Prop} {
+                syntax: "<color>";
+                inherits: true;
+                initial-value: currentColor;
+            }
+            @property ${gradientColor2Prop} {
+                syntax: "<color>";
+                inherits: true;
+                initial-value: currentColor;
+            }
+
+            width: 1em;
+            aspect-ratio: 1 / 1;
+            transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+            transition-property: ${gradientColor1Prop}, ${gradientColor2Prop};
+            color: var(--secondary-neutral-200);
+            ${gradientColor1Prop}: currentColor;
+            ${gradientColor2Prop}: currentColor;
+            background: linear-gradient(
+                to bottom left,
+                var(${gradientColor1Prop}) 20%,
+                var(${gradientColor2Prop}) 80%
+            );
+
+            &.linkedin {
+                clip-path: url(${LINKEDIN_LOGO_CLIP_PATH_HREF});
+            }
+            &.x {
+                clip-path: url(${X_LOGO_CLIP_PATH_HREF});
+            }
+        }
+        .links .link:is(:hover, :focus-visible) .icon {
+            ${gradientColor1Prop}: var(--primary-500);
+            ${gradientColor2Prop}: var(--secondary-500);
+        }
     `;
 
     return <section>
@@ -190,8 +237,11 @@ export default function Cofounders() {
                     text-align: revert;
                 }
             `}>If we still feel like strangers...</h2>
-            <ul css={ulCss}>
-                {people.map((item, personIndex) => <li key={item.title} css={liCss}>
+            <ul ref={ulRef} css={ulCss}>
+                {people.map((item, personIndex) => <li
+                    key={item.title}
+                    className="cofounder" css={liCss}
+                >
                     <div className="person-intro">
                         <div style={{ display: "flex", gap: "16px", marginBlockEnd: "32px" }}>
                             {people.map((_, iconIndex) => <div
@@ -203,23 +253,30 @@ export default function Cofounders() {
                                     height: "4px",
                                     width: "32px",
                                     borderRadius: "100px",
+                                    cursor: iconIndex === personIndex ? undefined : "pointer"
+                                }}
+                                onClick={iconIndex === personIndex ? undefined : () => {
+                                    if (!ulRef.current) return;
+
+                                    ulRef.current.children[iconIndex].scrollIntoView({behavior: "smooth", block: "center"});
                                 }}
                             />)}
-                            {/*people.map((_, iconIndex) => <PersonIcon key={iconIndex} active={iconIndex === personIndex} />)*/}
                         </div>
                         <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
-                        <div css={linksCss} className="text-xl">
+                        <div css={contactsCss} className="text-xl">
                             <EmailLink
                                 style={{ whiteSpace: "nowrap", color: "var(--secondary-neutral-200)" }}
                                 address={item.mail} text={item.subtitle}
                                 iconSize="1em" iconStrokeWidth="1.4"
                             />
-                            <div style={{ display: "flex", gap: "inherit" }}>
-                                {item.links.map(item => <a key={item.link} href={item.link}>
-                                    <svg role="img" viewBox="0 0 24 24" width="1em" style={{ display: "block", color: "var(--secondary-neutral-200)" }}>
-                                        {item.icon}
-                                    </svg>
-                                </a>)}
+                            <div className="links">
+                                {item.links.map(item => <Link
+                                    className="link"
+                                    key={item.link} href={item.link}
+                                    target="_blank" rel="noopener noreferrer"
+                                >
+                                    <div className={"icon " + item.linkName} />
+                                </Link>)}
                             </div>
                         </div>
                     </div>

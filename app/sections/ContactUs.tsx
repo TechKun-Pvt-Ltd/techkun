@@ -175,6 +175,7 @@ function ContactOptions() {
 
         &::before {
             border: 1px solid var(--border);
+            background-color: var(--background);
         }
         &::after {
             inset: calc(-1 * var(${outsetProp}));

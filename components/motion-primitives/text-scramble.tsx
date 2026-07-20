@@ -79,7 +79,7 @@ export const TextScramble = forwardRef(
 			const largerLength = Math.max(prevText.current.length, text.length);
 			animate(cursor, [0, largerLength + SCRAMBLE_CHAR_COUNT], {
 				duration,
-				ease: steps(duration / 0.05),
+				ease: [steps(duration / 0.05), "easeOut"],
 				onComplete() {
 					isAnimating.current = false;
 					prevText.current = text;
