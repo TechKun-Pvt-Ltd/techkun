@@ -1,24 +1,23 @@
 const INITIAL_DELAY = 0.1;
-const AFTER_RELEASE = INITIAL_DELAY + 0.5;
+const STRETCH_DURATION = 0.5;
+const AFTER_RELEASE = INITIAL_DELAY + STRETCH_DURATION;
 
 const BANNER_ANIMATION = {
 	wordGradientFill: {
 		delay: AFTER_RELEASE,
-		duration: 2.75
+		duration: 2.725
+	},
+	dotsStretch: {
+		delay: INITIAL_DELAY,
+		duration: STRETCH_DURATION
+	},
+	dotsRelease: {
+		delay: AFTER_RELEASE,
+		duration: 2.725
 	},
 	initialDotsLightUp: {
-		delay: INITIAL_DELAY,
+		delay: AFTER_RELEASE,
 		duration: 1.2
-	},
-	dotsLightUp: {
-		delay: 0,
-		duration: 0.8,
-		stagger: 0.1
-	},
-	dotsLightDown: {
-		delay: 0,
-		duration: 0.4,
-		stagger: 0
 	},
 	ctaBorderGradient: {
 		delay: AFTER_RELEASE + 0.5,
@@ -26,7 +25,7 @@ const BANNER_ANIMATION = {
 	},
 	bgGradient: {
 		delay: AFTER_RELEASE,
-		duration: 2.75
+		duration: 2.725
 	},
 	precision: {
 		delay: AFTER_RELEASE + 2.75
