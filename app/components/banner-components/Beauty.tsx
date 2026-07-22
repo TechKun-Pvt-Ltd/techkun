@@ -1,4 +1,4 @@
-import React from "react";
+import React, {forwardRef, useImperativeHandle} from "react";
 import {css, keyframes} from "@emotion/react";
 import {motion} from "motion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
@@ -15,8 +15,20 @@ const gradientFill = keyframes`
 `;
 const DEFAULT_CENTER: [number, number] = [0.55, 0.9];
 
-export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef<typeof motion.span>) {
+export type BeautyRef = {
+	play(): void;
+};
+
+export default forwardRef<BeautyRef, React.ComponentPropsWithoutRef<typeof motion.span>>(function Beauty(
+	{style, ...props}, ref
+) {
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER });
+
+	useImperativeHandle(ref, () => ({
+		play() {
+			containerRef.current?.setAttribute("data-play", "true");
+		}
+	}), []);
 
 	return <motion.span
 		ref={containerRef}
@@ -38,6 +50,10 @@ export default function Beauty({style, ...props}: React.ComponentPropsWithoutRef
 			background-color: var(--neutral-700);
 			background-clip: text;
 			animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
+			animation-play-state: paused;
+			&[data-play="true"] {
+				animation-play-state: running;
+			}
 		`}
 	>beauty</motion.span>;
-}
+})

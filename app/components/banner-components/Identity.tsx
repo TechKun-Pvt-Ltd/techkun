@@ -1,6 +1,7 @@
 import {css} from "@emotion/react";
-import React from "react";
+import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
+import useAbortSignal from "@/hooks/use-abort-signal";
 
 const { initialDotsLightUp, dotsLightUp, dotsLightDown } = BANNER_ANIMATION;
 
@@ -12,21 +13,40 @@ const minDelayProp = "--min-delay";
 
 const bulbIconWidthProp = "--_bulb-icon-width";
 
-export default function Identity({style, ...props}: React.ComponentPropsWithoutRef<"span">) {
+export type IdentityRef = {
+	play(): void;
+};
+
+export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(function Identity(
+	{style, ...props}, ref
+) {
+	const spanRef = useRef<HTMLSpanElement>(null);
+	const abortSignal = useAbortSignal();
+
+	useImperativeHandle(ref, () => ({
+		play() {
+			if (!spanRef.current) return;
+			const el = spanRef.current;
+			el.setAttribute("data-initial", "true");
+			el.removeAttribute("data-lights-off");
+			el.addEventListener(
+				"click",
+				() => el.removeAttribute("data-initial"),
+				{ once: true, signal: abortSignal }
+			);
+			el.addEventListener(
+				"click",
+				_ => el.toggleAttribute("data-lights-off"),
+				{ signal: abortSignal }
+			);
+		}
+	}), []);
+
 	return <span
 		style={{color: 'var(--foreground)', cursor: 'pointer', ...style} as React.CSSProperties}
 		{...props}
-		ref={el => {
-			if (!el) return;
-			const listener = () => {
-				el!.removeAttribute("data-initial");
-				el = null;
-			};
-			el.addEventListener("click", listener, { once: true });
-			return () => el?.removeEventListener("click", listener);
-		}}
-		data-initial
-		onClick={ev => ev.currentTarget.toggleAttribute("data-clicked")}
+		ref={spanRef}
+		data-lights-off
 	>
 		<span css={css`
 			position: relative;
@@ -59,6 +79,7 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 				${lightUpColorProp}: var(--foreground);
 			}
 			svg.dots {
+				overflow: visible;
 				top: calc(0.32em + 1cap - 1ex);
 				height: 1ex;
 				circle {
@@ -74,17 +95,31 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 					&:nth-of-type(4) {
 						${lightUpColorProp}: var(--tertiary-300);
 					}
+					--stretch-index: calc(0.25 + pow(1 - var(--i) / ${DOT_COUNT}, 2) * 0.75);
 				}
 			}
 			[data-initial] & {
 				svg.bulb-icon, svg.dots circle {
-					${minDelayProp}: ${initialDotsLightUp.delay}s;
-                    @starting-style {
-                        fill: currentColor;
-                    }
+					${minDelayProp}: calc(${initialDotsLightUp.delay}s + var(--stretch-duration));
+					transition-duration: ${initialDotsLightUp.duration}s;
+				}
+				svg.dots circle {
+					@keyframes stretch {
+						to {
+							transform: translate(calc(var(--stretch-index) * -10%), calc(var(--stretch-index) * 40%));
+						}
+					}
+					@keyframes release {
+						to {
+							transform: translate(0);
+						}
+					}
+					animation:
+						stretch var(--stretch-duration) ${initialDotsLightUp.delay}s var(--stretch-timing-function) both,
+						release var(--release-duration) calc(${initialDotsLightUp.delay}s + var(--stretch-duration)) var(--release-timing-function) forwards;
 				}
 			}
-			[data-clicked] & {
+			[data-lights-off] & {
 				svg.bulb-icon, svg.dots circle {
 					${staggerProp}: ${dotsLightDown.stagger}s;
 					${minDelayProp}: ${dotsLightDown.delay}s;
@@ -116,4 +151,4 @@ export default function Identity({style, ...props}: React.ComponentPropsWithoutR
 		</span>
 		dentity
 	</span>;
-}
+});

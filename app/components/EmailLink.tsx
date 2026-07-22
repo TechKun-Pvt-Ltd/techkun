@@ -4,6 +4,7 @@ import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React, {useId} from "react";
 import cssSupports from "@/app/utils/css-supports";
 import {MotionLink} from "@/app/components/MotionLink";
+import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -18,9 +19,6 @@ const transition: {
 	duration: 0.3,
 	easing: [0.215, 0.61, 0.355, 1]
 };
-
-const gradientColor1Prop = "--_gradient-color-1";
-const gradientColor2Prop = "--_gradient-color-2";
 
 export default function EmailLink(
 	{address, text, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1.6, ...props}: {
@@ -44,8 +42,8 @@ export default function EmailLink(
 	>
 		<defs>
 			<linearGradient id={gradientId} x1="100%" y1="0%" x2="0%" y2="100%">
-				<stop offset="20%" stopColor={`var(${gradientColor1Prop})`} />
-				<stop offset="80%" stopColor={`var(${gradientColor2Prop})`} />
+				<stop offset="20%" stopColor={`var(${gradientColor1.name})`} />
+				<stop offset="80%" stopColor={`var(${gradientColor2.name})`} />
 			</linearGradient>
 		</defs>
 		<motion.path
@@ -59,22 +57,11 @@ export default function EmailLink(
 		<MotionLink
 			href={`mailto:${address}`}
 			css={css`
-				@property ${gradientColor1Prop} {
-					syntax: "<color>";
-					inherits: true;
-					initial-value: currentColor;
-				}
-				@property ${gradientColor2Prop} {
-					syntax: "<color>";
-					inherits: true;
-					initial-value: currentColor;
-				}
-
 				cursor: pointer;
 				text-decoration: none;
-				${gradientColor1Prop}: currentColor;
-				${gradientColor2Prop}: currentColor;
-				transition-property: ${gradientColor1Prop}, ${gradientColor2Prop};
+				${gradientColor1}: currentColor;
+				${gradientColor2}: currentColor;
+				transition-property: ${gradientColor1}, ${gradientColor2};
 
 				& path {
 					transition-property: d;
@@ -86,8 +73,8 @@ export default function EmailLink(
 				}
 
 				&:hover, &:focus-visible {
-					${gradientColor1Prop}: var(--primary-500);
-					${gradientColor2Prop}: var(--tertiary-500);
+					${gradientColor1}: var(--primary-500);
+					${gradientColor2}: var(--tertiary-500);
 					path {
 						d: path("${variants[FOCUSED].d}");
 					}

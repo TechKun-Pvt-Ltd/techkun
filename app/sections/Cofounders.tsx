@@ -1,5 +1,5 @@
 'use client';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {css} from "@emotion/react";
 import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
@@ -10,6 +10,8 @@ import {device} from "@/app/styles/device-breakpoints";
 import EmailLink from "@/app/components/EmailLink";
 import {LINKEDIN_LOGO_CLIP_PATH_HREF, X_LOGO_CLIP_PATH_HREF} from "@/app/Shared";
 import Link from "next/link";
+import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
+import {inView} from "motion/react";
 
 const people: {
     title: string;
@@ -118,6 +120,17 @@ const people: {
 export default function Cofounders() {
     const ulRef = useRef<HTMLUListElement>(null);
 
+    useEffect(() => {
+        if (!ulRef.current) return;
+
+        const indicators = ulRef.current.querySelectorAll(".person-index-indicator");
+        inView(indicators, _ => {
+            indicators.forEach(item =>
+                item.setAttribute("data-visible", "true")
+            );
+        }, { margin: "-5% 0%" });
+    }, []);
+
     const ulCss = css`
         grid-column: 1 / -1;
         display: grid;
@@ -169,9 +182,6 @@ export default function Cofounders() {
         }
     `;
 
-    const gradientColor1Prop = "--_gradient-color-1";
-    const gradientColor2Prop = "--_gradient-color-2";
-
     const contactsCss = css`
         display: flex;
         flex-wrap: wrap;
@@ -184,41 +194,43 @@ export default function Cofounders() {
             gap: inherit;
         }
 
-        .links .icon {
-            @property ${gradientColor1Prop} {
-                syntax: "<color>";
-                inherits: true;
-                initial-value: currentColor;
-            }
-            @property ${gradientColor2Prop} {
-                syntax: "<color>";
-                inherits: true;
-                initial-value: currentColor;
-            }
+        .links .link:before {
+            content: "";
+            display: block;
 
             width: 1em;
             aspect-ratio: 1 / 1;
             transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-            transition-property: ${gradientColor1Prop}, ${gradientColor2Prop};
+            transition-property: ${gradientColor1}, ${gradientColor2};
             color: var(--secondary-neutral-200);
-            ${gradientColor1Prop}: currentColor;
-            ${gradientColor2Prop}: currentColor;
+            ${gradientColor1}: currentColor;
+            ${gradientColor2}: currentColor;
             background: linear-gradient(
                 to bottom left,
-                var(${gradientColor1Prop}) 20%,
-                var(${gradientColor2Prop}) 80%
+                var(${gradientColor1}) 20%,
+                var(${gradientColor2}) 80%
             );
-
-            &.linkedin {
-                clip-path: url(${LINKEDIN_LOGO_CLIP_PATH_HREF});
-            }
-            &.x {
-                clip-path: url(${X_LOGO_CLIP_PATH_HREF});
-            }
         }
-        .links .link:is(:hover, :focus-visible) .icon {
-            ${gradientColor1Prop}: var(--primary-500);
-            ${gradientColor2Prop}: var(--secondary-500);
+        .links .link.linkedin:before {
+            clip-path: url(${LINKEDIN_LOGO_CLIP_PATH_HREF});
+        }
+        .links .link.x:before {
+            clip-path: url(${X_LOGO_CLIP_PATH_HREF});
+        }
+        .links .link:is(:hover, :focus-visible):before {
+            ${gradientColor1}: var(--primary-500);
+            ${gradientColor2}: var(--secondary-500);
+        }
+    `;
+
+    const indicatorCss = css`
+        height: 4px;
+        width: 32px;
+        border-radius: 100px;
+        transition: clip-path 0.5s calc(var(--i) * 0.1s) ease;
+        clip-path: inset(0% 100% 0% 0% round 100px);
+        &[data-visible="true"] {
+            clip-path: inset(0% 0% 0% 0% round 100px);
         }
     `;
 
@@ -231,7 +243,7 @@ export default function Cofounders() {
             <h2 className="section-title" css={css`
                 margin-block-end: 192px;
                 grid-column: 1 / -1;
-                
+
                 text-align: center;
                 @media ${device.laptop} {
                     text-align: revert;
@@ -244,23 +256,27 @@ export default function Cofounders() {
                 >
                     <div className="person-intro">
                         <div style={{ display: "flex", gap: "16px", marginBlockEnd: "32px" }}>
-                            {people.map((_, iconIndex) => <div
-                                key={iconIndex}
-                                style={{
-                                    background: iconIndex === personIndex ?
-                                        "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
-                                        "var(--secondary-neutral-200)",
-                                    height: "4px",
-                                    width: "32px",
-                                    borderRadius: "100px",
-                                    cursor: iconIndex === personIndex ? undefined : "pointer"
-                                }}
-                                onClick={iconIndex === personIndex ? undefined : () => {
-                                    if (!ulRef.current) return;
+                            {people.map((_, iconIndex) => {
+                                return <div
+                                    key={iconIndex}
+                                    className="person-index-indicator" css={indicatorCss}
+                                    style={{
+                                        ["--i" as any]: iconIndex,
+                                        background: iconIndex === personIndex ?
+                                            "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
+                                            "var(--secondary-neutral-200)",
+                                        cursor: iconIndex === personIndex ? "" : "pointer"
+                                    }}
+                                    onClick={iconIndex === personIndex ? undefined : () => {
+                                        if (!ulRef.current) return;
 
-                                    ulRef.current.children[iconIndex].scrollIntoView({behavior: "smooth", block: "center"});
-                                }}
-                            />)}
+                                        ulRef.current.children[iconIndex].scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "center"
+                                        });
+                                    }}
+                                />;
+                            })}
                         </div>
                         <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
                         <div css={contactsCss} className="text-xl">
@@ -271,12 +287,10 @@ export default function Cofounders() {
                             />
                             <div className="links">
                                 {item.links.map(item => <Link
-                                    className="link"
+                                    className={"link " + item.linkName}
                                     key={item.link} href={item.link}
                                     target="_blank" rel="noopener noreferrer"
-                                >
-                                    <div className={"icon " + item.linkName} />
-                                </Link>)}
+                                />)}
                             </div>
                         </div>
                     </div>
@@ -289,4 +303,4 @@ export default function Cofounders() {
             </ul>
         </div>
     </section>;
-}
+};

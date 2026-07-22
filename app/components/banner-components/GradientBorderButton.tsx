@@ -49,13 +49,13 @@ export default function GradientBorderButton({children, className, ...props}: {
                 var(--secondary-600),
                 var(--secondary-900) var(--gradient-progress)
             ) border-box;
+            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
         }
         &::after {
             background: var(--secondary-neutral-900) padding-box;
         }
         &::before, &::after {
             border: 1px solid transparent;
-            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
         }
 
         & > svg {
