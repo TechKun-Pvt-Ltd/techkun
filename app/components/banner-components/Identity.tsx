@@ -84,7 +84,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				inset: 0;
 				height: auto;
 				width: 100%;
-				color: var(--neutral-700);
+				color: var(--neutral-500);
 			}
 
 			svg.bulb-icon, svg.dots circle {
