@@ -3,7 +3,7 @@ import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
 
-const { dotsStretch, dotsRelease, initialDotsLightUp } = BANNER_ANIMATION;
+const { pointerMove, pointerMoveBack, dotsStretch, dotsRelease, initialDotsLightUp } = BANNER_ANIMATION;
 
 const dotsLightUp = {
 	delay: 0,
@@ -49,7 +49,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			const circles = el.querySelectorAll<SVGCircleElement>("svg.dots circle");
 			const lastCircle = circles.item(circles.length - 1);
 
-			const animationEndAbortController = new AbortController();
+			const animationEndAbortCtrl = new AbortController();
 			lastCircle.addEventListener("animationend", ev => {
 				if (ev.animationName !== "release") return;
 
@@ -62,13 +62,13 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					"click", () => el.toggleAttribute("data-lights-off"),
 					{ signal: abortSignal }
 				);
-				animationEndAbortController.abort();
-			}, { signal: AbortSignal.any([abortSignal, animationEndAbortController.signal]) });
+				animationEndAbortCtrl.abort();
+			}, { signal: AbortSignal.any([abortSignal, animationEndAbortCtrl.signal]) });
 		}
 	}), []);
 
 	return <span
-		style={{color: 'var(--foreground)', ...style} as React.CSSProperties}
+		style={{color: 'var(--foreground)', display: "inline-block", ...style} as React.CSSProperties}
 		{...props}
 		ref={spanRef}
 		data-lights-off
@@ -84,7 +84,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				inset: 0;
 				height: auto;
 				width: 100%;
-				color: var(--neutral-500);
+				color: var(--neutral-700);
 			}
 
 			svg.bulb-icon, svg.dots circle {
@@ -172,6 +172,54 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					/>
 				))}
 			</svg>
+			<span css={css`
+				position: absolute;
+				color: var(--neutral-100);
+				offset-path: shape(
+					from calc(100% + 0.2em) 25%,
+					curve to calc(100% - 0.25em) 110% with calc(100% + 0.8em) 50% / calc(100% + 0.75em) 110%,
+					curve to 0.05em 70% with calc(100% - 1em) 110% / 0.2em 70%
+				);
+				offset-distance: 0;
+				offset-anchor: center center;
+				offset-rotate: -30deg;
+				@keyframes move {
+					from {
+						offset-distance: 0;
+					}
+					to {
+						offset-distance: 99%;
+						offset-rotate: 0deg;
+					}
+				}
+				@keyframes move-back {
+					from {
+						offset-distance: 99%;
+					}
+					to {
+						offset-distance: 0;
+						offset-rotate: -30deg;
+						transform: translate(0);
+					}
+				}
+				--stretch-index: 0.5;
+				[data-initial] & {
+					animation:
+						move ${pointerMove.duration}s ease-in-out both,
+						stretch ${dotsStretch.duration}s ${dotsStretch.delay}s ${stretchTimingFunction} both,
+						move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
+				}
+			`}>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24" height="24" viewBox="0 0 24 24"
+					stroke="currentColor" fill="currentColor"
+					strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+					className="pointer"
+				>
+					<path d="M 11.572 3.866 a 0.495 0.495 45 0 1 0.9207 -0 l 6.7175 15.9099 a 0.5 0.5 45 0 1 -0.7142 0.6251 l -5.4476 -3.2131 a 2 2 45 0 0 -2.0315 -0.0021 l -5.4483 3.2152 a 0.5 0.5 45 0 1 -0.7142 -0.6251 z" />
+				</svg>
+			</span>
 			i
 		</span>
 		dentity

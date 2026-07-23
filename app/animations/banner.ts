@@ -1,14 +1,17 @@
-const INITIAL_DELAY = 0.1;
+const POINTER_MOVE_DURATION = 1;
 const STRETCH_DURATION = 0.5;
-const AFTER_RELEASE = INITIAL_DELAY + STRETCH_DURATION;
+const AFTER_RELEASE = POINTER_MOVE_DURATION + STRETCH_DURATION;
 
 const BANNER_ANIMATION = {
-	wordGradientFill: {
-		delay: AFTER_RELEASE,
-		duration: 2.725
+	pointerMove: {
+		duration: POINTER_MOVE_DURATION
+	},
+	pointerMoveBack: {
+		delay: POINTER_MOVE_DURATION + STRETCH_DURATION + 0.5,
+		duration: POINTER_MOVE_DURATION,
 	},
 	dotsStretch: {
-		delay: INITIAL_DELAY,
+		delay: POINTER_MOVE_DURATION,
 		duration: STRETCH_DURATION
 	},
 	dotsRelease: {
@@ -18,6 +21,10 @@ const BANNER_ANIMATION = {
 	initialDotsLightUp: {
 		delay: AFTER_RELEASE,
 		duration: 1.2
+	},
+	wordGradientFill: {
+		delay: AFTER_RELEASE,
+		duration: 2.725
 	},
 	ctaBorderGradient: {
 		delay: AFTER_RELEASE + 0.5,
