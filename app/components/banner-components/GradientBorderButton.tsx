@@ -22,10 +22,10 @@ const transition: {
 
 const gradientFill = keyframes`
     from {
-        --gradient-fill-progress: 0%;
+        --gradient-progress: 0%;
     }
     to {
-        --gradient-fill-progress: 75%;
+        --gradient-progress: 75%;
     }
 `;
 
@@ -41,39 +41,28 @@ export default function GradientBorderButton({children, className, ...props}: {
         border-radius: 0.8rem;
 
         &::before {
-            background: var(--secondary-950);
-            opacity: 0.25;
-        }
-        &::after {
-            border: 1px solid transparent;
-            mask:
-                padding-box linear-gradient(transparent 0 0) subtract,
-                border-box linear-gradient(black 0 0);
-                //border-box linear-gradient(var(--gradient-angle), black 10%, transparent 30%, transparent 70%, black 90%);
+            //mask:
+            //    padding-box linear-gradient(transparent 0 0) subtract,
+            //    border-box linear-gradient(black 0 0);
             background: linear-gradient(
                 -2deg,
-                var(--secondary-700),
-                var(--secondary-950) var(--gradient-fill-progress)
+                var(--secondary-600),
+                var(--secondary-900) var(--gradient-progress)
             ) border-box;
-            //background: linear-gradient(
-            //    var(--gradient-angle),
-            //    var(--tertiary-500),
-            //    var(--secondary-500),
-            //    var(--primary-500) 25%,
-            //    var(--primary-500) 75%,
-            //    var(--secondary-500),
-            //    var(--tertiary-500)
-            //) padding-box;
+            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
+        }
+        &::after {
+            background: var(--secondary-neutral-900) padding-box;
         }
         &::before, &::after {
-            animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
+            border: 1px solid transparent;
         }
 
         & > svg {
             margin-inline-start: 0.4375em;
             width: 0.6em;
         }
-        
+
         & .arrow {
             transition: d ${transition.duration}s ${mapEasingToNativeEasing(transition.ease, transition.duration)};
         }

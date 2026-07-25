@@ -47,7 +47,7 @@ function createOnceStore(): OnceStore {
 
 const store = createOnceStore();
 
-function useRenderOnce(id: string) {
+export function useRenderOnce(id: string) {
     const token = useId();
 
     // Claim during render (not in an effect) so that whichever instance

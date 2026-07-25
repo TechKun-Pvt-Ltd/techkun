@@ -155,7 +155,7 @@ function ContactOptions() {
         ${outsetProp}: 4px;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0.8rem;
         margin-inline: auto;
         width: 100%;
         max-width: 24rem;
@@ -175,6 +175,7 @@ function ContactOptions() {
 
         &::before {
             border: 1px solid var(--border);
+            background-color: var(--background);
         }
         &::after {
             inset: calc(-1 * var(${outsetProp}));
@@ -222,8 +223,9 @@ function ContactOptions() {
             Schedule a quick call with us
         </button>
         <p className="text-lg" css={css`
-            color: var(--muted-foreground);
+            color: var(--secondary-neutral-500);
             line-height: 1;
+            margin-block-end: calc(1rem - 1ex);
         `}>or</p>
         <Link
             className="text-lg contact-option tri-layered-button" css={contactOptionCss}
@@ -277,7 +279,7 @@ export default function ContactUs() {
             <div css={css`
                 text-align: center;
 
-                & > h2 {
+                & h2.section-title {
                     margin-block-end: 0.5em;
                 }
             `}>

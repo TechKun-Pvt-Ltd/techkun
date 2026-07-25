@@ -1,6 +1,7 @@
 'use client';
 import {css} from "@emotion/react";
 import LogoButton from "@/app/components/navbar-components/logo-button";
+import React from "react";
 
 export default function Header() {
     return <header style={{ pointerEvents: "none" }}>

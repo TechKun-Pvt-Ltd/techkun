@@ -1,4 +1,4 @@
-import React, {useEffect, useId, useState} from "react";
+import React, {forwardRef, useEffect, useId, useImperativeHandle, useState} from "react";
 import {motion} from "motion/react";
 import {animate, SpringOptions} from "motion";
 import {css} from "@emotion/react";
@@ -6,6 +6,7 @@ import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 import {frame} from "motion-dom";
 import BANNER_ANIMATION from "@/app/animations/banner";
+import useAbortSignal from "@/hooks/use-abort-signal";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 67.25;
@@ -14,39 +15,49 @@ const springOptions: SpringOptions = {stiffness: 500, damping: 30};
 const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
 const xBounds: [number, number] = [0, 1];
 
-export default function Precision(props: React.ComponentPropsWithoutRef<"span">) {
+export type PrecisionRef = {
+	play(): void;
+};
+
+export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(function Precision(
+	props, ref
+) {
 	const [metrics, setMetrics] = useState<FontMetrics | null>(null);
 	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
+	const abortSignal = useAbortSignal();
 
-	useEffect(() => {
-		const container = containerRef.current!;
-		const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
-		const value = x.get();
-		let xRayActivated = false;
-		const anim = animate([
-			[x, [value, 0.1], {duration: 0.3}],
-			[x, [0.1, 0.9], {duration: 2}],
-			[x, [0.9, value], {duration: 0.3}]
-		], {
-			delay: BANNER_ANIMATION.precision.delay,
-			defaultTransition: {
-				ease: "easeInOut",
-				onUpdate() {
-					if (anim.time > 0 && anim.time < 2.3 && !xRayActivated) {
-						xRay.setAttribute("data-active", "true");
-						xRayActivated = true;
-					} else if (anim.time >= 2.3 && xRayActivated) {
-						xRay.removeAttribute("data-active");
-						xRayActivated = false;
+	useImperativeHandle(ref, () => ({
+		play() {
+			const container = containerRef.current!;
+			const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
+			const value = x.get();
+			let xRayActivated = false;
+			const anim = animate([
+				[x, [value, 0.1], {duration: 0.3}],
+				[x, [0.1, 0.9], {duration: 2}],
+				[x, [0.9, value], {duration: 0.3}]
+			], {
+				delay: BANNER_ANIMATION.precision.delay,
+				defaultTransition: {
+					ease: "easeInOut",
+					onUpdate() {
+						if (anim.time > 0 && anim.time < 2.3 && !xRayActivated) {
+							xRay.setAttribute("data-active", "true");
+							xRayActivated = true;
+						} else if (anim.time >= 2.3 && xRayActivated) {
+							xRay.removeAttribute("data-active");
+							xRayActivated = false;
+						}
 					}
 				}
-			}
-		});
-		xRay.addEventListener("pointerover", () => {
-			anim.stop();
-			xRay.removeAttribute("data-active");
-		}, { once: true });
-	}, []);
+			});
+			xRay.addEventListener("pointerover", () => {
+				anim.stop();
+				xRay.removeAttribute("data-active");
+			}, { once: true, signal: abortSignal });
+		}
+	}), []);
+
 	useEffect(() => {
 		if (!containerRef.current) return;
 
@@ -64,8 +75,7 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 			frame.setup(updateMetrics);
 		}
 		listener();
-		window.addEventListener("resize", listener);
-		return () => window.removeEventListener("resize", listener);
+		window.addEventListener("resize", listener, { signal: abortSignal });
 	}, []);
 
 	return <span
@@ -267,4 +277,4 @@ export default function Precision(props: React.ComponentPropsWithoutRef<"span">)
 		</motion.span>
 		precisi<span style={{color: "var(--neutral-700)"}}>o</span>n
 	</span>;
-}
+});

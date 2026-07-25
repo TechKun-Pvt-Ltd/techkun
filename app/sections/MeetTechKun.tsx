@@ -4,6 +4,9 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
+import {BR_BRAND_GRADIENT_HREF} from "@/app/Shared";
+
+const ANIMATED_LOGO_CLIP_PATH_ID = "animated-logo-clip-path";
 
 export default function MeetTechKun() {
     const [scope, animate] = useAnimate<HTMLDivElement>();
@@ -102,7 +105,7 @@ export default function MeetTechKun() {
                 `}>
                     <svg viewBox={viewBoxString(logoAnimation.viewBox)}>
                         <defs>
-                            <clipPath id="animated-logo-clip-path">
+                            <clipPath id={ANIMATED_LOGO_CLIP_PATH_ID}>
                                 <motion.path d={logoAnimation.frames[0].value}
                                     style={{x, y, scale: 0.5}}
                                     fill="white"
@@ -111,7 +114,7 @@ export default function MeetTechKun() {
                         </defs>
                         <motion.rect
                             {...logoAnimation.viewBox}
-                            fill="url(#brand-gradient)" clipPath="url(#animated-logo-clip-path)"
+                            fill={`url(${BR_BRAND_GRADIENT_HREF})`} clipPath={`url(#${ANIMATED_LOGO_CLIP_PATH_ID})`}
                             initial={{ opacity: 0 }}
                         ></motion.rect>
                     </svg>
