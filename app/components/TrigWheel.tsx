@@ -67,6 +67,27 @@ TrigWheel.Circle = function Circle(props: React.ComponentProps<"circle">) {
 	return <circle r={radius} cx={centerX} cy={centerY} {...props} />;
 };
 
+TrigWheel.InnerDashedWheel = function InnerDashedWheel({inset = 8, markerSize = 2.5, markersPerQuarter = 15, ...props}: {
+	inset?: number;
+	markerSize?: number;
+	markersPerQuarter?: number;
+} & React.ComponentProps<typeof motion.circle>) {
+	const { radius, centerX, centerY, cssAngle } = useContext(TrigWheelContext);
+	const markerThickness = 0.25;
+	const effectiveRadius = radius - markerSize / 2 - inset;
+
+	return <motion.circle
+		r={effectiveRadius} cx={centerX} cy={centerY}
+		fill="none" stroke="currentColor"
+		strokeWidth={markerSize} strokeDasharray={markerThickness + " " + (Math.PI * effectiveRadius / (2 * markersPerQuarter) - markerThickness)}
+		style={{
+			rotate: cssAngle ?? "",
+			transformBox: 'view-box'
+		}}
+		{...props}
+	/>;
+};
+
 TrigWheel.XAxis = function XAxis(props: React.ComponentProps<"line">) {
 	const { startX, centerY, endX } = useContext(TrigWheelContext);
 	return <line x1={startX} y1={centerY} x2={endX} y2={centerY} {...props} />;
@@ -139,7 +160,7 @@ TrigWheel.AngleLabel = function AngleLabel(props: React.ComponentProps<typeof mo
 		x={centerX + 2} y={centerY - 2}
 		{...props}
 	>
-		{angle && useTransform(angle, a => round(+a, 4))}
+		{angle && useTransform(angle, a => round(+a + Math.PI / 2, 4))}
 	</motion.text>;
 };
 
