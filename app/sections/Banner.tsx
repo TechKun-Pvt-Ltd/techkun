@@ -25,7 +25,7 @@ export default function Banner() {
 	const identityRef = useRef<IdentityRef>(null);
 
 	useEffect(() => {
-		inView(
+		return inView(
 			"h1.hero-heading",
 			() => {
 				scopeRef.current?.setAttribute("data-play", "true");
