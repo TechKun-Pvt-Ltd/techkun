@@ -13,7 +13,7 @@ export type RadialRevealProps = {
 
 const roundOff = (num: number) => round(num, 4);
 
-const offset = Math.PI / 60;
+// const offset = Math.PI / 60;
 export function useConicReveal({ angle, startAngle = 0, centerX, centerY, radius }: RadialRevealProps) {
     const center = Point2D.of(centerX, centerY);
     const startPolarVector = Vector2D.polar(radius, startAngle);
@@ -27,7 +27,7 @@ export function useConicReveal({ angle, startAngle = 0, centerX, centerY, radius
     const backClipPath = useTransform(
         angle,
         a => {
-            a = a.add(offset);
+            // a = a.add(offset);
             const firstArc = +a < +semicircleThreshold ?
                 `A ${radius} ${radius} 0 0 1 ${roundOff(semicirclePoint.x)} ${roundOff(semicirclePoint.y)}` :
                 `a 0 0 0 0 1 0 0`;
@@ -46,7 +46,7 @@ export function useConicReveal({ angle, startAngle = 0, centerX, centerY, radius
             if (+a > +endAngle)
                 a = endAngle;
 
-            a = a.subtract(offset);
+            // a = a.subtract(offset);
             const firstArcAngle = +a < +semicircleThreshold ? a : semicircleThreshold;
             const secondArc = firstArcAngle === semicircleThreshold ?
                 `A ${radius} ${radius} 0 0 1 ${roundOff(center.x + radius * a.cosine)} ${roundOff(center.y + radius * a.sine)}` :

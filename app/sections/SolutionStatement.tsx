@@ -15,8 +15,6 @@ import {Angle, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal";
 import TrigWheel from "@/app/components/TrigWheel";
 import {round} from "svg-path-kit/numbers";
-import SvgCircularText from "@/app/components/SvgCircularText";
-import {clamp} from "times-fps";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -100,7 +98,7 @@ const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
 const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
-const ANGLE_RANGE: [number, number] = [-13 / 10 * Math.PI, 7 / 10 * Math.PI];
+const ANGLE_RANGE_START = -3 / 2 * Math.PI;
 
 const centerPoint = Point2D.of(CIRCLE_CENTER, CIRCLE_CENTER);
 
@@ -151,44 +149,21 @@ const icons = [
 
 const svgSizeProp = "--_svg-size";
 
-type NumOrBiNumToNum = number | ((arg0: number, arg1: number, text: string) => number);
-function createGetMovingAngle(
-	text: string, startAngle: number, charAngle: number,
-	shiftRange: [NumOrBiNumToNum, NumOrBiNumToNum]
-): (value: number) => number {
-	const finalShiftRange = shiftRange.map(
-		item => typeof item === "number" ? item : item(startAngle, charAngle, text)
-	) as [number, number];
-	return value => startAngle + clamp(value, ...finalShiftRange) - finalShiftRange[0];
-}
-
 const firstText = "Replace repairs";
-const charAngle = 0.09;
-const getFirstMovingAngle = createGetMovingAngle(
-	firstText, -Math.PI / 2 - charAngle * firstText.length - Math.PI / 60, charAngle,
-	[0, 0]
-);
-
 const revealedText = "with growth";
-const getRevealedMovingAngle = createGetMovingAngle(
-	revealedText, -Math.PI * (1 / 2 - 1 / 30), charAngle,
-	[startAngle => startAngle + charAngle * revealedText.length + Math.PI / 30, Math.PI]
-);
+const charAngle = 0.09;
 
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 60%", "end 40%"]});
-	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], ANGLE_RANGE)(sp)));
-
-	const movingStartAngle = useTransform(angle, a => `${getFirstMovingAngle(+a)}rad`);
-	const movingRevealedStartAngle = useTransform(angle, a => `${getRevealedMovingAngle(+a)}rad`);
+	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
 
 	const [frontClipPath, backClipPath] = useConicReveal({
 		angle: angle,
-		startAngle: ANGLE_RANGE[0],
+		startAngle: ANGLE_RANGE_START,
 		centerX: CIRCLE_CENTER,
 		centerY: CIRCLE_CENTER,
-		radius: TRIG_CIRCLE_RADIUS + 10
+		radius: VIEW_BOX_SIZE / 2
 	});
 
 	return <section css={css`
@@ -286,24 +261,22 @@ export default function SolutionStatement() {
 							</g>
 							<TrigWheel.InnerDashedWheel stroke="var(--neutral-700)" />
 							<g clipPath="url(#back-clip-path)">
-								<SvgCircularText
+								<TrigWheel.Text
 									radius={TRIG_CIRCLE_RADIUS - 14}
-									centerX={CIRCLE_CENTER}
-									centerY={CIRCLE_CENTER}
-									startAngle={movingStartAngle} charAngle={`${charAngle}rad`}
+									startAngle={`${-Math.PI / 2 - charAngle * firstText.length - Math.PI / 60}rad`} charAngle={`${charAngle}rad`}
 									fontSize={3.5}
 									color="var(--secondary-neutral-400)"
-								>{firstText}</SvgCircularText>
+								>{firstText}</TrigWheel.Text>
 							</g>
 							<g clipPath="url(#front-clip-path)">
-								<SvgCircularText
+								<TrigWheel.Text
 									radius={TRIG_CIRCLE_RADIUS - 14}
-									centerX={CIRCLE_CENTER}
-									centerY={CIRCLE_CENTER}
-									startAngle={movingRevealedStartAngle} charAngle={`${charAngle}rad`}
+									startAngle={-Math.PI * (1 / 2 - 1 / 30) + "rad"} charAngle={`${charAngle}rad`}
+									rotationStartThreshold={`calc(var(--start-angle) + var(--char-angle) * ${revealedText.length} + pi * 1rad / 30)`}
+									rotationEndThreshold={"calc(pi * 1rad)"}
 									fontSize={3.5}
 									color="var(--secondary-neutral-400)"
-								>{revealedText}</SvgCircularText>
+								>{revealedText}</TrigWheel.Text>
 								{icons.map((icon, i) => (
 									<React.Fragment key={i}>
 										<circle cx={icon.position.x} cy={icon.position.y} r="4" />
