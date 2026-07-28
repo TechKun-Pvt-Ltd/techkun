@@ -156,7 +156,7 @@ TrigWheel.Circle = function Circle(props: React.ComponentProps<"circle">) {
 	return <circle r={radius} cx={centerX} cy={centerY} {...props} />;
 };
 
-TrigWheel.InnerDashedWheel = function InnerDashedWheel({inset = 8, markerSize = 2.5, markersPerQuarter = 15, ...props}: {
+TrigWheel.InnerDashedWheel = function InnerDashedWheel({inset = 26, markerSize = 2.5, markersPerQuarter = 5, ...props}: {
 	inset?: number;
 	markerSize?: number;
 	markersPerQuarter?: number;
@@ -309,7 +309,7 @@ const angleLabelTransformer: Transformer<number> = a => round(+a + Math.PI / 2, 
 TrigWheel.AngleLabel = function AngleLabel(props: React.ComponentProps<typeof motion.text>) {
 	const { centerX, centerY, angle, getOrRegister } = useTrigWheel();
 	return <motion.text
-		x={centerX + 2} y={centerY - 2}
+		x={centerX} y={centerY}
 		{...props}
 	>
 		{angle && getOrRegister("angle-label", angleLabelTransformer)}

@@ -152,7 +152,7 @@ function ContactOptions() {
 
     const containerCss = css`
         ${brRadiusProp}: 100vw;
-        ${outsetProp}: 4px;
+        ${outsetProp}: 8px;
         display: flex;
         flex-direction: column;
         gap: 0.8rem;
@@ -187,8 +187,8 @@ function ContactOptions() {
                 var(--tertiary-200),
                 var(--secondary-500),
                 var(--primary-800),
-                transparent 25%,
-                transparent 75%,
+                oklch(from var(--primary-800) l c h / 0.25) 25%,
+                oklch(from var(--primary-800) l c h / 0.25) 75%,
                 var(--primary-800),
                 var(--secondary-500),
                 var(--tertiary-200)
@@ -208,7 +208,7 @@ function ContactOptions() {
         <svg style={{ position: "fixed", width: "0", height: "0" }}>
             <defs>
                 <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="BLUR" />
+                    <feGaussianBlur stdDeviation="4" result="BLUR" />
                     <feMerge>
                         <feMergeNode in="BLUR" />
                         <feMergeNode in="SourceGraphic" />
