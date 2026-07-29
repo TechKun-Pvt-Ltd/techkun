@@ -72,10 +72,14 @@ export default function Banner() {
 					font-weight: 500;
                     color: var(--secondary-neutral-400);
 				`}>Hello there!</p>
-				<h1 className="hero-heading" css={css`user-select: none; margin-block-end: 56px;`}>
+				<h1 className="hero-heading" css={css`
+					isolation: isolate;
+					user-select: none;
+					margin-block-end: 56px;
+				`}>
 					We&nbsp;build&nbsp;software
 					<br/>with
-					<span css={keywordCss}>&nbsp;<Beauty ref={beautyRef} />, <Precision ref={precisionRef} />, </span>
+					<span css={keywordCss}>&nbsp;<Beauty ref={beautyRef} />, <Precision ref={precisionRef} style={{ zIndex: 1 }} />, </span>
 					and <span css={keywordCss}><Identity ref={identityRef} />.</span>
 				</h1>
 				<p className="text-lg" css={css`

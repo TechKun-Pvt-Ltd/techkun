@@ -1,7 +1,7 @@
 import {motion} from "motion/react";
 import React, {createContext, useContext} from "react";
 import {round} from "svg-path-kit/numbers";
-import {Angle} from "svg-path-kit";
+import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import {MotionValue} from "motion";
 import {useConstant} from "@/hooks/use-constant";
 import {cancelFrame, frame, motionValue} from "motion-dom";
@@ -32,11 +32,11 @@ const transformersMap = {
 	cssAngle(a) {
 		return `${+a}rad`;
 	},
-	rotorX(a, {centerX, radius}) {
-		return centerX + radius * a.cosine;
+	rotorX(a, {center, radius}) {
+		return center.x + radius * a.cosine;
 	},
-	rotorY(a, {centerY, radius}) {
-		return centerY + radius * a.sine;
+	rotorY(a, {center, radius}) {
+		return center.y + radius * a.sine;
 	}
 } satisfies TransformersMap;
 
@@ -44,9 +44,9 @@ type BaseTrigWheelContext = {
 	props: {
 		angle: MotionValue<Angle>;
 		radius: number;
-		centerX: number; centerY: number;
-		startX: number; startY: number;
-		endX: number; endY: number;
+		center: Point2D;
+		start: Point2D;
+		end: Point2D;
 	};
 	getOrRegister<T>(key: string | symbol, transformer: Transformer<T>): MotionValue<T>;
 	unregister(key: string | symbol): void;
@@ -89,11 +89,10 @@ function TrigWheel({
 
 	const baseTrigWheelContext: BaseTrigWheelContext = {
 		props: {
-			angle,
-			radius,
-			centerX, centerY,
-			startX, startY,
-			endX, endY,
+			angle, radius,
+			center: Point2D.of(centerX, centerY),
+			start: Point2D.of(startX, startY),
+			end: Point2D.of(endX, endY)
 		},
 		getOrRegister(key, transformer) {
 			if (valuesMap.has(key)) return valuesMap.get(key) as any;
@@ -136,13 +135,13 @@ function useTrigWheel() {
 }
 
 function Container({ children }: { children: React.ReactNode }) {
-	const { centerX, centerY, cssAngle } = useTrigWheel();
+	const { center, cssAngle } = useTrigWheel();
 	return <motion.g
 		style={{ "--angle": cssAngle } as React.CSSProperties}
 		css={css`
 			.trig-wheel-rotate {
 				transform-box: view-box;
-				transform-origin: ${centerX}px ${centerY}px;
+				transform-origin: ${center.x}px ${center.y}px;
 				transform: rotate(var(--angle));
 			}
 		`}
@@ -152,73 +151,75 @@ function Container({ children }: { children: React.ReactNode }) {
 }
 
 TrigWheel.Circle = function Circle(props: React.ComponentProps<"circle">) {
-	const { radius, centerX, centerY } = useTrigWheel();
-	return <circle r={radius} cx={centerX} cy={centerY} {...props} />;
+	const { radius, center } = useTrigWheel();
+	return <circle r={radius} cx={center.x} cy={center.y} {...props} />;
 };
 
-TrigWheel.InnerDashedWheel = function InnerDashedWheel({inset = 26, markerSize = 2.5, markersPerQuarter = 5, ...props}: {
-	inset?: number;
+TrigWheel.DashedWheel = function DashedWheel({radius, markerSize = 2.5, markersPerQuarter = 5, ...props}: {
+	radius: number;
 	markerSize?: number;
 	markersPerQuarter?: number;
 } & React.ComponentProps<"circle">) {
-	const { radius, centerX, centerY } = useTrigWheel();
+	const { center } = useTrigWheel();
 	const markerThickness = 0.25;
-	const effectiveRadius = radius - markerSize / 2 - inset;
+	const effectiveRadius = radius - markerSize / 2;
 
 	return <circle
-		r={effectiveRadius} cx={centerX} cy={centerY}
+		r={effectiveRadius} cx={center.x} cy={center.y}
 		fill="none" stroke="currentColor"
-		strokeWidth={markerSize} strokeDasharray={markerThickness + " " + (Math.PI * effectiveRadius / (2 * markersPerQuarter) - markerThickness)}
+		strokeWidth={markerSize}
+		strokeDasharray={markerThickness + " " + (Math.PI * effectiveRadius / (2 * markersPerQuarter) - markerThickness)}
+		strokeDashoffset={markerThickness / 2}
 		className="trig-wheel-rotate"
 		{...props}
 	/>;
 };
 
 TrigWheel.XAxis = function XAxis(props: React.ComponentProps<"line">) {
-	const { startX, centerY, endX } = useTrigWheel();
-	return <line x1={startX} y1={centerY} x2={endX} y2={centerY} {...props} />;
+	const { start, center, end } = useTrigWheel();
+	return <line x1={start.x} y1={center.y} x2={end.x} y2={center.y} {...props} />;
 };
 
 TrigWheel.YAxis = function YAxis(props: React.ComponentProps<"line">) {
-	const { startY, centerX, endY } = useTrigWheel();
-	return <line x1={centerX} y1={startY} x2={centerX} y2={endY} {...props} />
+	const { start, center, end } = useTrigWheel();
+	return <line x1={center.x} y1={start.y} x2={center.x} y2={end.y} {...props} />
 };
 
 TrigWheel.Rotor = function Rotor(props: React.ComponentProps<"line">) {
-	const { centerX, centerY, radius } = useTrigWheel();
+	const { center, radius } = useTrigWheel();
 
 	return <line
-		x1={centerX} y1={centerY}
-		x2={centerX + radius} y2={centerY}
+		x1={center.x} y1={center.y}
+		x2={center.x + radius} y2={center.y}
 		className="trig-wheel-rotate"
 		{...props}
 	/>
 };
 
 TrigWheel.ExtendedRotor = function ExtendedRotor(props: React.ComponentProps<"line">) {
-	const { centerX, centerY, endX } = useTrigWheel();
+	const { center, end } = useTrigWheel();
 
 	return <line
-		x1={centerX} y1={centerY}
-		x2={endX} y2={centerY}
+		x1={center.x} y1={center.y}
+		x2={end.x} y2={center.y}
 		className="trig-wheel-rotate"
 		{...props}
 	/>
 };
 
 TrigWheel.RotorTerminal = function RotorTerminal(props: React.ComponentProps<typeof motion.circle>) {
-	const {centerX, centerY, radius} = useTrigWheel();
+	const {center, radius} = useTrigWheel();
 	return <motion.circle
-		r={1} cx={centerX + radius} cy={centerY}
+		r={1} cx={center.x + radius} cy={center.y}
 		className="trig-wheel-rotate"
 		{...props}
 	></motion.circle>;
 };
 
 TrigWheel.RotorXProjection = function RotorXProjection(props: React.ComponentProps<typeof motion.line>) {
-	const {centerX, rotorX, rotorY} = useTrigWheel();
+	const {center, rotorX, rotorY} = useTrigWheel();
 	return <motion.line
-		x1={centerX} y1={rotorY}
+		x1={center.x} y1={rotorY}
 		x2={rotorX} y2={rotorY}
 		strokeDasharray="2"
 		{...props}
@@ -226,9 +227,9 @@ TrigWheel.RotorXProjection = function RotorXProjection(props: React.ComponentPro
 };
 
 TrigWheel.RotorYProjection = function RotorYProjection(props: React.ComponentProps<typeof motion.line>) {
-	const {centerY, rotorX, rotorY} = useTrigWheel();
+	const {center, rotorX, rotorY} = useTrigWheel();
 	return <motion.line
-		x1={rotorX} y1={centerY}
+		x1={rotorX} y1={center.y}
 		x2={rotorX} y2={rotorY}
 		strokeDasharray="2"
 		{...props}
@@ -239,6 +240,7 @@ TrigWheel.Text = function Text({
 	radius, startAngle, charAngle,
 	rotationStartThreshold,
 	rotationEndThreshold,
+	sweepDirection,
    	children, color = "currentColor",
    	fontSize, fontFamily = "monospace",
    	...props
@@ -248,11 +250,12 @@ TrigWheel.Text = function Text({
 	charAngle: string;
 	rotationStartThreshold?: string;
 	rotationEndThreshold?: string;
+	sweepDirection?: "cw" | "ccw" | 1 | -1;
 	children?: string | string[];
 	color?: string;
 	fontSize: number | string;
 } & React.ComponentProps<"g">) {
-	const {centerX, centerY} = useTrigWheel();
+	const {center} = useTrigWheel();
 	const letters = Array.from(children ?
 		typeof children === "string" ? children :
 			Array.isArray(children) ? (children as any[]).join("") :
@@ -262,33 +265,34 @@ TrigWheel.Text = function Text({
 	// language=CSS prefix="div { --variable: " suffix="; }"
 	const sweptAngle = rotationStartThreshold ?
 		`calc(clamp(
-			var(--rotation-start-threshold),
+			${rotationStartThreshold},
 			var(--angle),
-			${rotationEndThreshold ? "var(--rotation-end-threshold)" : "none"}
-		) - var(--rotation-start-threshold))` :
+			${rotationEndThreshold || "none"}
+		) - ${rotationStartThreshold})` :
 		"0rad";
 
+	sweepDirection ||= 1;
+	const sweepSign = sweepDirection === "cw" ? 1 : sweepDirection === "ccw" ? -1 : Math.sign(sweepDirection);
 	return <g
 		fill={color} fontFamily={fontFamily}
 		fontSize={fontSize}
 		{...props}
 		css={css`
-			--center-x: ${centerX}px;
-			--center-y: ${centerY}px;
+			--center-x: ${center.x}px;
+			--center-y: ${center.y}px;
 			--start-angle: ${startAngle};
 			--char-angle: ${charAngle};
-			--rotation-start-threshold: ${rotationStartThreshold ?? ""};
-			--rotation-end-threshold: ${rotationEndThreshold ?? ""};
 			--swept-angle: ${sweptAngle};
+			--sweep: ${sweepSign};
 			text {
 				transform:
 					translate(calc(var(--center-x) - 50%), calc(var(--center-y) - 50%))
                 	rotate(calc(
-						90deg + var(--start-angle)
+						var(--sweep) * 90deg + var(--start-angle)
 						+ var(--swept-angle)
-						+ var(--char-angle) * (var(--i) + 0.5)
+						+ var(--sweep) * var(--char-angle) * (var(--i) + 0.5)
 					))
-                	translateY(-${radius}px);
+                	translateY(calc(-1 * var(--sweep) * ${radius}px));
 				transform-box: fill-box;
 				transform-origin: 50% 50%;
 			}
@@ -303,13 +307,54 @@ TrigWheel.Text = function Text({
 			>{letter}</motion.text>
 		)}
 	</g>;
+};
+
+TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize, rotationStartThreshold, rotationEndThreshold, ...props}: {
+	radius: number;
+	angle: number;
+	radialSize: number;
+	angularSize: number;
+	rotationStartThreshold?: string;
+	rotationEndThreshold?: string;
+} & React.ComponentProps<"path">) {
+	const {center} = useTrigWheel();
+
+	const pb = PathBuilder.m(center.add(Vector2D.polar(radius, angle)));
+	pb.l(Vector2D.polar(radialSize, angle));
+	pb.circularArc(radius + radialSize, angle, angle + angularSize);
+	pb.l(Vector2D.polar(radialSize, angle + angularSize).opposite());
+	pb.circularArc(radius, angle + angularSize, angle);
+
+	// language=CSS prefix="div { --variable: " suffix="; }"
+	const sweptAngle = rotationStartThreshold ?
+		`calc(clamp(
+			${rotationStartThreshold},
+			var(--angle),
+			${rotationEndThreshold || "none"}
+		) - ${rotationStartThreshold})` :
+		"0rad";
+
+	return <path
+		fill="currentColor" d={pb.toSVGPathString()}
+		css={css`
+			transform: rotate(${sweptAngle});
+			transform-box: view-box;
+			transform-origin: ${center.x}px ${center.y}px;
+		`}
+		{...props}
+	/>;
 }
 
-const angleLabelTransformer: Transformer<number> = a => round(+a + Math.PI / 2, 4);
+const angleLabelTransformer: Transformer<number> = a => round(+a - Math.PI, 4);
 TrigWheel.AngleLabel = function AngleLabel(props: React.ComponentProps<typeof motion.text>) {
-	const { centerX, centerY, angle, getOrRegister } = useTrigWheel();
+	const { center, angle, getOrRegister } = useTrigWheel();
 	return <motion.text
-		x={centerX} y={centerY}
+		x={center.x} y={center.y}
+		css={css`
+			font-weight: 600;
+			transform-box: fill-box;
+			transform: translate(-50%, 25%);
+		`}
 		{...props}
 	>
 		{angle && getOrRegister("angle-label", angleLabelTransformer)}

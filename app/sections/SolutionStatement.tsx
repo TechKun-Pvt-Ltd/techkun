@@ -98,7 +98,7 @@ const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
 const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
-const ANGLE_RANGE_START = -3 / 2 * Math.PI;
+const ANGLE_RANGE_START = 0;
 
 const centerPoint = Point2D.of(CIRCLE_CENTER, CIRCLE_CENTER);
 
@@ -205,13 +205,13 @@ const icons = [
 
 const svgSizeProp = "--_svg-size";
 
-const firstText = "REPLACE REPAIRS";
-const revealedText = "WITH GROWTH";
-const charAngle = 0.07;
+const firstText = "TURN AVERAGE INTO";
+const revealedText = "EXTRAORDINARY";
+const charAngle = 0.064;
 
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
-	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 60%", "end 40%"]});
+	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
 	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
 
 	const [frontClipPath, backClipPath] = useConicReveal({
@@ -222,6 +222,7 @@ export default function SolutionStatement() {
 		radius: VIEW_BOX_SIZE / 2
 	});
 
+	const outerCircleRadius = TRIG_CIRCLE_RADIUS * 0.48;
 	return <section css={css`
         padding-block: 96px;
 	`}>
@@ -295,6 +296,10 @@ export default function SolutionStatement() {
 							 pointer-events: auto;
 							 will-change: transform;
                              width: var(${svgSizeProp});
+							 --back-fill: oklch(from var(--neutral-900) l c h / 0.25);
+							 --back-stroke: oklch(from var(--neutral-900) l c h / 0.75);
+							 --front-fill: oklch(from var(--secondary-950) l c h / 0.1);
+							 --front-stroke: oklch(from var(--secondary-950) l c h / 0.5);
 						 `}>
 						<defs>
 							<clipPath id="back-clip-path">
@@ -316,53 +321,125 @@ export default function SolutionStatement() {
 								<TrigWheel.RotorYProjection />
 							</g>
 							<g clipPath="url(#back-clip-path)">
-								<TrigWheel.Circle fill="oklch(from var(--neutral-900) l c h / 0.5)" stroke="oklch(from var(--neutral-900) l c h / 0.75)" strokeWidth="0.2" />
-								<TrigWheel.InnerDashedWheel stroke="var(--neutral-700)" />
+								<TrigWheel.Circle
+									r={outerCircleRadius}
+									fill="var(--back-fill)" stroke="var(--back-stroke)"
+									strokeWidth="0.2"
+								/>
+								<TrigWheel.RadialBox
+									radius={TRIG_CIRCLE_RADIUS * 0.56} angle={Math.PI}
+									radialSize={TRIG_CIRCLE_RADIUS * 0.44} angularSize={Math.PI / 3}
+									rotationStartThreshold="0rad"
+									fill="var(--back-fill)" stroke="var(--back-stroke)"
+									strokeWidth="0.2"
+								/>
+								<TrigWheel.RadialBox
+									radius={TRIG_CIRCLE_RADIUS * 0.56} angle={Math.PI - Math.PI / 4 - Math.PI / 30}
+									radialSize={TRIG_CIRCLE_RADIUS * 0.44} angularSize={Math.PI / 4}
+									rotationStartThreshold="0rad"
+									fill="var(--back-fill)" stroke="var(--back-stroke)"
+									strokeWidth="0.2"
+								/>
+								<TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--neutral-800)" />
 								<TrigWheel.Text
 									radius={TRIG_CIRCLE_RADIUS - 5}
-									startAngle={`${-Math.PI / 2 - charAngle * firstText.length / 2}rad`} charAngle={`${charAngle}rad`}
-									fontSize={3}
+									startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
+									rotationStartThreshold={`${charAngle}rad`} rotationEndThreshold={`${Math.PI - charAngle * (firstText.length + 1)}rad`}
+									sweepDirection="ccw"
+									fontSize={2.5}
 									color="var(--neutral-400)"
 								>{firstText}</TrigWheel.Text>
 							</g>
 							<g clipPath="url(#front-clip-path)">
-								<TrigWheel.Circle fill="oklch(from var(--secondary-950) l c h / 0.05)" stroke="oklch(from var(--secondary-950) l c h / 0.5)" strokeWidth="0.2" />
-								<TrigWheel.InnerDashedWheel stroke="var(--secondary-neutral-600)" />
+								<TrigWheel.Circle
+									r={outerCircleRadius}
+									fill="var(--front-fill)" stroke="var(--front-stroke)"
+									strokeWidth="0.25"
+									strokeDasharray={`0 1 ${Math.PI * outerCircleRadius / 2 - 2} 2 ${Math.PI * outerCircleRadius / 2 - 2} 1`}
+								/>
+								<TrigWheel.RadialBox
+									radius={TRIG_CIRCLE_RADIUS * 0.56} angle={Math.PI}
+									radialSize={TRIG_CIRCLE_RADIUS * 0.44} angularSize={Math.PI / 3}
+									rotationStartThreshold="0rad"
+									fill="var(--front-fill)" stroke="var(--front-stroke)"
+									strokeWidth="0.2"
+								/>
+								<TrigWheel.RadialBox
+									radius={TRIG_CIRCLE_RADIUS * 0.56} angle={Math.PI - Math.PI / 4 - Math.PI / 30}
+									radialSize={TRIG_CIRCLE_RADIUS * 0.44} angularSize={Math.PI / 4}
+									rotationStartThreshold="0rad"
+									fill="var(--front-fill)" stroke="var(--front-stroke)"
+									strokeWidth="0.2"
+								/>
+								<TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--secondary-neutral-800)" />
 								<TrigWheel.Text
 									radius={TRIG_CIRCLE_RADIUS - 5}
-									startAngle={-(Math.PI / 2 + charAngle * ("with".length + 0.5)) + "rad"} charAngle={`${charAngle}rad`}
-									rotationStartThreshold={`calc(var(--start-angle) + var(--char-angle) * ${revealedText.length} + pi * 1rad / 30)`}
-									rotationEndThreshold={"calc(pi * 1rad)"}
-									fontSize={3}
+									startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
+									sweepDirection="ccw"
+									rotationStartThreshold={"0rad"}
+									// rotationEndThreshold={"calc(pi * 1rad)"}
+									fontSize={2.5}
 									color="var(--secondary-neutral-200)"
 								>{revealedText}</TrigWheel.Text>
-								{/*<g style={{ color: "var(--neutral-700)" }}>*/}
+								<TrigWheel.Text
+									radius={TRIG_CIRCLE_RADIUS - 5}
+									startAngle={"0rad"} charAngle={`${charAngle}rad`}
+									sweepDirection="ccw"
+									rotationStartThreshold={(2 * Math.PI - charAngle * "LET'S MAKE SOMETHING".length) + "rad"}
+									// rotationEndThreshold={"calc(pi * 1rad)"}
+									fontSize={2.5}
+									color="var(--secondary-neutral-200)"
+								>{"LET'S MAKE SOMETHING"}</TrigWheel.Text>
+								{/*<TrigWheel.Circle r={TRIG_CIRCLE_RADIUS * 0.6} fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1" />*/}
+								{/*<g style={{ color: "var(--secondary-neutral-700)" }}>*/}
 								{/*	{icons.map((icon, i) => (*/}
 								{/*		<React.Fragment key={i}>*/}
-								{/*			/!*<circle cx={icon.position.x} cy={icon.position.y} r="4" />*!/*/}
+								{/*			<circle cx={icon.position.x} cy={icon.position.y} r="4" />*/}
 								{/*			{icon.render()}*/}
 								{/*		</React.Fragment>*/}
 								{/*	))}*/}
 								{/*</g>*/}
 								{/*<g style={{ color: "var(--secondary-neutral-700)" }}>*/}
-								{/*	{["Ideate & document         Sketch & blueprint         Design & Develop         Refine & Optimize"].map(item => (*/}
-								{/*		<TrigWheel.Text key={item}*/}
-								{/*			startAngle={`${-Math.PI * 3 / 2 + Math.PI / 12}rad`}*/}
-								{/*			charAngle="0.06rad"*/}
-								{/*			radius={TRIG_CIRCLE_RADIUS - 4}*/}
+								{/*	{["Ideate & document", "Sketch & blueprint", "Design & develop", "Refine & optimize"].map((item, index) => {*/}
+								{/*		const charAngle = 0.06;*/}
+								{/*		const sweepDirection = ([-1, 1] as const)[Math.floor(index / 2) % 2];*/}
+								{/*		return <TrigWheel.Text*/}
+								{/*			key={item}*/}
+								{/*			startAngle={`${Math.PI / 4 + index * Math.PI / 2 + -sweepDirection * charAngle * item.length / 2}rad`}*/}
+								{/*			sweepDirection={sweepDirection}*/}
+								{/*			charAngle={charAngle + "rad"}*/}
+								{/*			radius={TRIG_CIRCLE_RADIUS * 1.1}*/}
 								{/*			fontSize={3}*/}
-								{/*		>{item}</TrigWheel.Text>*/}
-								{/*	))}*/}
+								{/*		>{item}</TrigWheel.Text>;*/}
+								{/*	})}*/}
 								{/*</g>*/}
 							</g>
 							<g stroke="var(--primary-900)" strokeWidth="0.25" fill="none">
 								<TrigWheel.ExtendedRotor strokeDasharray="2" />
-								<TrigWheel.Rotor />
+								<TrigWheel.Rotor style={{
+									filter:
+										"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-900) l c h / 0.32)) " +
+										"drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-900) l c h / 0.32)) " +
+										"drop-shadow(1px 2px 2.5px oklch(from var(--primary-900) l c h / 0.32))"
+								}}/>
 							</g>
-							<TrigWheel.Circle fill="var(--neutral-950)" r={TRIG_CIRCLE_RADIUS * 0.32} />
+							<TrigWheel.Circle
+								fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
+								r={TRIG_CIRCLE_RADIUS * 0.32}
+								style={{
+									// filter:
+									// 	"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+									// 	"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+									// 	"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
+								}}
+							/>
+							<TrigWheel.Circle
+								fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
+								r={TRIG_CIRCLE_RADIUS * 0.24}
+							/>
 							<TrigWheel.RotorTerminal fill="var(--primary-700)" />
 							<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
-							<TrigWheel.AngleLabel fontSize="2" fill="var(--neutral-500)" />
+							<TrigWheel.AngleLabel fontSize="2.2" fill="var(--neutral-500)" />
 						</TrigWheel>
 					</svg>
 				</div>

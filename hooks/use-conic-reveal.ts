@@ -13,7 +13,7 @@ export type RadialRevealProps = {
 
 const roundOff = (num: number) => round(num, 4);
 
-// const offset = Math.PI / 60;
+// const offset = Math.PI / 120;
 export function useConicReveal({ angle, startAngle = 0, centerX, centerY, radius }: RadialRevealProps) {
     const center = Point2D.of(centerX, centerY);
     const startPolarVector = Vector2D.polar(radius, startAngle);
