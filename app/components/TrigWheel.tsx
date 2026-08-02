@@ -1,6 +1,5 @@
 import {motion} from "motion/react";
 import React, {createContext, useContext} from "react";
-import {round} from "svg-path-kit/numbers";
 import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import {MotionValue} from "motion";
 import {useConstant} from "@/hooks/use-constant";
@@ -20,12 +19,12 @@ export type TrigWheelProps = {
 	children?: React.ReactNode;
 };
 
-type Transformer<T = any> = (a: Angle, v: BaseTrigWheelContext["props"]) => T;
+export type TrigAngleTransformer<T = any> = (a: Angle, c: BaseTrigWheelContext["props"]) => T;
 type TransformersMap = {
-	[key: keyof any]: Transformer;
+	[key: keyof any]: TrigAngleTransformer;
 };
 type MapTransformersToMotionValues<T extends TransformersMap> = {
-	[K in keyof T]: MotionValue<T[K] extends Transformer<infer R> ? R : never>;
+	[K in keyof T]: MotionValue<T[K] extends TrigAngleTransformer<infer R> ? R : never>;
 };
 
 const transformersMap = {
@@ -48,7 +47,7 @@ type BaseTrigWheelContext = {
 		start: Point2D;
 		end: Point2D;
 	};
-	getOrRegister<T>(key: string | symbol, transformer: Transformer<T>): MotionValue<T>;
+	getOrRegister<T>(key: string | symbol, transformer: TrigAngleTransformer<T>): MotionValue<T>;
 	unregister(key: string | symbol): void;
 };
 type TrigWheelContext =
@@ -66,7 +65,7 @@ const proxyHandler: ProxyHandler<BaseTrigWheelContext> = {
 		if (!(p in transformersMap))
 			return undefined;
 
-		const transformer: Transformer = transformersMap[p as keyof typeof transformersMap];
+		const transformer: TrigAngleTransformer = transformersMap[p as keyof typeof transformersMap];
 		return target.getOrRegister(p, transformer);
 	}
 };
@@ -127,22 +126,39 @@ function TrigWheel({
 	</TrigWheelContext.Provider>;
 }
 
-function useTrigWheel() {
+export function useTrigWheel() {
 	const context = useContext(TrigWheelContext);
 	if (context === null)
 		throw new Error("TrigWheelContext can only be used inside TrigWheel.");
 	return context;
 }
 
+const cssProps = {
+	angle: "--angle",
+	radius: "--radius",
+	centerX: "--center-x",
+	centerY: "--center-y",
+	// rotorX: "--rotor-x",
+	// rotorY: "--rotor-y"
+} satisfies Record<string, string>;
+TrigWheel.cssProps = cssProps;
+
 function Container({ children }: { children: React.ReactNode }) {
-	const { center, cssAngle } = useTrigWheel();
+	const { center, radius, cssAngle } = useTrigWheel();
 	return <motion.g
-		style={{ "--angle": cssAngle } as React.CSSProperties}
+		style={{
+			[cssProps.angle]: cssAngle,
+			[cssProps.radius]: radius + "px",
+			[cssProps.centerX]: center.x + "px",
+			[cssProps.centerY]: center.y + "px",
+			// [cssProps.rotorX]: `calc(var(${cssProps.centerX}) + var(${cssProps.radius}) * cos(var(${cssProps.angle})))`,
+			// [cssProps.rotorY]: `calc(var(${cssProps.centerY}) + var(${cssProps.radius}) * sin(var(${cssProps.angle})))`
+		} as React.CSSProperties}
 		css={css`
 			.trig-wheel-rotate {
 				transform-box: view-box;
-				transform-origin: ${center.x}px ${center.y}px;
-				transform: rotate(var(--angle));
+				transform-origin: var(${cssProps.centerX}) var(${cssProps.centerY});
+				transform: rotate(var(${cssProps.angle}));
 			}
 		`}
 	>
@@ -170,6 +186,7 @@ TrigWheel.DashedWheel = function DashedWheel({radius, markerSize = 2.5, markersP
 		strokeWidth={markerSize}
 		strokeDasharray={markerThickness + " " + (Math.PI * effectiveRadius / (2 * markersPerQuarter) - markerThickness)}
 		strokeDashoffset={markerThickness / 2}
+		strokeLinecap="butt"
 		className="trig-wheel-rotate"
 		{...props}
 	/>;
@@ -255,7 +272,6 @@ TrigWheel.Text = function Text({
 	color?: string;
 	fontSize: number | string;
 } & React.ComponentProps<"g">) {
-	const {center} = useTrigWheel();
 	const letters = Array.from(children ?
 		typeof children === "string" ? children :
 			Array.isArray(children) ? (children as any[]).join("") :
@@ -263,10 +279,10 @@ TrigWheel.Text = function Text({
 		"");
 
 	// language=CSS prefix="div { --variable: " suffix="; }"
-	const sweptAngle = rotationStartThreshold ?
+	const rotationAngle = rotationStartThreshold ?
 		`calc(clamp(
 			${rotationStartThreshold},
-			var(--angle),
+			var(${cssProps.angle}),
 			${rotationEndThreshold || "none"}
 		) - ${rotationStartThreshold})` :
 		"0rad";
@@ -278,18 +294,17 @@ TrigWheel.Text = function Text({
 		fontSize={fontSize}
 		{...props}
 		css={css`
-			--center-x: ${center.x}px;
-			--center-y: ${center.y}px;
 			--start-angle: ${startAngle};
 			--char-angle: ${charAngle};
-			--swept-angle: ${sweptAngle};
+			--text-length: ${letters.length};
+			--rotation-angle: ${rotationAngle};
 			--sweep: ${sweepSign};
 			text {
 				transform:
-					translate(calc(var(--center-x) - 50%), calc(var(--center-y) - 50%))
+					translate(calc(var(${cssProps.centerX}) - 50%), calc(var(${cssProps.centerY}) - 50%))
                 	rotate(calc(
 						var(--sweep) * 90deg + var(--start-angle)
-						+ var(--swept-angle)
+						+ var(--rotation-angle)
 						+ var(--sweep) * var(--char-angle) * (var(--i) + 0.5)
 					))
                 	translateY(calc(-1 * var(--sweep) * ${radius}px));
@@ -326,7 +341,7 @@ TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize
 	pb.circularArc(radius, angle + angularSize, angle);
 
 	// language=CSS prefix="div { --variable: " suffix="; }"
-	const sweptAngle = rotationStartThreshold ?
+	const rotationAngle = rotationStartThreshold ?
 		`calc(clamp(
 			${rotationStartThreshold},
 			var(--angle),
@@ -337,28 +352,12 @@ TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize
 	return <path
 		fill="currentColor" d={pb.toSVGPathString()}
 		css={css`
-			transform: rotate(${sweptAngle});
+			transform: rotate(${rotationAngle});
 			transform-box: view-box;
 			transform-origin: ${center.x}px ${center.y}px;
 		`}
 		{...props}
 	/>;
-}
-
-const angleLabelTransformer: Transformer<number> = a => round(+a - Math.PI, 4);
-TrigWheel.AngleLabel = function AngleLabel(props: React.ComponentProps<typeof motion.text>) {
-	const { center, angle, getOrRegister } = useTrigWheel();
-	return <motion.text
-		x={center.x} y={center.y}
-		css={css`
-			font-weight: 600;
-			transform-box: fill-box;
-			transform: translate(-50%, 25%);
-		`}
-		{...props}
-	>
-		{angle && getOrRegister("angle-label", angleLabelTransformer)}
-	</motion.text>;
 };
 
 export default TrigWheel;
