@@ -355,19 +355,19 @@ export default function SolutionStatement() {
 							div.title-group {
 								position: absolute;
 								inset: 0;
-	
+
 								display: grid;
 								grid-template-rows: 1fr 1fr;
 								row-gap: 8px;
 								@media ${device.mobileL} {
 									row-gap: 16px;
 								}
-	
+
 								transition-property: filter, opacity, transform;
-								transition-duration: 0.4s;
+								transition-duration: 0.3s;
 								transition-timing-function: ease, ease-in-out, ease;
 								transform-origin: 0 50%;
-	
+
 								opacity: 0;
 								filter: blur(10px);
 								transform: scale(1.1);
@@ -376,7 +376,7 @@ export default function SolutionStatement() {
 									filter: blur(0px);
 									transform: scale(1);
 								}
-								
+
 								& > h3.item-title {
 									align-self: end;
 								}
@@ -477,7 +477,6 @@ export default function SolutionStatement() {
 											startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
 											sweepDirection="ccw"
 											rotationStartThreshold={"0rad"}
-											// rotationEndThreshold={"calc(pi * 1rad)"}
 											fontSize={2.5}
 											color="var(--secondary-neutral-200)"
 										>{revealedText}</TrigWheel.Text>
@@ -487,7 +486,6 @@ export default function SolutionStatement() {
 											startAngle={"0rad"} charAngle={`${charAngle}rad`}
 											sweepDirection="ccw"
 											rotationStartThreshold={(2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad"}
-											// rotationEndThreshold={"calc(pi * 1rad)"}
 											fontSize={2.5}
 											color="var(--secondary-neutral-200)"
 										>{"LET'S KICKSTART YOUR"}</TrigWheel.Text>
@@ -500,9 +498,9 @@ export default function SolutionStatement() {
 										>{quotePart2}</TrigWheel.Text>
 										{/*<g style={{ color: "var(--secondary-neutral-700)" }}>*/}
 										{/*	<TextRing*/}
-										{/*		radius={TRIG_CIRCLE_RADIUS * 0.55}*/}
+										{/*		radius={TRIG_CIRCLE_RADIUS * 1.12}*/}
 										{/*		texts={["Ideate & document", "Sketch & blueprint", "Design & develop", "Refine & optimize"]}*/}
-										{/*		charAngle={0.08} fontSize={3}*/}
+										{/*		charAngle={0.03} fontSize={2}*/}
 										{/*	/>*/}
 										{/*</g>*/}
 									</ClippedG>
@@ -528,6 +526,16 @@ export default function SolutionStatement() {
 									<TrigWheel.Circle
 										fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
 										r={TRIG_CIRCLE_RADIUS * 0.24}
+									/>
+									<TrigWheel.Circle
+										fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
+										css={css`
+											--_radius: calc(0.24 * var(--radius));
+											--_circumference: calc(4 * pi * var(--_radius) / 1px);
+											r: var(--_radius);
+											stroke-dasharray: 0 var(--_circumference) var(--_circumference) 0;
+											stroke-dashoffset: calc(-8 * var(--_radius) * var(--angle) / (1px * 1rad));
+										`}
 									/>
 									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
 									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
