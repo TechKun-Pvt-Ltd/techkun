@@ -360,6 +360,7 @@ export default function SolutionStatement() {
 						<div css={css`
 							align-self: stretch;
 							position: relative;
+							isolation: isolate;
 							div.title-group {
 								position: absolute;
 								inset: 0;
@@ -371,43 +372,44 @@ export default function SolutionStatement() {
 									row-gap: 32px;
 								}
 
-								transition: --slider 0.6s ease-in-out;
-								//transition-property: transform, opacity, filter;
+								transition: 0.6s ease-in-out;
+								transition-property: transform, opacity, filter;
 								&[data-initial] {
 									transition: none;
 								}
-								transform-origin: 50 50%;
+								transform-origin: 50% 50%;
 
-								//transform: scale(calc(1 - abs(var(--_switch)) * 0.2)) translateX(calc(var(--_switch) * 25%));
-								//opacity: calc(1 - abs(var(--_switch)));
-								//filter: blur(calc(abs(var(--_switch)) * 20px));
+								transform: scale(calc(1 - abs(var(--_switch)) * 0.2)) translateX(calc(var(--_switch) * 10%));
+								opacity: calc(1 - abs(var(--_switch)));
+								filter: blur(calc(abs(var(--_switch)) * 20px));
+								z-index: calc(1 - abs(var(--_switch)));
 
-								@property --slider {
-									syntax: "<length-percentage>";
-									inherits: true;
-									initial-value: 0;
-								}
-								--tilt-offset: 50%;
-								--slider: calc(var(--_switch) * (100% + var(--tilt-offset)));
-								clip-path: polygon(
-									var(--slider) 0, calc(var(--slider) - var(--tilt-offset)) 100%,
-									calc(var(--slider) + 100%) 100%, calc(var(--slider) + 100% + var(--tilt-offset)) 0
-								);
-								background-color: var(--background);
-								&::before {
-									content: "";
-									position: absolute;
-									inset: 0;
-									background-color: var(--background);
-									transition: inherit;
-									--_thickness: 64px;
-									clip-path: polygon(
-										calc(var(--slider) + var(--_thickness) / 2) 0,
-										calc(var(--slider) - var(--tilt-offset) + var(--_thickness) / 2) 100%,
-										calc(var(--slider) - var(--tilt-offset) - var(--_thickness) / 2) 100%,
-										calc(var(--slider) - var(--_thickness) / 2) 0
-									);
-								}
+								//@property --slider {
+								//	syntax: "<length-percentage>";
+								//	inherits: true;
+								//	initial-value: 0;
+								//}
+								//--tilt-offset: 50%;
+								//--slider: calc(var(--_switch) * (100% + var(--tilt-offset)));
+								//clip-path: polygon(
+								//	var(--slider) 0, calc(var(--slider) - var(--tilt-offset)) 100%,
+								//	calc(var(--slider) + 100%) 100%, calc(var(--slider) + 100% + var(--tilt-offset)) 0
+								//);
+								//background-color: var(--background);
+								//&::after {
+								//	content: "";
+								//	position: absolute;
+								//	inset: 0;
+								//	background-color: var(--background);
+								//	transition: inherit;
+								//	--_thickness: 64px;
+								//	clip-path: polygon(
+								//		calc(var(--slider) + var(--_thickness) / 2) 0,
+								//		calc(var(--slider) - var(--tilt-offset) + var(--_thickness) / 2) 100%,
+								//		calc(var(--slider) - var(--tilt-offset) - var(--_thickness) / 2) 100%,
+								//		calc(var(--slider) - var(--_thickness) / 2) 0
+								//	);
+								//}
 
 								& > h3.item-title {
 									align-self: end;
