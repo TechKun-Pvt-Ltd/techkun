@@ -4,6 +4,7 @@ import {AnimationSequence, SequenceOptions} from "motion/react";
 import React, {useEffect, useRef} from "react";
 import {createAnimationsFromSequence} from "framer-motion/internals";
 import Link from "next/link";
+import useAbortSignal from "@/hooks/use-abort-signal";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -96,19 +97,17 @@ function ContactOptions() {
         }
     }
 
+    const abortSignal = useAbortSignal();
     useEffect(() => {
         if (!containerRef.current) return;
 
-        const abortController = new AbortController();
         const options = containerRef.current.querySelectorAll<HTMLElement>(`.contact-option`);
         for (const element of options) {
             elementStatesRef.current.push({ element });
-            element.addEventListener("pointerenter", _ => onHoverStart(element), { signal: abortController.signal });
-            element.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
+            element.addEventListener("pointerenter", _ => onHoverStart(element), { signal: abortSignal });
+            element.addEventListener("pointerleave", onHoverEnd, { signal: abortSignal });
         }
         startIdleAnimation();
-
-        return () => abortController.abort();
     }, []);
 
     function onHoverStart(hovered: HTMLElement) {
@@ -147,7 +146,7 @@ function ContactOptions() {
             stopHoverAnimations();
             hoveredElementStateRef.current = null;
             startIdleAnimation();
-        }, { once: true });
+        }, { once: true, signal: abortSignal });
     }
 
     const containerCss = css`

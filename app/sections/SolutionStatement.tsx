@@ -536,11 +536,13 @@ export default function SolutionStatement() {
 									/>
 									<g css={css`
 										.progress-indicator {
-											--_radius: calc(0.2 * var(--radius));
+											--_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
 											--_gap: calc(0.2 * var(--_radius));
 											--_circumference: calc(2 * pi * var(--_radius));
-											--_angle: clamp(0deg, var(--angle) - var(--i) * 90deg, 90deg);
+											--_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
 											--_switch: round(down, var(--_angle) / (90deg), 1);
+
+											r: var(--_radius);
 											stroke-dasharray:
 												0 calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap))
 												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)) var(--_circumference);
@@ -554,30 +556,22 @@ export default function SolutionStatement() {
 											style={{ '--i': i } as React.CSSProperties}
 											fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
 											strokeLinecap="butt"
-											r={TRIG_CIRCLE_RADIUS * 0.2}
 										/>)}
 									</g>
-									<g css={css`
-										.progress-indicator {
-											--_radius: calc(0.24 * var(--radius));
+									<TrigWheel.Circle
+										css={css`
+											--_radius: calc(0.24 * var(${TrigWheel.cssProps.radius}));
 											--_circumference: calc(2 * pi * var(--_radius));
-											--_angle: clamp(0deg, var(--angle) - var(--i) * 90deg, 90deg);
-											--_switch: calc(1 - round(down, var(--_angle) / (90deg), 1));
-											opacity: var(--_switch);
+
 											r: var(--_radius);
 											stroke-dasharray: 0 var(--_circumference) var(--_circumference) 0;
-											stroke-dashoffset: calc(-4 * var(--_radius) * var(--_angle) / (1rad));
+											stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
 
 											transition: 0.2s ease-in-out;
 											transition-property: opacity, filter;
-										}
-									`}>
-										{Array.from({length: 4}, (_, i) => <TrigWheel.Circle
-											key={i}
-											className="progress-indicator" style={{'--i': i} as React.CSSProperties}
-											fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
-										/>)}
-									</g>
+										`}
+										fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
+									/>
 									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
 									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
 									<AngleLabel fontSize="2.2" fill="var(--neutral-500)" />
