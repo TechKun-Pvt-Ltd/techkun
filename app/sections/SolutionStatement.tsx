@@ -103,6 +103,13 @@ const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
 const ANGLE_RANGE_START = 0;
 
+const titles = [
+	{ title: "User experience comes\u00A0first", subtitle: "We\u00A0investigate the user's\u00A0needs and\u00A0persona and create a\u00A0delightful human\u00A0experience for\u00A0them." },
+	{ title: "Precision & care", subtitle: "Every shortcut is a sin. We engineer every detail and build smooth, robust foundations to grow upon." },
+	{ title: "Document everything", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not memory." },
+	{ title: "Identity", subtitle: "We investigate your idea, understand\u00A0its meaning, and create a visual\u00A0identity for it." }
+];
+
 function ClippedG({clipPathId, pathData, ...props}: {
 	clipPathId: string;
 	pathData: string | MotionValue<string>;
@@ -341,10 +348,10 @@ export default function SolutionStatement() {
 						height: var(${svgSizeProp});
 						display: grid;
 						grid-template-columns: 1fr;
-						grid-template-rows: 2fr 8fr;
-						gap: 16px;
+						grid-template-rows: 12rem max-content;
+						gap: 32px;
 						@media ${device.tablet} {
-							grid-template-columns: 4fr 6fr;
+							grid-template-columns: 7fr 13fr;
 							grid-template-rows: 1fr;
 							align-items: center;
 						}
@@ -359,8 +366,8 @@ export default function SolutionStatement() {
 								display: grid;
 								grid-template-rows: 1fr 1fr;
 								row-gap: 8px;
-								@media ${device.mobileL} {
-									row-gap: 16px;
+								@media ${device.tablet} {
+									row-gap: 32px;
 								}
 
 								transition-property: filter, opacity, transform;
@@ -382,10 +389,10 @@ export default function SolutionStatement() {
 								}
 							}
 						`}>
-							{["User experience comes\u00A0first", "Precision & care", "Document everything", "Identity"].map((item, i) => {
+							{titles.map((item, i) => {
 								return <div key={i} className="title-group" data-active={i === 0}>
-									<h3 className="item-title" key={item}>{item}</h3>
-									<p className="item-subtitle" key={i}>{item}</p>
+									<h3 className="item-title">{item.title}</h3>
+									<p className="item-subtitle">{item.subtitle}</p>
 								</div>;
 							})}
 						</div>
@@ -516,27 +523,61 @@ export default function SolutionStatement() {
 									<TrigWheel.Circle
 										fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
 										r={TRIG_CIRCLE_RADIUS * 0.32}
-										style={{
-											// filter:
-											// 	"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-											// 	"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-											// 	"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
-										}}
+										// style={{
+										// 	filter:
+										// 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+										// 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+										// 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
+										// }}
 									/>
 									<TrigWheel.Circle
 										fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
 										r={TRIG_CIRCLE_RADIUS * 0.24}
 									/>
-									<TrigWheel.Circle
-										fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
-										css={css`
+									<g css={css`
+										.progress-indicator {
+											--_radius: calc(0.2 * var(--radius));
+											--_gap: calc(0.2 * var(--_radius));
+											--_circumference: calc(2 * pi * var(--_radius));
+											--_angle: clamp(0deg, var(--angle) - var(--i) * 90deg, 90deg);
+											--_switch: round(down, var(--_angle) / (90deg), 1);
+											stroke-dasharray:
+												0 calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap))
+												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)) var(--_circumference);
+											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--secondary-neutral-800) calc(var(--_switch) * 100%));
+
+											transition: stroke 0.2s ease-in-out;
+										}
+									`}>
+										{Array.from({ length: 4 }, (_, i) => <TrigWheel.Circle
+											key={i} className="progress-indicator"
+											style={{ '--i': i } as React.CSSProperties}
+											fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
+											strokeLinecap="butt"
+											r={TRIG_CIRCLE_RADIUS * 0.2}
+										/>)}
+									</g>
+									<g css={css`
+										.progress-indicator {
 											--_radius: calc(0.24 * var(--radius));
-											--_circumference: calc(4 * pi * var(--_radius) / 1px);
+											--_circumference: calc(2 * pi * var(--_radius));
+											--_angle: clamp(0deg, var(--angle) - var(--i) * 90deg, 90deg);
+											--_switch: calc(1 - round(down, var(--_angle) / (90deg), 1));
+											opacity: var(--_switch);
 											r: var(--_radius);
 											stroke-dasharray: 0 var(--_circumference) var(--_circumference) 0;
-											stroke-dashoffset: calc(-8 * var(--_radius) * var(--angle) / (1px * 1rad));
-										`}
-									/>
+											stroke-dashoffset: calc(-4 * var(--_radius) * var(--_angle) / (1rad));
+
+											transition: 0.2s ease-in-out;
+											transition-property: opacity, filter;
+										}
+									`}>
+										{Array.from({length: 4}, (_, i) => <TrigWheel.Circle
+											key={i}
+											className="progress-indicator" style={{'--i': i} as React.CSSProperties}
+											fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
+										/>)}
+									</g>
 									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
 									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
 									<AngleLabel fontSize="2.2" fill="var(--neutral-500)" />

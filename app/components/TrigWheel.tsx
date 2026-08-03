@@ -283,7 +283,7 @@ TrigWheel.Text = function Text({
 		`calc(clamp(
 			${rotationStartThreshold},
 			var(${cssProps.angle}),
-			${rotationEndThreshold || "none"}
+			${rotationEndThreshold || `${rotationStartThreshold} + 360deg`}
 		) - ${rotationStartThreshold})` :
 		"0rad";
 
@@ -345,7 +345,7 @@ TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize
 		`calc(clamp(
 			${rotationStartThreshold},
 			var(--angle),
-			${rotationEndThreshold || "none"}
+			${rotationEndThreshold || `${rotationStartThreshold} + 360deg`}
 		) - ${rotationStartThreshold})` :
 		"0rad";
 
