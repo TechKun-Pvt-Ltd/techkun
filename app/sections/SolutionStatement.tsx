@@ -195,16 +195,17 @@ export default function SolutionStatement() {
 	useEffect(() => {
 		if (!targetRef.current) return;
 
-		let currentHeadingIndex = 0;
-		const groups = targetRef.current.querySelectorAll("div.title-group");
+		let currentIndex = 0;
+		const groups = targetRef.current.querySelectorAll<HTMLDivElement>("div.title-group");
+		queueMicrotask(() => groups.forEach(group => group.removeAttribute("data-initial")));
 		function callback(a: Angle) {
-			const newValue = Math.min(Math.floor((+a - ANGLE_RANGE_START) / +Angle.HALF_PI), groups.length - 1);
-			if (currentHeadingIndex !== newValue) {
-				currentHeadingIndex = newValue;
-				groups.forEach((group, i) => (
-					group.setAttribute("data-active", String(i === newValue))
-				));
-			}
+			const targetIndex = Math.min(Math.floor((+a - ANGLE_RANGE_START) / +Angle.HALF_PI), groups.length - 1);
+			if (targetIndex === currentIndex) return;
+
+			groups.forEach((group, i) => {
+				group.style.setProperty("--_switch", Math.sign(i - targetIndex).toString());
+			});
+			currentIndex = targetIndex;
 		}
 		callback(angle.get());
 		return angle.on("change", callback);
@@ -370,18 +371,42 @@ export default function SolutionStatement() {
 									row-gap: 32px;
 								}
 
-								transition-property: filter, opacity, transform;
-								transition-duration: 0.3s;
-								transition-timing-function: ease, ease-in-out, ease;
-								transform-origin: 0 50%;
+								transition: --slider 0.6s ease-in-out;
+								//transition-property: transform, opacity, filter;
+								&[data-initial] {
+									transition: none;
+								}
+								transform-origin: 50 50%;
 
-								opacity: 0;
-								filter: blur(10px);
-								transform: scale(1.1);
-								&[data-active="true"] {
-									opacity: 1;
-									filter: blur(0px);
-									transform: scale(1);
+								//transform: scale(calc(1 - abs(var(--_switch)) * 0.2)) translateX(calc(var(--_switch) * 25%));
+								//opacity: calc(1 - abs(var(--_switch)));
+								//filter: blur(calc(abs(var(--_switch)) * 20px));
+
+								@property --slider {
+									syntax: "<length-percentage>";
+									inherits: true;
+									initial-value: 0;
+								}
+								--tilt-offset: 50%;
+								--slider: calc(var(--_switch) * (100% + var(--tilt-offset)));
+								clip-path: polygon(
+									var(--slider) 0, calc(var(--slider) - var(--tilt-offset)) 100%,
+									calc(var(--slider) + 100%) 100%, calc(var(--slider) + 100% + var(--tilt-offset)) 0
+								);
+								background-color: var(--background);
+								&::before {
+									content: "";
+									position: absolute;
+									inset: 0;
+									background-color: var(--background);
+									transition: inherit;
+									--_thickness: 64px;
+									clip-path: polygon(
+										calc(var(--slider) + var(--_thickness) / 2) 0,
+										calc(var(--slider) - var(--tilt-offset) + var(--_thickness) / 2) 100%,
+										calc(var(--slider) - var(--tilt-offset) - var(--_thickness) / 2) 100%,
+										calc(var(--slider) - var(--_thickness) / 2) 0
+									);
 								}
 
 								& > h3.item-title {
@@ -390,7 +415,12 @@ export default function SolutionStatement() {
 							}
 						`}>
 							{titles.map((item, i) => {
-								return <div key={i} className="title-group" data-active={i === 0}>
+								return <div
+									key={i}
+									className="title-group"
+									style={{ "--_switch": i === 0 ? 0 : 1 } as React.CSSProperties}
+									data-initial
+								>
 									<h3 className="item-title">{item.title}</h3>
 									<p className="item-subtitle">{item.subtitle}</p>
 								</div>;
