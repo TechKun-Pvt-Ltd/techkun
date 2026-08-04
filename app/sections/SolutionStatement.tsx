@@ -372,17 +372,38 @@ export default function SolutionStatement() {
 									row-gap: 32px;
 								}
 
-								transition: 0.6s ease-in-out;
-								transition-property: transform, opacity, filter;
+								transition: 0.3s ease;
+								transition-property: opacity, filter;
 								&[data-initial] {
 									transition: none;
 								}
-								transform-origin: 50% 50%;
 
-								transform: scale(calc(1 - abs(var(--_switch)) * 0.2)) translateX(calc(var(--_switch) * 10%));
 								opacity: calc(1 - abs(var(--_switch)));
-								filter: blur(calc(abs(var(--_switch)) * 20px));
-								z-index: calc(1 - abs(var(--_switch)));
+								filter: blur(calc(abs(var(--_switch)) * 10px));
+
+								--1-switch: max(var(--_switch), 0);
+								--minus-1-switch: min(var(--_switch), 0);
+
+								.item-title {
+									transform-origin: 100% 100%;
+									transform:
+										translateX(150%)
+										rotate(calc(var(--minus-1-switch) * -9deg))
+										translateX(-150%)
+										scale(calc(1 - var(--1-switch) * 0.2));
+								}
+								.item-subtitle {
+									transform-origin: 100% 0;
+									transform:
+										translateX(150%)
+										rotate(calc(var(--minus-1-switch) * 9deg))
+										translateX(-150%)
+										scale(calc(1 - var(--1-switch) * 0.2));
+								}
+								.item-title, .item-subtitle {
+									transition: inherit;
+									transition-property: transform;
+								}
 
 								//@property --slider {
 								//	syntax: "<length-percentage>";
