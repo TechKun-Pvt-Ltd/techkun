@@ -12,6 +12,11 @@ interface LogLine {
 	timestamp: string;
 	message: string;
 }
+interface HighlightedLogLine {
+	timestamp: string;
+	message: string;
+	location?: string;
+}
 
 function errorLog(...lines: LogLine[]) {
 	return {
@@ -28,22 +33,38 @@ function warningLog(...lines: LogLine[]) {
 function logLine(timestamp: string, message: string) {
 	return { timestamp, message };
 }
+function highlightedLog(timestamp: string, message: string, location?: string) {
+	return { timestamp, message, location };
+}
+
+export const hightlightedLogs: HighlightedLogLine[] = [
+	highlightedLog("02:11:42.315", ""),
+	highlightedLog("02:11:42.315", "The world is full of sloppy, unprofessional, and lifeless software.", "(/auth/context.js:58:31)"),
+	highlightedLog("02:11:42.315", ""),
+	highlightedLog("02:11:42.315", "Software with poor or mediocre user experiences and technical debt.", "(/services/user.service.js:148:19)"),
+	highlightedLog("02:11:42.315", "Software that spends more time being repaired than growing."),
+	highlightedLog("02:11:42.315", ""),
+	highlightedLog("02:11:42.315", "Your users are human beings, asking for human experiences.", "(/integrations/stripe.js:92:17)"),
+	highlightedLog("02:11:42.315", "We can help you give them that and, in turn, make a profit.", ""),
+	highlightedLog("02:11:42.315", ""),
+];
 
 export const applicationLogs: Log[] = [
-	warningLog(
-		logLine("02:11:42.315", " Using fallback config because FEATURE_FLAGS is undefined")
-	),
 	errorLog(
-		logLine("02:11:42.881", " PrismaClientKnownRequestError:"),
-		logLine("02:11:42.881", " Invalid `prisma.user.create()` invocation:")
+		logLine("02:11:42.881", "")
+	),
+	warningLog(
+		logLine("02:11:42.315", "Using fallback config because FEATURE_FLAGS is undefined"),
+		logLine("02:11:42.881", "PrismaClientKnownRequestError:"),
+		logLine("02:11:42.881", "Invalid `prisma.user.create()` invocation:"),
 	),
 	errorLog(
 		logLine("02:11:42.881", ""),
 	),
 	errorLog(
-		logLine("02:11:42.881", " Unique constraint failed on the fields: (`email`)"),
-		logLine("02:11:42.881", "     at RequestHandler.handleRequestError (/app/node_modules/@prisma/client/runtime/index.js:49012:13)"),
-		logLine("02:11:42.881", "     at async createUser (/app/dist/services/user.service.js:148:19)"),
+		logLine("02:11:42.881", "Unique constraint failed on the fields: (`email`)"),
+		logLine("02:11:42.881", "    at RequestHandler.handleRequestError (/app/node_modules/@prisma/client/runtime/index.js:49012:13)"),
+		logLine("02:11:42.881", "    at async createUser (/app/dist/services/user.service.js:148:19)"),
 	),
 
 	// {
@@ -52,27 +73,27 @@ export const applicationLogs: Log[] = [
 	// },
 
 	errorLog(
-		logLine("02:11:44.781", " TypeError: Cannot read properties of undefined (reading 'organizationId')"),
-		logLine("02:11:44.781", "     at getUserContext (/app/dist/server/auth/context.js:58:31)"),
-		logLine("02:11:44.781", "     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)")
+		logLine("02:11:44.781", "TypeError: Cannot read properties of undefined (reading 'organizationId')"),
+		logLine("02:11:44.781", "    at getUserContext (/app/dist/server/auth/context.js:58:31)"),
+		logLine("02:11:44.781", "    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)")
 	),
 	errorLog(
-		logLine("02:11:45.992", " Error: Missing lock for job retry-email:8472"),
-		logLine("02:11:45.992", "     at Scripts.finishedErrors (/app/node_modules/bullmq/dist/cjs/classes/rough-work.js:213:24)")
+		logLine("02:11:45.992", "Error: Missing lock for job retry-email:8472"),
+		logLine("02:11:45.992", "    at Scripts.finishedErrors (/app/node_modules/bullmq/dist/cjs/classes/rough-work.js:213:24)")
 	),
 	// {
 	// 	timestamp: "02:11:45.992",
 	// 	message: " BullMQ: Missing lock for job 8472. moveToFinished"
 	// },
 	errorLog(
-		logLine("02:11:47.441", " Error: connect ECONNREFUSED redis:6379"),
-		logLine("02:11:47.441", "     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {"),
-		logLine("02:11:47.441", "   errno: -111,"),
-		logLine("02:11:47.441", "   code: 'ECONNREFUSED',"),
-		logLine("02:11:47.441", "   syscall: 'connect',"),
-		logLine("02:11:47.441", "   address: 'redis',"),
-		logLine("02:11:47.441", "   port: 6379"),
-		logLine("02:11:47.441", " }")
+		logLine("02:11:47.441", "Error: connect ECONNREFUSED redis:6379"),
+		logLine("02:11:47.441", "    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {"),
+		logLine("02:11:47.441", "  errno: -111,"),
+		logLine("02:11:47.441", "  code: 'ECONNREFUSED',"),
+		logLine("02:11:47.441", "  syscall: 'connect',"),
+		logLine("02:11:47.441", "  address: 'redis',"),
+		logLine("02:11:47.441", "  port: 6379"),
+		logLine("02:11:47.441", "}")
 	),
 
 	// {
@@ -81,20 +102,20 @@ export const applicationLogs: Log[] = [
 	// },
 
 	errorLog(
-		logLine("02:11:48.991", " Error: Hydration failed because the initial UI does not match what was rendered on the server."),
-		logLine("02:11:48.991", "     at throwOnHydrationMismatch (/app/node_modules/react-dom/cjs/react-dom.development.js:12507:9)")
+		logLine("02:11:48.991", "Error: Hydration failed because the initial UI does not match what was rendered on the server."),
+		logLine("02:11:48.991", "    at throwOnHydrationMismatch (/app/node_modules/react-dom/cjs/react-dom.development.js:12507:9)")
 	),
 	errorLog(
-		logLine("02:11:50.552", " UnhandledPromiseRejectionWarning: Error: Request failed with status code 429"),
-		logLine("02:11:50.552", "     at createError (/app/node_modules/axios/lib/core/createError.js:16:15)"),
-		logLine("02:11:50.552", "     at settle (/app/node_modules/axios/lib/core/settle.js:17:12)")
+		logLine("02:11:50.552", "UnhandledPromiseRejectionWarning: Error: Request failed with status code 429"),
+		logLine("02:11:50.552", "    at createError (/app/node_modules/axios/lib/core/createError.js:16:15)"),
+		logLine("02:11:50.552", "    at settle (/app/node_modules/axios/lib/core/settle.js:17:12)")
 	),
 	errorLog(
-		logLine("02:11:51.772", " [ERROR] Webhook signature verification failed")
+		logLine("02:11:51.772", "[ERROR] Webhook signature verification failed")
 	),
 	errorLog(
-		logLine("02:11:51.772", " StripeSignatureVerificationError: No signatures found matching the expected signature for payload"),
-		logLine("02:11:51.772", "     at validateWebhook (/app/dist/integrations/stripe.js:92:17)")
+		logLine("02:11:51.772", "StripeSignatureVerificationError: No signatures found matching the expected signature for payload"),
+		logLine("02:11:51.772", "    at validateWebhook (/app/dist/integrations/stripe.js:92:17)")
 	)
 
 	// {

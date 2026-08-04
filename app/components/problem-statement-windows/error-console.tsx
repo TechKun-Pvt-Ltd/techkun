@@ -2,7 +2,7 @@ import {css} from "@emotion/react";
 import React, {useEffect, useRef, useState} from "react";
 import {TextScramble, TextScrambleRef} from "@/components/motion-primitives/text-scramble";
 import {delayInSeconds} from "motion";
-import {applicationLogs} from "./applicationLogs";
+import {applicationLogs, hightlightedLogs} from "./applicationLogs";
 import {inView} from "motion/react";
 
 const texts = [
@@ -50,6 +50,7 @@ export default function ErrorConsole() {
 		if (scrambleRef.current && itemIndex >= 0)
 			scrambleRef.current.scramble();
 	}, [itemIndex]);
+	const space = "\u00A0\u00A0\u00A0\u00A0";
 
 	return <div css={css`
         overflow: clip;
@@ -59,26 +60,39 @@ export default function ErrorConsole() {
 			transparent
 		);
         font-family: monospace;
+		color: var(--neutral-700);
 	`}>
-		<p className="text-xl" style={{marginBlockEnd: '1.25em', whiteSpace: 'nowrap'}}>
-			<span css={css`color: var(--muted-foreground);`}>{">\u00A0"}</span>
-			<TextScramble
-				ref={scrambleRef} innerRef={scrambleInnerRef}
-				as="span" duration={SCRAMBLE_DURATION}
-			>{texts[itemIndex] ?? ""}</TextScramble>
-		</p>
-		<div css={css`
-            color: var(--neutral-700);
+		{/*<p className="text-lg" style={{whiteSpace: 'nowrap'}}>*/}
+		{/*</p>*/}
+		<div className="text-lg" css={css`
+			height: 480px;
 		`}>
 			<p css={css`
                 white-space: pre;
 				user-select: none;
                 display: grid;
                 grid-template-columns: auto 1fr;
+				.highlighted {
+					color: var(--foreground);
+					.location {
+						color: var(--neutral-700);
+					}
+				}
 			`}>
+				{hightlightedLogs.flatMap((log, logIndex) =>
+					<React.Fragment key={logIndex}>
+						<span>{log.timestamp}{space}</span>
+						<span className="highlighted">{log.message} {log.location && <span className="location">{log.location}</span>}</span>
+					</React.Fragment>
+				)}
+				<span>{"02:11:42.881"}{space}</span>
+				<TextScramble
+					ref={scrambleRef} innerRef={scrambleInnerRef}
+					as="span" duration={SCRAMBLE_DURATION}
+				>{texts[itemIndex] ?? ""}</TextScramble>
 				{applicationLogs.flatMap((log, logIndex) =>
 					log.lines.map((line, lineIndex) => <React.Fragment key={`${logIndex}-${lineIndex}`}>
-						<span>{line.timestamp}  </span>
+						<span>{line.timestamp}{space}</span>
 						<span>{line.message}</span>
 					</React.Fragment>)
 				)}
