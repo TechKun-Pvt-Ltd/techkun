@@ -1,6 +1,11 @@
 :root {
-    --mobile-s-to-laptop: clamp(0, (100vw - var(--mobile-s)) / (var(--laptop) - var(--mobile-s)), 1);
-    --mobile-l-to-laptop: clamp(0, (100vw - var(--mobile-l)) / (var(--laptop) - var(--mobile-l)), 1);
+    --mobile-s-to-laptop: progress(100vw, var(--mobile-s), var(--laptop));
+    --mobile-l-to-laptop: progress(100vw, var(--mobile-l), var(--laptop));
+
+    @supports not (--progress-number: progress(10px, 0px, 50px)) {
+        --mobile-s-to-laptop: clamp(0, (100vw - var(--mobile-s)) / (var(--laptop) - var(--mobile-s)), 1);
+        --mobile-l-to-laptop: clamp(0, (100vw - var(--mobile-l)) / (var(--laptop) - var(--mobile-l)), 1);
+    }
 }
 
 @property --mobile-s {
@@ -39,6 +44,7 @@
     initial-value: 0;
 }
 
+/* UGLY WORKAROUND BECAUSE FIREFOX CAN'T GET ITS ACT TOGETHER */
 @supports not (opacity: calc(50vw / 100vw)) {
     @property --num-0 {
         syntax: "<length>";

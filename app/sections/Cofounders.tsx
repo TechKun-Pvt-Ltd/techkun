@@ -192,6 +192,9 @@ export default function Cofounders() {
         .links {
             display: flex;
             gap: inherit;
+            .link {
+                color: inherit;
+            }
         }
 
         .links .link:before {
@@ -202,7 +205,6 @@ export default function Cofounders() {
             aspect-ratio: 1 / 1;
             transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
             transition-property: ${gradientColor1}, ${gradientColor2};
-            color: var(--secondary-neutral-200);
             ${gradientColor1}: currentColor;
             ${gradientColor2}: currentColor;
             background: linear-gradient(
@@ -279,9 +281,9 @@ export default function Cofounders() {
                             })}
                         </div>
                         <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
-                        <div css={contactsCss} className="text-xl">
+                        <div css={contactsCss} className="item-subtitle">
                             <EmailLink
-                                style={{ whiteSpace: "nowrap", color: "var(--secondary-neutral-200)" }}
+                                style={{ whiteSpace: "nowrap", color: "inherit" }}
                                 address={item.mail} text={item.subtitle}
                                 iconSize="1em" iconStrokeWidth="1.4"
                             />

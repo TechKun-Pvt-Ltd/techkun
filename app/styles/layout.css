@@ -1,5 +1,5 @@
 :root {
-    --page-max-width: 90rem;
+    --page-max-width: 84rem;
     --page-padding: clamp(16px, 4vw, 32px);
 
     --navbar-height: 4.8rem;

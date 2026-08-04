@@ -79,7 +79,7 @@ export default function MeetTechKun() {
             height: max-content;
             display: grid;
             grid-template-columns: subgrid;
-            row-gap: 96px;
+            row-gap: clamp(64px, 10vh, 96px);
             padding-block: 640px;
         `}>
             <div css={css`
@@ -132,11 +132,17 @@ export default function MeetTechKun() {
                 )}
             </div>
 
-            <h2 className="section-title" css={css`
+            <div css={css`
                 grid-column: 1 / -1;
                 text-align: center;
+                h2 {
+                    margin-block-end: 0.25em;
+                }
                 //text-shadow: 0 0 2px var(--muted-foreground);
-            `}>Meet TechKun,<br/>where we give your product an identity.</h2>
+            `}>
+                <h2 className="section-title">Meet TechKun</h2>
+                <p className="section-subtitle">where we give your product an&nbsp;identity.</p>
+            </div>
         </div>
     </section>;
 };

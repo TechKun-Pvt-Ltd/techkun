@@ -25,7 +25,7 @@ const gradientFill = keyframes`
         --gradient-progress: 0%;
     }
     to {
-        --gradient-progress: 75%;
+        --gradient-progress: 25%;
     }
 `;
 

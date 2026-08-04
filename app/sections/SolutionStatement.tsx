@@ -1,16 +1,23 @@
 import {css} from "@emotion/react";
-import React, {useEffect, useRef} from "react";
+import React, {JSX, useEffect, useRef} from "react";
 import {
 	animate,
-	AnimationPlaybackControlsWithThen, interpolate, inView,
+	AnimationPlaybackControlsWithThen,
+	interpolate,
+	inView,
 	motion,
 	useMotionValue,
-	useScroll, useTransform, ValueAnimationTransition
+	useScroll,
+	useTransform,
+	ValueAnimationTransition
 } from "motion/react";
 import {Angle, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal";
-import TrigWheel from "@/app/components/TrigWheel";
+import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "@/app/components/TrigWheel";
 import {round} from "svg-path-kit/numbers";
+import {MotionValue} from "motion";
+import {Once} from "@/components/Once";
+import {device} from "@/app/styles/device-breakpoints";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -92,76 +99,225 @@ function SectionHeading() {
 
 const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
-const TRIG_CIRCLE_RADIUS = 0.4 * VIEW_BOX_SIZE;
+const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
-const ANGLE_RANGE: [number, number] = [-Math.PI, Math.PI];
+const ANGLE_RANGE_START = 0;
 
-const centerPoint = Point2D.of(CIRCLE_CENTER, CIRCLE_CENTER);
+const titles = [
+	{ title: "User experience comes\u00A0first", subtitle: "We\u00A0investigate the user's\u00A0needs and\u00A0persona and create a\u00A0delightful human\u00A0experience for\u00A0them." },
+	{ title: "Precision & care", subtitle: "Every shortcut is a sin. We engineer every detail and build smooth, robust foundations to grow upon." },
+	{ title: "Document everything", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not memory." },
+	{ title: "Identity", subtitle: "We investigate your idea, understand\u00A0its meaning, and create a visual\u00A0identity for it." }
+];
 
-const icons = [
-	{
-		size: 4.5,
-		position: centerPoint.add(Vector2D.polar(TRIG_CIRCLE_RADIUS, -7 * Math.PI / 8)),
-		render() {
-			return <svg
-				x={this.position.x - this.size / 2} y={this.position.y - this.size / 2}
-				width={this.size} height={this.size} viewBox="0 0 24 24"
-				fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-				strokeLinejoin="round" preserveAspectRatio="xMidYMid"
-			>
-				<path d="M 7 7 C 7 4.2386 9.2386 2 12 2 C 14.7614 2 17 4.2386 17 7 C 17 8.3261 16.4732 9.5979 15.5355 10.5355 C 14.5979 11.4732 14.0711 12.745 14.0711 14.0711 C 14.0711 15.2149 13.1438 16.1421 12 16.1421 C 10.8562 16.1421 9.9289 15.2149 9.9289 14.0711 C 9.9289 12.745 9.4021 11.4732 8.4645 10.5355 C 7.5268 9.5979 7 8.3261 7 7 M 13.4645 18.5355 C 13.0761 18.9239 12.5493 19.1421 12 19.1421 C 11.4507 19.1421 10.9239 18.9239 10.5355 18.5355 M 13.0355 21.6147 C 12.3947 21.9846 11.6053 21.9846 10.9645 21.6147"/>
-			</svg>;
-		}
-	},
-	{
-		size: 4,
-		position: centerPoint.add(Vector2D.polar(TRIG_CIRCLE_RADIUS, -6 * Math.PI / 8)),
-		render() {
-			return <svg
-				x={this.position.x - this.size / 2} y={this.position.y - this.size / 2}
-				width={this.size} height={this.size} viewBox="0 0 24 24"
-				fill="none" stroke="currentColor" strokeWidth="2"
-				strokeLinecap="round" strokeLinejoin="round"
-			>
-				<path
-					d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"/>
-				<path d="M14.487 7.858A1 1 0 0 1 14 7V2"/>
-				<path
-					d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"/>
-				<path d="M8 18h1"/>
-			</svg>;
-		}
-	}
-].map(({position, ...icon}) => (
-	{ ...icon, position: Point2D.of(round(position.x, 4), round(position.y, 4)) }
-));
+function ClippedG({clipPathId, pathData, ...props}: {
+	clipPathId: string;
+	pathData: string | MotionValue<string>;
+} & React.ComponentProps<"g">) {
+	return <>
+		<Once id={clipPathId}>
+			<defs>
+				<clipPath id={clipPathId}>
+					<motion.path d={pathData} />
+				</clipPath>
+			</defs>
+		</Once>
+		<g clipPath={`url(#${clipPathId})`} {...props} />
+	</>;
+}
+
+const MINUS_ONE_AND_ONE = [-1, 1] as const;
+
+function IconRing({ radius, size = 4, renderers }: {
+	radius: number;
+	size: number;
+	renderers: ((position: Point2D, size: number) => JSX.Element)[];
+}) {
+	const { center } = useTrigWheel();
+	const HALF_PI = 0.5 * Math.PI;
+	const RELATIVE_POSITION = Math.PI / 6 - Math.PI / 60;
+	return renderers.map((render, i) => {
+		const angle = Math.floor(i * 0.5) * HALF_PI + MINUS_ONE_AND_ONE[i % 2] * RELATIVE_POSITION;
+		const position = center.add(Vector2D.polar(radius, angle));
+		return <React.Fragment key={i}>
+			{/*<circle cx={icon.position.x} cy={icon.position.y} r="4" />*/}
+			{render(Point2D.of(round(position.x, 4), round(position.y, 4)), size)}
+		</React.Fragment>
+	});
+}
+
+function TextRing({radius, texts, charAngle, fontSize = 3}: {
+	radius: number;
+	texts: string[];
+	charAngle: number;
+	fontSize: number;
+}) {
+	return texts.map((text, i) => {
+		const sweepDirection = MINUS_ONE_AND_ONE[Math.floor(i / 2) % 2];
+		return <TrigWheel.Text
+			key={text}
+			startAngle={`${Math.PI / 4 + i * Math.PI / 2 + -sweepDirection * charAngle * text.length / 2}rad`}
+			sweepDirection={sweepDirection}
+			charAngle={charAngle + "rad"}
+			radius={radius}
+			fontSize={fontSize}
+		>{text}</TrigWheel.Text>;
+	});
+}
+
+const angleLabelTransformer: TrigAngleTransformer<number> = a => round(+a - Math.PI, 4);
+function AngleLabel(props: React.ComponentProps<typeof motion.text>) {
+	const { center, angle, getOrRegister } = useTrigWheel();
+	return <motion.text
+		x={center.x} y={center.y}
+		css={css`
+			font-weight: 600;
+			transform-box: fill-box;
+			transform: translate(-50%, 25%);
+		`}
+		{...props}
+	>
+		{angle && getOrRegister("angle-label", angleLabelTransformer)}
+	</motion.text>;
+}
 
 const svgSizeProp = "--_svg-size";
+
+const firstText = "Your product needs a";
+const revealedText = "revolution";
+const charAngle = 0.064;
+
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
-	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 60%", "end 40%"]});
-	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], ANGLE_RANGE)(sp)));
-	// const angle = useTransform(theta, Angle.of);
+	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
+	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
 
-	// const firstText = "Precision & care that AI can't match.";
-	// const charAngle = 0.06;
-	// const firstTextEndAngle = Math.PI - charAngle * 0.5;//-(Math.PI / 2 - charAngle * (" care".length + 0.65));
-	// const firstTxtSweptAngle = charAngle * firstText.length;
-	// const firstTxtStartAngle = useTransform(angle, a => {
-	// 	const angleValue = Math.min(+a, firstTextEndAngle);
-	// 	const startValue = -178 * Math.PI / 180;
-	// 	const diff = (angleValue - startValue) - firstTxtSweptAngle;
-	// 	return diff > 0 ? `${startValue + diff}rad` : `${startValue}rad`;
-	// });
-	// const secondTxtStartAngle = firstTextEndAngle + charAngle;
+	useEffect(() => {
+		if (!targetRef.current) return;
+
+		let currentIndex = 0;
+		const groups = targetRef.current.querySelectorAll<HTMLDivElement>("div.title-group");
+		queueMicrotask(() => groups.forEach(group => group.removeAttribute("data-initial")));
+		function callback(a: Angle) {
+			const targetIndex = Math.min(Math.floor((+a - ANGLE_RANGE_START) / +Angle.HALF_PI), groups.length - 1);
+			if (targetIndex === currentIndex) return;
+
+			groups.forEach((group, i) => {
+				group.style.setProperty("--_switch", Math.sign(i - targetIndex).toString());
+			});
+			currentIndex = targetIndex;
+		}
+		callback(angle.get());
+		return angle.on("change", callback);
+	}, []);
 
 	const [frontClipPath, backClipPath] = useConicReveal({
 		angle: angle,
-		startAngle: ANGLE_RANGE[0],
+		startAngle: ANGLE_RANGE_START,
 		centerX: CIRCLE_CENTER,
 		centerY: CIRCLE_CENTER,
-		radius: TRIG_CIRCLE_RADIUS + 10
+		radius: VIEW_BOX_SIZE / 2
 	});
+
+	const innerCircleRadius = TRIG_CIRCLE_RADIUS * 0.48;
+	const innerCircle = <TrigWheel.Circle
+		r={innerCircleRadius}
+		fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
+		strokeWidth="0.25"
+		strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
+	/>;
+
+	const radialBoxes = <>
+		{/*<TrigWheel.RadialBox*/}
+		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}*/}
+		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}*/}
+		{/*	rotationStartThreshold="0rad"*/}
+		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
+		{/*	strokeWidth="0.2"*/}
+		{/*/>*/}
+		{/*<TrigWheel.RadialBox*/}
+		{/*	radius={TRIG_CIRCLE_RADIUS * 0.68} angle={Math.PI + Math.PI / 3 + Math.PI / 30 + Math.PI / 30}*/}
+		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.24} angularSize={Math.PI / 4 - Math.PI / 15}*/}
+		{/*	rotationStartThreshold="0rad"*/}
+		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
+		{/*	strokeWidth="0.2"*/}
+		{/*/>*/}
+		<TrigWheel.RadialBox
+			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}
+			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}
+			rotationStartThreshold="0rad"
+			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+			strokeWidth="0.2"
+		/>
+		<TrigWheel.RadialBox
+			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI}
+			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 3}
+			rotationStartThreshold="0rad"
+			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+			strokeWidth="0.2"
+		/>
+		{/*<TrigWheel.RadialBox*/}
+		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI - (Math.PI / 4 + 2 * Math.PI / 30)}*/}
+		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={-Math.PI / 4}*/}
+		{/*	rotationStartThreshold="0rad"*/}
+		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
+		{/*	strokeWidth="0.2"*/}
+		{/*/>*/}
+	</>;
+	const radialBoxesTextBack = <>
+		<TrigWheel.Text
+			style={{ textTransform: "uppercase" }}
+			radius={TRIG_CIRCLE_RADIUS * 0.9}
+			startAngle={Math.PI * (1 + 1 / 45) + "rad"}
+			rotationStartThreshold="0rad"
+			charAngle={0.04 + "rad"} fontSize={2.5}
+			color="var(--neutral-700)"
+		>Forgettable experiences</TrigWheel.Text>
+		<TrigWheel.Text
+			style={{ textTransform: "uppercase" }}
+			radius={TRIG_CIRCLE_RADIUS * 0.9}
+			startAngle={Math.PI * (1 - 1 / 4.5) + "rad"}
+			rotationStartThreshold="0rad"
+			charAngle={0.04 + "rad"} fontSize={2.5}
+			color="var(--neutral-700)"
+		>Technical debts</TrigWheel.Text>
+	</>;
+	const radialBoxesTextFront = <>
+		<TrigWheel.Text
+			style={{ textTransform: "uppercase" }}
+			radius={TRIG_CIRCLE_RADIUS * 0.9}
+			startAngle={Math.PI * (1 + 1 / 3 - 1 / 30) + "rad"}
+			rotationStartThreshold="0rad"
+			sweepDirection="ccw"
+			charAngle={0.04 + "rad"} fontSize={2.5}
+			color="var(--secondary-neutral-700)"
+		>Delightful experiences</TrigWheel.Text>
+		<TrigWheel.Text
+			style={{ textTransform: "uppercase" }}
+			radius={TRIG_CIRCLE_RADIUS * 0.9}
+			startAngle={(Math.PI - Math.PI / 22) + "rad"}
+			rotationStartThreshold="0rad"
+			sweepDirection="ccw"
+			charAngle={0.04 + "rad"} fontSize={2.5}
+			color="var(--secondary-neutral-700)"
+		>Robust foundations</TrigWheel.Text>
+	</>;
+
+	const tinyRadialBoxes = <>
+		<TrigWheel.RadialBox
+			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI / 60}
+			radialSize={TRIG_CIRCLE_RADIUS * 0.2} angularSize={Math.PI / 2.6}
+			rotationStartThreshold="0rad"
+			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+			strokeWidth="0.2"
+		/>
+	</>;
+
+	const dashedWheel = <TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_stroke-color)" />;
+
+	const quotePart1 = "Design is not just what it looks and feels like";
+	const quotePart2 = "Design is how it works";
+	const quoteCharAngle = 0.064;
 
 	return <section css={css`
         padding-block: 96px;
@@ -176,110 +332,306 @@ export default function SolutionStatement() {
                 display: flex;
                 justify-content: center;
 				align-items: start;
-				height: 300vh;
+				height: 400vh;
 			`}>
 				<div css={css`
 					position: sticky;
 					top: 0;
 					height: 100vh;
-					${svgSizeProp}: clamp(320px, min(var(--page-max-width), 100vw, 100vh - var(--navbar-height)), 768px);
+					${svgSizeProp}: clamp(320px, min(var(--page-max-width), 100vh - var(--navbar-height)), 768px);
 					margin-block: calc(-1 * (50vh - var(${svgSizeProp}) / 2));
 					width: 100%;
-					display: flex;
-					justify-content: center;
-					align-items: center;
+					align-content: center;
 					pointer-events: none;
 				`}>
-					<svg css={css`
-                        pointer-events: auto;
-                        position: absolute;
-                        width: 100vw;
-                        height: 1px;
+					<div css={css`
+						pointer-events: auto;
+						height: var(${svgSizeProp});
+						display: grid;
+						grid-template-columns: 1fr;
+						grid-template-rows: 12rem max-content;
+						gap: 32px;
+						@media ${device.tablet} {
+							grid-template-columns: 7fr 13fr;
+							grid-template-rows: 1fr;
+							align-items: center;
+						}
 					`}>
-						<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="10" stroke="var(--neutral-700)" strokeDasharray="16" />
-					</svg>
-					{/*<div css={css`*/}
-					{/*	height: var(${svgSizeProp});*/}
-					{/*	position: absolute;*/}
-					{/*	left: 0; right: 0;*/}
-					{/*	display: grid;*/}
-					{/*	grid-template-rows: 1fr 1fr;*/}
-					{/*	grid-template-columns: 1fr 1fr;*/}
-					{/*	h3 {*/}
-					{/*		&:nth-of-type(3) {*/}
-					{/*			grid-column: -1 / -2;*/}
-					{/*		}*/}
-					{/*		&:nth-of-type(4) {*/}
-					{/*			grid-column: 1 / 2;*/}
-					{/*		}*/}
-					{/*		&:nth-of-type(3),*/}
-					{/*		&:nth-of-type(4) {*/}
-					{/*			grid-row: 2 / span 1;*/}
-					{/*		}*/}
-					{/*		&:nth-of-type(4n + 2),*/}
-					{/*		&:nth-of-type(4n + 3) {*/}
-					{/*			text-align: right;*/}
-					{/*		}*/}
-                    {/*        :nth-of-type(4n + 3),*/}
-                    {/*        :nth-of-type(4n + 4) {*/}
-					{/*			align-content: end;*/}
-					{/*		}*/}
-					{/*	}*/}
-					{/*`}>*/}
-					{/*	<h3 className="item-title">Research</h3>*/}
-					{/*	<h3 className="item-title">Design</h3>*/}
-					{/*	<h3 className="item-title">Engineer</h3>*/}
-					{/*	<h3 className="item-title">Grow</h3>*/}
-					{/*</div>*/}
-					<svg viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
-						 css={css`
-							 will-change: transform;
-                             width: var(${svgSizeProp});
-						 `}>
-						<defs>
-							<clipPath id="back-clip-path">
-								<motion.path d={backClipPath}></motion.path>
-							</clipPath>
-							<clipPath id="front-clip-path">
-								<motion.path d={frontClipPath}></motion.path>
-							</clipPath>
-						</defs>
-						<TrigWheel
-							angle={angle}
-							startX={VIEW_BOX_START} startY={VIEW_BOX_START}
-							size={VIEW_BOX_SIZE} radius={TRIG_CIRCLE_RADIUS}
-						>
-							<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
-								<TrigWheel.Circle fill="oklch(from var(--neutral-900) l c h / 0.5)" />
-								<TrigWheel.XAxis />
-								<TrigWheel.YAxis />
-								<TrigWheel.RotorXProjection />
-								<TrigWheel.RotorYProjection />
-							</g>
-							<g clipPath="url(#front-clip-path)">
-								{/*<SvgCircularText*/}
-								{/*	radius={TRIG_CIRCLE_RADIUS + 2.5}*/}
-								{/*	centerX={CIRCLE_CENTER}*/}
-								{/*	centerY={CIRCLE_CENTER}*/}
-								{/*	startAngle={firstTxtStartAngle} charAngle={`${charAngle}rad`}*/}
-								{/*	fontSize={4}*/}
-								{/*	color="var(--primary-600)"*/}
-								{/*>{firstText}</SvgCircularText>*/}
-								{icons.map((icon, i) => (
-									<React.Fragment key={i}>
-										<circle cx={icon.position.x} cy={icon.position.y} r="4" />
-										{icon.render()}
-									</React.Fragment>
-								))}
-							</g>
-							<g stroke="var(--neutral-700)" strokeWidth="0.25" fill="none">
-								<TrigWheel.ExtendedRotor strokeDasharray="2" />
-								<TrigWheel.Rotor />
-							</g>
-							<TrigWheel.RotorTerminal fill="var(--neutral-700)" />
-							<TrigWheel.AngleLabel fontSize="2" fill="var(--neutral-500)" />
-						</TrigWheel>
-					</svg>
+						<div css={css`
+							align-self: stretch;
+							position: relative;
+							isolation: isolate;
+							div.title-group {
+								position: absolute;
+								inset: 0;
+
+								display: grid;
+								grid-template-rows: 1fr 1fr;
+								row-gap: 8px;
+								@media ${device.tablet} {
+									row-gap: 32px;
+								}
+
+								transition: 0.3s ease;
+								transition-property: opacity, filter;
+								&[data-initial] {
+									transition: none;
+								}
+
+								opacity: calc(1 - abs(var(--_switch)));
+								filter: blur(calc(abs(var(--_switch)) * 10px));
+
+								--1-switch: max(var(--_switch), 0);
+								--minus-1-switch: min(var(--_switch), 0);
+
+								.item-title {
+									transform-origin: 100% 100%;
+									transform:
+										translateX(150%)
+										rotate(calc(var(--minus-1-switch) * -9deg))
+										translateX(-150%)
+										scale(calc(1 - var(--1-switch) * 0.2));
+								}
+								.item-subtitle {
+									transform-origin: 100% 0;
+									transform:
+										translateX(150%)
+										rotate(calc(var(--minus-1-switch) * 9deg))
+										translateX(-150%)
+										scale(calc(1 - var(--1-switch) * 0.2));
+								}
+								.item-title, .item-subtitle {
+									transition: inherit;
+									transition-property: transform;
+								}
+
+								//@property --slider {
+								//	syntax: "<length-percentage>";
+								//	inherits: true;
+								//	initial-value: 0;
+								//}
+								//--tilt-offset: 50%;
+								//--slider: calc(var(--_switch) * (100% + var(--tilt-offset)));
+								//clip-path: polygon(
+								//	var(--slider) 0, calc(var(--slider) - var(--tilt-offset)) 100%,
+								//	calc(var(--slider) + 100%) 100%, calc(var(--slider) + 100% + var(--tilt-offset)) 0
+								//);
+								//background-color: var(--background);
+								//&::after {
+								//	content: "";
+								//	position: absolute;
+								//	inset: 0;
+								//	background-color: var(--background);
+								//	transition: inherit;
+								//	--_thickness: 64px;
+								//	clip-path: polygon(
+								//		calc(var(--slider) + var(--_thickness) / 2) 0,
+								//		calc(var(--slider) - var(--tilt-offset) + var(--_thickness) / 2) 100%,
+								//		calc(var(--slider) - var(--tilt-offset) - var(--_thickness) / 2) 100%,
+								//		calc(var(--slider) - var(--_thickness) / 2) 0
+								//	);
+								//}
+
+								& > h3.item-title {
+									align-self: end;
+								}
+							}
+						`}>
+							{titles.map((item, i) => {
+								return <div
+									key={i}
+									className="title-group"
+									style={{ "--_switch": i === 0 ? 0 : 1 } as React.CSSProperties}
+									data-initial
+								>
+									<h3 className="item-title">{item.title}</h3>
+									<p className="item-subtitle">{item.subtitle}</p>
+								</div>;
+							})}
+						</div>
+						<div css={css`
+							min-height: 0;
+							isolation: isolate;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						`}>
+							<svg css={css`
+								position: absolute;
+								z-index: -1;
+								height: 1px;
+								width: 200vw;
+								margin-inline: -50vw;
+							`}>
+								<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="10" stroke="var(--neutral-700)" strokeDasharray="16" />
+							</svg>
+							<svg viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
+								 strokeLinejoin="round" strokeLinecap="round"
+								 css={css`
+									 width: 100%;
+									 will-change: transform;
+									 g.back-layer {
+										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.25);
+										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.25);
+										 --_stroke-color: oklch(from var(--neutral-800) l c h / 0.75);
+									 }
+									 g.front-layer {
+										 --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
+										 --_fill-color: none;
+										 --_stroke-color: oklch(from var(--secondary-neutral-800) l c h / 0.75);
+									 }
+								 `}
+							>
+								<TrigWheel
+									angle={angle}
+									startX={VIEW_BOX_START} startY={VIEW_BOX_START}
+									size={VIEW_BOX_SIZE} radius={TRIG_CIRCLE_RADIUS}
+								>
+									<defs>
+										<radialGradient id="brand-radial-gradient">
+											<stop offset="-20%" stopColor="var(--secondary-600)" />
+											<stop offset="80%" stopColor="var(--secondary-800)" />
+										</radialGradient>
+									</defs>
+									<g stroke="var(--secondary-neutral-800)" strokeWidth="0.25" fill="none">
+										<TrigWheel.XAxis />
+										<TrigWheel.YAxis />
+										<TrigWheel.RotorXProjection />
+										<TrigWheel.RotorYProjection />
+									</g>
+									<ClippedG clipPathId="back-clip-path" pathData={backClipPath} className="back-layer">
+										{innerCircle}
+										{tinyRadialBoxes}
+										{radialBoxes}
+										{/*{radialBoxesTextBack}*/}
+										{dashedWheel}
+										<TrigWheel.Text
+											style={{ textTransform: "uppercase" }}
+											radius={TRIG_CIRCLE_RADIUS - 5}
+											startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
+											rotationStartThreshold={`${charAngle}rad`} rotationEndThreshold={`${Math.PI - charAngle * (firstText.length + 1)}rad`}
+											sweepDirection="ccw"
+											fontSize={2.5}
+											color="var(--neutral-400)"
+										>{firstText}</TrigWheel.Text>
+										<TrigWheel.Text
+											radius={TRIG_CIRCLE_RADIUS * 0.54}
+											charAngle={quoteCharAngle + "rad"} fontSize={2.5}
+											startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
+											color="var(--neutral-600)"
+										>{quotePart1}</TrigWheel.Text>
+									</ClippedG>
+									<ClippedG clipPathId="front-clip-path" pathData={frontClipPath} className="front-layer">
+										<rect fill="url(#brand-radial-gradient)" fillOpacity="0.1" x="0%" y="0%" width="100%" height="100%" clipPath="url(#radial-boxes-clip-path)" />
+										{innerCircle}
+										{tinyRadialBoxes}
+										{radialBoxes}
+										<clipPath id="radial-boxes-clip-path">
+											{radialBoxes}
+										</clipPath>
+										{/*{radialBoxesTextFront}*/}
+										{dashedWheel}
+										<TrigWheel.Text
+											style={{ textTransform: "uppercase" }}
+											radius={TRIG_CIRCLE_RADIUS - 5}
+											startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
+											sweepDirection="ccw"
+											rotationStartThreshold={"0rad"}
+											fontSize={2.5}
+											color="var(--secondary-neutral-200)"
+										>{revealedText}</TrigWheel.Text>
+										<TrigWheel.Text
+											style={{ textTransform: "uppercase" }}
+											radius={TRIG_CIRCLE_RADIUS - 5}
+											startAngle={"0rad"} charAngle={`${charAngle}rad`}
+											sweepDirection="ccw"
+											rotationStartThreshold={(2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad"}
+											fontSize={2.5}
+											color="var(--secondary-neutral-200)"
+										>{"LET'S KICKSTART YOUR"}</TrigWheel.Text>
+										<TrigWheel.Text
+											radius={TRIG_CIRCLE_RADIUS * 0.54}
+											charAngle={quoteCharAngle + "rad"} fontSize={2.5}
+											startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
+											rotationStartThreshold={(3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"}
+											color="var(--secondary-neutral-600)"
+										>{quotePart2}</TrigWheel.Text>
+										{/*<g style={{ color: "var(--secondary-neutral-700)" }}>*/}
+										{/*	<TextRing*/}
+										{/*		radius={TRIG_CIRCLE_RADIUS * 1.12}*/}
+										{/*		texts={["Ideate & document", "Sketch & blueprint", "Design & develop", "Refine & optimize"]}*/}
+										{/*		charAngle={0.03} fontSize={2}*/}
+										{/*	/>*/}
+										{/*</g>*/}
+									</ClippedG>
+									<g stroke="var(--primary-900)" strokeWidth="0.25" fill="none">
+										<TrigWheel.ExtendedRotor strokeDasharray="2" />
+										<TrigWheel.Rotor style={{
+											filter:
+												"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-900) l c h / 0.32)) " +
+												"drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-900) l c h / 0.32)) " +
+												"drop-shadow(1px 2px 2.5px oklch(from var(--primary-900) l c h / 0.32))"
+										}}/>
+									</g>
+									<TrigWheel.Circle
+										fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
+										r={TRIG_CIRCLE_RADIUS * 0.32}
+										// style={{
+										// 	filter:
+										// 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+										// 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+										// 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
+										// }}
+									/>
+									<TrigWheel.Circle
+										fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
+										r={TRIG_CIRCLE_RADIUS * 0.24}
+									/>
+									<g css={css`
+										.progress-indicator {
+											--_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
+											--_gap: calc(0.2 * var(--_radius));
+											--_circumference: calc(2 * pi * var(--_radius));
+											--_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
+											--_switch: round(down, var(--_angle) / (90deg), 1);
+
+											r: var(--_radius);
+											stroke-dasharray:
+												0 calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap))
+												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)) var(--_circumference);
+											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--secondary-neutral-800) calc(var(--_switch) * 100%));
+
+											transition: stroke 0.2s ease-in-out;
+										}
+									`}>
+										{Array.from({ length: 4 }, (_, i) => <TrigWheel.Circle
+											key={i} className="progress-indicator"
+											style={{ '--i': i } as React.CSSProperties}
+											fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
+											strokeLinecap="butt"
+										/>)}
+									</g>
+									<TrigWheel.Circle
+										css={css`
+											--_radius: calc(0.24 * var(${TrigWheel.cssProps.radius}));
+											--_circumference: calc(2 * pi * var(--_radius));
+
+											r: var(--_radius);
+											stroke-dasharray: 0 var(--_circumference) var(--_circumference) 0;
+											stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
+
+											transition: 0.2s ease-in-out;
+											transition-property: opacity, filter;
+										`}
+										fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
+									/>
+									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
+									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
+									<AngleLabel fontSize="2.2" fill="var(--neutral-500)" />
+								</TrigWheel>
+							</svg>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

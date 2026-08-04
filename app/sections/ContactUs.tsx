@@ -4,6 +4,7 @@ import {AnimationSequence, SequenceOptions} from "motion/react";
 import React, {useEffect, useRef} from "react";
 import {createAnimationsFromSequence} from "framer-motion/internals";
 import Link from "next/link";
+import useAbortSignal from "@/hooks/use-abort-signal";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -96,19 +97,17 @@ function ContactOptions() {
         }
     }
 
+    const abortSignal = useAbortSignal();
     useEffect(() => {
         if (!containerRef.current) return;
 
-        const abortController = new AbortController();
         const options = containerRef.current.querySelectorAll<HTMLElement>(`.contact-option`);
         for (const element of options) {
             elementStatesRef.current.push({ element });
-            element.addEventListener("pointerenter", _ => onHoverStart(element), { signal: abortController.signal });
-            element.addEventListener("pointerleave", onHoverEnd, { signal: abortController.signal });
+            element.addEventListener("pointerenter", _ => onHoverStart(element), { signal: abortSignal });
+            element.addEventListener("pointerleave", onHoverEnd, { signal: abortSignal });
         }
         startIdleAnimation();
-
-        return () => abortController.abort();
     }, []);
 
     function onHoverStart(hovered: HTMLElement) {
@@ -147,12 +146,12 @@ function ContactOptions() {
             stopHoverAnimations();
             hoveredElementStateRef.current = null;
             startIdleAnimation();
-        }, { once: true });
+        }, { once: true, signal: abortSignal });
     }
 
     const containerCss = css`
         ${brRadiusProp}: 100vw;
-        ${outsetProp}: 4px;
+        ${outsetProp}: 8px;
         display: flex;
         flex-direction: column;
         gap: 0.8rem;
@@ -187,8 +186,8 @@ function ContactOptions() {
                 var(--tertiary-200),
                 var(--secondary-500),
                 var(--primary-800),
-                transparent 25%,
-                transparent 75%,
+                oklch(from var(--primary-800) l c h / 0.25) 25%,
+                oklch(from var(--primary-800) l c h / 0.25) 75%,
                 var(--primary-800),
                 var(--secondary-500),
                 var(--tertiary-200)
@@ -208,7 +207,7 @@ function ContactOptions() {
         <svg style={{ position: "fixed", width: "0", height: "0" }}>
             <defs>
                 <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="BLUR" />
+                    <feGaussianBlur stdDeviation="4" result="BLUR" />
                     <feMerge>
                         <feMergeNode in="BLUR" />
                         <feMergeNode in="SourceGraphic" />

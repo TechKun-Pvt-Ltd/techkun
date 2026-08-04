@@ -13,7 +13,6 @@ const capHeightIndicatorStart = 67.25;
 
 const springOptions: SpringOptions = {stiffness: 500, damping: 30};
 const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
-const xBounds: [number, number] = [0, 1];
 
 export type PrecisionRef = {
 	play(): void;
@@ -23,7 +22,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 	props, ref
 ) {
 	const [metrics, setMetrics] = useState<FontMetrics | null>(null);
-	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions, xBounds });
+	const {x, y, containerRef} = useFollowPointer({ defaultPosition: DEFAULT_CENTER, springOptions });
 	const abortSignal = useAbortSignal();
 
 	useImperativeHandle(ref, () => ({
@@ -82,15 +81,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 		{...props}
 		css={css`
 			position: relative;
-			//z-index: 0;
 			color: var(--foreground);
-			// &::before {
-			// 	content: "";
-			// 	position: absolute;
-			// 	top: 0; left: 0;
-			// 	height: 100%;
-			// 	width: {xBounds[1] * 100}%;
-			// }
 		`}
 		ref={containerRef}
 	>
@@ -254,8 +245,8 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 					`}
 				/>
 				<line
-					x1={xBounds[0] * 100 + '%'} y1="0"
-					x2={xBounds[1] * 100 + '%'} y2="0"
+					x1="0%" y1="0"
+					x2="100%" y2="0"
 					css={css`
 						transform-box: view-box;
 						transform: translateY(calc(var(--y) * 100%));
