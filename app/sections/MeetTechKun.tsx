@@ -18,7 +18,7 @@ export default function MeetTechKun() {
         const rect = scope.current.querySelector('rect');
         const flying = scope.current.querySelectorAll(".flying");
 
-        const delays = Array.from({ length: flying.length }, () => 2 * Math.random());
+        const delays = Array.from({ length: flying.length }, (_, i) => 1.5 * (i % 5) / 5 + 0.5 * Math.random());
         const dynamicDelayFn = (i: number) => delays[i];
 
         inView(heading, () => {
@@ -115,12 +115,12 @@ export default function MeetTechKun() {
             `}>
                 <div css={css`
                     position: absolute;
-                    filter: drop-shadow(0 0 4px var(--secondary-neutral-50));
+                    filter: drop-shadow(0 0 3px var(--secondary-neutral-50));
 
                     .flying {
                         position: absolute;
-                        width: 2px;
-                        height: 2px;
+                        width: 3px;
+                        height: 3px;
                         background: var(--secondary-neutral-50);
                         border-radius: 50%;
                         transform-origin: center;
@@ -137,7 +137,7 @@ export default function MeetTechKun() {
                                     ') ' + 'scale(1)'
                             }}
                             style={{
-                                '--radius': (200 + 300 * Math.random()) + 'px',
+                                '--radius': (200 + 400 * Math.random()) + 'px',
                                 '--angle': (i / 50 * 360 - 15 + 30 * Math.random()) + 'deg'
                             } as React.CSSProperties}
                             suppressHydrationWarning
