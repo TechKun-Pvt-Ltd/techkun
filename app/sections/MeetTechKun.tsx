@@ -18,17 +18,41 @@ export default function MeetTechKun() {
         const rect = scope.current.querySelector('rect');
         const flying = scope.current.querySelectorAll(".flying");
 
+        const delays = Array.from({ length: flying.length }, () => 2 * Math.random());
+        const dynamicDelayFn = (i: number) => delays[i];
+
         inView(heading, () => {
             animate([
                 [flying, {
                     transform: "translate(0, 0) scale(0.5)",
-                    opacity: 0
                 }, {
-                    type: "spring", visualDuration: 1.5, bounce: 0.2, delay(i, total) { return 0.1 * (total - i); }
+                    //type: "spring", visualDuration: 1.5, bounce: 0.2
+                    duration: 2,
+                    ease: [0.995, -0.035, 0.945, 0.923],
+                    delay: dynamicDelayFn
                 }],
-                [rect, { opacity: 1 }, { type: "spring", visualDuration: 1.5, bounce: 0.2, at: 1 }],
-                [path, { scale: 1 }, { type: "spring", visualDuration: 1.5, bounce: 0.2, at: 1 }],
-                [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-1.5' }],
+                [flying, {
+                    opacity: [0, 1, 1, 0]
+                }, {
+                    //type: "spring", visualDuration: 1.5, bounce: 0.2
+                    duration: 2,
+                    times: [0, 0.6, 0.9, 1],
+                    ease: "easeInOut",
+                    delay: dynamicDelayFn,
+                    at: '<'
+                }],
+                [rect, { opacity: 1 }, {
+                    duration: 2.25,
+                    ease: [0.995, -0.035, 0.945, 0.923],
+                    at: '<+1.5'
+                }],
+                [path, { scale: 1 }, {
+                    type: "spring",
+                    visualDuration: 0.5,
+                    bounce: 0.4,
+                    at: "-0.25"
+                }],
+                [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-0.25' }],
                 [
                     path, { d: logoAnimation.frames.map(f => f.value) },
                     { duration: logoAnimation.duration, ease: 'linear', at: '-0.75'}
@@ -41,9 +65,9 @@ export default function MeetTechKun() {
         const path = scope.current.querySelector("path")!;
 
         const pathBBox = path.getBBox();
-        const currentX = pathBBox.x + pathBBox.width / 2;
-        const currentY = pathBBox.y + pathBBox.height / 2;
         const {viewBox} = logoAnimation;
+        const currentX = (pathBBox.x - viewBox.x) + pathBBox.width / 2;
+        const currentY = (pathBBox.y - viewBox.y) + pathBBox.height / 2;
         const targetX = viewBox.width / 2;
         const targetY = viewBox.height / 2;
         x.set(`${((targetX - currentX) / pathBBox.width * 100)}%`);
@@ -88,26 +112,46 @@ export default function MeetTechKun() {
                 justify-content: center;
                 align-items: center;
                 position: relative;
-                isolation: isolate;
-
-                & .flying {
-                    position: absolute;
-                    z-index: -1;
-                    width: 48px;
-                    height: 48px;
-                    background: oklch(0.2 0.15 calc(var(--i) / 4 * 360));
-                    --radius: 450px;
-                    --angle: calc(45deg + var(--i) / 4 * -270deg);
-                }
             `}>
+                <div css={css`
+                    position: absolute;
+                    filter: drop-shadow(0 0 4px var(--secondary-neutral-50));
+
+                    .flying {
+                        position: absolute;
+                        width: 2px;
+                        height: 2px;
+                        background: var(--secondary-neutral-50);
+                        border-radius: 50%;
+                        transform-origin: center;
+                    }
+                `}>
+                    {Array.from({length: 50}, (_, i) =>
+                        <motion.div
+                            key={i} className="flying"
+                            initial={{
+                                opacity: 0,
+                                transform: 'translate(' +
+                                    'calc(cos(var(--angle)) * var(--radius))' + ', ' +
+                                    'calc(sin(var(--angle)) * var(--radius) * 0.5)' +
+                                    ') ' + 'scale(1)'
+                            }}
+                            style={{
+                                '--radius': (200 + 300 * Math.random()) + 'px',
+                                '--angle': (i / 50 * 360 - 15 + 30 * Math.random()) + 'deg'
+                            } as React.CSSProperties}
+                            suppressHydrationWarning
+                        ></motion.div>
+                    )}
+                </div>
                 <div css={css`
                     width: clamp(240px, 75%, 400px);
                 `}>
-                    <svg viewBox={viewBoxString(logoAnimation.viewBox)}>
+                    <svg style={{ display: "block" }} viewBox={viewBoxString(logoAnimation.viewBox)}>
                         <defs>
                             <clipPath id={ANIMATED_LOGO_CLIP_PATH_ID}>
                                 <motion.path d={logoAnimation.frames[0].value}
-                                    style={{x, y, scale: 0.5}}
+                                    style={{transformOrigin: 'center', x, y, scale: 0.625}}
                                     fill="white"
                                 />
                             </clipPath>
@@ -119,17 +163,6 @@ export default function MeetTechKun() {
                         ></motion.rect>
                     </svg>
                 </div>
-                {Array.from({length: 5}, (_, i) =>
-                    <motion.div key={i} className="flying"
-                        initial={{
-                            transform: 'translate(' +
-                                'calc(cos(var(--angle)) * var(--radius))' + ', ' +
-                                'calc(sin(var(--angle)) * var(--radius))' +
-                            ') ' + 'scale(1)'
-                        }}
-                        style={{ '--i': i } as any}
-                    ></motion.div>
-                )}
             </div>
 
             <div css={css`

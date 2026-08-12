@@ -176,23 +176,29 @@ function MessageComposeBox() {
 
 export default function ChatPage() {
 	return <div css={css`
-		font-family: sans-serif;
-		padding: 18px;
+		//font-family: sans-serif;
+		padding-inline: 24px;
+		padding-block: 16px 24px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		font-weight: 500;
+		color: var(--muted-foreground);
 	`}>
-		<div css={css`
-			display: flex;
-			flex-direction: column;
-			gap: 12px;
-			animation: ${slideUp} ${MSG_BOX_ANIM_DURATION + (content.length - 1) * MSG_BOX_ANIM_DELAY}s ease-out both;
-			//view-timeline: --vt;
-			//animation-timeline: --vt;
-			//animation-range: entry;
-		`}>
-			{content.map(msg => <MessageBox key={msg.text} {...msg} />)}
-		</div>
+		<p>
+			The world is full of sloppy, unprofessional, and lifeless software.<br/><br/>
+			Software with poor or mediocre user experiences and technical debt. Software that spends more time being repaired than growing.<br/><br/>
+			Your users are human beings, asking for human experiences.<br/><br/>
+			We can help you give them that and, in turn, make a profit.
+		</p>
+		{/*<div css={css`*/}
+		{/*	display: flex;*/}
+		{/*	flex-direction: column;*/}
+		{/*	gap: 12px;*/}
+		{/*	animation: ${slideUp} ${MSG_BOX_ANIM_DURATION + (content.length - 1) * MSG_BOX_ANIM_DELAY}s ease-out both;*/}
+		{/*`}>*/}
+		{/*	{content.map(msg => <MessageBox key={msg.text} {...msg} />)}*/}
+		{/*</div>*/}
 		{/*<MessageComposeBox />*/}
 	</div>;
 }

@@ -63,7 +63,7 @@ export default function Banner() {
             display: flex;
             justify-content: center;
 			align-items: center;
-            padding-block-end: 5cqh;
+            padding-block-end: 1.25cqh;
             text-align: center;
 		`}>
 			<div>

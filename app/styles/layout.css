@@ -57,7 +57,7 @@ body {
         /*);*/
 
         grid-row: navbar / content;
-        grid-auto-rows: minmax(var(--section-height), max-content);
+        grid-auto-rows: auto;
         isolation: isolate;
 
         & > section {

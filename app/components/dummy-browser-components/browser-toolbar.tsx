@@ -34,13 +34,14 @@ const threeDotMenu = <svg xmlns="http://www.w3.org/2000/svg" width="3" height="1
 	<rect y="12" width="3" height="3" rx="1.5"/>
 </svg>;
 
-export default function BrowserToolbar({ url = "" }: {
+export default function BrowserToolbar({ url = "", children, ...props }: {
 	url?: string;
-}) {
+} & React.ComponentProps<"div">) {
 	return <div css={css`
         max-height: 64px;
-        background: var(--muted);
-        padding: 4px 16px;
+        //background: var(--muted);
+        padding-block: 10px;
+		padding-inline: 16px 8px;
         display: flex;
         align-items: center;
         gap: 16px;
@@ -48,39 +49,41 @@ export default function BrowserToolbar({ url = "" }: {
 			color: var(--neutral-600);
 			flex-shrink: 0;
 		}
-	`}>
-		{backArrow}
-		{forwardArrow}
-		{reloadIcon}
+	`} {...props}>
+		{/*{backArrow}*/}
+		{/*{forwardArrow}*/}
+		{/*{reloadIcon}*/}
 		<div css={css`
             flex-grow: 1;
             padding: 4px 18px;
             border-radius: 100vh;
-            background-color: var(--background);
+            background-color: oklch(from var(--muted) l c h / 0.6);
 			display: flex;
+			justify-content: center;
 			align-items: center;
 			gap: 0.5em;
 		`}>
 			{lockIcon}
 			<p>{url}</p>
 		</div>
-		<div css={css`
-            border-radius: 50%;
-            aspect-ratio: 1 / 1;
-            width: 24px;
-            height: auto;
-            overflow: clip;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+		{/*<div css={css`*/}
+        {/*    border-radius: 50%;*/}
+        {/*    aspect-ratio: 1 / 1;*/}
+        {/*    width: 24px;*/}
+        {/*    height: auto;*/}
+        {/*    overflow: clip;*/}
+        {/*    display: flex;*/}
+        {/*    justify-content: center;*/}
+        {/*    align-items: center;*/}
 
-            img {
-                width: 100%;
-                height: 100%;
-            }
-		`}>
-			<Image src={dummyProfilePic} alt="profile-pic"/>
-		</div>
+        {/*    img {*/}
+        {/*        width: 100%;*/}
+        {/*        height: 100%;*/}
+        {/*    }*/}
+		{/*`}>*/}
+		{/*	<Image src={dummyProfilePic} alt="profile-pic"/>*/}
+		{/*</div>*/}
+		<div css={css`width: 24px;`} />
 		{threeDotMenu}
 	</div>;
 };

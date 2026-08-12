@@ -105,7 +105,7 @@ const ANGLE_RANGE_START = 0;
 
 const titles = [
 	{ title: "User experience comes\u00A0first", subtitle: "We\u00A0investigate the user's\u00A0needs and\u00A0persona and create a\u00A0delightful human\u00A0experience for\u00A0them." },
-	{ title: "Precision & care", subtitle: "Every shortcut is a sin. We engineer every detail and build smooth, robust foundations to grow upon." },
+	{ title: "Precision & care matters", subtitle: "Every shortcut is a sin. We engineer every detail and build smooth, robust foundations to grow upon." },
 	{ title: "Document everything", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not memory." },
 	{ title: "Identity", subtitle: "We investigate your idea, understand\u00A0its meaning, and create a visual\u00A0identity for it." }
 ];
@@ -320,14 +320,22 @@ export default function SolutionStatement() {
 	const quoteCharAngle = 0.064;
 
 	return <section css={css`
-        padding-block: 96px;
+        padding-block: 128px;
 	`}>
 		<div css={css`
             display: flex;
 			flex-direction: column;
 			gap: 80px;
 		`}>
-			<SectionHeading />
+			<div>
+				<h2 className="section-title" css={css`
+					margin-block-end: 0.25em;
+				`}>We're guided by<br/>the following principles</h2>
+				<p className="text-lg" css={css`
+					font-weight: 500;
+					color: var(--secondary-neutral-300);
+				`}>OUR PRINCIPLES</p>
+			</div>
 			<div ref={targetRef} css={css`
                 display: flex;
                 justify-content: center;

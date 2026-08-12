@@ -74,7 +74,7 @@
        As font-size shrinks → letter-spacing opens up.
        ========================================================== */
 
-    --ls-offset: 0.03em;
+    --ls-offset: 0.01em;
     --ls-numerator: calc((var(--base-letter-spacing) + var(--ls-offset)) * var(--base-font-size));
 
     --letter-spacing-neg-2: calc(var(--ls-numerator) / var(--font-size-neg-2) - var(--ls-offset));

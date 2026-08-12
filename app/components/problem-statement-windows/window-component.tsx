@@ -1,5 +1,5 @@
 import {css} from "@emotion/react";
-import {ReactNode} from "react";
+import React, {ReactNode} from "react";
 import {property} from "@/app/utils/css-property";
 
 const _borderRadius = property("_borderRadius")`
@@ -37,15 +37,16 @@ function WindowControls() {
 			border-radius: 50%;
 			width: 14px;
 			height: 14px;
+			padding: 1px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			background-color: var(${_bgColor});
-			border: 1px solid var(${_borderColor});
+			background-color: var(--muted);
+			//border: 1px solid var(--border);
 		}
         .window-control-icon {
             display: none;
-            fill: var(${_iconColor});
+            fill: var(--neutral-600);
         }
         &:hover .window-control-icon {
             display: revert;
@@ -111,8 +112,9 @@ export default function Window(
 		inset = "0",
 		backgroundColor = "var(--background)",
 		backdropFilter = "none",
-		titleBar, children
-	}: WindowProps
+		titleBar, children,
+		...props
+	}: WindowProps & React.ComponentProps<"div">
 ) {
 	return <div className="window"
 		data-title={title}
@@ -133,13 +135,14 @@ export default function Window(
 			display: flex;
 			flex-direction: column;
 		`}
+		{...props}
 	>
 		<div css={css`
 			display: flex;
 			align-items: center;
 		`}>
 			<div css={css`
-            	padding: 14px 16px;
+            	padding: 16px 24px;
 			`}>
 				<WindowControls />
 			</div>

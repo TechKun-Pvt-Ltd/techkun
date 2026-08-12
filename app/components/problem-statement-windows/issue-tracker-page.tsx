@@ -205,7 +205,7 @@ const issues: {
 	}
 ];
 
-export default function IssueTrackerPage() {
+export default function IssueTrackerPage(props: React.ComponentProps<"div">) {
 	const ellipsisCss = css`
 		white-space: nowrap;
 		overflow: hidden;
@@ -215,7 +215,7 @@ export default function IssueTrackerPage() {
         font-family: sans-serif;
         flex-grow: 1;
         padding: 0 16px;
-	`}>
+	`} {...props}>
 		<div css={css`
 			width: 100%;
 			overflow-x: clip;
@@ -229,13 +229,13 @@ export default function IssueTrackerPage() {
 				text-align: left;
 	
 				th {
-					border: 0 solid var(--border);
+					border: 0 solid var(--muted);
 					//border-top-width: 1px;
 					border-bottom-width: 1px;
 				}
 	
 				th, td {
-					padding: 8px;
+					padding: 12px;
 				}
 	
 				.status-tag {
@@ -266,18 +266,18 @@ export default function IssueTrackerPage() {
 			`}>
 				<thead>
 				<tr>
-					<th css={css`width: 8%;`}>Key</th>
-					<th css={css`width: 16%;`}>Summary</th>
+					{/*<th css={css`width: 8%;`}>Key</th>*/}
+					<th css={css`width: 24%;`}>Summary</th>
 					<th>Assignee</th>
 					<th>Status</th>
 					<th>Priority</th>
-					<th>Due date</th>
+					<th css={css`width: 20%;`}>Due date</th>
 				</tr>
 				</thead>
 				<tbody>
 				{issues.map(issue => {
 					return <tr key={issue.key}>
-						<td>{issue.key}</td>
+						{/*<td>{issue.key}</td>*/}
 						<td css={ellipsisCss}>{issue.summary}</td>
 						<td>{issue.assignee}</td>
 						<td>
