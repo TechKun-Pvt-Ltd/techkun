@@ -68,6 +68,16 @@ ul {
     inherits: false;
     initial-value: 0%;
 }
+@property --polar-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+@property --polar-radius {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0px;
+}
 
 button {
     cursor: pointer;

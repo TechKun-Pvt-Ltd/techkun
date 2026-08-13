@@ -381,64 +381,21 @@ export default function SolutionStatement() {
 								}
 
 								transition: 0.3s ease;
-								transition-property: opacity, filter;
+								transition-property: transform, opacity, filter;
 								&[data-initial] {
 									transition: none;
 								}
 
 								opacity: calc(1 - abs(var(--_switch)));
 								filter: blur(calc(abs(var(--_switch)) * 10px));
-
-								--1-switch: max(var(--_switch), 0);
-								--minus-1-switch: min(var(--_switch), 0);
-
-								.item-title {
-									transform-origin: 100% 100%;
+								transform:
+									translateY(calc(var(--_switch) * 25%))
+									scale(calc(1 - abs(var(--_switch)) * 0.25));
+								@media ${device.tablet} {
 									transform:
-										translateX(150%)
-										rotate(calc(var(--minus-1-switch) * -9deg))
-										translateX(-150%)
-										scale(calc(1 - var(--1-switch) * 0.2));
+										translateX(calc(var(--_switch) * 25%))
+										scale(calc(1 - abs(var(--_switch)) * 0.25));
 								}
-								.item-subtitle {
-									transform-origin: 100% 0;
-									transform:
-										translateX(150%)
-										rotate(calc(var(--minus-1-switch) * 9deg))
-										translateX(-150%)
-										scale(calc(1 - var(--1-switch) * 0.2));
-								}
-								.item-title, .item-subtitle {
-									transition: inherit;
-									transition-property: transform;
-								}
-
-								//@property --slider {
-								//	syntax: "<length-percentage>";
-								//	inherits: true;
-								//	initial-value: 0;
-								//}
-								//--tilt-offset: 50%;
-								//--slider: calc(var(--_switch) * (100% + var(--tilt-offset)));
-								//clip-path: polygon(
-								//	var(--slider) 0, calc(var(--slider) - var(--tilt-offset)) 100%,
-								//	calc(var(--slider) + 100%) 100%, calc(var(--slider) + 100% + var(--tilt-offset)) 0
-								//);
-								//background-color: var(--background);
-								//&::after {
-								//	content: "";
-								//	position: absolute;
-								//	inset: 0;
-								//	background-color: var(--background);
-								//	transition: inherit;
-								//	--_thickness: 64px;
-								//	clip-path: polygon(
-								//		calc(var(--slider) + var(--_thickness) / 2) 0,
-								//		calc(var(--slider) - var(--tilt-offset) + var(--_thickness) / 2) 100%,
-								//		calc(var(--slider) - var(--tilt-offset) - var(--_thickness) / 2) 100%,
-								//		calc(var(--slider) - var(--_thickness) / 2) 0
-								//	);
-								//}
 
 								& > h3.item-title {
 									align-self: end;
@@ -607,7 +564,7 @@ export default function SolutionStatement() {
 											stroke-dasharray:
 												0 calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap))
 												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)) var(--_circumference);
-											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--secondary-neutral-800) calc(var(--_switch) * 100%));
+											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--secondary-900) calc(var(--_switch) * 100%));
 
 											transition: stroke 0.2s ease-in-out;
 										}

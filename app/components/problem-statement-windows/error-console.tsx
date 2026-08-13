@@ -59,20 +59,18 @@ export default function ErrorConsole() {
 			transparent
 		);
         font-family: monospace;
-		color: var(--neutral-800);
+		color: var(--secondary-neutral-700);
 		height: 100%;
 	`}>
 		{/*<p className="text-lg" style={{whiteSpace: 'nowrap'}}>*/}
 		{/*</p>*/}
-		<div className="text-lg" css={css`
-			height: 16rem;
-		`}>
+		<div className="text-lg">
 			<p css={css`
                 //white-space: pre;
 				user-select: none;
                 display: grid;
                 grid-template-columns: auto 1fr;
-				column-gap: clamp(32px, 5vw, 64px);
+				column-gap: clamp(24px, 5vw, 64px);
 				.highlighted {
 					color: var(--foreground);
 				}
@@ -94,19 +92,12 @@ export default function ErrorConsole() {
 				{/*	ref={scrambleRef} innerRef={scrambleInnerRef}*/}
 				{/*	as="span" duration={SCRAMBLE_DURATION}*/}
 				{/*>{texts[itemIndex] ?? ""}</TextScramble>*/}
-				{/*<span css={css`*/}
-				{/*	display: grid;*/}
-				{/*	grid-column: 1/ -1;*/}
-				{/*	grid-template-columns: subgrid;*/}
-				{/*	height: 240px;*/}
-				{/*`}>*/}
-					{applicationLogs.flatMap((log, logIndex) =>
-						log.lines.map((line, lineIndex) => <React.Fragment key={`${logIndex}-${lineIndex}`}>
-							<span>{line.timestamp}</span>
-							<span>{line.message}</span>
-						</React.Fragment>)
-					)}
-				{/*</span>*/}
+				{applicationLogs.flatMap((log, logIndex) =>
+					log.lines.map((line, lineIndex) => <React.Fragment key={`${logIndex}-${lineIndex}`}>
+						<span>{line.timestamp}</span>
+						<span>{line.message}</span>
+					</React.Fragment>)
+				)}
 			</p>
 		</div>
 	</div>;

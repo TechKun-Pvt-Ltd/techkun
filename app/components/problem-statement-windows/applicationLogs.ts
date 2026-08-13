@@ -51,14 +51,14 @@ export const applicationLogs: Log[] = [
 		logLine("02:11:42.881", "PrismaClientKnownRequestError:"),
 		logLine("02:11:42.881", "Invalid `prisma.user.create()` invocation:"),
 	),
-	errorLog(
-		logLine("02:11:42.881", ""),
-	),
-	errorLog(
-		logLine("02:11:42.881", "Unique constraint failed on the fields: (`email`)"),
-		logLine("02:11:42.881", "    at RequestHandler.handleRequestError (/app/node_modules/@prisma/client/runtime/index.js:49012:13)"),
-		logLine("02:11:42.881", "    at async createUser (/app/dist/services/user.service.js:148:19)"),
-	),
+	// errorLog(
+	// 	logLine("02:11:42.881", ""),
+	// ),
+	// errorLog(
+	// 	logLine("02:11:42.881", "Unique constraint failed on the fields: (`email`)"),
+	// 	logLine("02:11:42.881", "    at RequestHandler.handleRequestError (/app/node_modules/@prisma/client/runtime/index.js:49012:13)"),
+	// 	logLine("02:11:42.881", "    at async createUser (/app/dist/services/user.service.js:148:19)"),
+	// ),
 
 	// {
 	// 	timestamp: "02:11:43.103",

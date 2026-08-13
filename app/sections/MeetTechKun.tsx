@@ -24,36 +24,15 @@ export default function MeetTechKun() {
         const heading = scope.current.querySelector('h2');
         const svg = scope.current.querySelector('svg.animated-logo-svg');
         const path = scope.current.querySelector("path.animated-logo-path");
-        const stars = scope.current.querySelectorAll(".star");
-
-        const delays = Array.from(
-            { length: STARS_COUNT },
-            (_, i) => (i % 5) / 4 + 0.5 * randomnessIndex[i] * Math.sign(i)
-        );
-        const dynamicDelayFn = (i: number) => delays[i];
+        const starsContainer = scope.current.querySelector(".stars-container");
 
         inView(heading, () => {
+            starsContainer?.toggleAttribute("data-animate");
             animate([
-                [stars, {
-                    transform: "translate(0, 0) scale(0.5)",
-                }, {
-                    duration: 2,
-                    ease: [0.995, -0.035, 0.945, 0.923],
-                    delay: dynamicDelayFn
-                }],
-                [stars, {
-                    opacity: [0, 1, 1, 0]
-                }, {
-                    duration: 2,
-                    times: [0, 0.6, 0.9, 1],
-                    ease: "easeInOut",
-                    delay: dynamicDelayFn,
-                    at: '<'
-                }],
                 [svg, { opacity: 1 }, {
                     duration: 2.25,
                     ease: [0.995, -0.035, 0.945, 0.923],
-                    at: '<+1.5'
+                    delay: 1.5
                 }],
                 [svg, { scale: 1 }, {
                     type: "spring",
@@ -61,7 +40,7 @@ export default function MeetTechKun() {
                     bounce: 0.4,
                     at: "-0.5"
                 }],
-                [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-0.25' }],
+                [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-0.5' }],
                 [
                     path, { d: logoAnimation.frames.map(f => f.value) },
                     { duration: logoAnimation.duration, ease: 'linear', at: '-0.75'}
@@ -128,7 +107,7 @@ export default function MeetTechKun() {
                 align-items: center;
                 position: relative;
             `}>
-                {starsMounted && <div css={css`
+                {starsMounted && <div className="stars-container" css={css`
                     position: absolute;
                     filter: drop-shadow(0 0 3px var(--secondary-neutral-50));
 
@@ -139,24 +118,49 @@ export default function MeetTechKun() {
                         background: var(--secondary-neutral-50);
                         border-radius: 50%;
                         transform-origin: center;
+
+                        @property --scale {
+                            syntax: "<number>";
+                            inherits: false;
+                            initial-value: 1;
+                        }
+                        @keyframes star-suck-in {
+                            to {
+                                --polar-angle: calc(var(--polar-angle-init) + 45deg);
+                                --polar-radius: 0px;
+                                --scale: 0.5;
+                            }
+                        }
+                        @keyframes star-blink {
+                            0% { opacity: 0; }
+                            60% { opacity: 1; }
+                            90% { opacity: 1; }
+                            100% { opacity: 0; }
+                        }
+                        opacity: 0;
+                        --polar-angle: var(--polar-angle-init);
+                        transform: translate(
+                            calc(cos(var(--polar-angle)) * var(--polar-radius)),
+                            calc(sin(var(--polar-angle)) * var(--polar-radius) * 0.5)
+                        ) scale(var(--scale));
+                        animation: 2s var(--delay) forwards paused;
+                        animation-name: star-suck-in, star-blink;
+                        animation-timing-function: cubic-bezier(0.995, -0.035, 0.945, 0.923), ease-in-out;
+                    }
+                    &[data-animate] .star {
+                        animation-play-state: running;
                     }
                 `}>
                     {Array.from({length: STARS_COUNT}, (_, i) =>
-                        <motion.div
+                        <div
                             key={i} className="star"
-                            initial={{
-                                opacity: 0,
-                                transform: 'translate(' +
-                                    'calc(cos(var(--angle)) * var(--radius))' + ', ' +
-                                    'calc(sin(var(--angle)) * var(--radius) * 0.5)' +
-                                    ') ' + 'scale(1)'
-                            }}
                             style={{
-                                '--radius': (200 + 400 * randomnessIndex[i]) + 'px',
-                                '--angle': (i / STARS_COUNT * 360 + 15 - 30 * randomnessIndex[i]) + 'deg'
+                                '--polar-radius': (200 + 400 * randomnessIndex[i]) + 'px',
+                                '--polar-angle-init': (i / STARS_COUNT * 360 + 15 - 30 * randomnessIndex[i]) + 'deg',
+                                '--delay': (i % 5) / 4 + 0.5 * randomnessIndex[i] * Math.sign(i) + "s"
                             } as React.CSSProperties}
                             suppressHydrationWarning
-                        ></motion.div>
+                        ></div>
                     )}
                 </div>}
                 <div css={css`
