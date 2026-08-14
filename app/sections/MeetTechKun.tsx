@@ -40,6 +40,11 @@ export default function MeetTechKun() {
                     bounce: 0.4,
                     at: "-0.5"
                 }],
+                [svg, { filter: ["none", "drop-shadow(0px 0px 4px var(--primary-color)) brightness(3)", "none"] }, {
+                    duration: 2,
+                    ease: "easeInOut",
+                    at: "<-1"
+                }],
                 [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-0.5' }],
                 [
                     path, { d: logoAnimation.frames.map(f => f.value) },

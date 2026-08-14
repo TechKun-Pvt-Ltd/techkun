@@ -62,6 +62,8 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					"click", () => el.toggleAttribute("data-lights-off"),
 					{ signal: abortSignal }
 				);
+				// At first glance, you might wonder why I haven't used the `once` option instead.
+				// Well, since we can't target a specific animation by name, the listener needs to be invoked more than once so it can target the end of the correct animation and then remove itself after that single execution.
 				animationEndAbortCtrl.abort();
 			}, { signal: AbortSignal.any([abortSignal, animationEndAbortCtrl.signal]) });
 		}
@@ -84,7 +86,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			offset-distance: 0;
 			offset-anchor: center center;
 			offset-rotate: -30deg;
-			@keyframes move {
+			@keyframes pointer-move {
 				from {
 					offset-distance: 0;
 				}
@@ -93,7 +95,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					offset-rotate: 0deg;
 				}
 			}
-			@keyframes move-back {
+			@keyframes pointer-move-back {
 				from {
 					offset-distance: 99%;
 				}
@@ -106,9 +108,9 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			--stretch-index: 0.5;
 			[data-initial] & {
 				animation:
-					move ${pointerMove.duration}s ease-in-out both,
+					pointer-move ${pointerMove.duration}s ease-in-out both,
 					stretch ${dotsStretch.duration}s ${dotsStretch.delay}s ${stretchTimingFunction} both,
-					move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
+					pointer-move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
 			}
 		`}>
 			<svg
