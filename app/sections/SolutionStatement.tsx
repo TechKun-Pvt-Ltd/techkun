@@ -17,7 +17,7 @@ import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "@/app/components/Tr
 import {round} from "svg-path-kit/numbers";
 import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
-import {device} from "@/app/styles/device-breakpoints";
+import {deviceQuery} from "@/app/styles/device-query";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -359,7 +359,7 @@ export default function SolutionStatement() {
 						grid-template-columns: 1fr;
 						grid-template-rows: 12rem max-content;
 						gap: 32px;
-						@media ${device.tablet} {
+						@media ${deviceQuery.tablet} {
 							grid-template-columns: 7fr 13fr;
 							grid-template-rows: 1fr;
 							align-items: center;
@@ -376,7 +376,7 @@ export default function SolutionStatement() {
 								display: grid;
 								grid-template-rows: 1fr 1fr;
 								row-gap: 8px;
-								@media ${device.tablet} {
+								@media ${deviceQuery.tablet} {
 									row-gap: 32px;
 								}
 
@@ -391,7 +391,7 @@ export default function SolutionStatement() {
 								transform:
 									translateY(calc(var(--_switch) * 25%))
 									scale(calc(1 - abs(var(--_switch)) * 0.25));
-								@media ${device.tablet} {
+								@media ${deviceQuery.tablet} {
 									transform:
 										translateX(calc(var(--_switch) * 25%))
 										scale(calc(1 - abs(var(--_switch)) * 0.25));

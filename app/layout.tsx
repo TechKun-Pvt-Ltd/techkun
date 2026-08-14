@@ -7,7 +7,7 @@ import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
-import {deviceBreakpoints} from "@/app/styles/device-breakpoints";
+import {deviceBreakpoint} from "@/app/styles/device-query";
 
 // const rouge_script = Rouge_Script({ weight: "400" });
 const quicksand = Quicksand();
@@ -29,13 +29,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" style={{
-            "--mobile-s": `${deviceBreakpoints.mobileS}px`,
-            "--mobile-m": `${deviceBreakpoints.mobileM}px`,
-            "--mobile-l": `${deviceBreakpoints.mobileL}px`,
-            "--tablet": `${deviceBreakpoints.tablet}px`,
-            "--laptop": `${deviceBreakpoints.laptop}px`,
-            "--laptop-l": `${deviceBreakpoints.laptopL}px`,
-            "--desktop": `${deviceBreakpoints.desktop}px`
+            "--mobile-s": `${deviceBreakpoint.mobileS}px`,
+            "--mobile-m": `${deviceBreakpoint.mobileM}px`,
+            "--mobile-l": `${deviceBreakpoint.mobileL}px`,
+            "--tablet": `${deviceBreakpoint.tablet}px`,
+            "--laptop": `${deviceBreakpoint.laptop}px`,
+            "--laptop-l": `${deviceBreakpoint.laptopL}px`,
+            "--desktop": `${deviceBreakpoint.desktop}px`
         } as React.CSSProperties}>
             <body>
                 <Shared />

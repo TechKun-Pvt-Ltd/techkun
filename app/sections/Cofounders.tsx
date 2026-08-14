@@ -6,7 +6,7 @@ import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
-import {device} from "@/app/styles/device-breakpoints";
+import {deviceQuery} from "@/app/styles/device-query";
 import EmailLink from "@/app/components/EmailLink";
 import {LINKEDIN_LOGO_CLIP_PATH_HREF, X_LOGO_CLIP_PATH_HREF} from "@/app/Shared";
 import Link from "next/link";
@@ -164,7 +164,7 @@ export default function Cofounders() {
             display: flex;
             justify-content: end;
         }
-        @media ${device.laptop} {
+        @media ${deviceQuery.laptop} {
             max-width: revert;
             grid-template-columns: 5fr 7fr;
             gap: 16px;
@@ -247,7 +247,7 @@ export default function Cofounders() {
                 grid-column: 1 / -1;
 
                 text-align: center;
-                @media ${device.laptop} {
+                @media ${deviceQuery.laptop} {
                     text-align: revert;
                 }
             `}>If we still feel like strangers...</h2>

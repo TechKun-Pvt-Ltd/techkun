@@ -59,7 +59,7 @@ export default function MeetTechKun() {
     }, []);
 
     useEffect(() => {
-        const path = scope.current.querySelector<SVGPathElement>(isStupidFirefox ? "path.animated-logo-path-measurer" : "path.animated-logo-path")!;
+        const path = scope.current.querySelector<SVGPathElement>("path.animated-logo-path-measurer")!;
 
         const pathBBox = path.getBBox();
         if (!pathBBox.width || !pathBBox.height) return;
@@ -71,6 +71,8 @@ export default function MeetTechKun() {
         const targetY = viewBox.height / 2;
         x.set(`${((targetX - currentX) / pathBBox.width * 100)}%`);
         y.set(`${((targetY - currentY) / pathBBox.height * 100)}%`);
+
+        // If the user is using stupid Firefox, this effect would only work when `isStupidFirefox` is true, which can only be known on the second render.
     }, [isStupidFirefox]);
 
     return <section css={css`
@@ -131,7 +133,7 @@ export default function MeetTechKun() {
                         }
                         @keyframes star-suck-in {
                             to {
-                                --polar-angle: calc(var(--polar-angle-init) + 45deg);
+                                --polar-angle: calc(var(--polar-angle-init) + 30deg);
                                 --polar-radius: 0px;
                                 --scale: 0.5;
                             }
@@ -187,7 +189,7 @@ export default function MeetTechKun() {
                             <clipPath id={ANIMATED_LOGO_CLIP_PATH_ID}>
                                 <motion.path
                                     d={logoAnimation.frames[0].value}
-                                    className="animated-logo-path"
+                                    className={"animated-logo-path " + (isStupidFirefox ? "": "animated-logo-path-measurer")}
                                     style={{transformBox: 'fill-box', transformOrigin: '50%', x, y}}
                                     fill="white"
                                 />
