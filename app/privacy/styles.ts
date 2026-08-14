@@ -1,9 +1,6 @@
-"use client";
 import {css} from "@emotion/react";
-import LegalBlocks from "@/app/terms/components/legal-blocks";
-import {INTRO_BLOCKS, LAST_UPDATED, TERMS_BLOCKS, TOC_ITEMS} from "@/app/terms/content";
 
-const pageCss = css`
+export const pageCss = css`
     max-width: 46rem;
     margin-inline: auto;
     width: 100%;
@@ -13,7 +10,7 @@ const pageCss = css`
     gap: 4rem;
 `;
 
-const linkCss = css`
+export const linkCss = css`
     color: var(--primary-300);
     text-decoration: none;
 
@@ -22,7 +19,7 @@ const linkCss = css`
     }
 `;
 
-const legalContentCss = css`
+export const legalContentCss = css`
     display: flex;
     flex-direction: column;
 
@@ -33,7 +30,7 @@ const legalContentCss = css`
         margin-block-end: 0;
     }
 
-    & h3, & h4 {
+    & h3, & h4, & h5 {
         margin-block-end: 0.5em;
     }
     & h3 {
@@ -48,6 +45,9 @@ const legalContentCss = css`
     }
     & h4 {
         margin-block-start: 1.5rem;
+    }
+    & h5 {
+        margin-block-start: 1rem;
     }
     & p {
         color: var(--muted-foreground);
@@ -75,7 +75,21 @@ const legalContentCss = css`
     }
 `;
 
-const tocCss = css`
+export const summaryCardCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 24px 28px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--muted);
+
+    & p {
+        color: var(--muted-foreground);
+    }
+`;
+
+export const tocCss = css`
     margin-block-end: 2rem;
     padding: 20px 24px;
     border: 1px solid var(--border);
@@ -88,38 +102,3 @@ const tocCss = css`
         gap: 0.5rem 1.5rem;
     }
 `;
-
-export default function Terms() {
-    return <main id="top">
-        <section>
-            <div css={pageCss}>
-                <header>
-                    <h1 className="section-title">Terms and Conditions</h1>
-                    <p className="text-sm" style={{color: "var(--muted-foreground)"}}>
-                        Last updated: {LAST_UPDATED}
-                    </p>
-                </header>
-
-                <div css={legalContentCss}>
-                    <LegalBlocks blocks={INTRO_BLOCKS} />
-                </div>
-
-                <div>
-                    <nav aria-label="Terms and Conditions contents" css={tocCss}>
-                        <ul>
-                            {TOC_ITEMS.map(item => <li key={item.id} className="text-sm">
-                                <a href={`#${item.id}`} css={linkCss}>{item.title}</a>
-                            </li>)}
-                        </ul>
-                    </nav>
-                    <div css={legalContentCss}>
-                        <LegalBlocks blocks={TERMS_BLOCKS} />
-                    </div>
-                    <p className="text-sm" style={{marginBlockStart: "2.5rem"}}>
-                        <a href="#top" css={linkCss}>Back to top ↑</a>
-                    </p>
-                </div>
-            </div>
-        </section>
-    </main>;
-};
