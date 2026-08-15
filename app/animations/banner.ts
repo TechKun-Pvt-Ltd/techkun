@@ -10,7 +10,7 @@ const BANNER_ANIMATION = {
 		delay: PRE_RELEASE_DELAY + 0.5,
 		duration: POINTER_MOVE_DURATION,
 	},
-	dotsStretch: {
+	dotsPull: {
 		delay: POINTER_MOVE_DURATION,
 		duration: STRETCH_DURATION
 	},

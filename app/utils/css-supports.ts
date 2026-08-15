@@ -1,8 +1,10 @@
 import cssSupportsQuery from "@/app/utils/css-supports-query";
 
-const cssSupports = {
-	d: typeof CSS !== 'undefined' && CSS.supports(cssSupportsQuery.d),
-	shape: typeof CSS !== 'undefined' && CSS.supports(cssSupportsQuery.shape),
-};
+const cssIsDefined = typeof CSS !== 'undefined';
+const cssSupports: { [key: string]: boolean } = {};
 
-export default cssSupports;
+for (const key in cssSupportsQuery) {
+	cssSupports[key] = cssIsDefined && CSS.supports(cssSupportsQuery[key as keyof typeof cssSupportsQuery]);
+}
+
+export default cssSupports as  { [K in keyof typeof cssSupportsQuery]: boolean };

@@ -18,6 +18,7 @@ import {round} from "svg-path-kit/numbers";
 import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
 import {deviceQuery} from "@/app/styles/device-query";
+import cssSupportsQuery from "@/app/utils/css-supports-query";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -454,8 +455,8 @@ export default function SolutionStatement() {
 								>
 									<defs>
 										<radialGradient id="brand-radial-gradient">
-											<stop offset="-20%" stopColor="var(--secondary-600)" />
-											<stop offset="80%" stopColor="var(--secondary-800)" />
+											<stop offset="-20%" stopColor="var(--secondary-neutral-800)" />
+											<stop offset="80%" stopColor="var(--secondary-neutral-900)" />
 										</radialGradient>
 									</defs>
 									<g stroke="var(--secondary-neutral-800)" strokeWidth="0.25" fill="none">
@@ -487,7 +488,7 @@ export default function SolutionStatement() {
 										>{quotePart1}</TrigWheel.Text>
 									</ClippedG>
 									<ClippedG clipPathId="front-clip-path" pathData={frontClipPath} className="front-layer">
-										<rect fill="url(#brand-radial-gradient)" fillOpacity="0.1" x="0%" y="0%" width="100%" height="100%" clipPath="url(#radial-boxes-clip-path)" />
+										<rect fill="url(#brand-radial-gradient)" fillOpacity="0.25" x="0%" y="0%" width="100%" height="100%" clipPath="url(#radial-boxes-clip-path)" />
 										{innerCircle}
 										{tinyRadialBoxes}
 										{radialBoxes}
@@ -553,18 +554,21 @@ export default function SolutionStatement() {
 										r={TRIG_CIRCLE_RADIUS * 0.24}
 									/>
 									<g css={css`
+										--_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
+										--_gap: calc(0.2 * var(--_radius));
+										--_circumference: calc(2 * pi * var(--_radius));
 										.progress-indicator {
-											--_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
-											--_gap: calc(0.2 * var(--_radius));
-											--_circumference: calc(2 * pi * var(--_radius));
 											--_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
 											--_switch: round(down, var(--_angle) / (90deg), 1);
+											@supports not ${cssSupportsQuery.unitStripping} {
+												--_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
+											}
 
 											r: var(--_radius);
 											stroke-dasharray:
-												0 calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap))
-												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)) var(--_circumference);
-											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--secondary-900) calc(var(--_switch) * 100%));
+												0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
+												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
+											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-800) calc(var(--_switch) * 100%));
 
 											transition: stroke 0.2s ease-in-out;
 										}
@@ -582,13 +586,16 @@ export default function SolutionStatement() {
 											--_circumference: calc(2 * pi * var(--_radius));
 
 											r: var(--_radius);
-											stroke-dasharray: 0 var(--_circumference) var(--_circumference) 0;
+											stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
 											stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
+											@supports not ${cssSupportsQuery.unitStripping} {
+												stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${TrigWheel.cssProps.angle}), 1rad)));
+											}
 
 											transition: 0.2s ease-in-out;
 											transition-property: opacity, filter;
 										`}
-										fill="none" stroke="var(--secondary-neutral-700)" strokeWidth="0.1"
+										fill="none" stroke="var(--primary-900)" strokeWidth="0.1"
 									/>
 									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
 									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
