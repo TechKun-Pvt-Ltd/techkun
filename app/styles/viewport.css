@@ -44,10 +44,23 @@
     initial-value: 0;
 }
 
-/* STUPID FIREFOX FALLBACK */
+/* FALLBACK FOR OLDER BROWSERS */
 @supports not (opacity: calc(50vw / 100vw)) {
+    @property --denom-0 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
+    @property --denom-1 {
+        syntax: "<length>";
+        initial-value: 0px;
+        inherits: false;
+    }
     :root {
-        --mobile-s-to-laptop: clamp(0, tan(atan2(calc(100vw - var(--mobile-s)), calc(var(--laptop) - var(--mobile-s)))), 1);
-        --mobile-l-to-laptop: clamp(0, tan(atan2(calc(100vw - var(--mobile-l)), calc(var(--laptop) - var(--mobile-l)))), 1);
+        --denom-0: calc(var(--laptop) - var(--mobile-s));
+        --mobile-s-to-laptop: clamp(0, tan(atan2(calc(100vw - var(--mobile-s)), var(--denom-0))), 1);
+
+        --denom-1: calc(var(--laptop) - var(--mobile-l));
+        --mobile-l-to-laptop: clamp(0, tan(atan2(calc(100vw - var(--mobile-l)), var(--denom-1))), 1);
     }
 }

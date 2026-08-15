@@ -387,15 +387,19 @@ export default function SolutionStatement() {
 									transition: none;
 								}
 
-								opacity: calc(1 - abs(var(--_switch)));
-								filter: blur(calc(abs(var(--_switch)) * 10px));
+								--switch-abs: abs(var(--_switch));
+								@supports not ${cssSupportsQuery.abs} {
+									--switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
+								}
+								opacity: calc(1 - var(--switch-abs));
+								filter: blur(calc(var(--switch-abs) * 10px));
 								transform:
 									translateY(calc(var(--_switch) * 25%))
-									scale(calc(1 - abs(var(--_switch)) * 0.25));
+									scale(calc(1 - var(--switch-abs) * 0.25));
 								@media ${deviceQuery.tablet} {
 									transform:
 										translateX(calc(var(--_switch) * 25%))
-										scale(calc(1 - abs(var(--_switch)) * 0.25));
+										scale(calc(1 - var(--switch-abs) * 0.25));
 								}
 
 								& > h3.item-title {
