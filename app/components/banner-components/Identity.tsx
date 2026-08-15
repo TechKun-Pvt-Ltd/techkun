@@ -2,6 +2,8 @@ import {css} from "@emotion/react";
 import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
+import cssSupportsQuery from "@/app/utils/css-supports-query";
+import cssSupports from "@/app/utils/css-supports";
 
 const { pointerMove, pointerMoveBack, dotsStretch, dotsRelease, initialDotsLightUp } = BANNER_ANIMATION;
 
@@ -66,6 +68,52 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				// Well, since we can't target a specific animation by name, the listener needs to be invoked more than once so it can target the end of the correct animation and then remove itself after that single execution.
 				animationEndAbortCtrl.abort();
 			}, { signal: AbortSignal.any([abortSignal, animationEndAbortCtrl.signal]) });
+
+			if (!cssSupports.shape) {
+				const pointer = el.querySelector("span.pointer");
+				const translateXKeyframes = { "--translate-x": ["0%", "-3.52em"] };
+				const translateYKeyframes = { "--translate-y": ["0%", "0.65em"] };
+				const rotateKeyframes = { "--rotate": ["-30deg", "0deg"] };
+				const translateXOptions: KeyframeAnimationOptions = {
+					duration: pointerMove.duration * 1000,
+					easing: "cubic-bezier(0.729, -0.424, 0.769, 0.958)",
+					fill: "forwards"
+				};
+				const translateYOptions: KeyframeAnimationOptions = {
+					duration: pointerMove.duration * 1000,
+					easing: "cubic-bezier(0.33, 1.997, 0.649, 1.653)",
+					fill: "forwards"
+				};
+				const rotateOptions: KeyframeAnimationOptions = {
+					duration: pointerMove.duration * 1000,
+					easing: "ease-in-out",
+					fill: "forwards"
+				};
+
+				pointer?.animate(translateXKeyframes, translateXOptions);
+				pointer?.animate(translateYKeyframes, translateYOptions);
+				pointer?.animate(rotateKeyframes, rotateOptions);
+				pointer?.animate({
+					"--pull-x": "calc(var(--stretch-index) * -10%)",
+					"--pull-y": "calc(var(--stretch-index) * 40%)"
+				}, {
+					duration: dotsStretch.duration * 1000,
+					delay: dotsStretch.delay * 1000,
+					easing: stretchTimingFunction,
+					fill: "both"
+				});
+
+				const reverseDelay: KeyframeAnimationOptions = { duration: pointerMoveBack.duration * 1000, delay: pointerMoveBack.delay * 1000, direction: "reverse" };
+				pointer?.animate(translateXKeyframes, {...translateXOptions, ...reverseDelay});
+				pointer?.animate(translateYKeyframes, {...translateYOptions, ...reverseDelay});
+				pointer?.animate(rotateKeyframes, {...rotateOptions, ...reverseDelay});
+				pointer?.animate({ "--pull-x": "0%", "--pull-y": "0%" }, {
+					duration: pointerMoveBack.duration * 1000,
+					delay: pointerMoveBack.delay * 1000,
+					easing: "ease-in-out",
+					fill: "both"
+				});
+			}
 		}
 	}), []);
 
@@ -75,42 +123,77 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		ref={spanRef}
 		data-lights-off
 	>
-		<span css={css`
+		<span className="pointer" css={css`
 			position: absolute;
 			color: var(--neutral-100);
-			offset-path: shape(
-				from calc(100% + 0.2em) 25%,
-				curve to calc(100% - 0.25em) 110% with 0.6em 25% from start / 1em 0 from end,
-				curve to 0.05em 70% with -1em 0 from start / 0.15em 0 from end
-			);
-			offset-distance: 0;
-			offset-anchor: center center;
-			offset-rotate: -30deg;
-			@keyframes pointer-move {
-				from {
-					offset-distance: 0;
-				}
-				to {
-					offset-distance: 99%;
-					offset-rotate: 0deg;
-				}
-			}
-			@keyframes pointer-move-back {
-				from {
-					offset-distance: 99%;
-				}
-				to {
-					offset-distance: 0;
-					offset-rotate: -30deg;
-					transform: translate(0);
-				}
-			}
 			--stretch-index: 0.5;
-			[data-initial] & {
-				animation:
-					pointer-move ${pointerMove.duration}s ease-in-out both,
+			@supports ${cssSupportsQuery.shape} {
+				offset-path: shape(
+					from calc(100% + 0.2em) 25%,
+					curve to calc(100% - 0.25em) 110% with 0.6em 25% from start / 1em 0 from end,
+					curve to 0.05em 70% with -1em 0 from start / 0.15em 0 from end
+				);
+				offset-distance: 0;
+				offset-anchor: center center;
+				offset-rotate: -30deg;
+				@keyframes pointer-move {
+					from {
+						offset-distance: 0;
+					}
+					to {
+						offset-distance: 99%;
+						offset-rotate: 0deg;
+					}
+				}
+				@keyframes pointer-move-back {
+					from {
+						offset-distance: 99%;
+					}
+					to {
+						offset-distance: 0;
+						offset-rotate: -30deg;
+						transform: translate(0);
+					}
+				}
+
+				[data-initial] & {
+					animation: pointer-move ${pointerMove.duration}s ease-in-out both,
 					stretch ${dotsStretch.duration}s ${dotsStretch.delay}s ${stretchTimingFunction} both,
 					pointer-move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
+				}
+			}
+			@supports not ${cssSupportsQuery.shape} {
+				@property --translate-x {
+				  	syntax: "<length-percentage>";
+					inherits: false;
+					initial-value: 0px;
+				}
+				@property --translate-y {
+				  	syntax: "<length-percentage>";
+					inherits: false;
+					initial-value: 0px;
+				}
+				@property --pull-x {
+				  	syntax: "<length-percentage>";
+					inherits: false;
+					initial-value: 0px;
+				}
+				@property --pull-y {
+				  	syntax: "<length-percentage>";
+					inherits: false;
+					initial-value: 0px;
+				}
+				@property --rotate {
+				  	syntax: "<angle>";
+					inherits: false;
+					initial-value: 0deg;
+				}
+				--rotate: -30deg;
+				transform:
+					translate(3.5em, -0.35em)
+					translate(var(--translate-x), var(--translate-y))
+					translate(var(--pull-x), var(--pull-y))
+					rotate(var(--rotate));
 			}
 		`}>
 			<svg
@@ -118,7 +201,6 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				width="0.275em" viewBox="0 0 24 24"
 				stroke="currentColor" fill="currentColor"
 				strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-				className="pointer"
 			>
 				<path d="M 11.572 3.866 a 0.495 0.495 45 0 1 0.9207 -0 l 6.7175 15.9099 a 0.5 0.5 45 0 1 -0.7142 0.6251 l -5.4476 -3.2131 a 2 2 45 0 0 -2.0315 -0.0021 l -5.4483 3.2152 a 0.5 0.5 45 0 1 -0.7142 -0.6251 z" />
 			</svg>

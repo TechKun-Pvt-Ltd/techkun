@@ -28,22 +28,13 @@ export default function MeetTechKun() {
 
         inView(heading, () => {
             starsContainer?.toggleAttribute("data-animate");
+            svg?.toggleAttribute("data-animate");
             animate([
-                [svg, { opacity: 1 }, {
-                    duration: 2.25,
-                    ease: [0.995, -0.035, 0.945, 0.923],
-                    delay: 1.5
-                }],
                 [svg, { scale: 1 }, {
                     type: "spring",
                     visualDuration: 0.5,
                     bounce: 0.4,
-                    at: "-0.5"
-                }],
-                [svg, { filter: ["none", "drop-shadow(0px 0px 4px var(--primary-color)) brightness(3)", "none"] }, {
-                    duration: 2,
-                    ease: "easeInOut",
-                    at: "<-1"
+                    delay: 3.25
                 }],
                 [path, { x: "0%", y: "0%" }, { type: "spring", duration: 1.5, bounce: 0.1, at: '-0.5' }],
                 [
@@ -59,7 +50,7 @@ export default function MeetTechKun() {
     }, []);
 
     useEffect(() => {
-        const path = scope.current.querySelector<SVGPathElement>(isStupidFirefox ? "path.animated-logo-path-measurer" : "path.animated-logo-path")!;
+        const path = scope.current.querySelector<SVGPathElement>("path.animated-logo-path-measurer")!;
 
         const pathBBox = path.getBBox();
         if (!pathBBox.width || !pathBBox.height) return;
@@ -71,6 +62,8 @@ export default function MeetTechKun() {
         const targetY = viewBox.height / 2;
         x.set(`${((targetX - currentX) / pathBBox.width * 100)}%`);
         y.set(`${((targetY - currentY) / pathBBox.height * 100)}%`);
+
+        // If the user is using stupid Firefox, this effect would only work when `isStupidFirefox` is true, which can only be known on the second render.
     }, [isStupidFirefox]);
 
     return <section css={css`
@@ -131,7 +124,7 @@ export default function MeetTechKun() {
                         }
                         @keyframes star-suck-in {
                             to {
-                                --polar-angle: calc(var(--polar-angle-init) + 45deg);
+                                --polar-angle: calc(var(--polar-angle-init) + 30deg);
                                 --polar-radius: 0px;
                                 --scale: 0.5;
                             }
@@ -173,9 +166,33 @@ export default function MeetTechKun() {
                 `}>
                     <motion.svg
                         className="animated-logo-svg"
-                        style={{ display: "block", transformOrigin: '50%' }}
-                        initial={{ opacity: 0, scale: 0.625 }}
+                        initial={{ scale: 0.625 }}
                         viewBox={viewBoxString(logoAnimation.viewBox)}
+                        css={css`
+                            display: block;
+                            transform-origin: center;
+                            opacity: 0;
+                            @keyframes fade-in {
+                                to {
+                                    opacity: 1;
+                                }
+                            }
+                            @keyframes shine {
+                                0%, 100% {
+                                    filter: drop-shadow(0px 0px 0px var(--primary-color)) brightness(1);
+                                }
+                                49%, 51% {
+                                    filter: drop-shadow(0px 0px 4px var(--primary-color)) brightness(3);
+                                }
+                            }
+                            animation:
+                                fade-in 2.25s 1.5s cubic-bezier(0.995, -0.035, 0.945, 0.923) both,
+                                shine 1.5s 2.75s ease-in-out both;
+                            animation-play-state: paused;
+                            &[data-animate] {
+                                animation-play-state: running;
+                            }
+                        `}
                     >
                         {isStupidFirefox && <motion.path
                             d={logoAnimation.frames[0].value}
@@ -187,7 +204,7 @@ export default function MeetTechKun() {
                             <clipPath id={ANIMATED_LOGO_CLIP_PATH_ID}>
                                 <motion.path
                                     d={logoAnimation.frames[0].value}
-                                    className="animated-logo-path"
+                                    className={"animated-logo-path " + (isStupidFirefox ? "": "animated-logo-path-measurer")}
                                     style={{transformBox: 'fill-box', transformOrigin: '50%', x, y}}
                                     fill="white"
                                 />

@@ -1,6 +1,8 @@
+import cssSupportsQuery from "@/app/utils/css-supports-query";
+
 const cssSupports = {
-	d: typeof CSS !== 'undefined' && CSS.supports('d', 'path("M 0 0")'),
-	shape: typeof CSS !== 'undefined' && CSS.supports("offset-path", "shape(from 0% 0%, line to 100% 100%)"),
+	d: typeof CSS !== 'undefined' && CSS.supports(cssSupportsQuery.d),
+	shape: typeof CSS !== 'undefined' && CSS.supports(cssSupportsQuery.shape),
 };
 
 export default cssSupports;
