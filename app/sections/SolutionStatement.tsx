@@ -441,14 +441,14 @@ export default function SolutionStatement() {
 									 width: 100%;
 									 will-change: transform;
 									 g.back-layer {
-										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.25);
-										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.25);
-										 --_stroke-color: oklch(from var(--neutral-800) l c h / 0.75);
+										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
+										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
+										 --_stroke-color: oklch(from var(--neutral-900) l c h / 1);
 									 }
 									 g.front-layer {
 										 --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
 										 --_fill-color: none;
-										 --_stroke-color: oklch(from var(--secondary-neutral-800) l c h / 0.75);
+										 --_stroke-color: oklch(from var(--secondary-neutral-900) l c h / 0.875);
 									 }
 								 `}
 							>
@@ -459,8 +459,8 @@ export default function SolutionStatement() {
 								>
 									<defs>
 										<radialGradient id="brand-radial-gradient">
-											<stop offset="-20%" stopColor="var(--secondary-neutral-800)" />
-											<stop offset="80%" stopColor="var(--secondary-neutral-900)" />
+											<stop offset="-20%" stopColor="var(--secondary-800)" />
+											<stop offset="80%" stopColor="var(--secondary-neutral-950)" />
 										</radialGradient>
 									</defs>
 									<g stroke="var(--secondary-neutral-800)" strokeWidth="0.25" fill="none">
