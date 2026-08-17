@@ -1,5 +1,5 @@
 import {css} from "@emotion/react";
-import React, {JSX, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {
 	animate,
 	AnimationPlaybackControlsWithThen,
@@ -11,14 +11,10 @@ import {
 	useTransform,
 	ValueAnimationTransition
 } from "motion/react";
-import {Angle, Point2D, Vector2D} from "svg-path-kit";
-import {useConicReveal} from "@/hooks/use-conic-reveal";
-import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "@/app/components/TrigWheel";
-import {round} from "svg-path-kit/numbers";
-import {MotionValue} from "motion";
-import {Once} from "@/components/Once";
+import {Angle} from "svg-path-kit";
 import {deviceQuery} from "@/app/styles/device-query";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
+import RevolutionWheel from "@/app/components/solution-statement-components/RevolutionWheel";
+import PrincipleTitles from "@/app/components/solution-statement-components/PrincipleTitles";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
@@ -98,10 +94,6 @@ function SectionHeading() {
 	</h1>;
 }
 
-const VIEW_BOX_START = 0;
-const VIEW_BOX_SIZE = 100;
-const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
-const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
 const ANGLE_RANGE_START = 0;
 
 const titles = [
@@ -111,214 +103,12 @@ const titles = [
 	{ title: "Identity", subtitle: "We investigate your idea, understand\u00A0its meaning, and create a visual\u00A0identity for it." }
 ];
 
-function ClippedG({clipPathId, pathData, ...props}: {
-	clipPathId: string;
-	pathData: string | MotionValue<string>;
-} & React.ComponentProps<"g">) {
-	return <>
-		<Once id={clipPathId}>
-			<defs>
-				<clipPath id={clipPathId}>
-					<motion.path d={pathData} />
-				</clipPath>
-			</defs>
-		</Once>
-		<g clipPath={`url(#${clipPathId})`} {...props} />
-	</>;
-}
-
-const MINUS_ONE_AND_ONE = [-1, 1] as const;
-
-function IconRing({ radius, size = 4, renderers }: {
-	radius: number;
-	size: number;
-	renderers: ((position: Point2D, size: number) => JSX.Element)[];
-}) {
-	const { center } = useTrigWheel();
-	const HALF_PI = 0.5 * Math.PI;
-	const RELATIVE_POSITION = Math.PI / 6 - Math.PI / 60;
-	return renderers.map((render, i) => {
-		const angle = Math.floor(i * 0.5) * HALF_PI + MINUS_ONE_AND_ONE[i % 2] * RELATIVE_POSITION;
-		const position = center.add(Vector2D.polar(radius, angle));
-		return <React.Fragment key={i}>
-			{/*<circle cx={icon.position.x} cy={icon.position.y} r="4" />*/}
-			{render(Point2D.of(round(position.x, 4), round(position.y, 4)), size)}
-		</React.Fragment>
-	});
-}
-
-function TextRing({radius, texts, charAngle, fontSize = 3}: {
-	radius: number;
-	texts: string[];
-	charAngle: number;
-	fontSize: number;
-}) {
-	return texts.map((text, i) => {
-		const sweepDirection = MINUS_ONE_AND_ONE[Math.floor(i / 2) % 2];
-		return <TrigWheel.Text
-			key={text}
-			startAngle={`${Math.PI / 4 + i * Math.PI / 2 + -sweepDirection * charAngle * text.length / 2}rad`}
-			sweepDirection={sweepDirection}
-			charAngle={charAngle + "rad"}
-			radius={radius}
-			fontSize={fontSize}
-		>{text}</TrigWheel.Text>;
-	});
-}
-
-const angleLabelTransformer: TrigAngleTransformer<number> = a => round(+a - Math.PI, 4);
-function AngleLabel(props: React.ComponentProps<typeof motion.text>) {
-	const { center, angle, getOrRegister } = useTrigWheel();
-	return <motion.text
-		x={center.x} y={center.y}
-		css={css`
-			font-weight: 600;
-			transform-box: fill-box;
-			transform: translate(-50%, 25%);
-		`}
-		{...props}
-	>
-		{angle && getOrRegister("angle-label", angleLabelTransformer)}
-	</motion.text>;
-}
-
 const svgSizeProp = "--_svg-size";
-
-const firstText = "Your product needs a";
-const revealedText = "revolution";
-const charAngle = 0.064;
 
 export default function SolutionStatement() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
 	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
-
-	useEffect(() => {
-		if (!targetRef.current) return;
-
-		let currentIndex = 0;
-		const groups = targetRef.current.querySelectorAll<HTMLDivElement>("div.title-group");
-		queueMicrotask(() => groups.forEach(group => group.removeAttribute("data-initial")));
-		function callback(a: Angle) {
-			const targetIndex = Math.min(Math.floor((+a - ANGLE_RANGE_START) / +Angle.HALF_PI), groups.length - 1);
-			if (targetIndex === currentIndex) return;
-
-			groups.forEach((group, i) => {
-				group.style.setProperty("--_switch", Math.sign(i - targetIndex).toString());
-			});
-			currentIndex = targetIndex;
-		}
-		callback(angle.get());
-		return angle.on("change", callback);
-	}, []);
-
-	const [frontClipPath, backClipPath] = useConicReveal({
-		angle: angle,
-		startAngle: ANGLE_RANGE_START,
-		centerX: CIRCLE_CENTER,
-		centerY: CIRCLE_CENTER,
-		radius: VIEW_BOX_SIZE / 2
-	});
-
-	const innerCircleRadius = TRIG_CIRCLE_RADIUS * 0.48;
-	const innerCircle = <TrigWheel.Circle
-		r={innerCircleRadius}
-		fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
-		strokeWidth="0.25"
-		strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
-	/>;
-
-	const radialBoxes = <>
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.68} angle={Math.PI + Math.PI / 3 + Math.PI / 30 + Math.PI / 30}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.24} angularSize={Math.PI / 4 - Math.PI / 15}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-		<TrigWheel.RadialBox
-			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}
-			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}
-			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
-		/>
-		<TrigWheel.RadialBox
-			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI}
-			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 3}
-			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
-		/>
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI - (Math.PI / 4 + 2 * Math.PI / 30)}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={-Math.PI / 4}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-	</>;
-	const radialBoxesTextBack = <>
-		<TrigWheel.Text
-			style={{ textTransform: "uppercase" }}
-			radius={TRIG_CIRCLE_RADIUS * 0.9}
-			startAngle={Math.PI * (1 + 1 / 45) + "rad"}
-			rotationStartThreshold="0rad"
-			charAngle={0.04 + "rad"} fontSize={2.5}
-			color="var(--neutral-700)"
-		>Forgettable experiences</TrigWheel.Text>
-		<TrigWheel.Text
-			style={{ textTransform: "uppercase" }}
-			radius={TRIG_CIRCLE_RADIUS * 0.9}
-			startAngle={Math.PI * (1 - 1 / 4.5) + "rad"}
-			rotationStartThreshold="0rad"
-			charAngle={0.04 + "rad"} fontSize={2.5}
-			color="var(--neutral-700)"
-		>Technical debts</TrigWheel.Text>
-	</>;
-	const radialBoxesTextFront = <>
-		<TrigWheel.Text
-			style={{ textTransform: "uppercase" }}
-			radius={TRIG_CIRCLE_RADIUS * 0.9}
-			startAngle={Math.PI * (1 + 1 / 3 - 1 / 30) + "rad"}
-			rotationStartThreshold="0rad"
-			sweepDirection="ccw"
-			charAngle={0.04 + "rad"} fontSize={2.5}
-			color="var(--secondary-neutral-700)"
-		>Delightful experiences</TrigWheel.Text>
-		<TrigWheel.Text
-			style={{ textTransform: "uppercase" }}
-			radius={TRIG_CIRCLE_RADIUS * 0.9}
-			startAngle={(Math.PI - Math.PI / 22) + "rad"}
-			rotationStartThreshold="0rad"
-			sweepDirection="ccw"
-			charAngle={0.04 + "rad"} fontSize={2.5}
-			color="var(--secondary-neutral-700)"
-		>Robust foundations</TrigWheel.Text>
-	</>;
-
-	const tinyRadialBoxes = <>
-		<TrigWheel.RadialBox
-			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI / 60}
-			radialSize={TRIG_CIRCLE_RADIUS * 0.2} angularSize={Math.PI / 2.6}
-			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
-		/>
-	</>;
-
-	const dashedWheel = <TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_stroke-color)" />;
-
-	const quotePart1 = "Design is not just what it looks and feels like";
-	const quotePart2 = "Design is how it works";
-	const quoteCharAngle = 0.064;
 
 	return <section css={css`
         padding-block: 128px;
@@ -366,59 +156,7 @@ export default function SolutionStatement() {
 							align-items: center;
 						}
 					`}>
-						<div css={css`
-							align-self: stretch;
-							position: relative;
-							isolation: isolate;
-							div.title-group {
-								position: absolute;
-								inset: 0;
-
-								display: grid;
-								grid-template-rows: 1fr 1fr;
-								row-gap: 8px;
-								@media ${deviceQuery.tablet} {
-									row-gap: 32px;
-								}
-
-								transition: 0.3s ease;
-								transition-property: transform, opacity, filter;
-								&[data-initial] {
-									transition: none;
-								}
-
-								--switch-abs: abs(var(--_switch));
-								@supports not ${cssSupportsQuery.abs} {
-									--switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
-								}
-								opacity: calc(1 - var(--switch-abs));
-								filter: blur(calc(var(--switch-abs) * 10px));
-								transform:
-									translateY(calc(var(--_switch) * 25%))
-									scale(calc(1 - var(--switch-abs) * 0.25));
-								@media ${deviceQuery.tablet} {
-									transform:
-										translateX(calc(var(--_switch) * 25%))
-										scale(calc(1 - var(--switch-abs) * 0.25));
-								}
-
-								& > h3.item-title {
-									align-self: end;
-								}
-							}
-						`}>
-							{titles.map((item, i) => {
-								return <div
-									key={i}
-									className="title-group"
-									style={{ "--_switch": i === 0 ? 0 : 1 } as React.CSSProperties}
-									data-initial
-								>
-									<h3 className="item-title">{item.title}</h3>
-									<p className="item-subtitle">{item.subtitle}</p>
-								</div>;
-							})}
-						</div>
+						<PrincipleTitles angle={angle} angleRangeStart={ANGLE_RANGE_START} titles={titles} />
 						<div css={css`
 							min-height: 0;
 							isolation: isolate;
@@ -435,177 +173,7 @@ export default function SolutionStatement() {
 							`}>
 								<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="10" stroke="var(--neutral-700)" strokeDasharray="16" />
 							</svg>
-							<svg viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
-								 strokeLinejoin="round" strokeLinecap="round"
-								 css={css`
-									 width: 100%;
-									 will-change: transform;
-									 g.back-layer {
-										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.25);
-										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.25);
-										 --_stroke-color: oklch(from var(--neutral-800) l c h / 0.75);
-									 }
-									 g.front-layer {
-										 --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
-										 --_fill-color: none;
-										 --_stroke-color: oklch(from var(--secondary-neutral-800) l c h / 0.75);
-									 }
-								 `}
-							>
-								<TrigWheel
-									angle={angle}
-									startX={VIEW_BOX_START} startY={VIEW_BOX_START}
-									size={VIEW_BOX_SIZE} radius={TRIG_CIRCLE_RADIUS}
-								>
-									<defs>
-										<radialGradient id="brand-radial-gradient">
-											<stop offset="-20%" stopColor="var(--secondary-neutral-800)" />
-											<stop offset="80%" stopColor="var(--secondary-neutral-900)" />
-										</radialGradient>
-									</defs>
-									<g stroke="var(--secondary-neutral-800)" strokeWidth="0.25" fill="none">
-										<TrigWheel.XAxis />
-										<TrigWheel.YAxis />
-										<TrigWheel.RotorXProjection />
-										<TrigWheel.RotorYProjection />
-									</g>
-									<ClippedG clipPathId="back-clip-path" pathData={backClipPath} className="back-layer">
-										{innerCircle}
-										{tinyRadialBoxes}
-										{radialBoxes}
-										{/*{radialBoxesTextBack}*/}
-										{dashedWheel}
-										<TrigWheel.Text
-											style={{ textTransform: "uppercase" }}
-											radius={TRIG_CIRCLE_RADIUS - 5}
-											startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
-											rotationStartThreshold={`${charAngle}rad`} rotationEndThreshold={`${Math.PI - charAngle * (firstText.length + 1)}rad`}
-											sweepDirection="ccw"
-											fontSize={2.5}
-											color="var(--neutral-400)"
-										>{firstText}</TrigWheel.Text>
-										<TrigWheel.Text
-											radius={TRIG_CIRCLE_RADIUS * 0.54}
-											charAngle={quoteCharAngle + "rad"} fontSize={2.5}
-											startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
-											color="var(--neutral-600)"
-										>{quotePart1}</TrigWheel.Text>
-									</ClippedG>
-									<ClippedG clipPathId="front-clip-path" pathData={frontClipPath} className="front-layer">
-										<rect fill="url(#brand-radial-gradient)" fillOpacity="0.25" x="0%" y="0%" width="100%" height="100%" clipPath="url(#radial-boxes-clip-path)" />
-										{innerCircle}
-										{tinyRadialBoxes}
-										{radialBoxes}
-										<clipPath id="radial-boxes-clip-path">
-											{radialBoxes}
-										</clipPath>
-										{/*{radialBoxesTextFront}*/}
-										{dashedWheel}
-										<TrigWheel.Text
-											style={{ textTransform: "uppercase" }}
-											radius={TRIG_CIRCLE_RADIUS - 5}
-											startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
-											sweepDirection="ccw"
-											rotationStartThreshold={"0rad"}
-											fontSize={2.5}
-											color="var(--secondary-neutral-200)"
-										>{revealedText}</TrigWheel.Text>
-										<TrigWheel.Text
-											style={{ textTransform: "uppercase" }}
-											radius={TRIG_CIRCLE_RADIUS - 5}
-											startAngle={"0rad"} charAngle={`${charAngle}rad`}
-											sweepDirection="ccw"
-											rotationStartThreshold={(2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad"}
-											fontSize={2.5}
-											color="var(--secondary-neutral-200)"
-										>{"LET'S KICKSTART YOUR"}</TrigWheel.Text>
-										<TrigWheel.Text
-											radius={TRIG_CIRCLE_RADIUS * 0.54}
-											charAngle={quoteCharAngle + "rad"} fontSize={2.5}
-											startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
-											rotationStartThreshold={(3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"}
-											color="var(--secondary-neutral-600)"
-										>{quotePart2}</TrigWheel.Text>
-										{/*<g style={{ color: "var(--secondary-neutral-700)" }}>*/}
-										{/*	<TextRing*/}
-										{/*		radius={TRIG_CIRCLE_RADIUS * 1.12}*/}
-										{/*		texts={["Ideate & document", "Sketch & blueprint", "Design & develop", "Refine & optimize"]}*/}
-										{/*		charAngle={0.03} fontSize={2}*/}
-										{/*	/>*/}
-										{/*</g>*/}
-									</ClippedG>
-									<g stroke="var(--primary-900)" strokeWidth="0.25" fill="none">
-										<TrigWheel.ExtendedRotor strokeDasharray="2" />
-										<TrigWheel.Rotor style={{
-											filter:
-												"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-900) l c h / 0.32)) " +
-												"drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-900) l c h / 0.32)) " +
-												"drop-shadow(1px 2px 2.5px oklch(from var(--primary-900) l c h / 0.32))"
-										}}/>
-									</g>
-									<TrigWheel.Circle
-										fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
-										r={TRIG_CIRCLE_RADIUS * 0.32}
-										// style={{
-										// 	filter:
-										// 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-										// 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-										// 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
-										// }}
-									/>
-									<TrigWheel.Circle
-										fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
-										r={TRIG_CIRCLE_RADIUS * 0.24}
-									/>
-									<g css={css`
-										--_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
-										--_gap: calc(0.2 * var(--_radius));
-										--_circumference: calc(2 * pi * var(--_radius));
-										.progress-indicator {
-											--_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
-											--_switch: round(down, var(--_angle) / (90deg), 1);
-											@supports not ${cssSupportsQuery.unitStripping} {
-												--_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
-											}
-
-											r: var(--_radius);
-											stroke-dasharray:
-												0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
-												calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
-											stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-800) calc(var(--_switch) * 100%));
-
-											transition: stroke 0.2s ease-in-out;
-										}
-									`}>
-										{Array.from({ length: 4 }, (_, i) => <TrigWheel.Circle
-											key={i} className="progress-indicator"
-											style={{ '--i': i } as React.CSSProperties}
-											fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
-											strokeLinecap="butt"
-										/>)}
-									</g>
-									<TrigWheel.Circle
-										css={css`
-											--_radius: calc(0.24 * var(${TrigWheel.cssProps.radius}));
-											--_circumference: calc(2 * pi * var(--_radius));
-
-											r: var(--_radius);
-											stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
-											stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
-											@supports not ${cssSupportsQuery.unitStripping} {
-												stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${TrigWheel.cssProps.angle}), 1rad)));
-											}
-
-											transition: 0.2s ease-in-out;
-											transition-property: opacity, filter;
-										`}
-										fill="none" stroke="var(--primary-900)" strokeWidth="0.1"
-									/>
-									<TrigWheel.RotorTerminal fill="var(--primary-700)" />
-									<TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5" />
-									<AngleLabel fontSize="2.2" fill="var(--neutral-500)" />
-								</TrigWheel>
-							</svg>
+							<RevolutionWheel angle={angle} angleRangeStart={ANGLE_RANGE_START} />
 						</div>
 					</div>
 				</div>
