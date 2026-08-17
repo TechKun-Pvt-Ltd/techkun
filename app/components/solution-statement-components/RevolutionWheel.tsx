@@ -8,6 +8,7 @@ import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
 import { motion } from "motion/react";
 import {round} from "svg-path-kit/numbers";
+import cssSupports from "@/app/utils/css-supports";
 
 const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
@@ -214,12 +215,13 @@ function CenterIcon(props: React.ComponentProps<typeof motion.path>) {
     return <motion.path
         d={shapes[0]}
         css={css`
-            transition: d 0.3s ease-in-out;
+            transition: d 0.3s ease;
             pointer-events: bounding-box;
             &:hover {
                 d: path("${shapes[1]}");
             }
         `}
+        whileHover={cssSupports.d ? null : {d: shapes[1]} as any}
         {...props}
     />;
 }
