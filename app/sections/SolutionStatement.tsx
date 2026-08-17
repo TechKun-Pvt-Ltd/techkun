@@ -224,7 +224,7 @@ export default function SolutionStatement() {
 	const innerCircle = <TrigWheel.Circle
 		r={innerCircleRadius}
 		fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
-		strokeWidth="0.25"
+		strokeWidth="0.1"
 		strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
 	/>;
 
@@ -248,14 +248,14 @@ export default function SolutionStatement() {
 			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}
 			rotationStartThreshold="0rad"
 			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
+			strokeWidth="0.1"
 		/>
 		<TrigWheel.RadialBox
 			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI}
 			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 3}
 			rotationStartThreshold="0rad"
 			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
+			strokeWidth="0.1"
 		/>
 		{/*<TrigWheel.RadialBox*/}
 		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI - (Math.PI / 4 + 2 * Math.PI / 30)}*/}
@@ -310,7 +310,7 @@ export default function SolutionStatement() {
 			radialSize={TRIG_CIRCLE_RADIUS * 0.2} angularSize={Math.PI / 2.6}
 			rotationStartThreshold="0rad"
 			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.2"
+			strokeWidth="0.1"
 		/>
 	</>;
 
@@ -443,12 +443,12 @@ export default function SolutionStatement() {
 									 g.back-layer {
 										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
 										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-										 --_stroke-color: oklch(from var(--neutral-900) l c h / 1);
+										 --_stroke-color: oklch(from var(--neutral-700) l c h / 1);
 									 }
 									 g.front-layer {
 										 --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
 										 --_fill-color: none;
-										 --_stroke-color: oklch(from var(--secondary-neutral-900) l c h / 0.875);
+										 --_stroke-color: oklch(from var(--secondary-neutral-700) l c h / 1);
 									 }
 								 `}
 							>

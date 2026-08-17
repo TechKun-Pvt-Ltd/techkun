@@ -177,7 +177,7 @@ TrigWheel.DashedWheel = function DashedWheel({radius, markerSize = 2.5, markersP
 	markersPerQuarter?: number;
 } & React.ComponentProps<"circle">) {
 	const { center } = useTrigWheel();
-	const markerThickness = 0.25;
+	const markerThickness = 0.1;
 	const effectiveRadius = radius - markerSize / 2;
 
 	return <circle
