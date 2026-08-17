@@ -41,7 +41,7 @@ export default function NotFound() {
                         The page you're looking for doesn't exist or has been moved.
                     </p>
                     <Link href="/" className="text-lg" css={buttonCss}>
-                        Go back home
+                        Take me home
                     </Link>
                 </div>
             </div>
