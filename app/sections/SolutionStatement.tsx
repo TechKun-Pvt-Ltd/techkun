@@ -11,7 +11,7 @@ import {
 	useTransform,
 	ValueAnimationTransition
 } from "motion/react";
-import {Angle, Point2D, Vector2D} from "svg-path-kit";
+import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal";
 import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "@/app/components/TrigWheel";
 import {round} from "svg-path-kit/numbers";
@@ -103,6 +103,8 @@ const VIEW_BOX_SIZE = 100;
 const TRIG_CIRCLE_RADIUS = 0.435 * VIEW_BOX_SIZE;
 const CIRCLE_CENTER = VIEW_BOX_START + VIEW_BOX_SIZE / 2;
 const ANGLE_RANGE_START = 0;
+
+const centerPoint = Point2D.of(CIRCLE_CENTER, CIRCLE_CENTER);
 
 const titles = [
 	{ title: "User experience comes\u00A0first", subtitle: "We\u00A0investigate the user's\u00A0needs and\u00A0persona and create a\u00A0delightful human\u00A0experience for\u00A0them." },
@@ -228,43 +230,34 @@ export default function SolutionStatement() {
 		strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
 	/>;
 
-	const radialBoxes = <>
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.68} angle={Math.PI + Math.PI / 3 + Math.PI / 30 + Math.PI / 30}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.24} angularSize={Math.PI / 4 - Math.PI / 15}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-		<TrigWheel.RadialBox
-			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI + Math.PI / 3 + Math.PI / 30}
-			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 4}
-			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.1"
-		/>
-		<TrigWheel.RadialBox
-			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI}
-			radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={Math.PI / 3}
-			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-			strokeWidth="0.1"
-		/>
-		{/*<TrigWheel.RadialBox*/}
-		{/*	radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI - (Math.PI / 4 + 2 * Math.PI / 30)}*/}
-		{/*	radialSize={TRIG_CIRCLE_RADIUS * 0.4} angularSize={-Math.PI / 4}*/}
-		{/*	rotationStartThreshold="0rad"*/}
-		{/*	fill="var(--_fill-color)" stroke="var(--_stroke-color)"*/}
-		{/*	strokeWidth="0.2"*/}
-		{/*/>*/}
-	</>;
+	const radialBoxesDefs = [
+		{
+			radius: TRIG_CIRCLE_RADIUS * 0.6,
+			angle: Math.PI + Math.PI / 3 + Math.PI / 30,
+			radialSize: TRIG_CIRCLE_RADIUS * 0.4,
+			angularSize: Math.PI / 4
+		},
+		{
+			radius: TRIG_CIRCLE_RADIUS * 0.6,
+			angle: Math.PI,
+			radialSize: TRIG_CIRCLE_RADIUS * 0.4,
+			angularSize: Math.PI / 3
+		}
+	];
+	const radialBoxes = radialBoxesDefs.map(box => {
+		const STROKE_WIDTH = 0.1;
+		const pb = PathBuilder.m(centerPoint.add(Vector2D.polar(box.radius + box.radialSize, box.angle)));
+		pb.circularArc(box.radius + box.radialSize, box.angle, box.angle + box.angularSize);
+		return <React.Fragment key={`${box.radius}-${box.angle}-${box.radialSize}-${box.angularSize}`}>
+			<TrigWheel.RadialBox
+				{...box}
+				rotationStartThreshold="0rad"
+				fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+				strokeWidth={STROKE_WIDTH}
+			/>
+			<path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className="trig-wheel-rotate" d={pb.toSVGPathString()} />
+		</React.Fragment>;
+	});
 	const radialBoxesTextBack = <>
 		<TrigWheel.Text
 			style={{ textTransform: "uppercase" }}
@@ -309,12 +302,15 @@ export default function SolutionStatement() {
 			radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI / 60}
 			radialSize={TRIG_CIRCLE_RADIUS * 0.2} angularSize={Math.PI / 2.6}
 			rotationStartThreshold="0rad"
-			fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+			fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
 			strokeWidth="0.1"
 		/>
 	</>;
 
-	const dashedWheel = <TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_stroke-color)" />;
+	const dashedWheel = <>
+		<TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_stroke-color)" />
+		<TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_lighter-stroke)" markersPerQuarter={1} />
+	</>;
 
 	const quotePart1 = "Design is not just what it looks and feels like";
 	const quotePart2 = "Design is how it works";
@@ -443,12 +439,14 @@ export default function SolutionStatement() {
 									 g.back-layer {
 										 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
 										 --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-										 --_stroke-color: oklch(from var(--neutral-700) l c h / 1);
+										 --_stroke-color: oklch(from var(--neutral-700) l c h / 0.75);
+										 --_lighter-stroke: var(--neutral-400);
 									 }
 									 g.front-layer {
 										 --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
 										 --_fill-color: none;
-										 --_stroke-color: oklch(from var(--secondary-neutral-700) l c h / 1);
+										 --_stroke-color: oklch(from var(--secondary-neutral-700) l c h / 0.75);
+										 --_lighter-stroke: var(--primary-400);
 									 }
 								 `}
 							>
