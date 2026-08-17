@@ -254,8 +254,7 @@ function formLoop(
 
         const outerElbowSecondHandleVec = Vector2D.from(loopElbowOuter.endingPoint, loopElbowOuter.secondControlPoint)
             .rotate(innerLinecapAngleUnrotation);
-        const outerLinecapAngle = Angle.of(outerElbowSecondHandleVec.angle)
-            .halfTurnBackward();
+        const outerLinecapAngle = outerElbowSecondHandleVec.angle.halfTurnBackward();
         // vector from (cosine, sine) to (-1, 0) scaled by thickness / 2
         const outerElbowStartToCircleEnd = Vector2D.of(
             thickness / 2 * -outerLinecapAngle.cosine,
