@@ -2,17 +2,29 @@
 import LegalBlocks from "@/app/privacy/components/legal-blocks";
 import {legalContentCss, linkCss, pageCss, tocCss} from "@/app/privacy/styles";
 import {FULL_POLICY_BLOCKS, LAST_UPDATED, TOC_ITEMS} from "@/app/privacy/content";
+import {css} from "@emotion/react";
+
+const headerCss = css`
+    h1 {
+        margin-block-end: 0.25em;
+    }
+    p {
+        color: var(--muted-foreground);
+        background-color: var(--muted);
+        width: max-content;
+        padding: 4px 12px;
+        border-radius: 0.5rem;
+    }
+`;
 
 export default function DetailedPrivacyPolicy() {
     return <main id="top">
         <section>
             <div css={pageCss}>
-                <header>
-                    <p className="text-sm" style={{marginBlockEnd: "0.75rem"}}>
-                        <a href="/privacy" css={linkCss}>← Back to Privacy Policy</a>
-                    </p>
+                <header css={headerCss}>
+                    <a href="/privacy" css={linkCss} className="text-sm" style={{display: "block", marginBlockEnd: "0.75rem"}}>← Back to Privacy Policy</a>
                     <h1 className="section-title">Detailed Privacy Policy</h1>
-                    <p className="text-sm" style={{color: "var(--muted-foreground)"}}>
+                    <p className="text-base">
                         Last updated: {LAST_UPDATED}
                     </p>
                 </header>

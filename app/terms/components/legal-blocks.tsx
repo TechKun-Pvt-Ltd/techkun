@@ -40,7 +40,7 @@ export default function LegalBlocks({blocks}: { blocks: LegalBlock[] }) {
                     </dl>;
                 case "email":
                     return <p key={index} className="text-base">
-                        <EmailLink address={block.address} text={block.label ?? block.address} />
+                        <EmailLink style={{ color: "var(--primary-200)" }} address={block.address} text={block.label ?? block.address} />
                     </p>;
             }
         })}

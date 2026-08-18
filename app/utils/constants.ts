@@ -1,0 +1,1 @@
+export const contactMailAddress = "farasat@tech-kun.com";

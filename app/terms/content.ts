@@ -1,3 +1,5 @@
+import {contactMailAddress} from "@/app/utils/constants";
+
 export const LAST_UPDATED = "August 15, 2026";
 
 export type LegalBlock =
@@ -97,12 +99,12 @@ export const TERMS_BLOCKS: LegalBlock[] = [
     { type: "p", text: "TechKun believes that digital experiences should be usable and understandable by as many people as reasonably possible, regardless of device or ability. We aim to design and develop this Website with accessibility, clarity, and usability in mind as part of our broader commitment to quality and responsible software practices." },
     { type: "p", text: "While this Website may not yet fully conform to all accessibility standards or guidelines, we are continuously working to improve its structure, content, and usability. Accessibility is treated as an ongoing process rather than a one-time certification." },
     { type: "p", text: "If you encounter any accessibility barriers while using this Website, we encourage you to contact us. Reasonable efforts will be made to review and address concerns where feasible." },
-    { type: "email", address: "info@tech-kun.com", label: "Report an accessibility issue: info@tech-kun.com" },
+    { type: "email", address: contactMailAddress, label: `Report an accessibility issue: ${contactMailAddress}` },
 
     { type: "heading", level: 3, text: "11. Contact Information", id: "section-11" },
     { type: "fields", items: [
         { label: "Company", value: "TechKunEx Digital Solutions Pvt. Ltd." },
         { label: "Address", value: "28, Royal Market, Bhopal, MP, India – 462001" }
     ] },
-    { type: "email", address: "info@tech-kun.com", label: "Email: info@tech-kun.com" }
+    { type: "email", address: contactMailAddress, label: `Email: ${contactMailAddress}` }
 ];

@@ -1,3 +1,5 @@
+import {contactMailAddress} from "@/app/utils/constants";
+
 export const LAST_UPDATED = "August 15, 2026";
 
 export type LegalBlock =
@@ -31,7 +33,7 @@ export const SUMMARY_BLOCKS: LegalBlock[] = [
 
 export const TRIMMED_BLOCKS: LegalBlock[] = [
     { type: "p", text: "TechKun is operated by TechKunEx Digital Solutions Pvt. Ltd., located at 28, Royal Market, Bhopal, MP, India – 462001." },
-    { type: "email", address: "info@tech-kun.com", label: "Contact: info@tech-kun.com" },
+    { type: "email", address: contactMailAddress, label: `Contact: ${contactMailAddress}` },
     { type: "p", text: "This Website is a marketing and informational website only." },
 
     { type: "heading", level: 4, text: "What Data We Collect" },
@@ -89,7 +91,7 @@ export const TRIMMED_BLOCKS: LegalBlock[] = [
         "Withdraw consent",
         "Object to certain processing"
     ] },
-    { type: "email", address: "info@tech-kun.com", label: "Requests can be sent to info@tech-kun.com" }
+    { type: "email", address: contactMailAddress, label: `Requests can be sent to ${contactMailAddress}` }
 ];
 
 export const FULL_POLICY_BLOCKS: LegalBlock[] = [
@@ -102,7 +104,7 @@ export const FULL_POLICY_BLOCKS: LegalBlock[] = [
         { label: "Operated by", value: "TechKunEx Digital Solutions Pvt. Ltd." },
         { label: "Address", value: "28, Royal Market, Bhopal, Madhya Pradesh, India – 462001" }
     ] },
-    { type: "email", address: "info@tech-kun.com", label: "Email: info@tech-kun.com" },
+    { type: "email", address: contactMailAddress, label: `Email: ${contactMailAddress}` },
     { type: "p", text: "The Data Controller determines the purposes and means of processing Personal Data on this Website." },
 
     { type: "heading", level: 3, text: "2. Types of Data Collected", id: "section-2" },
@@ -225,7 +227,7 @@ export const FULL_POLICY_BLOCKS: LegalBlock[] = [
     { type: "ul", items: [
         "Installing the Google Analytics Opt-out Browser Add-on",
         "Enabling a “Global Privacy Control” or “Do Not Track” signal in their browser (see Section 11.F)",
-        "Emailing info@tech-kun.com with an opt-out request, which the Owner will process manually"
+        `Emailing ${contactMailAddress} with an opt-out request, which the Owner will process manually`
     ] },
     { type: "p", text: "This Website does not currently have an automated cookie-consent tool that detects browser-level opt-out signals; opt-out requests submitted by email will be honored within a reasonable time." },
 
@@ -277,7 +279,7 @@ export const FULL_POLICY_BLOCKS: LegalBlock[] = [
         { label: "Grievance Officer", value: "[Name — to be added before publishing]" },
         { label: "Designation", value: "[Designation — to be added before publishing]" }
     ] },
-    { type: "email", address: "info@tech-kun.com", label: "Grievances or requests can be sent to: info@tech-kun.com" },
+    { type: "email", address: contactMailAddress, label: `Grievances or requests can be sent to: ${contactMailAddress}` },
     { type: "heading", level: 4, text: "F. Data Retention" },
     { type: "p", text: "Data is retained only as long as necessary to fulfill the stated purposes or to comply with legal obligations." },
 
@@ -289,7 +291,7 @@ export const FULL_POLICY_BLOCKS: LegalBlock[] = [
     { type: "heading", level: 4, text: "C. System Logs and Maintenance" },
     { type: "p", text: "System logs may be collected for security and maintenance purposes." },
     { type: "heading", level: 4, text: "D. Children's Privacy" },
-    { type: "p", text: "This Website is not directed at children under the age of 16, and the Owner does not knowingly collect Personal Data from children. If the Owner becomes aware that a child has provided Personal Data through this Website without verifiable parental or guardian consent, the Owner will take reasonable steps to remove that information. Parents or guardians who believe a child has provided data through this Website should contact the Owner at info@tech-kun.com." },
+    { type: "p", text: `This Website is not directed at children under the age of 16, and the Owner does not knowingly collect Personal Data from children. If the Owner becomes aware that a child has provided Personal Data through this Website without verifiable parental or guardian consent, the Owner will take reasonable steps to remove that information. Parents or guardians who believe a child has provided data through this Website should contact the Owner at ${contactMailAddress}.` },
     { type: "heading", level: 4, text: "E. Data Breach Notification" },
     { type: "p", text: "In the event of a data breach affecting Personal Data processed through this Website, the Owner will assess the impact of the breach and, where required by applicable law, notify affected Users and the relevant supervisory authorities without undue delay." },
     { type: "heading", level: 4, text: "F. Do Not Track Signals" },

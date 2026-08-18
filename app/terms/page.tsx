@@ -14,7 +14,7 @@ const pageCss = css`
 `;
 
 const linkCss = css`
-    color: var(--primary-300);
+    color: var(--primary-200);
     text-decoration: none;
 
     &:hover, &:focus-visible {
@@ -89,13 +89,26 @@ const tocCss = css`
     }
 `;
 
+const headerCss = css`
+    h1 {
+        margin-block-end: 0.25em;
+    }
+    p {
+        color: var(--muted-foreground);
+        background-color: var(--muted);
+        width: max-content;
+        padding: 4px 12px;
+        border-radius: 0.5rem;
+    }
+`;
+
 export default function Terms() {
     return <main id="top">
         <section>
             <div css={pageCss}>
-                <header>
+                <header css={headerCss}>
                     <h1 className="section-title">Terms and Conditions</h1>
-                    <p className="text-sm" style={{color: "var(--muted-foreground)"}}>
+                    <p className="text-base">
                         Last updated: {LAST_UPDATED}
                     </p>
                 </header>

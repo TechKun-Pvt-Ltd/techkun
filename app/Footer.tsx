@@ -71,8 +71,8 @@ export default function Footer() {
                         }
                     }
                 `}>
-                    <a href="./privacy">Privacy</a>
-                    <a href="./terms">Terms</a>
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
                 </p>
                 <p style={{color: 'var(--muted-foreground)'}}>© 2026 TechKun. All rights reserved.</p>
             </div>

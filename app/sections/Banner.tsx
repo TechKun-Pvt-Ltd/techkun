@@ -8,6 +8,7 @@ import GradientBorderButton from "@/app/components/banner-components/GradientBor
 import EmailLink from "@/app/components/EmailLink";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import {inView} from "motion/react";
+import {contactMailAddress} from "@/app/utils/constants";
 
 const gradientFill = keyframes`
 	from {
@@ -102,7 +103,7 @@ export default function Banner() {
 					</GradientBorderButton>
 					<EmailLink
 						style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content" }}
-						address="farasat@tech-kun.com" text="or chat on email" iconSide="right"
+						address={contactMailAddress} text="or chat on email" iconSide="right"
 						gap="8px" iconStrokeWidth={1.6}
 					/>
 				</div>
