@@ -5,6 +5,7 @@ import React, {useEffect, useRef} from "react";
 import {createAnimationsFromSequence} from "framer-motion/internals";
 import Link from "next/link";
 import useAbortSignal from "@/hooks/use-abort-signal";
+import {contactMailAddress} from "@/app/utils/constants";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -229,7 +230,7 @@ function ContactOptions() {
         <Link
             className="text-lg contact-option tri-layered-button" css={contactOptionCss}
             style={{ textDecoration: 'none', [opacityProp]: 0 } as React.CSSProperties}
-            href="mailto:farasat@tech-kun.com"
+            href={`mailto:${contactMailAddress}`}
         >
             Chat with us on email
         </Link>
