@@ -153,7 +153,7 @@ export default function SolutionStatement() {
 						@media ${deviceQuery.tablet} {
 							grid-template-columns: 7fr 13fr;
 							grid-template-rows: 1fr;
-							align-items: center;
+							align-items: stretch;
 						}
 					`}>
 						<PrincipleTitles angle={angle} angleRangeStart={ANGLE_RANGE_START} titles={titles} />
