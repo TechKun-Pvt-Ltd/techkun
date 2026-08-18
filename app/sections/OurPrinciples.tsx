@@ -105,7 +105,7 @@ const titles = [
 
 const svgSizeProp = "--_svg-size";
 
-export default function SolutionStatement() {
+export default function OurPrinciples() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
 	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));

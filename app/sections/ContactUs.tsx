@@ -284,7 +284,7 @@ export default function ContactUs() {
                 }
             `}>
                 <h2 className="section-title">Enough about us!</h2>
-                <p className="section-subtitle">
+                <p className="section-subtitle" style={{ textWrap: "pretty" }}>
                     We're delighted to see you here.<br/>
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>

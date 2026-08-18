@@ -1,12 +1,12 @@
 import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "../TrigWheel";
 import cssSupportsQuery from "@/app/utils/css-supports-query";
 import {css} from "@emotion/react";
-import React, {JSX} from "react";
+import React, {JSX, useEffect, useRef} from "react";
 import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal";
 import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
-import { motion } from "motion/react";
+import {animate, motion} from "motion/react";
 import {round} from "svg-path-kit/numbers";
 import cssSupports from "@/app/utils/css-supports";
 
@@ -72,61 +72,118 @@ function TextRing({radius, texts, charAngle, fontSize = 3}: {
 }
 
 const shapes: string[] = [];
-// {
-//     const headSize = 1.25;
-//     const armLength = 2;
-//     const armHeight = 1.25;
-//
-//     const gutter = 0.5;
-//     const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gutter * 0.75)));
-//     let skewAngle = Math.PI / 4;
-//     pb.l(Vector2D.polar(headSize, Math.PI + skewAngle));
-//     pb.l(Vector2D.polar(headSize, -skewAngle));
-//     pb.l(Vector2D.polar(headSize, skewAngle));
-//     pb.z();
-//
-//     skewAngle = Math.PI / 5;
-//     pb.m(centerPoint.add(Vector2D.of(-gutter / 2, 0)));
-//     pb.l(Vector2D.polar(armLength, Math.PI + skewAngle));
-//     pb.l(Vector2D.of(0, armHeight));
-//     pb.l(Vector2D.polar(armLength, skewAngle));
-//     pb.z();
-//
-//     pb.m(centerPoint.add(Vector2D.of(gutter / 2, 0)));
-//     pb.l(Vector2D.polar(armLength, -skewAngle));
-//     pb.l(Vector2D.of(0, armHeight));
-//     pb.l(Vector2D.polar(armLength, Math.PI - skewAngle));
-//     pb.z();
-//
-//     shapes.push(pb.toSVGPathString());
-// }
 {
-    const headSize = 1.25;
-    const leftArmLength = 2;
-    const rightArmLength = 2.5;
+    const headSize = 1.5;
+    const armLength = 1.5;
     const armHeight = 1.25;
 
-    const gutter = 0.5;
-    const pb2 = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gutter * 0.75)));
-    let skewAngle = Math.PI / 5;
-    pb2.l(Vector2D.polar(headSize, Math.PI + skewAngle));
-    pb2.l(Vector2D.polar(headSize, -skewAngle));
-    pb2.l(Vector2D.polar(headSize, skewAngle));
-    pb2.z();
+    const gap = 0.25;
+    const slantAngle = Math.PI / 6;
 
-    pb2.m(centerPoint.add(Vector2D.of(-gutter / 2, 0)));
-    pb2.l(Vector2D.polar(leftArmLength, Math.PI + skewAngle));
-    pb2.l(Vector2D.of(0, armHeight));
-    pb2.l(Vector2D.polar(leftArmLength, skewAngle));
-    pb2.z();
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gap)));
+    pb.l(Vector2D.polar(headSize, Math.PI + slantAngle));
+    pb.l(Vector2D.polar(headSize, -slantAngle));
+    pb.l(Vector2D.polar(headSize, slantAngle));
+    pb.z();
 
-    pb2.m(centerPoint.add(Vector2D.of(gutter / 2, 0)));
-    pb2.l(Vector2D.polar(rightArmLength, -skewAngle));
-    pb2.l(Vector2D.of(0, armHeight));
-    pb2.l(Vector2D.polar(rightArmLength, Math.PI - skewAngle));
-    pb2.z();
+    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI - slantAngle)));
+    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, slantAngle));
+    pb.z();
 
-    shapes.push(pb2.toSVGPathString());
+    pb.m(centerPoint.add(Vector2D.polar(gap, slantAngle)));
+    pb.l(Vector2D.polar(armLength, -slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
+    pb.z();
+
+    shapes.push(pb.toSVGPathString());
+}
+{
+    const headSize = 1.25;
+    const armLength = 2;
+    const armHeight = 1.25;
+
+    const gap = 0.25;
+    const slantAngle = Math.PI / 6;
+
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gap)));
+    pb.l(Vector2D.polar(headSize, Math.PI + slantAngle));
+    pb.l(Vector2D.polar(headSize, -slantAngle));
+    pb.l(Vector2D.polar(headSize, slantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI - slantAngle)));
+    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, slantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, slantAngle)));
+    pb.l(Vector2D.polar(armLength, -slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
+    pb.z();
+
+    shapes.push(pb.toSVGPathString());
+}
+{
+    const headSize = 1.25;
+    const armLength = 2;
+    const armHeight = 1.25;
+
+    const gap = 0.25;
+    const slantAngle = Math.PI / 6;
+
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, gap)));
+    pb.l(Vector2D.polar(headSize, Math.PI - slantAngle));
+    pb.l(Vector2D.polar(headSize, slantAngle));
+    pb.l(Vector2D.polar(headSize, -slantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI + slantAngle)).add(Vector2D.of(0, -armHeight)));
+    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, -slantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, -slantAngle)).add(Vector2D.of(0, -armHeight)));
+    pb.l(Vector2D.polar(armLength, slantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
+    pb.z();
+
+    shapes.push(pb.toSVGPathString());
+}
+{
+    const headSize = 1.25;
+    const armLength = 2;
+    const armHeight = 1.25;
+
+    const gap = 0.25;
+    const headSlantAngle = Math.PI / 3.5;
+    const armSlantAngle = Math.PI / 5;
+
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, gap)));
+    pb.l(Vector2D.polar(headSize, Math.PI - headSlantAngle));
+    pb.l(Vector2D.polar(headSize, headSlantAngle));
+    pb.l(Vector2D.polar(headSize, -headSlantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI + armSlantAngle)).add(Vector2D.of(0, -armHeight)));
+    pb.l(Vector2D.polar(armLength, Math.PI - armSlantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, -armSlantAngle));
+    pb.z();
+
+    pb.m(centerPoint.add(Vector2D.polar(gap, -armSlantAngle)).add(Vector2D.of(0, -armHeight)));
+    pb.l(Vector2D.polar(armLength, armSlantAngle));
+    pb.l(Vector2D.of(0, armHeight));
+    pb.l(Vector2D.polar(armLength, Math.PI + armSlantAngle));
+    pb.z();
+
+    shapes.push(pb.toSVGPathString());
 }
 // {
 //     const lineGap = 0.5;
@@ -157,36 +214,6 @@ const shapes: string[] = [];
 //
 //     shapes.push(pb3.toSVGPathString());
 // }
-{
-    const headLength = 1.25;
-    const headHeight = 1.25;
-    const leftArmLength = 2;
-    const rightArmLength = 2;
-    const armHeight = 1.25;
-
-    const gutter = 0.5;
-    const pb4 = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gutter * 0.75)));
-    let skewAngle = Math.PI / 4;
-    pb4.l(Vector2D.polar(headLength, Math.PI + skewAngle));
-    pb4.l(Vector2D.polar(headHeight, -skewAngle));
-    pb4.l(Vector2D.polar(headLength, skewAngle));
-    pb4.z();
-
-    skewAngle = Math.PI / 6;
-    pb4.m(centerPoint.add(Vector2D.of(-gutter / 2, 0)));
-    pb4.l(Vector2D.polar(leftArmLength, Math.PI + skewAngle));
-    pb4.l(Vector2D.of(0, armHeight));
-    pb4.l(Vector2D.polar(leftArmLength, skewAngle));
-    pb4.z();
-
-    pb4.m(centerPoint.add(Vector2D.of(gutter / 2, 0)));
-    pb4.l(Vector2D.polar(rightArmLength, -skewAngle));
-    pb4.l(Vector2D.of(0, armHeight));
-    pb4.l(Vector2D.polar(rightArmLength, Math.PI - skewAngle));
-    pb4.z();
-
-    shapes.push(pb4.toSVGPathString());
-}
 // {
 //     const radialDistance = 0.5;
 //     const gutter = 0.25;
@@ -211,17 +238,30 @@ const shapes: string[] = [];
 //     shapes.push(pb2.toSVGPathString());
 // }
 
-function CenterIcon(props: React.ComponentProps<typeof motion.path>) {
-    return <motion.path
-        d={shapes[0]}
+const centerIconPath: TrigAngleTransformer<string> = a => shapes[Math.floor(+a / +Angle.HALF_PI)] ?? shapes[shapes.length - 1];
+function CenterIcon(props: React.ComponentProps<"path">) {
+    const { getOrRegister } = useTrigWheel();
+
+    const pathRef = useRef<SVGPathElement>(null);
+    const pathData = getOrRegister("center-icon-path", centerIconPath);
+    useEffect(() => {
+        if (!pathRef.current) return;
+        const pathElement = pathRef.current;
+        pathData.on("change", d => {
+            if (cssSupports.d)
+                pathElement.setAttribute("d", d);
+            else
+                animate(pathElement, {d}, {duration: 0.3});
+        });
+    }, []);
+
+    return <path
+        ref={pathRef} d={shapes[0]}
         css={css`
-            transition: d 0.3s ease;
-            pointer-events: bounding-box;
-            &:hover {
-                d: path("${shapes[1]}");
+            @supports ${cssSupportsQuery.d} {
+                transition: d 0.3s ease;
             }
         `}
-        whileHover={cssSupports.d ? null : {d: shapes[1]} as any}
         {...props}
     />;
 }

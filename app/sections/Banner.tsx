@@ -81,7 +81,7 @@ export default function Banner() {
 					We&nbsp;build&nbsp;software
 					<br/>with
 					<span css={keywordCss}>&nbsp;<Beauty ref={beautyRef} />, <Precision ref={precisionRef} style={{ zIndex: 1 }} />, </span>
-					and <span css={keywordCss}><Identity ref={identityRef} />.</span>
+					and <span css={keywordCss} style={{ textWrap: "nowrap" }}><Identity ref={identityRef} />.</span>
 				</h1>
 				<p className="text-lg" css={css`
                     padding-inline: 96px;
