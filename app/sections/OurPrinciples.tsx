@@ -100,7 +100,7 @@ const titles = [
 	{ title: "An interface should feel\u00A0human", subtitle: "Users feel connected to interfaces that talk to them, interfaces that feel human." },
 	{ title: "Precision and care are\u00A0essential", subtitle: "Every shortcut is a sin. What makes a product great is the care put into its tiniest details." },
 	{ title: "Every detail must be\u00A0documented", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not assumptions." },
-	{ title: "Identity brings the interface to life", subtitle: "In order to feel recognizably alive, an interface must have a visual identity." }
+	{ title: "Identity brings the interface to life", subtitle: "An interface doesn't feel alive and distinguishable without a visual identity." }
 ];
 
 const svgSizeProp = "--_svg-size";

@@ -32,77 +32,92 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
         return angle.on("change", callback);
     }, []);
 
-    return <div ref={scope} data-initial css={css`
-        align-self: stretch;
-        position: relative;
-        isolation: isolate;
-        @property --active-index {
-            syntax: "<number>";
-            inherits: true;
-            initial-value: 0;
-        }
-        transition: --active-index 1.6s ease-in-out;
-        &[data-initial] {
-            transition: none;
-        }
+    return <div
+        ref={scope}
+        style={{ '--active-index': 0 } as React.CSSProperties}
+        data-initial
+        css={css`
+            align-self: stretch;
+            position: relative;
+            isolation: isolate;
+            //@property --active-index {
+            //    syntax: "<number>";
+            //    inherits: true;
+            //    initial-value: 0;
+            //}
 
-        &::after {
-            content: "";
-            position: absolute;
-            inset: -16px;
-            z-index: 1;
-            backdrop-filter: blur(8px);
-            mask-image: linear-gradient(to right, transparent 25%, black 50%, black 75%, transparent 100%);
-            mask-size: 400% 100%;
-            mask-repeat: repeat-x;
-            mask-position: calc(var(--active-index) * -133.33%) 0;
-            transition: inherit;
-        }
-        div.title-group {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
+            div.title-group {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
 
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            row-gap: 8px;
-            @media ${deviceQuery.tablet} {
-                row-gap: 32px;
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                row-gap: 8px;
+                @media ${deviceQuery.tablet} {
+                    row-gap: 32px;
+                }
+
+                transition: 0.3s ease;
+                transition-property: transform, opacity, filter;
+
+                --active-offset: calc(var(--active-index) - var(--i));
+                --_switch: clamp(-1, var(--active-offset), 1);
+                --switch-abs: abs(var(--_switch));
+                @supports not ${cssSupportsQuery.abs} {
+                    --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
+                }
+                opacity: calc(1 - var(--switch-abs));
+                filter: blur(calc(var(--switch-abs) * 16px));
+                transform:
+                    translateY(calc(var(--_switch) * 25%))
+                    scale(calc(1 - var(--switch-abs) * 0.25));
+                @media ${deviceQuery.tablet} {
+                    transform:
+                        translateX(calc(var(--_switch) * 25%))
+                        scale(calc(1 - var(--switch-abs) * 0.25));
+                }
+
+                & > .title {
+                    align-self: end;
+                }
+                & > .subtitle {
+                    text-wrap: pretty;
+                }
             }
-            transition: inherit;
 
-            //transition-property: transform, opacity, filter;
+            //&.blur-reveal {
+            //    transition: --active-index 0.6s ease-in-out;
+            //    &[data-initial] {
+            //        transition: none;
+            //    }
+            //}
+            //&.blur-reveal::after {
+            //    content: "";
+            //    position: absolute;
+            //    inset: -16px;
+            //    z-index: 1;
+            //    backdrop-filter: blur(8px);
+            //    mask-image: linear-gradient(to right, transparent 25%, black 50%, black 75%, transparent 100%);
+            //    mask-size: 400% 100%;
+            //    mask-repeat: repeat-x;
+            //    mask-position: calc(var(--active-index) * -133.33%) 0;
+            //    transition: inherit;
+            //}
+            //&.blur-reveal div.title-group {
+            //    transition: inherit;
+            //    opacity: 1;
+            //    filter: none;
+            //    transform: none;
 
-            --active-offset: calc(var(--i) - var(--active-index));
-            // --_switch: clamp(-1, var(--active-offset), 1);
-            // --switch-abs: abs(var(--_switch));
-            // @supports not ${cssSupportsQuery.abs} {
-            //     --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
-            // }
-            // opacity: calc(1 - var(--switch-abs));
-            //filter: blur(calc(var(--switch-abs) * 16px));
-            // transform:
-            //     translateY(calc(var(--_switch) * 25%))
-            //     scale(calc(1 - var(--switch-abs) * 0.25));
-            // @media ${deviceQuery.tablet} {
-            //     transform:
-            //         translateX(calc(var(--_switch) * 25%))
-            //         scale(calc(1 - var(--switch-abs) * 0.25));
-            // }
-            mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
-            mask-size: 300% 100%;
-            mask-repeat: no-repeat;
-            -webkit-mask-position-x: calc(50% + var(--active-offset) * 100%);
-            background-color: var(--background);
-
-            & > .title {
-                align-self: end;
-            }
-            & > .subtitle {
-                text-wrap: pretty;
-            }
-        }
-    `}>
+            //    mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
+            //    mask-size: 300% 100%;
+            //    mask-repeat: no-repeat;
+            //    -webkit-mask-position-x: calc(50% + var(--active-offset) * 100%);
+            //    background-color: var(--background);
+            //}
+        `}
+    >
         {titles.map((item, i) => {
             return <div
                 key={i} className="title-group"
