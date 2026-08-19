@@ -162,7 +162,7 @@ const shapes: string[] = [];
     const armHeight = 1.25;
 
     const gap = 0.25;
-    const headSlantAngle = Math.PI / 3.5;
+    const headSlantAngle = Math.PI / 3;
     const armSlantAngle = Math.PI / 5;
 
     const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, gap)));
@@ -246,8 +246,9 @@ function CenterIcon(props: React.ComponentProps<"path">) {
     const pathData = getOrRegister("center-icon-path", centerIconPath);
     useEffect(() => {
         if (!pathRef.current) return;
+
         const pathElement = pathRef.current;
-        pathData.on("change", d => {
+        return pathData.on("change", d => {
             if (cssSupports.d)
                 pathElement.setAttribute("d", d);
             else
