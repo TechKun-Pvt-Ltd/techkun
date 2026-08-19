@@ -70,8 +70,11 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                     scale(calc(1 - var(--switch-abs) * 0.25));
             }
 
-            & > h3.item-title {
+            & > .title {
                 align-self: end;
+            }
+            & > .subtitle {
+                text-wrap: pretty;
             }
         }
     `}>
@@ -82,8 +85,8 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 style={{ "--_switch": i === 0 ? 0 : 1 } as React.CSSProperties}
                 data-initial
             >
-                <h3 className="item-title">{item.title}</h3>
-                <p className="item-subtitle">{item.subtitle}</p>
+                <h3 className="title item-title">{item.title}</h3>
+                <p className="subtitle item-subtitle">{item.subtitle}</p>
             </div>;
         })}
     </div>;

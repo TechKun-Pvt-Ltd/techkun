@@ -339,7 +339,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
         viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
         strokeLinejoin="round" strokeLinecap="round"
         css={css`
-            height: 100%;
+            height: 110%;
             width: 100%;
             will-change: transform;
 
