@@ -34,22 +34,16 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
     return <div
         ref={scope}
-        style={{ '--active-index': 0 } as React.CSSProperties}
         data-initial
+        style={{ '--active-index': 0 } as React.CSSProperties}
         css={css`
             align-self: stretch;
             position: relative;
             isolation: isolate;
-            //@property --active-index {
-            //    syntax: "<number>";
-            //    inherits: true;
-            //    initial-value: 0;
-            //}
-
+            --_direction: 1;
             div.title-group {
                 position: absolute;
                 inset: 0;
-                z-index: 0;
 
                 display: grid;
                 grid-template-rows: 1fr 1fr;
@@ -61,7 +55,8 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 transition: 0.3s ease;
                 transition-property: transform, opacity, filter;
 
-                --active-offset: calc(var(--active-index) - var(--i));
+                --active-offset: calc(var(--_direction) * (var(--i) - var(--active-index)));
+
                 --_switch: clamp(-1, var(--active-offset), 1);
                 --switch-abs: abs(var(--_switch));
                 @supports not ${cssSupportsQuery.abs} {
@@ -87,7 +82,12 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             }
 
             //&.blur-reveal {
-            //    transition: --active-index 0.6s ease-in-out;
+            //    @property --active-index {
+            //        syntax: "<number>";
+            //        inherits: true;
+            //        initial-value: 0;
+            //    }
+            //    transition: --active-index 0.8s ease-in-out;
             //    &[data-initial] {
             //        transition: none;
             //    }
@@ -95,13 +95,14 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             //&.blur-reveal::after {
             //    content: "";
             //    position: absolute;
-            //    inset: -16px;
             //    z-index: 1;
-            //    backdrop-filter: blur(8px);
+            //    --blur-radius: 6px;
+            //    inset: calc(-2 * var(--blur-radius));
+            //    backdrop-filter: blur(var(--blur-radius));
             //    mask-image: linear-gradient(to right, transparent 25%, black 50%, black 75%, transparent 100%);
             //    mask-size: 400% 100%;
             //    mask-repeat: repeat-x;
-            //    mask-position: calc(var(--active-index) * -133.33%) 0;
+            //    mask-position: calc(var(--active-index) * var(--_direction) * -133.33%) 0;
             //    transition: inherit;
             //}
             //&.blur-reveal div.title-group {
@@ -109,7 +110,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             //    opacity: 1;
             //    filter: none;
             //    transform: none;
-
+            //
             //    mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
             //    mask-size: 300% 100%;
             //    mask-repeat: no-repeat;
