@@ -54,7 +54,7 @@ function ContactOptions() {
         for (let i = 0; i < elementStates.length; i++) {
             sequence.push(
                 [elementStates[i].element, { [opacityProp]: [1, 0] }, { delay: VISIBILITY_DURATION }],
-                [elementStates[i + 1 === elementStates.length ? 0 : i + 1].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
+                [elementStates[(i + 1) % elementStates.length].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
             );
         }
         // using an internal utility from Motion. Might replace this in the future with something else.
