@@ -143,11 +143,16 @@ function ContactOptions() {
     }
     function onHoverEnd() {
         if (!hoveredElementStateRef.current) return;
-        hoveredElementStateRef.current.animation?.addEventListener("finish", () => {
+        function listener() {
             stopHoverAnimations();
             hoveredElementStateRef.current = null;
             startIdleAnimation();
-        }, { once: true, signal: abortSignal });
+        }
+
+        const animation = hoveredElementStateRef.current.animation;
+        if (!animation || animation.playState === "finished")
+            return listener();
+        animation?.addEventListener("finish", listener, { once: true, signal: abortSignal });
     }
 
     const containerCss = css`
