@@ -97,15 +97,15 @@ function SectionHeading() {
 const ANGLE_RANGE_START = 0;
 
 const titles = [
-	{ title: "User experience comes\u00A0first", subtitle: "We\u00A0investigate the user's\u00A0needs and\u00A0persona and create a\u00A0delightful human\u00A0experience for\u00A0them." },
-	{ title: "Precision & care matters", subtitle: "Every shortcut is a sin. We engineer every detail and build smooth, robust foundations to grow upon." },
-	{ title: "Document everything", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not memory." },
-	{ title: "Identity", subtitle: "We investigate your idea, understand\u00A0its meaning, and create a visual\u00A0identity for it." }
+	{ title: "An interface should feel\u00A0human", subtitle: "Users feel connected to interfaces that talk to them, interfaces that feel human." },
+	{ title: "Precision and care are\u00A0essential", subtitle: "Every shortcut is a sin. What makes a product great is the care put into its tiniest details." },
+	{ title: "Every detail must be\u00A0documented", subtitle: "We keep all our work documented and well-defined, as well as our processes. We\u00A0rely on systems, not assumptions." },
+	{ title: "Identity brings the interface to life", subtitle: "An interface doesn't feel alive and distinguishable without a visual identity." }
 ];
 
 const svgSizeProp = "--_svg-size";
 
-export default function SolutionStatement() {
+export default function OurPrinciples() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
 	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
@@ -137,7 +137,7 @@ export default function SolutionStatement() {
 					position: sticky;
 					top: 0;
 					height: 100vh;
-					${svgSizeProp}: clamp(320px, min(var(--page-max-width), 100vh - var(--navbar-height)), 768px);
+					${svgSizeProp}: clamp(480px, min(var(--page-max-width), 100vh - var(--navbar-height)), 768px);
 					margin-block: calc(-1 * (50vh - var(${svgSizeProp}) / 2));
 					width: 100%;
 					align-content: center;
@@ -148,7 +148,8 @@ export default function SolutionStatement() {
 						height: var(${svgSizeProp});
 						display: grid;
 						grid-template-columns: 1fr;
-						grid-template-rows: 12rem max-content;
+						grid-template-rows: minmax(calc(var(--navbar-height) + 12rem), 7fr) 13fr;
+						align-items: start;
 						gap: 32px;
 						@media ${deviceQuery.tablet} {
 							grid-template-columns: 7fr 13fr;

@@ -5,14 +5,14 @@ import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate, useMotionValue} from "motion/react";
 import {BR_BRAND_GRADIENT_HREF} from "@/app/Shared";
-import useBrowser from "@/hooks/use-browser";
+import useBrowser, {BrowserName} from "@/hooks/use-browser";
 
 const ANIMATED_LOGO_CLIP_PATH_ID = "animated-logo-clip-path";
 
 const STARS_COUNT = 50;
 
 export default function MeetTechKun() {
-    const isStupidFirefox = useBrowser("stupid-firefox");
+    const isStupidFirefox = useBrowser(BrowserName.STUPID_FIREFOX);
     const [starsMounted, setStarsMounted] = React.useState(true);
     const randomnessIndex = Array.from({ length: STARS_COUNT }, Math.random);
 

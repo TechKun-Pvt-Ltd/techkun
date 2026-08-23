@@ -18,72 +18,108 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
     useEffect(() => {
         if (!scope.current) return;
 
+        const container = scope.current;
         let currentIndex = 0;
-        const groups = scope.current.querySelectorAll<HTMLDivElement>("div.title-group");
-        queueMicrotask(() => groups.forEach(group => group.removeAttribute("data-initial")));
+        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         function callback(a: Angle) {
-            const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), groups.length - 1);
+            const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), titles.length - 1);
             if (targetIndex === currentIndex) return;
 
-            groups.forEach((group, i) => {
-                group.style.setProperty("--_switch", Math.sign(i - targetIndex).toString());
-            });
+            container.style.setProperty("--active-index", targetIndex.toString());
             currentIndex = targetIndex;
         }
         callback(angle.get());
         return angle.on("change", callback);
     }, []);
 
-    return <div ref={scope} css={css`
-        align-self: stretch;
-        position: relative;
-        isolation: isolate;
-        div.title-group {
-            position: absolute;
-            inset: 0;
+    return <div
+        ref={scope}
+        data-initial
+        style={{ '--active-index': 0 } as React.CSSProperties}
+        css={css`
+            align-self: stretch;
+            position: relative;
+            isolation: isolate;
 
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            row-gap: 8px;
-            @media ${deviceQuery.tablet} {
-                row-gap: 32px;
+            @property --active-index {
+                syntax: "<number>";
+                inherits: true;
+                initial-value: 0;
             }
-
-            transition: 0.3s ease;
-            transition-property: transform, opacity, filter;
+            --transition: --active-index 0.8s ease-in-out;
             &[data-initial] {
-                transition: none;
+                --transition: none;
             }
 
-            --switch-abs: abs(var(--_switch));
-            @supports not ${cssSupportsQuery.abs} {
-                --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
+            --_direction: 1;
+            &::after {
+                content: "";
+                position: absolute;
+                z-index: 1;
+                --blur-radius: 6px;
+                inset: calc(-2 * var(--blur-radius));
+                backdrop-filter: blur(var(--blur-radius));
+                mask-image: linear-gradient(to right, transparent 25%, black 50%, black 75%, transparent 100%);
+                mask-size: 400% 100%;
+                mask-repeat: repeat-x;
+                mask-position: calc(var(--active-index) * var(--_direction) * -133.33%) 0;
+                transition: var(--transition);
             }
-            opacity: calc(1 - var(--switch-abs));
-            filter: blur(calc(var(--switch-abs) * 16px));
-            transform:
-                translateY(calc(var(--_switch) * 25%))
-                scale(calc(1 - var(--switch-abs) * 0.25));
-            @media ${deviceQuery.tablet} {
-                transform:
-                    translateX(calc(var(--_switch) * 25%))
-                    scale(calc(1 - var(--switch-abs) * 0.25));
+            div.title-group {
+                position: absolute;
+                inset: 0;
+
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                row-gap: 8px;
+                @media ${deviceQuery.tablet} {
+                    row-gap: 32px;
+                }
+                transition: var(--transition);
+
+                --active-offset: clamp(-1, var(--_direction) * (var(--i) - var(--active-index)), 1);
+                mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
+                mask-size: 300% 100%;
+                mask-repeat: no-repeat;
+                -webkit-mask-position-x: calc(50% + var(--active-offset) * 100%);
+
+                & > .title {
+                    align-self: end;
+                }
+                & > .subtitle {
+                    text-wrap: pretty;
+                }
             }
 
-            & > h3.item-title {
-                align-self: end;
-            }
-        }
-    `}>
+            // &.slide-swap div.title-group {
+            //     transition: 0.3s ease;
+            //     transition-property: transform, opacity, filter;
+            //
+            //     --_switch: clamp(-1, var(--active-offset), 1);
+            //     --switch-abs: abs(var(--_switch));
+            //     @supports not ${cssSupportsQuery.abs} {
+            //         --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
+            //     }
+            //     opacity: calc(1 - var(--switch-abs));
+            //     filter: blur(calc(var(--switch-abs) * 16px));
+            //     transform:
+            //         translateY(calc(var(--_switch) * 25%))
+            //         scale(calc(1 - var(--switch-abs) * 0.25));
+            //     @media ${deviceQuery.tablet} {
+            //         transform:
+            //             translateX(calc(var(--_switch) * 25%))
+            //             scale(calc(1 - var(--switch-abs) * 0.25));
+            //     }
+            // }
+        `}
+    >
         {titles.map((item, i) => {
             return <div
-                key={i}
-                className="title-group"
-                style={{ "--_switch": i === 0 ? 0 : 1 } as React.CSSProperties}
-                data-initial
+                key={i} className="title-group"
+                style={{ "--i": i } as React.CSSProperties}
             >
-                <h3 className="item-title">{item.title}</h3>
-                <p className="item-subtitle">{item.subtitle}</p>
+                <h3 className="title item-title">{item.title}</h3>
+                <p className="subtitle item-subtitle">{item.subtitle}</p>
             </div>;
         })}
     </div>;

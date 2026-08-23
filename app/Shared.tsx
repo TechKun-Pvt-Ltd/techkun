@@ -1,7 +1,6 @@
 /** @jsxImportSource react */
 import React from "react";
 import logoPath from "@/public/logo-path.json";
-import {viewBoxString} from "@/app/utils/graphics-utils";
 
 declare module "react" {
     interface HTMLAttributes<T> {
@@ -25,9 +24,10 @@ export const X_LOGO_CLIP_PATH_HREF = createHref(X_LOGO_CLIP_PATH_ID);
 
 export default function Shared() {
     return <>
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="0" height="0" style={{gridArea: 'none', position: 'fixed'}}
-             viewBox={viewBoxString(logoPath.viewBox)}
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="0" height="0" style={{gridArea: 'none', position: 'fixed'}}
+            viewBox="0 0 0 0"
         >
             <defs>
                 <linearGradient id={BR_BRAND_GRADIENT_ID} x1="0%" y1="0%" x2="0%" y2="100%">

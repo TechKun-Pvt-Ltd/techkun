@@ -54,7 +54,7 @@ function ContactOptions() {
         for (let i = 0; i < elementStates.length; i++) {
             sequence.push(
                 [elementStates[i].element, { [opacityProp]: [1, 0] }, { delay: VISIBILITY_DURATION }],
-                [elementStates[i + 1 === elementStates.length ? 0 : i + 1].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
+                [elementStates[(i + 1) % elementStates.length].element, { [opacityProp]: [0, 1] }, { at: `-${FADE_IN_DURATION}` }]
             );
         }
         // using an internal utility from Motion. Might replace this in the future with something else.
@@ -143,11 +143,16 @@ function ContactOptions() {
     }
     function onHoverEnd() {
         if (!hoveredElementStateRef.current) return;
-        hoveredElementStateRef.current.animation?.addEventListener("finish", () => {
+        function listener() {
             stopHoverAnimations();
             hoveredElementStateRef.current = null;
             startIdleAnimation();
-        }, { once: true, signal: abortSignal });
+        }
+
+        const animation = hoveredElementStateRef.current.animation;
+        if (!animation || animation.playState === "finished")
+            return listener();
+        animation?.addEventListener("finish", listener, { once: true, signal: abortSignal });
     }
 
     const containerCss = css`
@@ -284,7 +289,7 @@ export default function ContactUs() {
                 }
             `}>
                 <h2 className="section-title">Enough about us!</h2>
-                <p className="section-subtitle">
+                <p className="section-subtitle" style={{ textWrap: "pretty" }}>
                     We're delighted to see you here.<br/>
                     And we want to hear about <ShimmerText>you</ShimmerText>. You can...
                 </p>

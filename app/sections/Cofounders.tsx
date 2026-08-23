@@ -35,7 +35,7 @@ const people: {
             link: "https://www.linkedin.com/in/khizar-shakir-932003210/"
         }, {
             linkName: "x",
-            link: "https://x.com/navedm1424"
+            link: "https://x.com/mohdkhizar36"
         }]
     },
     {
