@@ -20,7 +20,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
         const container = scope.current;
         let currentIndex = 0;
-        queueMicrotask(() => container.removeAttribute("data-initial"));
+        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         function callback(a: Angle) {
             const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), titles.length - 1);
             if (targetIndex === currentIndex) return;
@@ -36,64 +36,23 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
         ref={scope}
         data-initial
         style={{ '--active-index': 0 } as React.CSSProperties}
-        className="blur-reveal"
         css={css`
             align-self: stretch;
             position: relative;
             isolation: isolate;
+
+            @property --active-index {
+                syntax: "<number>";
+                inherits: true;
+                initial-value: 0;
+            }
+            --transition: --active-index 0.8s ease-in-out;
+            &[data-initial] {
+                --transition: none;
+            }
+
             --_direction: 1;
-            div.title-group {
-                position: absolute;
-                inset: 0;
-
-                display: grid;
-                grid-template-rows: 1fr 1fr;
-                row-gap: 8px;
-                @media ${deviceQuery.tablet} {
-                    row-gap: 32px;
-                }
-
-                transition: 0.3s ease;
-                transition-property: transform, opacity, filter;
-
-                --active-offset: calc(var(--_direction) * (var(--i) - var(--active-index)));
-
-                --_switch: clamp(-1, var(--active-offset), 1);
-                --switch-abs: abs(var(--_switch));
-                @supports not ${cssSupportsQuery.abs} {
-                    --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
-                }
-                opacity: calc(1 - var(--switch-abs));
-                filter: blur(calc(var(--switch-abs) * 16px));
-                transform:
-                    translateY(calc(var(--_switch) * 25%))
-                    scale(calc(1 - var(--switch-abs) * 0.25));
-                @media ${deviceQuery.tablet} {
-                    transform:
-                        translateX(calc(var(--_switch) * 25%))
-                        scale(calc(1 - var(--switch-abs) * 0.25));
-                }
-
-                & > .title {
-                    align-self: end;
-                }
-                & > .subtitle {
-                    text-wrap: pretty;
-                }
-            }
-
-            &.blur-reveal {
-                @property --active-index {
-                    syntax: "<number>";
-                    inherits: true;
-                    initial-value: 0;
-                }
-                transition: --active-index 0.8s ease-in-out;
-                &[data-initial] {
-                    transition: none;
-                }
-            }
-            &.blur-reveal::after {
+            &::after {
                 content: "";
                 position: absolute;
                 z-index: 1;
@@ -104,20 +63,54 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 mask-size: 400% 100%;
                 mask-repeat: repeat-x;
                 mask-position: calc(var(--active-index) * var(--_direction) * -133.33%) 0;
-                transition: inherit;
+                transition: var(--transition);
             }
-            &.blur-reveal div.title-group {
-                transition: inherit;
-                opacity: 1;
-                filter: none;
-                transform: none;
+            div.title-group {
+                position: absolute;
+                inset: 0;
 
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                row-gap: 8px;
+                @media ${deviceQuery.tablet} {
+                    row-gap: 32px;
+                }
+                transition: var(--transition);
+
+                --active-offset: calc(var(--_direction) * (var(--i) - var(--active-index)));
                 mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
                 mask-size: 300% 100%;
                 mask-repeat: no-repeat;
                 -webkit-mask-position-x: calc(50% + var(--active-offset) * 100%);
-                background-color: var(--background);
+
+                & > .title {
+                    align-self: end;
+                }
+                & > .subtitle {
+                    text-wrap: pretty;
+                }
             }
+
+            // &.slide-swap div.title-group {
+            //     transition: 0.3s ease;
+            //     transition-property: transform, opacity, filter;
+            //
+            //     --_switch: clamp(-1, var(--active-offset), 1);
+            //     --switch-abs: abs(var(--_switch));
+            //     @supports not ${cssSupportsQuery.abs} {
+            //         --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
+            //     }
+            //     opacity: calc(1 - var(--switch-abs));
+            //     filter: blur(calc(var(--switch-abs) * 16px));
+            //     transform:
+            //         translateY(calc(var(--_switch) * 25%))
+            //         scale(calc(1 - var(--switch-abs) * 0.25));
+            //     @media ${deviceQuery.tablet} {
+            //         transform:
+            //             translateX(calc(var(--_switch) * 25%))
+            //             scale(calc(1 - var(--switch-abs) * 0.25));
+            //     }
+            // }
         `}
     >
         {titles.map((item, i) => {
