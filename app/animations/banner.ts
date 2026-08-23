@@ -35,7 +35,7 @@ const BANNER_ANIMATION = {
 		duration: 2.725
 	},
 	precision: {
-		delay: PRE_RELEASE_DELAY + 2.75
+		delay: PRE_RELEASE_DELAY + 1.5
 	}
 };
 

@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
 
-const browserNames = ["chrome", "stupid-firefox", "safari", "edge", "opera"] as const;
-type BrowserName = (typeof browserNames)[number];
+export enum BrowserName {
+	CHROME = "chrome",
+	STUPID_FIREFOX = "stupid-firefox",
+	SAFARI = "safari",
+	EDGE = "edge",
+	OPERA = "opera"
+}
 
-function detectBrowser(browserName: BrowserName) {
+const browserNames = Object.values(BrowserName);
+
+export function detectBrowser(browserName: BrowserName) {
 	if (typeof navigator === 'undefined')
 		return null;
 	if (!browserName || !browserNames.includes(browserName))
@@ -12,15 +19,15 @@ function detectBrowser(browserName: BrowserName) {
 	const ua = navigator.userAgent.toLowerCase();
 
 	switch (browserName) {
-		case "chrome":
+		case BrowserName.CHROME:
 			return ua.includes('chrome') && !ua.includes('edg') && !ua.includes('opr');
-		case "stupid-firefox":
+		case BrowserName.STUPID_FIREFOX:
 			return ua.includes('firefox');
-		case "safari":
+		case BrowserName.SAFARI:
 			return ua.includes('safari') && !ua.includes('chrome');
-		case "edge":
+		case BrowserName.EDGE:
 			return ua.includes('edg');
-		case "opera":
+		case BrowserName.OPERA:
 			return ua.includes('opr') || ua.includes('opera');
 		default:
 			return null;

@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useId, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {motion} from "motion/react";
 import {animate, SpringOptions} from "motion";
 import {css} from "@emotion/react";
@@ -30,29 +30,35 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			const container = containerRef.current!;
 			const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
 			const value = x.get();
-			let xRayActivated = false;
+
+			const phase1Dur = 1;
+			const phase2Dur = 2;
+			const phase3Dur = 0.3;
+			const totalDuration = phase1Dur + phase2Dur + phase3Dur;
+
+			xRay.toggleAttribute("data-animate");
+			const xRayAnim = xRay.animate({
+				"--r": ["0.24em", "0.72em", "0.72em", "0.24em"],
+				offset: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
+				easing: ["cubic-bezier(0.9, -0.6, 0.75, 0.2)", "linear", "ease-in-out"]
+			}, {
+				duration: totalDuration * 1000,
+				delay: BANNER_ANIMATION.precision.delay * 1000,
+				fill: "both"
+			});
 			const anim = animate([
-				[x, [value, 0.1], {duration: 0.3}],
-				[x, [0.1, 0.9], {duration: 2}],
-				[x, [0.9, value], {duration: 0.3}]
+				[x, [value, 0.1], {duration: phase1Dur, ease: [0.9, -0.6, 0.75, 0.2]}],
+				[x, [0.1, 0.9], {duration: phase2Dur}],
+				[x, [0.9, value], {duration: phase3Dur}]
 			], {
 				delay: BANNER_ANIMATION.precision.delay,
-				defaultTransition: {
-					ease: "easeInOut",
-					onUpdate() {
-						if (anim.time > 0 && anim.time < 2.3 && !xRayActivated) {
-							xRay.setAttribute("data-active", "true");
-							xRayActivated = true;
-						} else if (anim.time >= 2.3 && xRayActivated) {
-							xRay.removeAttribute("data-active");
-							xRayActivated = false;
-						}
-					}
-				}
+				defaultTransition: { ease: "easeInOut" }
 			});
+
 			xRay.addEventListener("pointerover", () => {
 				anim.stop();
-				xRay.removeAttribute("data-active");
+				xRay.removeAttribute("data-animate");
+				xRayAnim.cancel();
 			}, { once: true, signal: abortSignal });
 		}
 	}), []);
@@ -100,12 +106,16 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				display: flex;
 				align-items: center;
 				--r: 0.24em;
-				&:hover, &[data-active] {
+				&:hover {
 					--r: 0.72em;
+				}
+				--transition: --r 0.2s ease-in-out;
+				&[data-animate] {
+					--transition: none;
 				}
 
 				.clipped, .masked {
-					transition: --r 0.2s ease-in-out;
+					transition: var(--transition);
 				}
 				.clipped {
 					clip-path: circle(var(--r) at calc(var(--x) * 100%) calc(var(--y) * 100%));
@@ -259,7 +269,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 					stroke="var(--neutral-200)" strokeWidth="2.5%"
 					css={css`
 						r: var(--r);
-						transition: --r 0.2s ease-in-out;
+						transition: var(--transition);
 						transform-box: view-box;
 						transform: translate(calc(var(--x) * 100%), calc(var(--y) * 100%));
 					`}

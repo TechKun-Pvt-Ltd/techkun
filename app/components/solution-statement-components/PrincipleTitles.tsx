@@ -88,7 +88,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                     inherits: true;
                     initial-value: 0;
                 }
-                transition: --active-index 1.2s ease-in-out;
+                transition: --active-index 0.8s ease-in-out;
                 &[data-initial] {
                     transition: none;
                 }
