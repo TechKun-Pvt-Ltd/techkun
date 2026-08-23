@@ -1,5 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {motion} from "motion/react";
+import {motion, visualElementStore} from "motion/react";
 import {animate, SpringOptions} from "motion";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
@@ -7,6 +7,7 @@ import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 import {frame} from "motion-dom";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
+import {BrowserName, detectBrowser} from "@/hooks/use-browser";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 67.25;
@@ -37,15 +38,32 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			const totalDuration = phase1Dur + phase2Dur + phase3Dur;
 
 			xRay.toggleAttribute("data-animate");
-			const xRayAnim = xRay.animate({
-				"--r": ["0.24em", "0.72em", "0.72em", "0.24em"],
-				offset: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
-				easing: ["cubic-bezier(0.9, -0.6, 0.75, 0.2)", "linear", "ease-in-out"]
-			}, {
-				duration: totalDuration * 1000,
-				delay: BANNER_ANIMATION.precision.delay * 1000,
-				fill: "both"
-			});
+			const isStupidFirefox = detectBrowser(BrowserName.STUPID_FIREFOX);
+			let stopRadiusAnimation: VoidFunction;
+			if (isStupidFirefox) {
+				const xRayAnim = animate(xRay, { "--r": ["0.24em", "0.72em", "0.72em", "0.24em"] }, {
+					duration: totalDuration,
+					delay: BANNER_ANIMATION.precision.delay,
+					ease: [[0.9, -0.6, 0.75, 0.2], "linear", "easeInOut"],
+					times: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
+					onStop() {
+						visualElementStore.get(xRay)?.removeValue("--r");
+						xRay.style.removeProperty("--r");
+					}
+				});
+				stopRadiusAnimation = () => xRayAnim.stop();
+			} else {
+				const xRayAnim = xRay.animate({
+					"--r": ["0.24em", "0.72em", "0.72em", "0.24em"],
+					offset: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
+					easing: ["cubic-bezier(0.9, -0.6, 0.75, 0.2)", "linear", "ease-in-out"]
+				}, {
+					duration: totalDuration * 1000,
+					delay: BANNER_ANIMATION.precision.delay * 1000,
+					fill: "both"
+				});
+				stopRadiusAnimation = () => xRayAnim.cancel();
+			}
 			const anim = animate([
 				[x, [value, 0.1], {duration: phase1Dur, ease: [0.9, -0.6, 0.75, 0.2]}],
 				[x, [0.1, 0.9], {duration: phase2Dur}],
@@ -58,7 +76,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			xRay.addEventListener("pointerover", () => {
 				anim.stop();
 				xRay.removeAttribute("data-animate");
-				xRayAnim.cancel();
+				stopRadiusAnimation();
 			}, { once: true, signal: abortSignal });
 		}
 	}), []);

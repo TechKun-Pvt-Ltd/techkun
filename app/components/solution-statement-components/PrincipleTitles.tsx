@@ -77,7 +77,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 }
                 transition: var(--transition);
 
-                --active-offset: calc(var(--_direction) * (var(--i) - var(--active-index)));
+                --active-offset: clamp(-1, var(--_direction) * (var(--i) - var(--active-index)), 1);
                 mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
                 mask-size: 300% 100%;
                 mask-repeat: no-repeat;
