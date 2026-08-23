@@ -15,6 +15,9 @@ const capHeightIndicatorStart = 67.25;
 const springOptions: SpringOptions = {stiffness: 500, damping: 30};
 const DEFAULT_CENTER: [number, number] = [0.786, 0.59];
 
+const radius_normal = "0.24em";
+const radius_enlarged = "0.72em";
+
 export type PrecisionRef = {
 	play(): void;
 };
@@ -32,20 +35,23 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
 			const value = x.get();
 
+			const easing: [number, number, number, number] = [0.9, -0.6, 0.75, 0.2];
 			const phase1Dur = 1;
 			const phase2Dur = 2;
 			const phase3Dur = 0.3;
 			const totalDuration = phase1Dur + phase2Dur + phase3Dur;
+			const offsets = [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1];
+			const radiusKeyframes = [radius_normal, radius_enlarged, radius_enlarged, radius_normal];
 
 			xRay.toggleAttribute("data-animate");
 			const isStupidFirefox = detectBrowser(BrowserName.STUPID_FIREFOX);
 			let stopRadiusAnimation: VoidFunction;
 			if (isStupidFirefox) {
-				const xRayAnim = animate(xRay, { "--r": ["0.24em", "0.72em", "0.72em", "0.24em"] }, {
+				const xRayAnim = animate(xRay, { "--r": radiusKeyframes }, {
 					duration: totalDuration,
 					delay: BANNER_ANIMATION.precision.delay,
-					ease: [[0.9, -0.6, 0.75, 0.2], "linear", "easeInOut"],
-					times: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
+					ease: [easing, "linear", "easeInOut"],
+					times: offsets,
 					onStop() {
 						visualElementStore.get(xRay)?.removeValue("--r");
 						xRay.style.removeProperty("--r");
@@ -54,9 +60,9 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				stopRadiusAnimation = () => xRayAnim.stop();
 			} else {
 				const xRayAnim = xRay.animate({
-					"--r": ["0.24em", "0.72em", "0.72em", "0.24em"],
-					offset: [0, phase1Dur / totalDuration, (phase1Dur + phase2Dur) / totalDuration, 1],
-					easing: ["cubic-bezier(0.9, -0.6, 0.75, 0.2)", "linear", "ease-in-out"]
+					"--r": radiusKeyframes,
+					offset: offsets,
+					easing: [`cubic-bezier(${easing.join(", ")})`, "linear", "ease-in-out"]
 				}, {
 					duration: totalDuration * 1000,
 					delay: BANNER_ANIMATION.precision.delay * 1000,
@@ -65,7 +71,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				stopRadiusAnimation = () => xRayAnim.cancel();
 			}
 			const anim = animate([
-				[x, [value, 0.1], {duration: phase1Dur, ease: [0.9, -0.6, 0.75, 0.2]}],
+				[x, [value, 0.1], {duration: phase1Dur, ease: easing}],
 				[x, [0.1, 0.9], {duration: phase2Dur}],
 				[x, [0.9, value], {duration: phase3Dur}]
 			], {
@@ -123,9 +129,9 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				inset: 0;
 				display: flex;
 				align-items: center;
-				--r: 0.24em;
+				--r: ${radius_normal};
 				&:hover {
-					--r: 0.72em;
+					--r: ${radius_enlarged};
 				}
 				--transition: --r 0.2s ease-in-out;
 				&[data-animate] {
