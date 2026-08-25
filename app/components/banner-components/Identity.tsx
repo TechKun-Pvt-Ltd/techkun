@@ -212,12 +212,12 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		<span css={css`
 			position: relative;
 			color: transparent;
-			--right-nudge: 6%;
+			--x-offset: 6%;
 
 			svg.icon {
 				transform-box: view-box;
 				position: absolute;
-				inset: 0 0 0 var(--right-nudge);
+				inset: 0 0 0 var(--x-offset);
 				height: auto;
 				width: 100%;
 				color: var(--neutral-700);
@@ -233,7 +233,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			svg.bulb-icon {
 				--_bulb-icon-width: 120%;
 				--_extra-x-space: calc((var(--_bulb-icon-width) - 100%) / 2);
-				inset: 0.23em calc(-1 * var(--_extra-x-space)) auto calc(-1 * var(--_extra-x-space) + var(--right-nudge));
+				inset: 0.23em calc(-1 * var(--_extra-x-space)) auto calc(-1 * var(--_extra-x-space) + var(--x-offset));
 				width: var(--_bulb-icon-width);
 
 				${lightUpColorProp}: var(--foreground);
