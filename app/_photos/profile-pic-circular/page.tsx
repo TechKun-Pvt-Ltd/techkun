@@ -5,9 +5,9 @@ import {viewBoxString} from "@/app/utils/graphics-utils";
 import logoPath from "@/public/logo-path.json";
 import {TECHKUN_LOGO_PATH_HREF} from "@/app/Shared";
 
-const xPadding = 15;
+const xPadding = 18;
 const xOffset = 0.5;
-const yOffset = 2.5;
+const yOffset = 4;
 
 export default function ProfilePic() {
     return <main>
@@ -21,7 +21,7 @@ export default function ProfilePic() {
                     // style={{
                     //     borderRadius: "50%",
                     //     border: "2px solid var(--border)",
-                    //     outline: "1px dashed var(--border)", outlineOffset: "-56px"
+                    //     // outline: "1px dashed var(--border)", outlineOffset: "-72px"
                     // }}
                 >
                     {/*<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="2" stroke="var(--border)" />*/}
