@@ -18,7 +18,9 @@ export function property(name: string) {
 		return {
 			name: finalName,
 			styles: `@property ${finalName} {${insertable.styles}}`,
-			anim: 1
+			anim: 1,
+			toString() { return finalName; },
+			[Symbol.toPrimitive]() { return finalName; }
 		};
 	};
 }

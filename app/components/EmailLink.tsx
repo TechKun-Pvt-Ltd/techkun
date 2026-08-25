@@ -31,7 +31,7 @@ export default function EmailLink(
 	} & React.ComponentProps<typeof MotionLink>
 ) {
 	const id = useId();
-	const gradientId = "email-link-gradient" + id;
+	const gradientId = "email-link-fill-gradient" + id;
 
 	const icon = <svg
 		height={iconSize} viewBox="0 0 24 24"
@@ -42,8 +42,8 @@ export default function EmailLink(
 	>
 		<defs>
 			<linearGradient id={gradientId} x1="100%" y1="0%" x2="0%" y2="100%">
-				<stop offset="20%" stopColor={`var(${gradientColor1.name})`} />
-				<stop offset="80%" stopColor={`var(${gradientColor2.name})`} />
+				<stop offset="20%" stopColor={`var(${gradientColor1})`} />
+				<stop offset="80%" stopColor={`var(${gradientColor2})`} />
 			</linearGradient>
 		</defs>
 		<motion.path

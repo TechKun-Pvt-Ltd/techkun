@@ -1,5 +1,5 @@
 'use client';
-import React, {useEffect, useRef} from 'react';
+import React, {ComponentType, useId, useRef} from 'react';
 import {css} from "@emotion/react";
 import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
@@ -8,10 +8,34 @@ import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
 import {deviceQuery} from "@/app/styles/device-query";
 import EmailLink from "@/app/components/EmailLink";
-import {LINKEDIN_LOGO_CLIP_PATH_HREF, X_LOGO_CLIP_PATH_HREF} from "@/app/Shared";
+import {LINKEDIN_LOGO_PATH_HREF, X_LOGO_PATH_HREF} from "@/app/Shared";
 import Link from "next/link";
 import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
-import {inView} from "motion/react";
+
+function LinkedIcon() {
+    const FILL_GRADIENT_ID = "linkedin-icon-fill-gradient" + useId();
+    return <svg viewBox="0 0 24 24">
+        <defs>
+            <linearGradient id={FILL_GRADIENT_ID} x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="20%" stopColor={`var(${gradientColor1})`} />
+                <stop offset="80%" stopColor={`var(${gradientColor2})`} />
+            </linearGradient>
+        </defs>
+        <use href={LINKEDIN_LOGO_PATH_HREF} fill={`url(#${FILL_GRADIENT_ID})`} />
+    </svg>;
+}
+function XIcon() {
+    const FILL_GRADIENT_ID = "x-icon-fill-gradient" + useId();
+    return <svg viewBox="0 0 24 24">
+        <defs>
+            <linearGradient id={FILL_GRADIENT_ID} x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="20%" stopColor={`var(${gradientColor1})`} />
+                <stop offset="80%" stopColor={`var(${gradientColor2})`} />
+            </linearGradient>
+        </defs>
+        <use href={X_LOGO_PATH_HREF} fill={`url(#${FILL_GRADIENT_ID})`} />
+    </svg>;
+}
 
 const people: {
     title: string;
@@ -20,7 +44,7 @@ const people: {
     image: StaticImageData;
     imageAlt: string;
     links: {
-        linkName: string;
+        Icon: ComponentType;
         link: string;
     }[];
 }[] = [
@@ -31,10 +55,10 @@ const people: {
         image: khiz,
         imageAlt: "The image of the CEO, Khizar.",
         links: [{
-            linkName: "linkedin",
+            Icon: LinkedIcon,
             link: "https://www.linkedin.com/in/khizar-shakir-932003210/"
         }, {
-            linkName: "x",
+            Icon: XIcon,
             link: "https://x.com/mohdkhizar36"
         }]
     },
@@ -45,10 +69,10 @@ const people: {
         image: uz,
         imageAlt: "The image of the managing director, Uzair.",
         links: [{
-            linkName: "linkedin",
+            Icon: LinkedIcon,
             link: "https://www.linkedin.com/in/mirza-farasat-89baba288/"
         }, {
-            linkName: "x",
+            Icon: XIcon,
             link: "https://x.com/MFarasat22794"
         }]
     },
@@ -59,10 +83,10 @@ const people: {
         image: me,
         imageAlt: "The image of the CTO, Naved.",
         links: [{
-            linkName: "linkedin",
+            Icon: LinkedIcon,
             link: "https://www.linkedin.com/in/navedm1424/"
         }, {
-            linkName: "x",
+            Icon: XIcon,
             link: "https://x.com/navedm1424"
         }]
     },
@@ -119,17 +143,6 @@ const people: {
 
 export default function Cofounders() {
     const ulRef = useRef<HTMLUListElement>(null);
-
-    useEffect(() => {
-        if (!ulRef.current) return;
-
-        const indicators = ulRef.current.querySelectorAll(".person-index-indicator");
-        inView(indicators, _ => {
-            indicators.forEach(item =>
-                item.setAttribute("data-visible", "true")
-            );
-        }, { margin: "-5% 0%" });
-    }, []);
 
     const ulCss = css`
         grid-column: 1 / -1;
@@ -197,29 +210,16 @@ export default function Cofounders() {
             }
         }
 
-        .links .link:before {
-            content: "";
+        .links .link > svg {
             display: block;
 
             width: 1em;
-            aspect-ratio: 1 / 1;
             transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
             transition-property: ${gradientColor1}, ${gradientColor2};
             ${gradientColor1}: currentColor;
             ${gradientColor2}: currentColor;
-            background: linear-gradient(
-                to bottom left,
-                var(${gradientColor1}) 20%,
-                var(${gradientColor2}) 80%
-            );
         }
-        .links .link.linkedin:before {
-            clip-path: url(${LINKEDIN_LOGO_CLIP_PATH_HREF});
-        }
-        .links .link.x:before {
-            clip-path: url(${X_LOGO_CLIP_PATH_HREF});
-        }
-        .links .link:is(:hover, :focus-visible):before {
+        .links .link:is(:hover, :focus-visible) > svg {
             ${gradientColor1}: var(--primary-500);
             ${gradientColor2}: var(--secondary-500);
         }
@@ -229,11 +229,6 @@ export default function Cofounders() {
         height: 4px;
         width: 32px;
         border-radius: 100px;
-        transition: clip-path 0.5s calc(var(--i) * 0.1s) ease;
-        clip-path: inset(0% 100% 0% 0% round 100px);
-        &[data-visible="true"] {
-            clip-path: inset(0% 0% 0% 0% round 100px);
-        }
     `;
 
     return <section>
@@ -263,13 +258,13 @@ export default function Cofounders() {
                                     key={iconIndex}
                                     className="person-index-indicator" css={indicatorCss}
                                     style={{
-                                        ["--i" as any]: iconIndex,
+                                        "--i": iconIndex,
                                         background: iconIndex === personIndex ?
                                             "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
                                             "var(--secondary-neutral-200)",
-                                        cursor: iconIndex === personIndex ? "" : "pointer"
-                                    }}
-                                    onClick={iconIndex === personIndex ? undefined : () => {
+                                        cursor: "pointer"
+                                    } as React.CSSProperties}
+                                    onClick={() => {
                                         if (!ulRef.current) return;
 
                                         ulRef.current.children[iconIndex].scrollIntoView({
@@ -289,10 +284,10 @@ export default function Cofounders() {
                             />
                             <div className="links">
                                 {item.links.map(item => <Link
-                                    className={"link " + item.linkName}
+                                    className="link"
                                     key={item.link} href={item.link}
                                     target="_blank" rel="noopener noreferrer"
-                                />)}
+                                ><item.Icon /></Link>)}
                             </div>
                         </div>
                     </div>

@@ -20,7 +20,6 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
         const container = scope.current;
         let currentIndex = 0;
-        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         function callback(a: Angle) {
             const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), titles.length - 1);
             if (targetIndex === currentIndex) return;
@@ -29,6 +28,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             currentIndex = targetIndex;
         }
         callback(angle.get());
+        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         return angle.on("change", callback);
     }, []);
 

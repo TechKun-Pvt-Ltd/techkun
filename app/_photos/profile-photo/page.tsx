@@ -3,7 +3,7 @@
 import {css} from "@emotion/react";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import logoPath from "@/public/logo-path.json";
-import {LOGO_PATH_HREF} from "@/app/Shared";
+import {TECHKUN_LOGO_PATH_HREF} from "@/app/Shared";
 
 export default function ProfilePic() {
     return <main>
@@ -25,7 +25,7 @@ export default function ProfilePic() {
                         width="70%" height="100%"
                         viewBox={viewBoxString(logoPath.viewBox)}
                     >
-                        <use href={LOGO_PATH_HREF} fill="var(--primary-color)" />
+                        <use href={TECHKUN_LOGO_PATH_HREF} fill="var(--primary-color)" />
                     </svg>
                 </svg>
             </div>

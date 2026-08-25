@@ -26,10 +26,6 @@ const releaseTimingFunction = "linear(0, 0.003 0.2%, 0.016 0.5%, 0.03 0.7%, 0.06
 const DOT_COUNT = 4;
 
 const lightUpColorProp = "--light-up-color";
-const staggerProp = "--stagger";
-const minDelayProp = "--min-delay";
-
-const bulbIconWidthProp = "--_bulb-icon-width";
 
 const pullKeyframes = keyframes`
 	to {
@@ -216,30 +212,29 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		<span css={css`
 			position: relative;
 			color: transparent;
+			--right-nudge: 6%;
 
 			svg.icon {
-				transform: translateX(6%);
 				transform-box: view-box;
 				position: absolute;
-				inset: 0;
+				inset: 0 0 0 var(--right-nudge);
 				height: auto;
 				width: 100%;
 				color: var(--neutral-700);
 			}
 
 			svg.bulb-icon, svg.dots circle {
-				${staggerProp}: ${dotsLightUp.stagger}s;
-                ${minDelayProp}: ${dotsLightUp.delay}s;
+				--stagger: ${dotsLightUp.stagger}s;
+                --delay: ${dotsLightUp.delay}s;
 				transition: fill ${dotsLightUp.duration}s ease-out;
-                transition-delay: calc(var(${minDelayProp}) + var(--i) * var(${staggerProp}));
+                transition-delay: calc(var(--delay) + var(--i) * var(--stagger));
 				fill: var(${lightUpColorProp});
 			}
 			svg.bulb-icon {
-				top: 0.24em;
-				${bulbIconWidthProp}: 90%;
-				transform: translateX(calc(-1 * (var(${bulbIconWidthProp}) - 100%) / 2 + 8%));
-				transform-origin: center bottom;
-				width: var(${bulbIconWidthProp});
+				--_bulb-icon-width: 120%;
+				--_extra-x-space: calc((var(--_bulb-icon-width) - 100%) / 2);
+				inset: 0.23em calc(-1 * var(--_extra-x-space)) auto calc(-1 * var(--_extra-x-space) + var(--right-nudge));
+				width: var(--_bulb-icon-width);
 
 				${lightUpColorProp}: var(--foreground);
 			}
@@ -265,13 +260,13 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			}
 			[data-initial] & {
 				svg.bulb-icon, svg.dots circle {
-					${minDelayProp}: ${initialDotsLightUp.delay}s;
+					--delay: ${initialDotsLightUp.delay}s;
 					transition-duration: ${initialDotsLightUp.duration}s;
 				}
 				svg.dots circle {
 					@keyframes release {
 						to {
-							transform: translate(0);
+							transform: none;
 						}
 					}
 					animation:
@@ -281,8 +276,8 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			}
 			[data-lights-off] & {
 				svg.bulb-icon, svg.dots circle {
-					${staggerProp}: ${dotsLightDown.stagger}s;
-					${minDelayProp}: ${dotsLightDown.delay}s;
+					--stagger: ${dotsLightDown.stagger}s;
+					--delay: ${dotsLightDown.delay}s;
 					transition-duration: ${dotsLightDown.duration}s;
 					fill: currentColor;
 				}
@@ -290,11 +285,11 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		`}>
 			<svg className="icon bulb-icon"
 				 xmlns="http://www.w3.org/2000/svg"
-				 viewBox="-1 -6 12 15" fill="currentColor"
+				 viewBox="0 0 24 24" fill="currentColor"
 				 style={{ "--i": DOT_COUNT } as React.CSSProperties}
 			>
 				<path
-					d="M 0 0 C 0 -2.7614 2.2386 -5 5 -5 C 7.7614 -5 10 -2.7614 10 0 C 10 1.3261 9.4732 2.5979 8.5355 3.5355 C 7.5979 4.4732 7.0711 5.745 7.0711 7.0711 C 7.0711 7.6234 6.6234 8.0711 6.0711 8.0711 L 3.9289 8.0711 C 3.3766 8.0711 2.9289 7.6234 2.9289 7.0711 C 2.9289 5.745 2.4021 4.4732 1.4645 3.5355 C 0.5268 2.5979 0 1.3261 0 0"
+					d="M 4.5 9.5 C 4.5 5.3579 7.8579 2 12 2 C 16.1421 2 19.5 5.3579 19.5 9.5 C 19.5 11.4892 18.7098 13.3969 17.3033 14.8033 C 15.8968 16.2098 15.1067 18.1175 15.1067 20.1066 C 15.1067 20.9351 14.4351 21.6066 13.6067 21.6066 L 10.3933 21.6066 C 9.5649 21.6066 8.8933 20.9351 8.8933 20.1066 C 8.8933 18.1175 8.1031 16.2098 6.6967 14.8033 C 5.2902 13.3969 4.5 11.4892 4.5 9.5"
 				/>
 			</svg>
 			<svg className="icon dots" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
