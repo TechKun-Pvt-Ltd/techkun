@@ -90,8 +90,6 @@
     --letter-spacing-9: calc(var(--ls-numerator) / var(--font-size-9) - var(--ls-offset));
     --letter-spacing-10: calc(var(--ls-numerator) / var(--font-size-10) - var(--ls-offset));
 
-    --script-12-bt: "script_12_bt", "script_12_bt Fallback";
-
     font-size: var(--base-font-size);
     line-height: var(--base-lh-ratio);
     letter-spacing: var(--base-letter-spacing);
@@ -252,10 +250,6 @@ button {
     font-size: var(--font-size-10);
     line-height: var(--line-height-10);
     letter-spacing: var(--letter-spacing-10);
-}
-
-.cursive-text {
-    font-family: var(--script-12-bt), cursive;
 }
 
 @property --font-index {

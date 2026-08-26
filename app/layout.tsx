@@ -3,18 +3,14 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import Header from "@/app/Header";
-import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
 import {deviceBreakpoint} from "@/app/styles/device-query";
 
-// const rouge_script = Rouge_Script({ weight: "400" });
-const quicksand = Quicksand();
-const script_12_bt = localFont({
-    src: "./fonts/Feelfree.ttf",
-    weight: "100 900",
-    declarations: [{ prop: "size-adjust", value: "180%" }]
+const Quicksand = localFont({
+    src: "./fonts/Quicksand-VariableFont_wght.ttf",
+    weight: "100 900"
 });
 
 export const metadata: Metadata = {
