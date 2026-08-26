@@ -8,6 +8,7 @@ import {
 	spring
 } from "motion/react";
 import {generateLinearEasing} from "motion";
+import {MotionLink} from "@/app/components/MotionLink";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -42,7 +43,7 @@ enum TextState {
 	VISIBLE = "visible"
 }
 
-export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof motion.button>) {
+export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof MotionLink>) {
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
 	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
@@ -69,14 +70,12 @@ export default function LogoButton({className, style, ...props}: React.Component
 		return () => window.addEventListener("scroll", onScroll);
 	}, []);
 
-	return <motion.button
-		layout
-		className={"display-text " + className}
-		style={{ borderRadius: "16px", ...style }}
+	return <MotionLink
+		href="/" layout
+		className={"display-text " + className} style={{ borderRadius: "16px", ...style }}
 		transition={{
 			layout: {
 				type: "spring",
-				// duration: textState === TextState.EXIT ? calcExitDuration / 1000 : calcEnterDuration / 1000,
 				visualDuration: (textState === TextState.EXIT ? EXIT_DURATION + 0.2 : ENTER_DURATION - 0.2),
 				bounce: 0.3
 			}
@@ -88,6 +87,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 			display: flex;
 			align-items: center;
 			font-weight: 500;
+			text-decoration: none;
 
 			//corner-shape: squircle;
 			//border-radius: 64px;
@@ -95,7 +95,11 @@ export default function LogoButton({className, style, ...props}: React.Component
 			//	border-radius: 8px;
 			//}
 		`}
-		onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+		onClick={e => {
+			if (window.location.pathname !== "/") return;
+			e.preventDefault();
+			window.scrollTo({top: 0, behavior: "smooth"});
+		}}
 		{...props}
 		onHoverStart={_ => {
 			textHovered.current = true;
@@ -148,5 +152,5 @@ export default function LogoButton({className, style, ...props}: React.Component
 				data-state={textState}
 			>TechKun</motion.span>
 		</motion.span>
-	</motion.button>;
+	</MotionLink>;
 };
