@@ -73,7 +73,7 @@ const people: {
             link: "https://www.linkedin.com/in/mirza-farasat-89baba288/"
         }, {
             Icon: XIcon,
-            link: "https://x.com/MFarasat22794"
+            link: "https://x.com/mirza_uzr"
         }]
     },
     {

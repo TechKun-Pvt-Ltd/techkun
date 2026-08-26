@@ -7,7 +7,7 @@ import {TECHKUN_LOGO_PATH_HREF} from "@/app/Shared";
 
 const xPadding = 15;
 const xOffset = 0.5;
-const yOffset = 2.5;
+const yOffset = 2;
 
 export default function ProfilePic() {
     return <main>
@@ -18,11 +18,10 @@ export default function ProfilePic() {
             <div>
                 <svg
                     width="400" viewBox="0 0 400 400"
-                    // style={{
-                    //     borderRadius: "50%",
-                    //     border: "2px solid var(--border)",
-                    //     outline: "1px dashed var(--border)", outlineOffset: "-56px"
-                    // }}
+                    style={{
+                        // border: "2px solid var(--border)",
+                        // outline: "1px dashed var(--border)", outlineOffset: "-56px"
+                    }}
                 >
                     {/*<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="2" stroke="var(--border)" />*/}
                     {/*<line x1="50%" y1="0%" x2="50%" y2="100%" strokeWidth="2" stroke="var(--border)" />*/}

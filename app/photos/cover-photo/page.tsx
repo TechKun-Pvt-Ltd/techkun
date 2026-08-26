@@ -4,10 +4,11 @@ import {PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import React from "react";
 
 export default function ProfilePic() {
-    const width = 1500;
-    const height = 500;
-    const radius = 35;
-    const gap = 30;
+    const width = 1512;
+    const height = 256;
+    const radiusToGapRatio = 35 / 30;
+    const gap = 24;
+    const radius = radiusToGapRatio * gap;
 
     const pb = PathBuilder.m(Point2D.of(width / 2, height / 2 - radius));
     pb.circularArc(radius, -Math.PI / 2, -Math.PI / 4);
