@@ -1,6 +1,6 @@
 :root {
     --page-max-width: 84rem;
-    --page-padding: clamp(16px, 4vw, 32px);
+    --page-padding: clamp(24px, 4vw, 32px);
 
     --navbar-height: 4.8rem;
     --section-min-height: 768px;

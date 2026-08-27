@@ -2,6 +2,7 @@
 import {css} from "@emotion/react";
 import LegalBlocks from "@/app/terms/components/legal-blocks";
 import {INTRO_BLOCKS, LAST_UPDATED, TERMS_BLOCKS, TOC_ITEMS} from "@/app/terms/content";
+import Link from "next/link";
 
 const pageCss = css`
     max-width: 46rem;
@@ -121,7 +122,7 @@ export default function Terms() {
                     <nav aria-label="Terms and Conditions contents" css={tocCss}>
                         <ul>
                             {TOC_ITEMS.map(item => <li key={item.id} className="text-sm">
-                                <a href={`#${item.id}`} css={linkCss}>{item.title}</a>
+                                <Link href={`#${item.id}`} css={linkCss}>{item.title}</Link>
                             </li>)}
                         </ul>
                     </nav>
@@ -129,7 +130,7 @@ export default function Terms() {
                         <LegalBlocks blocks={TERMS_BLOCKS} />
                     </div>
                     <p className="text-sm" style={{marginBlockStart: "2.5rem"}}>
-                        <a href="#top" css={linkCss}>Back to top ↑</a>
+                        <Link href="#top" css={linkCss}>Back to top ↑</Link>
                     </p>
                 </div>
             </div>

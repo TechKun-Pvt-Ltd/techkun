@@ -2,6 +2,7 @@
 import {css} from "@emotion/react";
 import TechKunLogo from "@/app/components/techkun-logo";
 import React from "react";
+import Link from "next/link";
 
 export default function Footer() {
     return <footer css={css`
@@ -71,8 +72,8 @@ export default function Footer() {
                         }
                     }
                 `}>
-                    <a href="/privacy">Privacy</a>
-                    <a href="/terms">Terms</a>
+                    <Link href="/privacy">Privacy</Link>
+                    <Link href="/terms">Terms</Link>
                 </p>
                 <p style={{color: 'var(--muted-foreground)'}}>© 2026 TechKun. All rights reserved.</p>
             </div>

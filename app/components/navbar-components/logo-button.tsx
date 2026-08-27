@@ -9,8 +9,8 @@ import {
 } from "motion/react";
 import {generateLinearEasing} from "motion";
 import {MotionLink} from "@/app/components/MotionLink";
-import useAbortSignal from "@/hooks/use-abort-signal";
 import {CustomEvents} from "@/app/utils/custom-events";
+import {usePathname} from "next/navigation";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -46,6 +46,7 @@ enum TextState {
 }
 
 export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof MotionLink>) {
+	const pathname = usePathname();
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
 	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
@@ -59,21 +60,37 @@ export default function LogoButton({className, style, ...props}: React.Component
 		setTextState(TextState.EXIT);
 	}
 
-	const abortSignal = useAbortSignal();
 	useEffect(() => {
+		if (pathname !== "/") {
+			const intersectionObserver = new IntersectionObserver(
+				entries => {
+					if ((textAboveThreshold.current = entries.at(0)?.isIntersecting ?? false)) animateIn();
+					else animateOut();
+				},
+				{ threshold: 0.5 }
+			);
+			intersectionObserver.observe(document.documentElement);
+			return () => intersectionObserver.unobserve(document.documentElement);
+		}
+
+		const abortController = new AbortController();
 		document.addEventListener(CustomEvents.CTA_ENTER_VIEWPORT, () => {
 			textAboveThreshold.current = true;
 			animateIn();
-		}, { signal: abortSignal });
+		}, { signal: abortController.signal });
 		document.addEventListener(CustomEvents.CTA_EXIT_VIEWPORT, () => {
 			textAboveThreshold.current = false;
 			animateOut();
-		}, { signal: abortSignal });
-	}, []);
+		}, { signal: abortController.signal });
+		return () => abortController.abort();
+	}, [pathname]);
 
+	// This would cause hydration errors
+	// TODO: Figure out an alternative
+	const REM = typeof getComputedStyle !== "undefined" ? parseFloat(getComputedStyle(document.documentElement).fontSize) : 16;
 	return <MotionLink
-		href="/" layout
-		className={"display-text " + className} style={{ borderRadius: "16px", ...style }}
+		href="/" layout="size"
+		className={"display-text " + className} style={{ borderRadius: (0.75 * REM) + "px", ...style }}
 		transition={{
 			layout: {
 				type: "spring",
@@ -82,7 +99,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 			}
 		}}
 		css={css`
-			padding-block: 16px;
+			height: 110%;
 			padding-inline: 24px;
 			background-color: oklch(from var(--background) 0.15 c h);
 			display: flex;
@@ -111,7 +128,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 			animateOut();
 		}}
 	>
-		<motion.span layout>
+		<motion.span layout="size">
 			<TechKunLogo style={{ display: "block" }} />
 		</motion.span>
 		<motion.span css={css`
@@ -121,7 +138,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 			align-items: center;
 		`}>
 			<motion.span
-				layout
+				layout="size"
 				css={css`
 					pointer-events: none;
 					color: transparent;
