@@ -28,6 +28,9 @@
     /*--ease-in-out-circ: cubic-bezier(.785, .135, .15, .86);*/
 /*}*/
 
+:root {
+    timeline-scope: --header-cta-slide-in;
+}
 *, *::before, *::after {
     box-sizing: border-box;
 

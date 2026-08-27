@@ -21,9 +21,9 @@ const transition: {
 };
 
 export default function EmailLink(
-	{address, text, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1.6, ...props}: {
+	{address, children, iconSize = "1em", iconSide = "left", gap = "10px", iconStrokeWidth = 1.6, ...props}: {
 		address: string;
-		text: string;
+		children?: string;
 		iconSize?: string | number;
 		iconSide?: "left" | "right";
 		iconStrokeWidth?: string | number;
@@ -34,9 +34,11 @@ export default function EmailLink(
 	const gradientId = "email-link-fill-gradient" + id;
 
 	const icon = <svg
-		height={iconSize} viewBox="0 0 24 24"
+		width={iconSize} viewBox="0 0 24 24"
+		className="link-icon"
 		style={{
-			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: gap,
+			display: children ? undefined : "block",
+			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: children ? gap : "0",
 			verticalAlign: `calc(-1 * (${typeof iconSize === "number" ? iconSize + "px" : iconSize} / 2 - 0.5cap))`
 		}}
 	>
@@ -85,7 +87,7 @@ export default function EmailLink(
 			whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
 		>
 			{iconSide === "left" && icon}
-			<span>{text}</span>
+			<span>{children}</span>
 			{iconSide === "right" && icon}
 		</MotionLink>
 	</>

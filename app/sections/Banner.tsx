@@ -8,7 +8,9 @@ import GradientBorderButton from "@/app/components/banner-components/GradientBor
 import EmailLink from "@/app/components/EmailLink";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import {inView} from "motion/react";
-import {contactMailAddress} from "@/app/utils/constants";
+import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
+import LinkedInLink from "@/app/components/LinkedInLink";
+import XLink from "@/app/components/XLink";
 
 const gradientFill = keyframes`
 	from {
@@ -46,11 +48,17 @@ export default function Banner() {
 
 	return <section ref={scopeRef} css={css`
 		justify-items: center;
-		background: radial-gradient(
-			ellipse var(--page-max-width) 75% at 50% 145%,
-			oklch(from var(--secondary-950) l c h / 0.5),
-			transparent var(--gradient-progress)
-		);
+		background:
+			radial-gradient(
+				ellipse var(--page-max-width) 75% at 50% -50%,
+				oklch(from var(--secondary-950) l c h / 0.5),
+				transparent var(--gradient-progress)
+			),
+			radial-gradient(
+				ellipse var(--page-max-width) 75% at 50% 145%,
+				oklch(from var(--secondary-950) l c h / 0.5),
+				transparent var(--gradient-progress)
+			);
 		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease both;
 		animation-play-state: paused;
 		&[data-play="true"] {
@@ -91,6 +99,7 @@ export default function Banner() {
                     color: var(--secondary-neutral-400);
 				`}>If that resonates...</p>
 				<div className="text-lg" css={css`
+					view-timeline: --header-cta-slide-in;
 					padding-inline: 96px;
 					display: flex;
 					gap: 24px;
@@ -101,11 +110,16 @@ export default function Banner() {
 					<GradientBorderButton style={{ width: "max-content" }}>
 						Let's get on call
 					</GradientBorderButton>
-					<EmailLink
-						style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content" }}
-						address={contactMailAddress} text="or chat on email" iconSide="right"
-						gap="8px" iconStrokeWidth={1.6}
-					/>
+					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>
+						<p>or chat on:</p>
+						<XLink href={xAccountUrl} style={{ color: "inherit" }} />
+						<LinkedInLink href={linkedInAccountUrl} style={{ color: "inherit" }} />
+						<EmailLink
+							style={{ color: "inherit" }}
+							address={contactMailAddress}
+							// gap="8px" iconSide="right" iconStrokeWidth={1.6}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

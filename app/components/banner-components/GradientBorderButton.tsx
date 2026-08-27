@@ -9,8 +9,8 @@ const INITIAL = "initial";
 const FOCUSED = "focused";
 
 const variants = {
-    [INITIAL]: { d: "M1 1l4 4-4 4 m4 -4h0" },
-    [FOCUSED]: { d: "M5 1l4 4-4 4 m4 -4h-8" }
+    [INITIAL]: { d: "m 2 4 l 8 8 l -8 8 m 8 -8 h 0" },
+    [FOCUSED]: { d: "m 14 4 l 8 8 l -8 8 m 8 -8 h -20" }
 };
 const transition: {
     duration: number;
@@ -36,9 +36,10 @@ export default function GradientBorderButton({children, className, ...props}: {
 } & React.ComponentPropsWithoutRef<typeof motion.button>) {
     const buttonCss = css`
         color: var(--foreground);
+        background: transparent;
         padding-block: 0.8rem;
-        padding-inline: 1.6rem 1.4rem;
-        border-radius: 0.8rem;
+        padding-inline: 1.4em 1.2em;
+        border-radius: 0.625rem;
 
         &::before {
             //mask:
@@ -46,13 +47,17 @@ export default function GradientBorderButton({children, className, ...props}: {
             //    border-box linear-gradient(black 0 0);
             background: linear-gradient(
                 -2deg,
-                var(--secondary-600),
-                var(--secondary-900) var(--gradient-progress)
+                var(--secondary-950) var(--gradient-progress),
+                var(--secondary-700)
             ) border-box;
             animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
         }
         &::after {
-            background: var(--secondary-neutral-900) padding-box;
+            background: linear-gradient(
+                -2deg,
+                var(--secondary-neutral-900),
+                var(--secondary-neutral-800)
+            ) padding-box;
         }
         &::before, &::after {
             border: 1px solid transparent;
@@ -78,7 +83,7 @@ export default function GradientBorderButton({children, className, ...props}: {
         {...props}
     >
         {children}
-        <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
             <motion.path className="arrow"
                 d={variants[INITIAL].d}
                 {...(cssSupports.d ? null : { variants, transition })}
