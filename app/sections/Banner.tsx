@@ -11,6 +11,7 @@ import {inView} from "motion/react";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
+import {CustomEvents} from "@/app/utils/custom-events";
 
 const gradientFill = keyframes`
 	from {
@@ -28,7 +29,15 @@ export default function Banner() {
 	const identityRef = useRef<IdentityRef>(null);
 
 	useEffect(() => {
-		return inView(
+		if (!scopeRef.current) return;
+
+		const intersectionObserver = new IntersectionObserver(
+			entries => document.dispatchEvent(
+				new CustomEvent(entries.at(0)?.isIntersecting ? CustomEvents.CTA_ENTER_VIEWPORT : CustomEvents.CTA_EXIT_VIEWPORT)
+			),
+			{ threshold: 0.25 }
+		);
+		const cancelInView = inView(
 			"h1.hero-heading",
 			() => {
 				scopeRef.current?.setAttribute("data-play", "true");
@@ -37,7 +46,13 @@ export default function Banner() {
 				identityRef.current?.play();
 			},
 			{amount: 0.5}
-		)
+		);
+		const ctaGroup = scopeRef.current.querySelector(".cta-group");
+		ctaGroup && intersectionObserver.observe(ctaGroup);
+		return () => {
+			cancelInView();
+			ctaGroup && intersectionObserver.unobserve(ctaGroup);
+		};
 	}, []);
 
 	const keywordCss = css`
@@ -98,8 +113,7 @@ export default function Banner() {
 					white-space: nowrap;
                     color: var(--secondary-neutral-400);
 				`}>If that resonates...</p>
-				<div className="text-lg" css={css`
-					view-timeline: --header-cta-slide-in;
+				<div className="cta-group text-lg" css={css`
 					padding-inline: 96px;
 					display: flex;
 					gap: 24px;
@@ -111,7 +125,7 @@ export default function Banner() {
 						Let's get on call
 					</GradientBorderButton>
 					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>
-						<p>or chat on:</p>
+						<p>or chat on</p>
 						<XLink href={xAccountUrl} style={{ color: "inherit" }} />
 						<LinkedInLink href={linkedInAccountUrl} style={{ color: "inherit" }} />
 						<EmailLink

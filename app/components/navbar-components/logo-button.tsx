@@ -9,6 +9,8 @@ import {
 } from "motion/react";
 import {generateLinearEasing} from "motion";
 import {MotionLink} from "@/app/components/MotionLink";
+import useAbortSignal from "@/hooks/use-abort-signal";
+import {CustomEvents} from "@/app/utils/custom-events";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -57,17 +59,16 @@ export default function LogoButton({className, style, ...props}: React.Component
 		setTextState(TextState.EXIT);
 	}
 
+	const abortSignal = useAbortSignal();
 	useEffect(() => {
-		function onScroll() {
-			const aboveThreshold = window.scrollY <= window.innerHeight / 2;
-			if (textAboveThreshold.current === aboveThreshold) return;
-
-			if ((textAboveThreshold.current = aboveThreshold)) animateIn();
-			else animateOut();
-		}
-		onScroll();
-		window.addEventListener("scroll", onScroll);
-		return () => window.addEventListener("scroll", onScroll);
+		document.addEventListener(CustomEvents.CTA_ENTER_VIEWPORT, () => {
+			textAboveThreshold.current = true;
+			animateIn();
+		}, { signal: abortSignal });
+		document.addEventListener(CustomEvents.CTA_EXIT_VIEWPORT, () => {
+			textAboveThreshold.current = false;
+			animateOut();
+		}, { signal: abortSignal });
 	}, []);
 
 	return <MotionLink

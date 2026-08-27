@@ -1,18 +1,23 @@
 'use client';
-import {css, keyframes} from "@emotion/react";
+import {css} from "@emotion/react";
 import LogoButton from "@/app/components/navbar-components/logo-button";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import GradientBorderButton from "@/app/components/banner-components/GradientBorderButton";
 import EmailLink from "@/app/components/EmailLink";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
+import {CustomEvents} from "@/app/utils/custom-events";
+import useAbortSignal from "@/hooks/use-abort-signal";
 
-const slideIn = keyframes`
-    from { --in-view: 0; }
-    to { --in-view: 1; }
-`;
 export default function Header() {
+    const buttonGroup = useRef<HTMLDivElement>(null);
+    const abortSignal = useAbortSignal();
+    useEffect(() => {
+        if (!buttonGroup.current) return;
+        document.addEventListener(CustomEvents.CTA_ENTER_VIEWPORT, () => buttonGroup.current!.style.setProperty("--_switch", "0"), { signal: abortSignal });
+        document.addEventListener(CustomEvents.CTA_EXIT_VIEWPORT, () => buttonGroup.current!.style.setProperty("--_switch", "1"), { signal: abortSignal });
+    }, []);
     return <header style={{ pointerEvents: "none" }}>
         <nav css={css`
             display: flex;
@@ -21,21 +26,16 @@ export default function Header() {
             height: 3.2rem;
         `}>
             <LogoButton style={{ pointerEvents: "auto" }} />
-            <div css={css`
+            <div ref={buttonGroup} style={{ '--_switch': "0" } as React.CSSProperties} css={css`
                 height: 100%;
                 pointer-events: auto;
                 display: flex;
                 gap: 16px;
-                --in-view: 0;
-                animation: ${slideIn} both;
-                animation-timeline: --header-cta-slide-in;
-                animation-range: exit 50%;
-                > * {
-                    transform: translateY(calc((1 - var(--in-view)) * -150%));
-                    opacity: var(--in-view);
-                    transition: 0.3s 0.15s ease;
-                    transition-property: transform, opacity;
-                }
+
+                transform: translateY(calc((1 - var(--_switch)) * -150%));
+                opacity: var(--_switch);
+                transition: 0.3s ease;
+                transition-property: transform, opacity;
             `}>
                 <button className="text-lg" css={css`
                     cursor: default;
