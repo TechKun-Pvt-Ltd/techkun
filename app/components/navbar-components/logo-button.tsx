@@ -45,6 +45,56 @@ enum TextState {
 	VISIBLE = "visible"
 }
 
+const linkCss = css`
+	height: 110%;
+	padding-inline: 24px;
+	//background-color: oklch(from var(--background) 0.15 c h);
+	background-color: var(--secondary-neutral-900);
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+	text-decoration: none;
+
+	//corner-shape: squircle;
+	//border-radius: 64px;
+	//@supports not (corner-shape: superellipse(2)) {
+	//	border-radius: 8px;
+	//}
+`;
+const disappearingTextContainerCss = css`
+	height: 1lh;
+	position: relative;
+	display: flex;
+	align-items: center;
+`;
+const disappearingTextCss = css`
+	pointer-events: none;
+	color: transparent;
+	background-image: linear-gradient(
+		to right in oklch,
+		var(--foreground) calc(var(--gradient-progress) - 60%),
+		var(--secondary-500) calc(var(--gradient-progress) - 40%),
+		var(--primary-500) calc(var(--gradient-progress) - 20%),
+		transparent var(--gradient-progress)
+	);
+	padding-inline-start: 16px;
+	background-clip: text;
+
+	transition: --gradient-progress ${calcEnterDuration}ms ${enterSpringEasing};
+	--gradient-progress: 160%;
+
+	&[data-state=${TextState.ENTER}] {
+		@starting-style {
+			--gradient-progress: 0%;
+		}
+	}
+	&[data-state=${TextState.EXIT}] {
+		position: absolute;
+		transition-timing-function: ${exitSpringEasing};
+		transition-duration: ${calcExitDuration}ms;
+		--gradient-progress: 0%;
+	}
+`;
 export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof MotionLink>) {
 	const pathname = usePathname();
 	const textHovered = useRef(false);
@@ -98,21 +148,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 				bounce: 0.3
 			}
 		}}
-		css={css`
-			height: 110%;
-			padding-inline: 24px;
-			background-color: oklch(from var(--background) 0.15 c h);
-			display: flex;
-			align-items: center;
-			font-weight: 500;
-			text-decoration: none;
-
-			//corner-shape: squircle;
-			//border-radius: 64px;
-			//@supports not (corner-shape: superellipse(2)) {
-			//	border-radius: 8px;
-			//}
-		`}
+		css={linkCss}
 		onClick={e => {
 			if (window.location.pathname !== "/") return;
 			e.preventDefault();
@@ -131,42 +167,10 @@ export default function LogoButton({className, style, ...props}: React.Component
 		<motion.span layout="size">
 			<TechKunLogo style={{ display: "block" }} />
 		</motion.span>
-		<motion.span css={css`
-			height: 1lh;
-			position: relative;
-			display: flex;
-			align-items: center;
-		`}>
+		<motion.span css={disappearingTextContainerCss}>
 			<motion.span
 				layout="size"
-				css={css`
-					pointer-events: none;
-					color: transparent;
-					background-image: linear-gradient(
-						to right in oklch,
-						var(--foreground) calc(var(--gradient-progress) - 60%),
-						var(--secondary-500) calc(var(--gradient-progress) - 40%),
-						var(--primary-500) calc(var(--gradient-progress) - 20%),
-						transparent var(--gradient-progress)
-					);
-					padding-inline-start: 16px;
-					background-clip: text;
-
-					transition: --gradient-progress ${calcEnterDuration}ms ${enterSpringEasing};
-					--gradient-progress: 160%;
-
-					&[data-state=${TextState.ENTER}] {
-						@starting-style {
-							--gradient-progress: 0%;
-						}
-					}
-					&[data-state=${TextState.EXIT}] {
-						position: absolute;
-						transition-timing-function: ${exitSpringEasing};
-						transition-duration: ${calcExitDuration}ms;
-						--gradient-progress: 0%;
-					}
-				`}
+				css={disappearingTextCss}
 				data-state={textState}
 			>TechKun</motion.span>
 		</motion.span>
