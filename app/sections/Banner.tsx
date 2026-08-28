@@ -21,7 +21,15 @@ const gradientFill = keyframes`
 		--gradient-progress: 100%;
 	}
 `;
-const {bgGradient} = BANNER_ANIMATION;
+const grayscale = keyframes`
+	from {
+		filter: grayscale(0.5) brightness(0.75);
+	}
+	to {
+		filter: none;
+	}
+`;
+const {bgGradient, ctaFilter} = BANNER_ANIMATION;
 export default function Banner() {
 	const scopeRef = useRef<HTMLElement>(null);
 	const beautyRef = useRef<BeautyRef>(null);
@@ -66,16 +74,20 @@ export default function Banner() {
 		background:
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% -50%,
-				oklch(from var(--secondary-950) l c h / 0.5),
+				oklch(from var(--secondary-800) l c h / 0.25),
 				transparent var(--gradient-progress)
 			),
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% 145%,
-				oklch(from var(--secondary-950) l c h / 0.5),
+				oklch(from var(--secondary-800) l c h / 0.25),
 				transparent var(--gradient-progress)
 			);
-		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease both;
+		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease-out both;
 		animation-play-state: paused;
+		.cta {
+			animation: ${grayscale} ${ctaFilter.duration}s ${ctaFilter.delay}s ease-out both;
+			animation-play-state: inherit;
+		}
 		&[data-play="true"] {
 			animation-play-state: running;
 		}
@@ -121,7 +133,7 @@ export default function Banner() {
 					align-items: center;
 					justify-content: center;
 				`}>
-					<MainCTA style={{ width: "max-content" }}>
+					<MainCTA className="cta" style={{ width: "max-content" }}>
 						Let's get on call
 					</MainCTA>
 					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>

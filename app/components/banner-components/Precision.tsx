@@ -1,6 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {motion, visualElementStore} from "motion/react";
-import {animate, BezierDefinition, SpringOptions} from "motion";
+import {motion, visualElementStore, animate, BezierDefinition, SpringOptions} from "motion/react";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";

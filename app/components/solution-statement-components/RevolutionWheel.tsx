@@ -347,15 +347,15 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
             g.back-layer {
                 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
                 --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                --_stroke-color: oklch(from var(--neutral-700) l c h / 0.75);
+                --_stroke-color: var(--neutral-800);
                 --_lighter-stroke: var(--neutral-400);
             }
 
             g.front-layer {
-                --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
+                --_dial-fill-color: oklch(from var(--secondary-950) l c h / 0.25);
                 --_fill-color: none;
-                --_stroke-color: oklch(from var(--secondary-neutral-700) l c h / 0.75);
-                --_lighter-stroke: var(--primary-400);
+                --_stroke-color: var(--secondary-neutral-800);
+                --_lighter-stroke: var(--primary-500);
             }
         `}
     >
@@ -434,13 +434,13 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     color="var(--secondary-neutral-600)"
                 >{quotePart2}</TrigWheel.Text>
             </ClippedG>
-            <g stroke="var(--primary-900)" strokeWidth="0.25" fill="none">
+            <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
                 <TrigWheel.ExtendedRotor strokeDasharray="2"/>
                 <TrigWheel.Rotor style={{
                     filter:
-                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-900) l c h / 0.32)) " +
-                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-900) l c h / 0.32)) " +
-                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-900) l c h / 0.32))"
+                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
                 }}/>
             </g>
             <TrigWheel.Circle
@@ -472,7 +472,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     r: var(--_radius);
                     stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
                     calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
-                    stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-800) calc(var(--_switch) * 100%));
+                    stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-700) calc(var(--_switch) * 100%));
 
                     transition: stroke 0.2s ease-in-out;
                 }
@@ -499,9 +499,9 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     transition: 0.2s ease-in-out;
                     transition-property: opacity, filter;
                 `}
-                fill="none" stroke="var(--primary-900)" strokeWidth="0.1"
+                fill="none" stroke="var(--primary-800)" strokeWidth="0.1"
             />
-            <TrigWheel.RotorTerminal fill="var(--primary-700)"/>
+            <TrigWheel.RotorTerminal fill="var(--primary-600)"/>
             <TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5"/>
             <CenterIcon fill="var(--neutral-900)"/>
         </TrigWheel>

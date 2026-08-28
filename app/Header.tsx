@@ -38,9 +38,9 @@ const socialLinksGroupCss = css`
     border-radius: 100vh;
     corner-shape: superellipse(1.1);
 
-    background: oklch(from var(--secondary-neutral-900) l c h / 0.625);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--secondary-neutral-800);
+    background: oklch(from var(--secondary-950) l c h / 0.96);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--secondary-900);
     a {
         padding: 0.25rem;
         color: var(--secondary-neutral-400);
@@ -48,7 +48,7 @@ const socialLinksGroupCss = css`
     .divider {
         width: 1px;
         height: 1em;
-        background: var(--secondary-neutral-800);
+        background: var(--secondary-900);
     }
 `;
 export default function Header() {

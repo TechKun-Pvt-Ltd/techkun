@@ -56,18 +56,17 @@ const linkCss = css`
 	font-weight: 500;
 	text-decoration: none;
 	&::before, .wrapper, .after {
-		border: 0 solid var(--secondary-neutral-800);
+		border: 0 solid var(--secondary-900);
+		background-color: oklch(from var(--secondary-950) l c h / 0.96);
 		border-top-width: 1px;
 		border-bottom-width: 1px;
 	}
 	.wrapper {
 		display: flex;
 		align-items: center;
-		background-color: var(--secondary-neutral-900);
 	}
 	&::before, .after {
 		z-index: -1;
-		background-color: var(--secondary-neutral-900);
 		corner-shape: superellipse(1.1);
 	}
 	&::before {

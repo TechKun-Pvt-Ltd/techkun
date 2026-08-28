@@ -28,7 +28,7 @@ export default function Footer() {
                 background: linear-gradient(
                     to right,
                     transparent,
-                    var(--secondary-950),
+                    var(--secondary-900) 45% 55%,
                     transparent
                 );
             }
@@ -36,7 +36,7 @@ export default function Footer() {
                 height: calc(2 * 72px);
                 transform: translateY(-50%);
                 background: radial-gradient(
-                    oklch(from var(--secondary-950) l c h / 0.3),
+                    oklch(from var(--secondary-900) l c h / 0.25),
                     transparent 75%
                 );
             }

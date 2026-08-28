@@ -1,9 +1,8 @@
 'use client'
 import React, {ReactNode} from "react";
-import {css, keyframes} from "@emotion/react";
+import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import cssSupports from "@/app/utils/css-supports";
-import BANNER_ANIMATION from "@/app/animations/banner";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -20,18 +19,8 @@ const transition: {
     ease: [0.215, 0.61, 0.355, 1]
 };
 
-const gradientFill = keyframes`
-    from {
-        --gradient-progress: 0%;
-    }
-    to {
-        --gradient-progress: 25%;
-    }
-`;
-
-const { ctaBorderGradient } = BANNER_ANIMATION;
 const buttonCss = css`
-    color: var(--secondary-neutral-50);
+    color: var(--secondary-50);
     background: transparent;
     padding-block: 0.8rem;
     padding-inline: 1.6em 1.4em;
@@ -40,15 +29,8 @@ const buttonCss = css`
     corner-shape: superellipse(1.1);
     //font-weight: 600;
 
-    // &::before {
-    //     mask:
-    //         padding-box linear-gradient(#000 0 0) subtract,
-    //         border-box linear-gradient(#000 0 0);
-    //     background: var(--secondary-neutral-800) border-box;
-    //     animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
-    // }
     &::before {
-        background: var(--secondary-950) padding-box;
+        background: var(--secondary-900) padding-box;
     }
     //&::before, &::after {
     //    border: 1px solid transparent;
