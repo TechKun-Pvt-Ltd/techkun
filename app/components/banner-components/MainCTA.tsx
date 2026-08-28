@@ -31,33 +31,28 @@ const gradientFill = keyframes`
 
 const { ctaBorderGradient } = BANNER_ANIMATION;
 const buttonCss = css`
-    color: var(--foreground);
+    color: var(--secondary-neutral-50);
     background: transparent;
     padding-block: 0.8rem;
-    padding-inline: 1.4em 1.2em;
-    border-radius: 0.625rem;
+    padding-inline: 1.6em 1.4em;
+    //border-radius: 0.75rem;
+    border-radius: 100vh;
+    corner-shape: superellipse(1.1);
+    //font-weight: 600;
 
+    // &::before {
+    //     mask:
+    //         padding-box linear-gradient(#000 0 0) subtract,
+    //         border-box linear-gradient(#000 0 0);
+    //     background: var(--secondary-neutral-800) border-box;
+    //     animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
+    // }
     &::before {
-        //mask:
-        //    padding-box linear-gradient(transparent 0 0) subtract,
-        //    border-box linear-gradient(black 0 0);
-        background: linear-gradient(
-            -2deg,
-            var(--secondary-950) var(--gradient-progress),
-            var(--secondary-700)
-        ) border-box;
-        animation: ${gradientFill} ${ctaBorderGradient.duration}s ${ctaBorderGradient.delay}s ease-out both;
+        background: var(--secondary-950) padding-box;
     }
-    &::after {
-        background: linear-gradient(
-            -2deg,
-            var(--secondary-neutral-900),
-            var(--secondary-neutral-800)
-        ) padding-box;
-    }
-    &::before, &::after {
-        border: 1px solid transparent;
-    }
+    //&::before, &::after {
+    //    border: 1px solid transparent;
+    //}
 
     & > svg {
         margin-inline-start: 0.4375em;
@@ -72,11 +67,11 @@ const buttonCss = css`
     }
 `;
 
-export default function GradientBorderButton(
+export default function MainCTA(
     {children, className, ...props}: { children: ReactNode; } & React.ComponentPropsWithoutRef<typeof motion.button>
 ) {
     return <motion.button
-        className={"tri-layered-button " + className}
+        className={"bi-layered-button " + className}
         css={buttonCss} initial={INITIAL}
         whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
         {...props}

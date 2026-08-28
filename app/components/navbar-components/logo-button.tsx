@@ -11,6 +11,7 @@ import {generateLinearEasing} from "motion";
 import {MotionLink} from "@/app/components/MotionLink";
 import {CustomEvents} from "@/app/utils/custom-events";
 import {usePathname} from "next/navigation";
+import Link from "next/link";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -47,14 +48,41 @@ enum TextState {
 
 const linkCss = css`
 	height: 110%;
-	padding-inline: 24px;
+	//padding-inline: 28px;
 	//background-color: oklch(from var(--background) 0.15 c h);
-	background-color: var(--secondary-neutral-900);
+	//border: 1px solid var(--secondary-neutral-700);
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	font-weight: 500;
 	text-decoration: none;
-
+	&::before, .wrapper, .after {
+		border: 0 solid var(--secondary-neutral-800);
+		border-top-width: 1px;
+		border-bottom-width: 1px;
+	}
+	.wrapper {
+		display: flex;
+		align-items: center;
+		background-color: var(--secondary-neutral-900);
+	}
+	&::before, .after {
+		z-index: -1;
+		background-color: var(--secondary-neutral-900);
+		corner-shape: superellipse(1.1);
+	}
+	&::before {
+		content: "";
+		padding-inline-start: 28px;
+		border-top-left-radius: 100vw;
+		border-bottom-left-radius: 100vw;
+		border-left-width: 1px;
+	}
+	.after {
+		padding-inline-end: 28px;
+		border-top-right-radius: 100vw;
+		border-bottom-right-radius: 100vw;
+		border-right-width: 1px;
+	}
 	//corner-shape: squircle;
 	//border-radius: 64px;
 	//@supports not (corner-shape: superellipse(2)) {
@@ -95,7 +123,7 @@ const disappearingTextCss = css`
 		--gradient-progress: 0%;
 	}
 `;
-export default function LogoButton({className, style, ...props}: React.ComponentProps<typeof MotionLink>) {
+export default function LogoButton(props: Partial<React.ComponentProps<typeof Link>>) {
 	const pathname = usePathname();
 	const textHovered = useRef(false);
 	const textAboveThreshold = useRef(true);
@@ -135,19 +163,7 @@ export default function LogoButton({className, style, ...props}: React.Component
 		return () => abortController.abort();
 	}, [pathname]);
 
-	// This would cause hydration errors
-	// TODO: Figure out an alternative
-	const REM = typeof getComputedStyle !== "undefined" ? parseFloat(getComputedStyle(document.documentElement).fontSize) : 16;
-	return <MotionLink
-		href="/" layout="size"
-		className={"display-text " + className} style={{ borderRadius: (0.75 * REM) + "px", ...style }}
-		transition={{
-			layout: {
-				type: "spring",
-				visualDuration: (textState === TextState.EXIT ? EXIT_DURATION + 0.2 : ENTER_DURATION - 0.2),
-				bounce: 0.3
-			}
-		}}
+	return <Link
 		css={linkCss}
 		onClick={e => {
 			if (window.location.pathname !== "/") return;
@@ -155,24 +171,46 @@ export default function LogoButton({className, style, ...props}: React.Component
 			window.scrollTo({top: 0, behavior: "smooth"});
 		}}
 		{...props}
-		onHoverStart={_ => {
+		href="/"
+		onPointerEnter={_ => {
 			textHovered.current = true;
 			animateIn();
 		}}
-		onHoverEnd={_ => {
+		onPointerLeave={_ => {
 			textHovered.current = false;
 			animateOut();
 		}}
 	>
-		<motion.span layout="size">
-			<TechKunLogo style={{ display: "block" }} />
+		<motion.span
+			layout="size" className="display-text wrapper"
+		 	transition={{
+				 layout: {
+					 type: "spring",
+					 visualDuration: (textState === TextState.EXIT ? EXIT_DURATION + 0.2 : ENTER_DURATION - 0.2),
+					 bounce: 0.3
+				 }
+		 	}}
+		>
+			<motion.span layout="size">
+				<TechKunLogo style={{ display: "block", filter: "drop-shadow(0 2px 4px var(--background))" }} />
+			</motion.span>
+			<motion.span css={disappearingTextContainerCss}>
+				<motion.span
+					layout="size"
+					css={disappearingTextCss}
+					data-state={textState}
+				>TechKun</motion.span>
+			</motion.span>
 		</motion.span>
-		<motion.span css={disappearingTextContainerCss}>
-			<motion.span
-				layout="size"
-				css={disappearingTextCss}
-				data-state={textState}
-			>TechKun</motion.span>
-		</motion.span>
-	</MotionLink>;
+		<motion.span
+			className="after" layout="x"
+			transition={{
+				layout: {
+					type: "spring",
+					visualDuration: (textState === TextState.EXIT ? EXIT_DURATION + 0.2 : ENTER_DURATION - 0.2),
+					bounce: 0.3
+				}
+			}}
+		/>
+	</Link>;
 };

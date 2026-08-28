@@ -4,7 +4,7 @@ import {css, keyframes} from "@emotion/react";
 import Precision, {PrecisionRef} from "@/app/components/banner-components/Precision";
 import Beauty, {BeautyRef} from "@/app/components/banner-components/Beauty";
 import Identity, {IdentityRef} from "@/app/components/banner-components/Identity";
-import GradientBorderButton from "@/app/components/banner-components/GradientBorderButton";
+import MainCTA from "@/app/components/banner-components/MainCTA";
 import EmailLink from "@/app/components/EmailLink";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import {inView} from "motion/react";
@@ -121,9 +121,9 @@ export default function Banner() {
 					align-items: center;
 					justify-content: center;
 				`}>
-					<GradientBorderButton style={{ width: "max-content" }}>
+					<MainCTA style={{ width: "max-content" }}>
 						Let's get on call
-					</GradientBorderButton>
+					</MainCTA>
 					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>
 						<p>or chat on</p>
 						<XLink href={xAccountUrl} style={{ color: "inherit" }} />

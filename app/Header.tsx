@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import LogoButton from "@/app/components/navbar-components/logo-button";
 import React, {useEffect, useRef} from "react";
-import GradientBorderButton from "@/app/components/banner-components/GradientBorderButton";
+import MainCTA from "@/app/components/banner-components/MainCTA";
 import EmailLink from "@/app/components/EmailLink";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
@@ -20,7 +20,7 @@ const navButtonGroupCss = css`
     height: 100%;
     pointer-events: auto;
     display: flex;
-    gap: 16px;
+    gap: 12px;
 
     transform: translateY(calc((1 - var(--_switch)) * -150%));
     opacity: var(--_switch);
@@ -34,7 +34,9 @@ const socialLinksGroupCss = css`
 
     padding-block: 0.5rem;
     padding-inline: 1rem;
-    border-radius: 0.625rem;
+    //border-radius: 0.75rem;
+    border-radius: 100vh;
+    corner-shape: superellipse(1.1);
 
     background: oklch(from var(--secondary-neutral-900) l c h / 0.625);
     backdrop-filter: blur(12px);
@@ -81,7 +83,7 @@ export default function Header() {
                     <div className="divider" />
                     <EmailLink address={contactMailAddress} />
                 </div>
-                <GradientBorderButton>Let's talk</GradientBorderButton>
+                <MainCTA>Let's talk</MainCTA>
             </div>
         </nav>
     </header>;
