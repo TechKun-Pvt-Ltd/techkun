@@ -1,24 +1,22 @@
 import {deviceBreakpoint} from "@/app/utils/css/device-query";
 import {round} from "svg-path-kit/numbers";
 
-function no_op(t: number) { return t; }
 function generateColorMixRules(
     baseColor: string,
     mixColor: string,
-    mixStrength: number,
-    colorNameGenerator: (i: number) => string,
-    easing: (t: number) => number = no_op,
+    propertyNameGenerator: (i: number) => string,
+    stepGenerator: (i: number, total: number) => number,
     steps: number = 5
 ) {
     const rules: string[] = [];
-    mixStrength = mixStrength * 100;
     for (let i = 0; i < steps; i++) {
-        rules.push(`${colorNameGenerator(i)}: color-mix(in oklch, ${baseColor}, ${mixColor} ${round(easing((i + 1) / steps) * mixStrength, 4)}%)`);
+        rules.push(`${propertyNameGenerator(i)}: color-mix(in oklch, ${baseColor}, ${mixColor} ${round(stepGenerator(i, steps) * 100, 4)}%)`);
     }
     return rules;
 }
 
-const TINT_TOKENS = [50, 100, 200, 300, 400].reverse();
+function no_op(t: number) { return t; }
+const TINT_TOKENS = [50, 100, 200, 300, 400]
 const SHADE_TOKENS = [600, 700, 800, 900, 950];
 
 function generateTintsAndShadesRules({baseColor, baseColorName, whiteColor = "white", blackColor = "black", mixStrength, easing = no_op}: {
@@ -29,8 +27,21 @@ function generateTintsAndShadesRules({baseColor, baseColorName, whiteColor = "wh
     mixStrength: number | [number, number];
     easing?: ((t: number) => number) | [(t: number) => number, (t: number) => number];
 }) {
-    const tints = generateColorMixRules(baseColor, whiteColor, typeof mixStrength === "number" ? mixStrength : mixStrength[0], i => `--${baseColorName}-${TINT_TOKENS[i]}`).reverse();
-    const shades = generateColorMixRules(baseColor, blackColor, typeof mixStrength === "number" ? mixStrength : mixStrength[1], i => `--${baseColorName}-${SHADE_TOKENS[i]}`);
+    const tintsMixStrength = typeof mixStrength === "number" ? mixStrength : mixStrength[0];
+    const tintsEasing = typeof easing === "function" ? easing : easing[0];
+    const shadesMixStrength = typeof mixStrength === "number" ? mixStrength : mixStrength[1];
+    const shadesEasing = typeof easing === "function" ? easing : easing[1];
+
+    const tints = generateColorMixRules(
+        baseColor, whiteColor,
+        i => `--${baseColorName}-${TINT_TOKENS[i]}`,
+        (i, total) => tintsEasing(1 - i / total) * tintsMixStrength
+    );
+    const shades = generateColorMixRules(
+        baseColor, blackColor,
+        i => `--${baseColorName}-${SHADE_TOKENS[i]}`,
+        (i, total) => shadesEasing((i + 1) / total) * shadesMixStrength
+    );
 
     // language=CSS prefix=":root {" suffix="}"
     return `
