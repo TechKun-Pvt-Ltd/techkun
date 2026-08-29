@@ -2,7 +2,7 @@
 import React, {ReactNode} from "react";
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
-import cssSupports from "@/app/utils/css-supports";
+import cssSupports from "@/app/utils/css/supports";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";

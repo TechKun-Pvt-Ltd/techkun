@@ -1,6 +1,6 @@
 import {css} from "@emotion/react";
 import React, {ReactNode} from "react";
-import {property} from "@/app/utils/css-property";
+import {property} from "@/app/utils/css/property";
 
 const _borderRadius = property("_borderRadius")`
 	syntax: "<length-percentage>";

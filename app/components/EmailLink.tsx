@@ -2,9 +2,9 @@
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import React, {useId} from "react";
-import cssSupports from "@/app/utils/css-supports";
+import cssSupports from "@/app/utils/css/supports";
 import {MotionLink} from "@/app/components/MotionLink";
-import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
+import {gradientColor1, gradientColor2} from "@/app/utils/css/custom-properties";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";

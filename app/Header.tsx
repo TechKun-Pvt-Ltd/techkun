@@ -59,14 +59,26 @@ export default function Header() {
         if (!isHomepage) return;
         if (!buttonGroup.current) return;
         const abortController = new AbortController();
+        const links = buttonGroup.current.querySelectorAll<HTMLElement>(".contact-option");
         document.addEventListener(
             CustomEvents.CTA_ENTER_VIEWPORT,
-            () => buttonGroup.current!.style.setProperty("--_switch", "0"),
+            () => {
+                for (const link of links) {
+                    if (document.activeElement === link)
+                        link.blur();
+                    link.tabIndex = -1;
+                }
+                buttonGroup.current!.style.setProperty("--_switch", "0");
+            },
             { signal: abortController.signal }
         );
         document.addEventListener(
             CustomEvents.CTA_EXIT_VIEWPORT,
-            () => buttonGroup.current!.style.setProperty("--_switch", "1"),
+            () => {
+                for (const link of links)
+                    link.tabIndex = 0;
+                buttonGroup.current!.style.setProperty("--_switch", "1");
+            },
             { signal: abortController.signal }
         );
         return () => abortController.abort();
@@ -77,13 +89,13 @@ export default function Header() {
             <LogoButton style={{ pointerEvents: "auto" }} />
             <div ref={buttonGroup} style={{ '--_switch': isHomepage ? "0" : "1" } as React.CSSProperties} css={navButtonGroupCss}>
                 <div className="text-lg" css={socialLinksGroupCss}>
-                    <XLink href={xAccountUrl} />
+                    <XLink className="contact-option" href={xAccountUrl} />
                     <div className="divider" />
-                    <LinkedInLink href={linkedInAccountUrl} />
+                    <LinkedInLink className="contact-option" href={linkedInAccountUrl} />
                     <div className="divider" />
-                    <EmailLink address={contactMailAddress} />
+                    <EmailLink className="contact-option" address={contactMailAddress} />
                 </div>
-                <MainCTA>Let's talk</MainCTA>
+                <MainCTA className="contact-option">Let's talk</MainCTA>
             </div>
         </nav>
     </header>;

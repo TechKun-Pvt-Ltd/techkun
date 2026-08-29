@@ -1,4 +1,4 @@
-import {property} from "@/app/utils/css-property";
+import {property} from "@/app/utils/css/property";
 
 export const gradientColor1 = property("gradient-color-1")`
     syntax: "<color>";

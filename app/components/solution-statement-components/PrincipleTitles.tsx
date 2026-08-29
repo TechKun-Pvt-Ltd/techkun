@@ -1,7 +1,7 @@
 import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
-import {deviceQuery} from "@/app/styles/device-query";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
+import {deviceQuery} from "@/app/utils/css/device-query";
+import supportsQuery from "@/app/utils/css/supports-query";
 import {Angle} from "svg-path-kit";
 import {MotionValue} from "motion";
 
@@ -97,7 +97,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             //
             //     --_switch: clamp(-1, var(--active-offset), 1);
             //     --switch-abs: abs(var(--_switch));
-            //     @supports not ${cssSupportsQuery.abs} {
+            //     @supports not ${supportsQuery.abs} {
             //         --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
             //     }
             //     opacity: calc(1 - var(--switch-abs));

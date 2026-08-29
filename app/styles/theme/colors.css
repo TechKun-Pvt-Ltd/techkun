@@ -1,0 +1,135 @@
+:root {
+    color-scheme: dark;
+    --primary-hue: 256;
+    /*--primary-hue: 270;*/
+    --secondary-hue: calc(var(--primary-hue) + 20);
+    --tertiary-hue: calc(var(--primary-hue) + 40);
+
+    --lightness: 0.56;
+    --chroma: 0.18;
+    /*--chroma: 0.2;*/
+
+    --primary-color-mix-strength: 70%;
+    --primary-color: oklch(var(--lightness) var(--chroma) var(--primary-hue) / 1);
+
+    --primary-50: color-mix(in oklch, var(--primary-color), white calc(5 / 5 * var(--primary-color-mix-strength)));
+    --primary-100: color-mix(in oklch, var(--primary-color), white calc(4 / 5 * var(--primary-color-mix-strength)));
+    --primary-200: color-mix(in oklch, var(--primary-color), white calc(3 / 5 * var(--primary-color-mix-strength)));
+    --primary-300: color-mix(in oklch, var(--primary-color), white calc(2 / 5 * var(--primary-color-mix-strength)));
+    --primary-400: color-mix(in oklch, var(--primary-color), white calc(1 / 5 * var(--primary-color-mix-strength)));
+    --primary-500: var(--primary-color);
+    --primary-600: color-mix(in oklch, var(--primary-color), black calc(1 / 5 * var(--primary-color-mix-strength)));
+    --primary-700: color-mix(in oklch, var(--primary-color), black calc(2 / 5 * var(--primary-color-mix-strength)));
+    --primary-800: color-mix(in oklch, var(--primary-color), black calc(3 / 5 * var(--primary-color-mix-strength)));
+    --primary-900: color-mix(in oklch, var(--primary-color), black calc(4 / 5 * var(--primary-color-mix-strength)));
+    --primary-950: color-mix(in oklch, var(--primary-color), black calc(5 / 5 * var(--primary-color-mix-strength)));
+
+    --secondary-color-mix-strength: 70%;
+    --secondary-color: oklch(var(--lightness) var(--chroma) var(--secondary-hue) / 1);
+
+    --secondary-50: color-mix(in oklch, var(--secondary-color), white calc(5 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-100: color-mix(in oklch, var(--secondary-color), white calc(4 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-200: color-mix(in oklch, var(--secondary-color), white calc(3 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-300: color-mix(in oklch, var(--secondary-color), white calc(2 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-400: color-mix(in oklch, var(--secondary-color), white calc(1 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-500: var(--secondary-color);
+    --secondary-600: color-mix(in oklch, var(--secondary-color), black calc(1 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-700: color-mix(in oklch, var(--secondary-color), black calc(2 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-800: color-mix(in oklch, var(--secondary-color), black calc(3 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-900: color-mix(in oklch, var(--secondary-color), black calc(4 / 5 * var(--secondary-color-mix-strength)));
+    --secondary-950: color-mix(in oklch, var(--secondary-color), black calc(5 / 5 * var(--secondary-color-mix-strength)));
+
+    --tertiary-color-mix-strength: 70%;
+    --tertiary-color: oklch(var(--lightness) var(--chroma) var(--tertiary-hue) / 1);
+
+    --tertiary-50: color-mix(in oklch, var(--tertiary-color), white calc(5 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-100: color-mix(in oklch, var(--tertiary-color), white calc(4 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-200: color-mix(in oklch, var(--tertiary-color), white calc(3 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-300: color-mix(in oklch, var(--tertiary-color), white calc(2 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-400: color-mix(in oklch, var(--tertiary-color), white calc(1 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-500: var(--tertiary-color);
+    --tertiary-600: color-mix(in oklch, var(--tertiary-color), black calc(1 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-700: color-mix(in oklch, var(--tertiary-color), black calc(2 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-800: color-mix(in oklch, var(--tertiary-color), black calc(3 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-900: color-mix(in oklch, var(--tertiary-color), black calc(4 / 5 * var(--tertiary-color-mix-strength)));
+    --tertiary-950: color-mix(in oklch, var(--tertiary-color), black calc(5 / 5 * var(--tertiary-color-mix-strength)));
+
+    /*--phi: calc((1 + sqrt(5)) / 2);*/
+    /*--step: calc(pow(var(--phi), 1/4) - 1);*/
+
+    /*--primary-50: oklch(from var(--primary-color) calc(l * (1 + 5 * var(--step))) c h);*/
+    /*--primary-100: oklch(from var(--primary-color) calc(l * (1 + 4 * var(--step))) c h);*/
+    /*--primary-200: oklch(from var(--primary-color) calc(l * (1 + 3 * var(--step))) c h);*/
+    /*--primary-300: oklch(from var(--primary-color) calc(l * (1 + 2 * var(--step))) c h);*/
+    /*--primary-400: oklch(from var(--primary-color) calc(l * (1 + var(--step))) c h);*/
+    /*--primary-500: var(--primary-color);*/
+    /*--primary-600: oklch(from var(--primary-color) calc(l * (1 - var(--step))) c h);*/
+    /*--primary-700: oklch(from var(--primary-color) calc(l * (1 - 2 * var(--step))) c h);*/
+    /*--primary-800: oklch(from var(--primary-color) calc(l * (1 - 3 * var(--step))) c h);*/
+    /*--primary-900: oklch(from var(--primary-color) calc(l * (1 - 4 * var(--step))) c h);*/
+    /*--primary-950: oklch(from var(--primary-color) calc(l * (1 - 5 * var(--step))) c h);*/
+
+    --neutral-50: oklch(0.9 0.005 var(--secondary-hue));
+    --neutral-100: oklch(0.82 0.005 var(--secondary-hue));
+    --neutral-200: oklch(0.74 0.005 var(--secondary-hue));
+    --neutral-300: oklch(0.66 0.005 var(--secondary-hue));
+    --neutral-400: oklch(0.58 0.005 var(--secondary-hue));
+    --neutral-500: oklch(0.5 0.005 var(--secondary-hue));
+    --neutral-600: oklch(0.42 0.005 var(--secondary-hue));
+    --neutral-700: oklch(0.34 0.005 var(--secondary-hue));
+    --neutral-800: oklch(0.26 0.005 var(--secondary-hue));
+    --neutral-900: oklch(0.18 0.005 var(--secondary-hue));
+    --neutral-950: oklch(0.1 0.005 var(--secondary-hue));
+
+    --secondary-neutral-mix-strength: 80%;
+    --secondary-neutral-color: oklch(0.5 0.05 var(--secondary-hue));
+
+    --secondary-neutral-50: color-mix(in oklch, var(--secondary-neutral-color), oklch(1 0.05 var(--secondary-hue)) calc(5 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-100: color-mix(in oklch, var(--secondary-neutral-color), oklch(1 0.05 var(--secondary-hue)) calc(4 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-200: color-mix(in oklch, var(--secondary-neutral-color), oklch(1 0.05 var(--secondary-hue)) calc(3 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-300: color-mix(in oklch, var(--secondary-neutral-color), oklch(1 0.05 var(--secondary-hue)) calc(2 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-400: color-mix(in oklch, var(--secondary-neutral-color), oklch(1 0.05 var(--secondary-hue)) calc(1 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-500: var(--secondary-neutral-color);
+    --secondary-neutral-600: color-mix(in oklch, var(--secondary-neutral-color), oklch(0 0.05 var(--secondary-hue)) calc(1 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-700: color-mix(in oklch, var(--secondary-neutral-color), oklch(0 0.05 var(--secondary-hue)) calc(2 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-800: color-mix(in oklch, var(--secondary-neutral-color), oklch(0 0.05 var(--secondary-hue)) calc(3 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-900: color-mix(in oklch, var(--secondary-neutral-color), oklch(0 0.05 var(--secondary-hue)) calc(4 / 5 * var(--secondary-neutral-mix-strength)));
+    --secondary-neutral-950: color-mix(in oklch, var(--secondary-neutral-color), oklch(0 0.05 var(--secondary-hue)) calc(5 / 5 * var(--secondary-neutral-mix-strength)));
+
+    --background: var(--neutral-950);
+    --foreground: var(--neutral-50);
+    --muted: var(--neutral-900);
+    --muted-foreground: var(--neutral-200);
+
+    --border: var(--neutral-800);
+
+    color: var(--foreground);
+    background: var(--background);
+}
+
+@property --primary-hue {
+    syntax: "<number> | <angle>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --secondary-hue {
+    syntax: "<number> | <angle>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --tertiary-hue {
+    syntax: "<number> | <angle>";
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --lightness {
+    syntax: "<number> | <percentage>";
+    inherits: true;
+    initial-value: 0;
+}
+@property --chroma {
+    syntax: "<number> | <percentage>";
+    inherits: true;
+    initial-value: 0;
+}

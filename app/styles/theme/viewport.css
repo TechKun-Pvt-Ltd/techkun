@@ -8,44 +8,8 @@
     }
 }
 
-@property --mobile-s {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --mobile-m {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --mobile-l {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --tablet {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --laptop {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --laptop-l {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-@property --desktop {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0;
-}
-
-/* FALLBACK FOR OLDER BROWSERS */
-@supports not (opacity: calc(50vw / 100vw)) {
+/* FALLBACK FOR STUPID FIREFOX */
+@supports not (opacity: calc(50vw / (100vw))) {
     @property --num-0 {
         syntax: "<length>";
         initial-value: 0px;

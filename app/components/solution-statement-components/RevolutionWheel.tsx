@@ -1,5 +1,5 @@
 import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "../TrigWheel";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
+import supportsQuery from "@/app/utils/css/supports-query";
 import {css} from "@emotion/react";
 import React, {JSX, useEffect, useRef} from "react";
 import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
@@ -8,7 +8,7 @@ import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
 import {animate, motion} from "motion/react";
 import {round} from "svg-path-kit/numbers";
-import cssSupports from "@/app/utils/css-supports";
+import cssSupports from "@/app/utils/css/supports";
 
 const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
@@ -259,7 +259,7 @@ function CenterIcon(props: React.ComponentProps<"path">) {
     return <path
         ref={pathRef} d={shapes[0]}
         css={css`
-            @supports ${cssSupportsQuery.d} {
+            @supports ${supportsQuery.d} {
                 transition: d 0.3s ease;
             }
         `}
@@ -465,7 +465,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 .progress-indicator {
                     --_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
                     --_switch: round(down, var(--_angle) / (90deg), 1);
-                    @supports not ${cssSupportsQuery.unitStripping} {
+                    @supports not ${supportsQuery.unitStripping} {
                         --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
                     }
 
@@ -492,7 +492,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     r: var(--_radius);
                     stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
                     stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
-                    @supports not ${cssSupportsQuery.unitStripping} {
+                    @supports not ${supportsQuery.unitStripping} {
                         stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${TrigWheel.cssProps.angle}), 1rad)));
                     }
 

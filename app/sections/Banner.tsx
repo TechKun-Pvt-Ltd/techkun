@@ -138,10 +138,9 @@ export default function Banner() {
 					</MainCTA>
 					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>
 						<p>or chat on</p>
-						<XLink href={xAccountUrl} style={{ color: "inherit" }} />
-						<LinkedInLink href={linkedInAccountUrl} style={{ color: "inherit" }} />
+						<XLink href={xAccountUrl} />
+						<LinkedInLink href={linkedInAccountUrl} />
 						<EmailLink
-							style={{ color: "inherit" }}
 							address={contactMailAddress}
 							// gap="8px" iconSide="right" iconStrokeWidth={1.6}
 						/>

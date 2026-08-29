@@ -6,7 +6,7 @@ import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
-import {deviceQuery} from "@/app/styles/device-query";
+import {deviceQuery} from "@/app/utils/css/device-query";
 import EmailLink from "@/app/components/EmailLink";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
@@ -179,9 +179,6 @@ export default function Cofounders() {
         .links {
             display: flex;
             gap: inherit;
-            .link {
-                color: inherit;
-            }
         }
     `;
 
@@ -239,7 +236,7 @@ export default function Cofounders() {
                             <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
                             <div css={contactsCss} className="item-subtitle">
                                 <EmailLink
-                                    style={{whiteSpace: "nowrap", color: "inherit"}}
+                                    style={{whiteSpace: "nowrap"}}
                                     address={item.mail} iconSize="1em" iconStrokeWidth="1.4"
                                 >{item.subtitle}</EmailLink>
                                 <div className="links">

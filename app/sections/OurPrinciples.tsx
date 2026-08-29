@@ -12,7 +12,7 @@ import {
 	ValueAnimationTransition
 } from "motion/react";
 import {Angle} from "svg-path-kit";
-import {deviceQuery} from "@/app/styles/device-query";
+import {deviceQuery} from "@/app/utils/css/device-query";
 import RevolutionWheel from "@/app/components/solution-statement-components/RevolutionWheel";
 import PrincipleTitles from "@/app/components/solution-statement-components/PrincipleTitles";
 

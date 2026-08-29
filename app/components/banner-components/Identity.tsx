@@ -2,8 +2,8 @@ import {css, keyframes} from "@emotion/react";
 import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
-import cssSupports from "@/app/utils/css-supports";
+import supportsQuery from "@/app/utils/css/supports-query";
+import cssSupports from "@/app/utils/css/supports";
 
 const { pointerMove, pointerMoveBack, dotsPull, dotsRelease, initialDotsLightUp } = BANNER_ANIMATION;
 
@@ -130,7 +130,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			color: var(--neutral-100);
 			--pull-factor: 0.5;
 			--rotation-angle: -30deg;
-			@supports ${cssSupportsQuery.shape} {
+			@supports ${supportsQuery.shape} {
 				offset-path: shape(
 					from calc(100% + 0.2em) 25%,
 					curve to calc(100% - 0.25em) 110% with 0.6em 25% from start / 1em 0 from end,
@@ -166,7 +166,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 						pointer-move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
 				}
 			}
-			@supports not ${cssSupportsQuery.shape} {
+			@supports not ${supportsQuery.shape} {
 				@property --translate-x {
 				  	syntax: "<length-percentage>";
 					inherits: false;

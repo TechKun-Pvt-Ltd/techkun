@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, {useId} from "react";
-import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
+import {gradientColor1, gradientColor2} from "@/app/utils/css/custom-properties";
 import {LINKEDIN_LOGO_PATH_HREF} from "@/app/Shared";
 import {css} from "@emotion/react";
 
