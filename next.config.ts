@@ -1,5 +1,4 @@
 export default {
-	reactStrictMode: false
 	reactStrictMode: false,
 	turbopack: {
 		rules: {
