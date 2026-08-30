@@ -6,7 +6,7 @@ import Header from "@/app/Header";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
-import generatedCss from "@/app/styles/generated-css";
+import "@/app/styles/base.gen-css";
 
 const Quicksand = localFont({
     src: "./fonts/Quicksand-VariableFont_wght.ttf",
@@ -25,9 +25,6 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <head>
-                <style dangerouslySetInnerHTML={{ __html: generatedCss }} />
-            </head>
             <body>
                 <Shared />
                 <Header />
