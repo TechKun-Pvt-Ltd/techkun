@@ -1,32 +1,6 @@
 :root {
-
-    /* ----------------------------------------------------------
-       BASE PARAMETERS — adjust these to reshape the entire scale
-       ---------------------------------------------------------- */
-
     /* Base font size in px */
     --base-font-size: 1rem;
-
-    /* Base line-height ratio */
-    --base-lh-ratio: 1.6;
-
-    /* Base letter spacing */
-    --base-letter-spacing: 0.035em;
-
-    /* Scale ratio — choose a musical interval:
-       Minor Second:   1.067  (2 semitones)
-       Major Second:   1.125  (2 semitones × semitone)
-       Minor Third:    1.189
-       Major Third:    1.260  ← a good default for UI
-       Perfect Fourth: 1.333
-       Tritone:        1.414
-       Perfect Fifth:  1.500
-    */
-    --min-scale-ratio: 1.125;
-    --max-scale-ratio: 1.260;
-    --scale-ratio: calc(
-        var(--min-scale-ratio) + (var(--max-scale-ratio) - var(--min-scale-ratio)) * var(--mobile-s-to-laptop)
-    );
 
     font-size: var(--base-font-size);
     line-height: var(--base-lh-ratio);

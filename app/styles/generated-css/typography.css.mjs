@@ -1,3 +1,5 @@
+import {round} from "svg-path-kit/numbers";
+
 const TYPE_SCALE = {
     [0]: {
         fontSize: "var(--base-font-size)",
@@ -8,12 +10,29 @@ const TYPE_SCALE = {
 
 const typeScaleProperties = [];
 
+/* Scale ratio — choose a musical interval:
+   Minor Second:   1.067  (2 semitones)
+   Major Second:   1.125  (2 semitones × semitone)
+   Minor Third:    1.189
+   Major Third:    1.260  ← a good default for UI
+   Perfect Fourth: 1.333
+   Tritone:        1.414
+   Perfect Fifth:  1.500
+*/
+const minScaleRatio = 1.125;
+const maxScaleRatio = 1.260;
+const midScaleRatio = (minScaleRatio + maxScaleRatio) / 2;
+
+const baseLhRatio = 1.6;
+const baseLetterSpacing = 0.035;
+const lsOffset = 0.01;
 // language=CSS prefix=":root {" suffix="}"
 typeScaleProperties.push(
-    `--lh-addend: calc((var(--base-lh-ratio) - 1) * var(--base-font-size))`,
-    `--ls-offset: 0.01em`,
-    `--ls-numerator: calc((var(--base-letter-spacing) + var(--ls-offset)) * var(--base-font-size))`
+    `--scale-ratio: calc(${minScaleRatio} + ${maxScaleRatio - minScaleRatio} * var(--mobile-s-to-laptop))`,
+    `--base-lh-ratio: ${baseLhRatio}`,
+    `--base-letter-spacing: ${baseLetterSpacing}em`
 );
+const lhAddend = baseLhRatio - 1;
 for (let i = -2; i <= 10; i++) {
     if (i === 0) continue;
 
@@ -31,11 +50,12 @@ for (let i = -2; i <= 10; i++) {
         lineHeight: `var(${lineHeightPropertyName})`,
         letterSpacing: `var(${letterSpacingPropertyName})`
     };
+    const scaleRatioInverse = Math.pow(midScaleRatio, -i);
     // language=CSS prefix=":root {" suffix="}"
     typeScaleProperties.push(
         `${fontSizePropertyName}: round(var(--base-font-size) ${operation} ${operand2}, 1px)`,
-        `${lineHeightPropertyName}: round(up, 1 + var(--lh-addend) / var(${fontSizePropertyName}), 0.1)`,
-        `${letterSpacingPropertyName}: calc(var(--ls-numerator) / var(${fontSizePropertyName}) - var(--ls-offset))`
+        `${lineHeightPropertyName}: ${round(1 + lhAddend * scaleRatioInverse, 1)}`,
+        `${letterSpacingPropertyName}: ${round((baseLetterSpacing + lsOffset) * scaleRatioInverse - lsOffset, 4)}em`
     );
 }
 
