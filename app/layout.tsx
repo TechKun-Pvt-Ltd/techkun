@@ -6,7 +6,13 @@ import Header from "@/app/Header";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
-import "@/app/styles/base.gen-css";
+
+// Do not import local files with transitive imports in any of the `css.mjs` files
+// The only job of these files is to export CSS strings
+// TODO: Figure out an alternative with Linaria or Wyw-in-js
+import "@/app/styles/generated-css/typography.css";
+import "@/app/styles/generated-css/colors.css";
+import "@/app/styles/generated-css/device-breakpoints.css";
 
 const Quicksand = localFont({
     src: "./fonts/Quicksand-VariableFont_wght.ttf",

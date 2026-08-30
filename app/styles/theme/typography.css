@@ -28,68 +28,6 @@
         var(--min-scale-ratio) + (var(--max-scale-ratio) - var(--min-scale-ratio)) * var(--mobile-s-to-laptop)
     );
 
-    /* ==========================================================
-       FONT SIZE  —  font-size = base × ratio^step
-       ========================================================== */
-
-    --font-size-neg-2: round(var(--base-font-size) / pow(var(--scale-ratio), 2), 1px);
-    --font-size-neg-1: round(var(--base-font-size) / var(--scale-ratio), 1px);
-    --font-size-1: round(var(--base-font-size) * var(--scale-ratio), 1px);
-    --font-size-2: round(var(--base-font-size) * pow(var(--scale-ratio), 2), 1px);
-    --font-size-3: round(var(--base-font-size) * pow(var(--scale-ratio), 3), 1px);
-    --font-size-4: round(var(--base-font-size) * pow(var(--scale-ratio), 4), 1px);
-    --font-size-5: round(var(--base-font-size) * pow(var(--scale-ratio), 5), 1px);
-    --font-size-6: round(var(--base-font-size) * pow(var(--scale-ratio), 6), 1px);
-    --font-size-7: round(var(--base-font-size) * pow(var(--scale-ratio), 7), 1px);
-    --font-size-8: round(var(--base-font-size) * pow(var(--scale-ratio), 8), 1px);
-    --font-size-9: round(var(--base-font-size) * pow(var(--scale-ratio), 9), 1px);
-    --font-size-10: round(var(--base-font-size) * pow(var(--scale-ratio), 10), 1px);
-
-    /* ==========================================================
-       LINE HEIGHT  —  line-height-ratio = 1 + --lh-addend / font-size
-       ========================================================== */
-
-    --lh-addend: calc((var(--base-lh-ratio) - 1) * var(--base-font-size));
-    --lh-unit: 0.1;
-
-    --line-height-neg-2: round(up, 1 + var(--lh-addend) / var(--font-size-neg-2), var(--lh-unit));
-    --line-height-neg-1: round(up, 1 + var(--lh-addend) / var(--font-size-neg-1), var(--lh-unit));
-    --line-height-1: round(up, 1 + var(--lh-addend) / var(--font-size-1), var(--lh-unit));
-    --line-height-2: round(up, 1 + var(--lh-addend) / var(--font-size-2), var(--lh-unit));
-    --line-height-3: round(up, 1 + var(--lh-addend) / var(--font-size-3), var(--lh-unit));
-    --line-height-4: round(up, 1 + var(--lh-addend) / var(--font-size-4), var(--lh-unit));
-    --line-height-5: round(up, 1 + var(--lh-addend) / var(--font-size-5), var(--lh-unit));
-    --line-height-6: round(up, 1 + var(--lh-addend) / var(--font-size-6), var(--lh-unit));
-    --line-height-7: round(up, 1 + var(--lh-addend) / var(--font-size-7), var(--lh-unit));
-    --line-height-8: round(up, 1 + var(--lh-addend) / var(--font-size-8), var(--lh-unit));
-    --line-height-9: round(up, 1 + var(--lh-addend) / var(--font-size-9), var(--lh-unit));
-    --line-height-10: round(up, 1 + var(--lh-addend) / var(--font-size-10), var(--lh-unit));
-
-    /* ==========================================================
-       LETTER SPACING  —  reciprocal model (values in em)
-         ls = (base-ls + offset) × (base-font-size / font-size) − offset
-       where offset = 0.1875em  (= 3/16, the stability constant)
-
-       As font-size grows → letter-spacing approaches −offset (tighter).
-       As font-size shrinks → letter-spacing opens up.
-       ========================================================== */
-
-    --ls-offset: 0.01em;
-    --ls-numerator: calc((var(--base-letter-spacing) + var(--ls-offset)) * var(--base-font-size));
-
-    --letter-spacing-neg-2: calc(var(--ls-numerator) / var(--font-size-neg-2) - var(--ls-offset));
-    --letter-spacing-neg-1: calc(var(--ls-numerator) / var(--font-size-neg-1) - var(--ls-offset));
-    --letter-spacing-1: calc(var(--ls-numerator) / var(--font-size-1) - var(--ls-offset));
-    --letter-spacing-2: calc(var(--ls-numerator) / var(--font-size-2) - var(--ls-offset));
-    --letter-spacing-3: calc(var(--ls-numerator) / var(--font-size-3) - var(--ls-offset));
-    --letter-spacing-4: calc(var(--ls-numerator) / var(--font-size-4) - var(--ls-offset));
-    --letter-spacing-5: calc(var(--ls-numerator) / var(--font-size-5) - var(--ls-offset));
-    --letter-spacing-6: calc(var(--ls-numerator) / var(--font-size-6) - var(--ls-offset));
-    --letter-spacing-7: calc(var(--ls-numerator) / var(--font-size-7) - var(--ls-offset));
-    --letter-spacing-8: calc(var(--ls-numerator) / var(--font-size-8) - var(--ls-offset));
-    --letter-spacing-9: calc(var(--ls-numerator) / var(--font-size-9) - var(--ls-offset));
-    --letter-spacing-10: calc(var(--ls-numerator) / var(--font-size-10) - var(--ls-offset));
-
     font-size: var(--base-font-size);
     line-height: var(--base-lh-ratio);
     letter-spacing: var(--base-letter-spacing);
@@ -99,37 +37,4 @@
 
 h1, h2, h3, h4, h5, h6, p, span, a, ul, ol, dl, li, dt, dd, label, blockquote, code, pre {
     margin-block: 0;
-}
-h1 {
-    font-size: var(--font-size-6);
-    line-height: var(--line-height-6);
-    font-weight: normal;
-}
-h2 {
-    font-size: var(--font-size-5);
-    line-height: var(--line-height-5);
-    font-weight: normal;
-}
-h3 {
-    font-size: var(--font-size-4);
-    line-height: var(--line-height-4);
-    font-weight: normal;
-}
-h4 {
-    font-size: var(--font-size-3);
-    line-height: var(--line-height-3);
-    letter-spacing: var(--letter-spacing-3);
-    font-weight: normal;
-}
-h5 {
-    font-size: var(--font-size-2);
-    line-height: var(--line-height-2);
-    letter-spacing: var(--letter-spacing-2);
-    font-weight: normal;
-}
-h6 {
-    font-size: var(--font-size-1);
-    line-height: var(--line-height-1);
-    letter-spacing: var(--letter-spacing-1);
-    font-weight: normal;
 }

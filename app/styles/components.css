@@ -53,3 +53,52 @@
 .bi-layered-button:active::before, .tri-layered-button:active::before, .tri-layered-button:active::after {
     transform: scale(0.97);
 }
+
+.display-text {
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
+}
+.display-lg {
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
+}
+.hero-heading {
+    font-size: var(--font-size-6);
+    line-height: var(--line-height-6);
+    letter-spacing: var(--letter-spacing-6);
+    font-weight: normal;
+}
+.hero-button {
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    letter-spacing: var(--letter-spacing-1);
+    font-weight: normal;
+}
+.section-title {
+    font-size: var(--font-size-5);
+    line-height: var(--line-height-5);
+    letter-spacing: var(--letter-spacing-5);
+    font-weight: normal;
+}
+.section-subtitle {
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-3);
+    letter-spacing: var(--letter-spacing-3);
+    font-weight: normal;
+    color: var(--secondary-neutral-100);
+}
+.item-title {
+    font-size: var(--font-size-4);
+    line-height: var(--line-height-4);
+    letter-spacing: var(--letter-spacing-4);
+    font-weight: normal;
+}
+.item-subtitle {
+    font-size: var(--font-size-2);
+    line-height: var(--line-height-2);
+    letter-spacing: var(--letter-spacing-2);
+    font-weight: normal;
+    color: var(--secondary-neutral-300);
+}
