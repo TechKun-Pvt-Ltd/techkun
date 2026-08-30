@@ -3,15 +3,10 @@
     inherits: false;
     initial-value: 0;
 }
-@property --_font-size {
-    syntax: "<length-percentage>";
-    inherits: false;
-    initial-value: 0;
-}
 
 .indexed-font {
-    --_font-size: round(var(--base-font-size) * pow(var(--scale-ratio), var(--font-index)), 1px);
-    font-size: var(--_font-size);
-    line-height: round(1 + var(--lh-addend) / var(--_font-size), var(--lh-unit));
-    letter-spacing: calc(var(--ls-numerator) / var(--_font-size) - var(--ls-offset));
+    --_scale-ratio: pow(var(--scale-ratio), var(--font-index));
+    font-size: round(var(--base-font-size) * var(--_scale-ratio), 1px);
+    line-height: round(1 + (var(--base-lh-ratio) - 1) / var(--_scale-ratio), 0.1);
+    letter-spacing: calc((var(--base-letter-spacing) + var(--ls-offset)) / var(--_scale-ratio) - var(--ls-offset));
 }

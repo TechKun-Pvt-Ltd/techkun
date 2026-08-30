@@ -30,7 +30,8 @@ const lsOffset = 0.01;
 typeScaleProperties.push(
     `--scale-ratio: calc(${minScaleRatio} + ${maxScaleRatio - minScaleRatio} * var(--mobile-s-to-laptop))`,
     `--base-lh-ratio: ${baseLhRatio}`,
-    `--base-letter-spacing: ${baseLetterSpacing}em`
+    `--base-letter-spacing: ${baseLetterSpacing}em`,
+    `--ls-offset: ${lsOffset}em`,
 );
 const lhAddend = baseLhRatio - 1;
 for (let i = -2; i <= 10; i++) {
