@@ -1,5 +1,6 @@
 export default {
 	reactStrictMode: false
+	reactStrictMode: false,
 	turbopack: {
 		rules: {
 			"*.gen-css.mjs": {
