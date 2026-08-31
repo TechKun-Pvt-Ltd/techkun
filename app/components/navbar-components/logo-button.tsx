@@ -8,10 +8,9 @@ import {
 	spring
 } from "motion/react";
 import {generateLinearEasing} from "motion";
-import {MotionLink} from "@/app/components/MotionLink";
-import {CustomEvents} from "@/app/utils/custom-events";
 import {usePathname} from "next/navigation";
 import Link from "next/link";
+import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -125,7 +124,7 @@ const disappearingTextCss = css`
 export default function LogoButton(props: Partial<React.ComponentProps<typeof Link>>) {
 	const pathname = usePathname();
 	const textHovered = useRef(false);
-	const textAboveThreshold = useRef(true);
+	const aboveThreshold = useRef(true);
 	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
 
 	function animateIn() {
@@ -133,7 +132,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 	}
 	function animateOut() {
 		// the text element cannot be animated out by other events if it's hovered or above the threshold.
-		if (textAboveThreshold.current || textHovered.current) return;
+		if (aboveThreshold.current || textHovered.current) return;
 		setTextState(TextState.EXIT);
 	}
 
@@ -141,7 +140,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 		if (pathname !== "/") {
 			const intersectionObserver = new IntersectionObserver(
 				entries => {
-					if ((textAboveThreshold.current = entries.at(0)?.isIntersecting ?? false)) animateIn();
+					if ((aboveThreshold.current = entries.at(0)?.isIntersecting ?? false)) animateIn();
 					else animateOut();
 				},
 				{ threshold: 0.5 }
@@ -150,16 +149,10 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 			return () => intersectionObserver.unobserve(document.documentElement);
 		}
 
-		const abortController = new AbortController();
-		document.addEventListener(CustomEvents.CTA_ENTER_VIEWPORT, () => {
-			textAboveThreshold.current = true;
-			animateIn();
-		}, { signal: abortController.signal });
-		document.addEventListener(CustomEvents.CTA_EXIT_VIEWPORT, () => {
-			textAboveThreshold.current = false;
-			animateOut();
-		}, { signal: abortController.signal });
-		return () => abortController.abort();
+		return navbarThresholdStatus.onChange(crossed => {
+			aboveThreshold.current = !crossed;
+			crossed ? animateOut() : animateIn();
+		});
 	}, [pathname]);
 
 	return <Link

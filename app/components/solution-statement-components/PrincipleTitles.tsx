@@ -85,6 +85,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
                 & > .title {
                     align-self: end;
+                    text-wrap: balance;
                 }
                 & > .subtitle {
                     text-wrap: pretty;

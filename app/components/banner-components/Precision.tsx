@@ -190,10 +190,10 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				className="clipped"
 			>
 				<g fill="var(--neutral-600)" css={css`
-					text {
-						--font-index: calc(-2 + 2 * var(--mobile-s-to-laptop));
-					}
-				`}>
+                    text {
+                        --font-index: calc(-2 + 2 * var(--mobile-s-to-laptop-l));
+                    }
+                `}>
 					<text
 						className="indexed-font"
 						x={`${xHeightIndicatorStart - 1}%`}

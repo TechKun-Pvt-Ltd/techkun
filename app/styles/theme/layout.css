@@ -3,7 +3,7 @@
     --page-padding: clamp(24px, 4vw, 32px);
 
     --navbar-height: 4.8rem;
-    --section-min-height: 768px;
+    --section-min-height: 640px;
     --section-max-height: 1120px;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
     /*--section-basis-height: 1024px;*/

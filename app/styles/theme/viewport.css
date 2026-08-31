@@ -1,9 +1,9 @@
 :root {
-    --mobile-s-to-laptop: progress(100vw, var(--mobile-s), var(--laptop));
+    --mobile-s-to-laptop-l: progress(100vw, var(--mobile-s), var(--laptop-l));
     --mobile-l-to-laptop: progress(100vw, var(--mobile-l), var(--laptop));
 
     @supports not (opacity: progress(10px, 0px, 50px)) {
-        --mobile-s-to-laptop: clamp(0, (100vw - var(--mobile-s)) / (var(--laptop) - var(--mobile-s)), 1);
+        --mobile-s-to-laptop-l: clamp(0, (100vw - var(--mobile-s)) / (var(--laptop-l) - var(--mobile-s)), 1);
         --mobile-l-to-laptop: clamp(0, (100vw - var(--mobile-l)) / (var(--laptop) - var(--mobile-l)), 1);
     }
 }
@@ -32,8 +32,8 @@
     }
     :root {
         --num-0: calc(100vw - var(--mobile-s));
-        --denom-0: calc(var(--laptop) - var(--mobile-s));
-        --mobile-s-to-laptop: clamp(0, tan(atan2(var(--num-0),var(--denom-0))), 1);
+        --denom-0: calc(var(--laptop-l) - var(--mobile-s));
+        --mobile-s-to-laptop-l: clamp(0, tan(atan2(var(--num-0),var(--denom-0))), 1);
 
         --num-1: calc(100vw - var(--mobile-l));
         --denom-1: calc(var(--laptop) - var(--mobile-l));

@@ -1,14 +1,14 @@
 'use client';
 import {css} from "@emotion/react";
 import LogoButton from "@/app/components/navbar-components/logo-button";
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import MainCTA from "@/app/components/banner-components/MainCTA";
 import EmailLink from "@/app/components/EmailLink";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
-import {CustomEvents} from "@/app/utils/custom-events";
 import {usePathname} from "next/navigation";
+import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 
 const navCss = css`
     display: flex;
@@ -54,49 +54,51 @@ const socialLinksGroupCss = css`
 export default function Header() {
     const pathname = usePathname();
     const isHomepage = pathname === "/";
+    const [contactOptionsMounted, setContactOptionsMounted] = useState(false);
     const buttonGroup = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        if (!isHomepage) return;
-        if (!buttonGroup.current) return;
         const abortController = new AbortController();
-        const links = buttonGroup.current.querySelectorAll<HTMLElement>(".contact-option");
-        document.addEventListener(
-            CustomEvents.CTA_ENTER_VIEWPORT,
-            () => {
-                for (const link of links) {
-                    if (document.activeElement === link)
-                        link.blur();
-                    link.tabIndex = -1;
-                }
-                buttonGroup.current!.style.setProperty("--_switch", "0");
-            },
-            { signal: abortController.signal }
-        );
-        document.addEventListener(
-            CustomEvents.CTA_EXIT_VIEWPORT,
-            () => {
-                for (const link of links)
-                    link.tabIndex = 0;
-                buttonGroup.current!.style.setProperty("--_switch", "1");
-            },
-            { signal: abortController.signal }
-        );
+        let currentIsAboveThreshold = false;
+        function listener() {
+            const isAboveThreshold = window.innerWidth > 560;
+            if (isAboveThreshold !== currentIsAboveThreshold)
+                setContactOptionsMounted(currentIsAboveThreshold = isAboveThreshold);
+        }
+        listener();
+        window.addEventListener("resize", listener, { signal: abortController.signal });
         return () => abortController.abort();
-    }, [isHomepage]);
+    }, []);
+    useEffect(() => {
+        if (!(contactOptionsMounted && isHomepage && buttonGroup.current)) return;
+
+        const buttonGroupElement = buttonGroup.current;
+        const links = buttonGroupElement.querySelectorAll<HTMLElement>(".contact-option");
+        function listener(crossed: boolean) {
+            for (const link of links) {
+                if (!crossed && document.activeElement === link)
+                    link.blur();
+                link.tabIndex = crossed ? 0 : -1;
+            }
+            buttonGroupElement.style.setProperty("--_switch", crossed ? "1" : "0");
+        }
+        listener(navbarThresholdStatus.get());
+        return navbarThresholdStatus.onChange(listener);
+    }, [isHomepage, contactOptionsMounted]);
 
     return <header style={{ pointerEvents: "none" }}>
         <nav css={navCss}>
             <LogoButton style={{ pointerEvents: "auto" }} />
-            <div ref={buttonGroup} style={{ '--_switch': isHomepage ? "0" : "1" } as React.CSSProperties} css={navButtonGroupCss}>
+            {contactOptionsMounted && <div ref={buttonGroup} style={{'--_switch': isHomepage ? "0" : "1"} as React.CSSProperties}
+                  css={navButtonGroupCss}>
                 <div className="text-lg" css={socialLinksGroupCss}>
-                    <XLink className="contact-option" href={xAccountUrl} />
-                    <div className="divider" />
-                    <LinkedInLink className="contact-option" href={linkedInAccountUrl} />
-                    <div className="divider" />
-                    <EmailLink className="contact-option" address={contactMailAddress} />
+                    <XLink className="contact-option" href={xAccountUrl}/>
+                    <div className="divider"/>
+                    <LinkedInLink className="contact-option" href={linkedInAccountUrl}/>
+                    <div className="divider"/>
+                    <EmailLink className="contact-option" address={contactMailAddress}/>
                 </div>
                 <MainCTA className="contact-option">Let's talk</MainCTA>
-            </div>
+            </div>}
         </nav>
     </header>;
 };

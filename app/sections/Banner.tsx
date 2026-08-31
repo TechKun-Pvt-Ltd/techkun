@@ -11,7 +11,10 @@ import {inView} from "motion/react";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
-import {CustomEvents} from "@/app/utils/custom-events";
+import {deviceBreakpoint} from "@/app/utils/css/device-query";
+import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
+
+const BREAKPOINT_QUERY = `(min-width: ${(deviceBreakpoint.tablet + deviceBreakpoint.laptop) * 0.5}px)`;
 
 const gradientFill = keyframes`
 	from {
@@ -40,9 +43,7 @@ export default function Banner() {
 		if (!scopeRef.current) return;
 
 		const intersectionObserver = new IntersectionObserver(
-			entries => document.dispatchEvent(
-				new CustomEvent(entries.at(0)?.isIntersecting ? CustomEvents.CTA_ENTER_VIEWPORT : CustomEvents.CTA_EXIT_VIEWPORT)
-			),
+			entries => navbarThresholdStatus.set(!entries.at(0)!.isIntersecting),
 			{ threshold: 0.25 }
 		);
 		const cancelInView = inView(
@@ -68,6 +69,9 @@ export default function Banner() {
         line-height: 1.4;
 		color: var(--neutral-300);
 	`;
+
+	const mobileBrCss = css`@media ${BREAKPOINT_QUERY} { display: none; }`;
+	const tabletBrCss = css`display: none; @media ${BREAKPOINT_QUERY} { display: revert; }`;
 
 	return <section ref={scopeRef} css={css`
 		justify-items: center;
@@ -95,7 +99,6 @@ export default function Banner() {
 		<div css={css`
 			min-height: var(--section-height);
 			width: 100%;
-			max-width: 60rem;
             display: flex;
             justify-content: center;
 			align-items: center;
@@ -115,8 +118,14 @@ export default function Banner() {
 				`}>
 					We&nbsp;build&nbsp;software
 					<br/>with
-					<span css={keywordCss}>&nbsp;<Beauty ref={beautyRef} />, <Precision ref={precisionRef} style={{ zIndex: 1 }} />, </span>
-					and <span css={keywordCss} style={{ textWrap: "nowrap" }}><Identity ref={identityRef} />.</span>
+					<span css={keywordCss}>
+						&nbsp;<Beauty ref={beautyRef} />,
+						<br css={mobileBrCss}/> <Precision ref={precisionRef} style={{ zIndex: 1 }} />,
+					</span>
+					<br css={tabletBrCss}/>and
+					<span css={keywordCss} style={{ textWrap: "nowrap" }}>
+						<br css={mobileBrCss}/> <Identity ref={identityRef} />.
+					</span>
 				</h1>
 				<p className="text-lg" css={css`
                     padding-inline: 96px;
@@ -129,9 +138,13 @@ export default function Banner() {
 					padding-inline: 96px;
 					display: flex;
 					gap: 24px;
-					flex-wrap: wrap;
 					align-items: center;
 					justify-content: center;
+
+					flex-direction: column;
+					@media ${BREAKPOINT_QUERY} {
+						flex-direction: row;
+					}
 				`}>
 					<MainCTA className="cta" style={{ width: "max-content" }}>
 						Let's get on call

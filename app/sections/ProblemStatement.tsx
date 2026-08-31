@@ -7,15 +7,15 @@ export default function ProblemStatement() {
 		border-block: 1px solid var(--border);
 	`}>
 		<div css={css`
-			grid-column: breakout;
-			padding-block: 48px 64px;
-			padding-inline: var(--page-padding);
-			border-inline: 1px solid var(--border);
-			min-height: 0;
-			margin-inline-start: calc(-80px + 80px * var(--mobile-s-to-laptop));
+            grid-column: breakout;
+            padding-block: 48px 64px;
+            padding-inline: var(--page-padding);
+            border-inline: 1px solid var(--border);
+            min-height: 0;
+            margin-inline-start: calc(-80px + 80px * var(--mobile-s-to-laptop-l));
             display: flex;
             flex-direction: column;
-		`}>
+        `}>
 			{/*<div css={css`*/}
 			{/*	margin-block-end: 2rem;*/}
 			{/*	display: flex;*/}
