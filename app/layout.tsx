@@ -13,6 +13,7 @@ import Shared from "@/app/Shared";
 import "@/app/styles/generated-css/typography.css";
 import "@/app/styles/generated-css/colors.css";
 import "@/app/styles/generated-css/device-breakpoints.css";
+import BottomNav from "@/app/BottomNav";
 
 const Quicksand = localFont({
     src: "./fonts/Quicksand-VariableFont_wght.ttf",
@@ -35,6 +36,7 @@ export default function RootLayout({
                 <Shared />
                 <Header />
                 {children}
+                <BottomNav />
                 <Footer />
             </body>
         </html>

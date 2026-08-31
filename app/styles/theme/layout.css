@@ -31,7 +31,8 @@ body {
     grid-template-rows:
         [navbar-start] var(--navbar-height)
         [navbar-end content-start] 1fr
-        [content-end footer-start] max-content
+        [content-end bottom-nav-start] max-content
+        [bottom-nav-end footer-start] max-content
         [footer-end];
 
     & > header, main, footer {
@@ -56,7 +57,7 @@ body {
         /*    var(--section-basis-height)*/
         /*);*/
 
-        grid-row: navbar / content;
+        grid-row: navbar / bottom-nav;
         grid-auto-rows: auto;
         isolation: isolate;
 
@@ -67,6 +68,14 @@ body {
             grid-template-rows: 1fr;
             overflow-x: clip;
         }
+    }
+    & > .bottom-nav {
+        grid-column: page;
+        grid-row: bottom-nav;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
     }
     & > footer {
         grid-row: footer;

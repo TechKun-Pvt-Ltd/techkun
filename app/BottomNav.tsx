@@ -1,28 +1,22 @@
-'use client';
-import {css} from "@emotion/react";
-import LogoButton from "@/app/components/navbar-components/logo-button";
+"use client";
 import React, {useEffect, useRef, useState} from "react";
-import MainCTA from "@/app/components/banner-components/MainCTA";
-import EmailLink from "@/app/components/EmailLink";
+import XLink from "@/app/components/XLink";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
-import XLink from "@/app/components/XLink";
+import EmailLink from "@/app/components/EmailLink";
+import MainCTA from "@/app/components/banner-components/MainCTA";
 import {usePathname} from "next/navigation";
+import {css} from "@emotion/react";
 import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 
-const navCss = css`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 3.2rem;
-`;
 const navButtonGroupCss = css`
+    padding-block: 16px;
     height: 100%;
     pointer-events: auto;
     display: flex;
     gap: 12px;
 
-    transform: translateY(calc((1 - var(--_switch)) * -150%));
+    transform: translateY(calc((1 - var(--_switch)) * 150%));
     opacity: var(--_switch);
     transition: 0.3s ease;
     transition-property: transform, opacity;
@@ -51,25 +45,25 @@ const socialLinksGroupCss = css`
         background: var(--secondary-900);
     }
 `;
-export default function Header() {
+export default function BottomNav() {
     const pathname = usePathname();
     const isHomepage = pathname === "/";
-    const [contactOptionsMounted, setContactOptionsMounted] = useState(false);
     const buttonGroup = useRef<HTMLDivElement>(null);
+    const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
         const abortController = new AbortController();
         let currentIsAboveThreshold = false;
         function listener() {
-            const isAboveThreshold = window.innerWidth > 560;
+            const isAboveThreshold = window.innerWidth <= 560;
             if (isAboveThreshold !== currentIsAboveThreshold)
-                setContactOptionsMounted(currentIsAboveThreshold = isAboveThreshold);
+                setIsMounted(currentIsAboveThreshold = isAboveThreshold);
         }
         listener();
         window.addEventListener("resize", listener, { signal: abortController.signal });
         return () => abortController.abort();
     }, []);
     useEffect(() => {
-        if (!(contactOptionsMounted && isHomepage && buttonGroup.current)) return;
+        if (!(isMounted && isHomepage && buttonGroup.current)) return;
 
         const buttonGroupElement = buttonGroup.current;
         const links = buttonGroupElement.querySelectorAll<HTMLElement>(".contact-option");
@@ -83,22 +77,21 @@ export default function Header() {
         }
         listener(navbarThresholdStatus.get());
         return navbarThresholdStatus.onChange(listener);
-    }, [isHomepage, contactOptionsMounted]);
+    }, [isHomepage, isMounted]);
 
-    return <header style={{ pointerEvents: "none" }}>
-        <nav css={navCss}>
-            <LogoButton style={{ pointerEvents: "auto" }} />
-            {contactOptionsMounted && <div ref={buttonGroup} style={{'--_switch': isHomepage ? "0" : "1"} as React.CSSProperties}
-                  css={navButtonGroupCss}>
-                <div className="text-lg" css={socialLinksGroupCss}>
-                    <XLink className="contact-option" href={xAccountUrl}/>
-                    <div className="divider"/>
-                    <LinkedInLink className="contact-option" href={linkedInAccountUrl}/>
-                    <div className="divider"/>
-                    <EmailLink className="contact-option" address={contactMailAddress}/>
-                </div>
-                <MainCTA className="contact-option">Let's talk</MainCTA>
-            </div>}
-        </nav>
-    </header>;
-};
+    return isMounted && <div
+        className="bottom-nav"
+        ref={buttonGroup}
+        style={{'--_switch': isHomepage ? "0" : "1"} as React.CSSProperties}
+        css={navButtonGroupCss}
+    >
+        <MainCTA className="contact-option">Let's talk</MainCTA>
+        <div className="text-lg" css={socialLinksGroupCss}>
+            <XLink className="contact-option" href={xAccountUrl}/>
+            <div className="divider"/>
+            <LinkedInLink className="contact-option" href={linkedInAccountUrl}/>
+            <div className="divider"/>
+            <EmailLink className="contact-option" address={contactMailAddress}/>
+        </div>
+    </div>;
+}
