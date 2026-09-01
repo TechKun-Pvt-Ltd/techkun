@@ -12,7 +12,7 @@ export default function ProblemStatement() {
             padding-inline: var(--page-padding);
             border-inline: 1px solid var(--border);
             min-height: 0;
-            margin-inline-start: calc(-80px + 80px * var(--mobile-s-to-laptop-l));
+            margin-inline-start: calc(-80px + 80px * var(--mobile-s-to-laptop-mid));
             display: flex;
             flex-direction: column;
         `}>

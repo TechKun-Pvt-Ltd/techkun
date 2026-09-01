@@ -4,6 +4,7 @@ export const deviceBreakpoint = {
     mobileL: 425,
     tablet: 768,
     laptop: 1024,
+    laptopMid: 1232,
     laptopL: 1440,
     desktop: 2560
 };
@@ -14,6 +15,7 @@ export const deviceQuery = {
     mobileL: `(min-width: ${deviceBreakpoint.mobileL}px)`,
     tablet: `(min-width: ${deviceBreakpoint.tablet}px)`,
     laptop: `(min-width: ${deviceBreakpoint.laptop}px)`,
+    laptopMid: `(min-width: ${deviceBreakpoint.laptopMid}px)`,
     laptopL: `(min-width: ${deviceBreakpoint.laptopL}px)`,
     desktop: `(min-width: ${deviceBreakpoint.desktop}px)`,
 };

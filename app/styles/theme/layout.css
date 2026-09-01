@@ -6,7 +6,6 @@
     --section-min-height: 640px;
     --section-max-height: 1120px;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
-    /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
 
     height: 100%;
@@ -51,12 +50,6 @@ body {
         overflow-x: clip;
     }
     & > main {
-        /*--section-clamped-height: clamp(*/
-        /*    var(--section-min-height),*/
-        /*    80vh,*/
-        /*    var(--section-basis-height)*/
-        /*);*/
-
         grid-row: navbar / bottom-nav;
         grid-auto-rows: auto;
         isolation: isolate;
@@ -76,6 +69,7 @@ body {
         bottom: 0;
         left: 0;
         z-index: 1;
+        overflow-x: clip;
     }
     & > footer {
         grid-row: footer;
@@ -83,7 +77,6 @@ body {
     & > header > *,
     & > main > section > *,
     & > footer > * {
-        /*padding-inline: var(--page-padding);*/
         grid-column: page;
     }
 }

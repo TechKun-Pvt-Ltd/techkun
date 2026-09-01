@@ -28,7 +28,7 @@ const baseLetterSpacing = 0.035;
 const lsOffset = 0.01;
 // language=CSS prefix=":root {" suffix="}"
 typeScaleProperties.push(
-    `--scale-ratio: calc(${minScaleRatio} + ${maxScaleRatio - minScaleRatio} * var(--mobile-s-to-laptop-l))`,
+    `--scale-ratio: calc(${minScaleRatio} + ${maxScaleRatio - minScaleRatio} * var(--mobile-s-to-laptop-mid))`,
     `--base-lh-ratio: ${baseLhRatio}`,
     `--base-letter-spacing: ${baseLetterSpacing}em`,
     `--ls-offset: ${lsOffset}em`,

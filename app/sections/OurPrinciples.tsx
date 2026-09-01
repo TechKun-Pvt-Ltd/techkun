@@ -137,7 +137,7 @@ export default function OurPrinciples() {
 					position: sticky;
 					top: 0;
 					height: 100vh;
-					${svgSizeProp}: clamp(480px, min(var(--page-max-width), 100vh - var(--navbar-height)), 768px);
+					${svgSizeProp}: clamp(480px - 2 * var(--navbar-height), min(var(--page-max-width), 100vh - 2 * var(--navbar-height)), 768px);
 					margin-block: calc(-1 * (50vh - var(${svgSizeProp}) / 2));
 					width: 100%;
 					align-content: center;
@@ -148,13 +148,13 @@ export default function OurPrinciples() {
 						height: var(${svgSizeProp});
 						display: grid;
 						grid-template-columns: 1fr;
-						grid-template-rows: minmax(calc(var(--navbar-height) + 12rem), 7fr) 13fr;
+						grid-template-rows: 14rem 1fr;
 						align-items: start;
-						gap: 32px;
 						@media ${deviceQuery.tablet} {
 							grid-template-columns: 7fr 13fr;
 							grid-template-rows: 1fr;
 							align-items: stretch;
+							gap: 32px;
 						}
 					`}>
 						<PrincipleTitles angle={angle} angleRangeStart={ANGLE_RANGE_START} titles={titles} />

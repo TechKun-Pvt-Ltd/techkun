@@ -191,7 +191,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			>
 				<g fill="var(--neutral-600)" css={css`
                     text {
-                        --font-index: calc(-2 + 2 * var(--mobile-s-to-laptop-l));
+                        --font-index: calc(-2 + 2 * var(--mobile-s-to-laptop-mid));
                     }
                 `}>
 					<text

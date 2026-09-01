@@ -70,9 +70,10 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 inset: 0;
 
                 display: grid;
-                grid-template-rows: 1fr 1fr;
+                grid-template-rows: 4rem 1fr;
                 row-gap: 8px;
                 @media ${deviceQuery.tablet} {
+                    grid-template-rows: 1fr 1fr;
                     row-gap: 32px;
                 }
                 transition: var(--transition);

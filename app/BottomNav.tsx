@@ -15,6 +15,7 @@ const navButtonGroupCss = css`
     pointer-events: auto;
     display: flex;
     gap: 12px;
+    justify-content: space-between;
 
     transform: translateY(calc((1 - var(--_switch)) * 150%));
     opacity: var(--_switch);
@@ -28,7 +29,6 @@ const socialLinksGroupCss = css`
 
     padding-block: 0.5rem;
     padding-inline: 1rem;
-    //border-radius: 0.75rem;
     border-radius: 100vh;
     corner-shape: superellipse(1.1);
 

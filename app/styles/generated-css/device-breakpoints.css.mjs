@@ -9,6 +9,7 @@ export default `
         --mobile-l: ${deviceBreakpoint.mobileL}px;
         --tablet: ${deviceBreakpoint.tablet}px;
         --laptop: ${deviceBreakpoint.laptop}px;
+        --laptop-mid: ${deviceBreakpoint.laptopMid}px;
         --laptop-l: ${deviceBreakpoint.laptopL}px;
         --desktop: ${deviceBreakpoint.desktop}px;
     }
