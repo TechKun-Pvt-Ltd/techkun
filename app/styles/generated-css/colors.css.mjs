@@ -1,17 +1,5 @@
 import {round} from "svg-path-kit/numbers";
 
-class CssColorRulesArray extends Array {
-    toString() {
-        return this.join(";\n");
-    }
-    valueOf() {
-        return this.toString();
-    }
-    [Symbol.toPrimitive]() {
-        return this.toString();
-    }
-}
-
 function generateColorMixRules(
     baseColor,
     mixColor,
@@ -19,7 +7,7 @@ function generateColorMixRules(
     stepGenerator,
     total = 5
 ) {
-    const rules = new CssColorRulesArray();
+    const rules = [];
 
     for (let i = 0; i < total; i++) {
         rules.push(
@@ -35,14 +23,14 @@ const NUMERIC_TOKENS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
 function generateTintsAndShadesRules({
     baseColor,
-    colorTitle,
+    colorName,
     whiteColor = "white",
     blackColor = "black",
     mixStrength,
     easing = no_op
 }) {
     function propertyNameFn(i) {
-        return `--${colorTitle}-${NUMERIC_TOKENS[i]}`;
+        return `--${colorName}-${NUMERIC_TOKENS[i]}`;
     }
     const tintsMixStrength =
         typeof mixStrength === "number" ? mixStrength : mixStrength[0];
@@ -77,7 +65,7 @@ function generateTintsAndShadesRules({
         SHADES_COUNT
     );
 
-    return new CssColorRulesArray(...tints, `${propertyNameFn(CENTER_INDEX, TOTAL)}: ${baseColor}`, ...shades);
+    return [...tints, `${propertyNameFn(CENTER_INDEX, TOTAL)}: ${baseColor}`, ...shades];
 }
 
 function generateInterpolatedColorRules({
@@ -86,7 +74,7 @@ function generateInterpolatedColorRules({
     steps = 10, easing = no_op,
     includeEnds = true
 }) {
-    const rules = new CssColorRulesArray();
+    const rules = [];
     if (includeEnds)
         rules.push(`${propertyNameFn(0, steps)}: ${startColor}`);
 
@@ -102,40 +90,42 @@ function generateInterpolatedColorRules({
     return rules;
 }
 
+const rules = [
+    ...generateTintsAndShadesRules({
+        baseColor: "var(--primary-color)",
+        colorName: "primary",
+        mixStrength: 0.7
+    }),
+    ...generateTintsAndShadesRules({
+        baseColor: "var(--secondary-color)",
+        colorName: "secondary",
+        mixStrength: 0.7
+    }),
+    ...generateTintsAndShadesRules({
+        baseColor: "var(--tertiary-color)",
+        colorName: "tertiary",
+        mixStrength: 0.7
+    }),
+    ...generateTintsAndShadesRules({
+        baseColor: "var(--secondary-neutral-color)",
+        colorName: "secondary-neutral",
+        mixStrength: 0.8,
+        whiteColor: "oklch(1 0.05 var(--secondary-hue))",
+        blackColor: "oklch(0 0.05 var(--secondary-hue))"
+    }),
+    ...generateInterpolatedColorRules({
+        startColor: `var(--neutral-50)`,
+        endColor: `var(--neutral-950)`,
+        propertyNameFn(i) {
+            return `--neutral-${NUMERIC_TOKENS[i]}`
+        },
+        includeEnds: false
+    })
+];
+
 // language=CSS
-export default `
-@layer base {
+export default `@layer base {
     :root {
-        ${generateTintsAndShadesRules({
-            baseColor: "var(--primary-color)",
-            colorTitle: "primary",
-            mixStrength: 0.7
-        })};
-        ${generateTintsAndShadesRules({
-            baseColor: "var(--secondary-color)",
-            colorTitle: "secondary",
-            mixStrength: 0.7
-        })};
-        ${generateTintsAndShadesRules({
-            baseColor: "var(--tertiary-color)",
-            colorTitle: "tertiary",
-            mixStrength: 0.7
-        })};
-        ${generateTintsAndShadesRules({
-            baseColor: "var(--secondary-neutral-color)",
-            colorTitle: "secondary-neutral",
-            mixStrength: 0.8,
-            whiteColor: "oklch(1 0.05 var(--secondary-hue))",
-            blackColor: "oklch(0 0.05 var(--secondary-hue))"
-        })};
-        ${generateInterpolatedColorRules({
-            startColor: `var(--neutral-50)`,
-            endColor: `var(--neutral-950)`,
-            propertyNameFn(i) {
-                return `--neutral-${NUMERIC_TOKENS[i]}`
-            },
-            includeEnds: false
-        })};
+        ${rules.join(";\n")};
     }
-}
-`;
+}`;

@@ -76,7 +76,7 @@ for (const [tag, index] of Object.entries(HEADING_TOKENS)) {
 
     // language=CSS
     headingRules.push(
-        `${tag} {
+`${tag} {
     font-size: ${fontSize};
     line-height: ${lineHeight};
     letter-spacing: ${letterSpacing};
@@ -126,4 +126,4 @@ export default `
 @layer utilities {
     ${textTshirtSizeRules.join("\n")}
 }
-`;
+`.trim();
