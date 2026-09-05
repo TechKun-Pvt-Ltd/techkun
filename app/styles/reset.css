@@ -24,4 +24,5 @@ input,
 textarea,
 select {
     font: inherit;
+    letter-spacing: inherit;
 }

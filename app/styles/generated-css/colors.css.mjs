@@ -1,131 +1,51 @@
-import {round} from "svg-path-kit/numbers";
+import {generateInterpolatedColorRules, generateTintsAndShadesRules} from "./color-css-generation-utils.ts";
+import colorNames from "../theme/color-names.static.mjs";
 
-function generateColorMixRules(
-    baseColor,
-    mixColor,
-    propertyNameFn,
-    stepGenerator,
-    total = 5
-) {
-    const rules = [];
+const TINTS_SHADES_STEPS = 5;
+const propertyNameFunctions = Object.fromEntries(
+    Object
+        .entries(colorNames)
+        .map(([key, value]) => [key, i => value[i]])
+);
 
-    for (let i = 0; i < total; i++) {
-        rules.push(
-            `${propertyNameFn(i, total)}: color-mix(in oklch, ${baseColor}, ${mixColor} ${round(stepGenerator(i, total) * 100, 4)}%)`
-        );
-    }
-
-    return rules;
-}
-
-function no_op(t) { return t; }
-const NUMERIC_TOKENS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
-
-function generateTintsAndShadesRules({
-    baseColor,
-    colorName,
-    whiteColor = "white",
-    blackColor = "black",
-    mixStrength,
-    easing = no_op
-}) {
-    function propertyNameFn(i) {
-        return `--${colorName}-${NUMERIC_TOKENS[i]}`;
-    }
-    const tintsMixStrength =
-        typeof mixStrength === "number" ? mixStrength : mixStrength[0];
-
-    const tintsEasing =
-        typeof easing === "function" ? easing : easing[0];
-
-    const shadesMixStrength =
-        typeof mixStrength === "number" ? mixStrength : mixStrength[1];
-
-    const shadesEasing =
-        typeof easing === "function" ? easing : easing[1];
-
-    const TOTAL = 11;
-    const CENTER_INDEX = (TOTAL - 1) * 0.5;
-    const TINTS_COUNT = CENTER_INDEX;
-    const SHADES_COUNT = TINTS_COUNT;
-
-    const tints = generateColorMixRules(
-        baseColor,
-        whiteColor,
-        propertyNameFn,
-        (i, total) => tintsEasing(1 - i / total) * tintsMixStrength,
-        TINTS_COUNT
-    );
-
-    const shades = generateColorMixRules(
-        baseColor,
-        blackColor,
-        (i, total) => propertyNameFn(TINTS_COUNT + 1 + i, total),
-        (i, total) => shadesEasing((i + 1) / total) * shadesMixStrength,
-        SHADES_COUNT
-    );
-
-    return [...tints, `${propertyNameFn(CENTER_INDEX, TOTAL)}: ${baseColor}`, ...shades];
-}
-
-function generateInterpolatedColorRules({
-    startColor, endColor,
-    propertyNameFn,
-    steps = 10, easing = no_op,
-    includeEnds = true
-}) {
-    const rules = [];
-    if (includeEnds)
-        rules.push(`${propertyNameFn(0, steps)}: ${startColor}`);
-
-    for (let i = 1; i < steps; i++) {
-        rules.push(
-            `${propertyNameFn(i, steps)}: color-mix(in oklch, ${startColor}, ${endColor} ${round(easing(i / steps) * 100, 4)}%)`
-        );
-    }
-
-    if (includeEnds)
-        rules.push(`${propertyNameFn(steps, steps)}: ${endColor}`);
-
-    return rules;
-}
-
-const rules = [
+const rules = {
     ...generateTintsAndShadesRules({
         baseColor: "var(--primary-color)",
-        colorName: "primary",
-        mixStrength: 0.7
+        propertyNameFn: propertyNameFunctions.primary,
+        mixStrength: 0.7,
+        steps: TINTS_SHADES_STEPS
     }),
     ...generateTintsAndShadesRules({
         baseColor: "var(--secondary-color)",
-        colorName: "secondary",
-        mixStrength: 0.7
+        propertyNameFn: propertyNameFunctions.secondary,
+        mixStrength: 0.7,
+        steps: TINTS_SHADES_STEPS
     }),
     ...generateTintsAndShadesRules({
         baseColor: "var(--tertiary-color)",
-        colorName: "tertiary",
-        mixStrength: 0.7
+        propertyNameFn: propertyNameFunctions.tertiary,
+        mixStrength: 0.7,
+        steps: TINTS_SHADES_STEPS
     }),
     ...generateTintsAndShadesRules({
         baseColor: "var(--secondary-neutral-color)",
-        colorName: "secondary-neutral",
+        propertyNameFn: propertyNameFunctions.secondaryNeutral,
         mixStrength: 0.8,
+        steps: TINTS_SHADES_STEPS,
         whiteColor: "oklch(1 0.05 var(--secondary-hue))",
         blackColor: "oklch(0 0.05 var(--secondary-hue))"
     }),
     ...generateInterpolatedColorRules({
         startColor: `var(--neutral-50)`,
         endColor: `var(--neutral-950)`,
-        propertyNameFn(i) {
-            return `--neutral-${NUMERIC_TOKENS[i]}`
-        },
+        propertyNameFn: propertyNameFunctions.neutral,
         includeEnds: false
     })
-];
+};
 
 // language=CSS
 export default `@layer base {
     :root {
-        ${rules.join(";\n")};
+        ${Object.entries(rules).map(entry => entry.join(": ")).join(";\n")};
     }
 }`;
