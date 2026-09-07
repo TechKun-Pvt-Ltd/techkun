@@ -1,7 +1,7 @@
 import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
-import {deviceQuery} from "@/app/styles/device-query";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
+import {deviceQuery} from "@/app/utils/css/device-query";
+import supportsQuery from "@/app/utils/css/supports-query";
 import {Angle} from "svg-path-kit";
 import {MotionValue} from "motion";
 
@@ -20,7 +20,6 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
         const container = scope.current;
         let currentIndex = 0;
-        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         function callback(a: Angle) {
             const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), titles.length - 1);
             if (targetIndex === currentIndex) return;
@@ -29,6 +28,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             currentIndex = targetIndex;
         }
         callback(angle.get());
+        requestAnimationFrame(() => container.removeAttribute("data-initial"));
         return angle.on("change", callback);
     }, []);
 
@@ -70,9 +70,10 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
                 inset: 0;
 
                 display: grid;
-                grid-template-rows: 1fr 1fr;
+                grid-template-rows: 4rem 1fr;
                 row-gap: 8px;
                 @media ${deviceQuery.tablet} {
+                    grid-template-rows: 1fr 1fr;
                     row-gap: 32px;
                 }
                 transition: var(--transition);
@@ -85,6 +86,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
 
                 & > .title {
                     align-self: end;
+                    text-wrap: balance;
                 }
                 & > .subtitle {
                     text-wrap: pretty;
@@ -97,7 +99,7 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             //
             //     --_switch: clamp(-1, var(--active-offset), 1);
             //     --switch-abs: abs(var(--_switch));
-            //     @supports not ${cssSupportsQuery.abs} {
+            //     @supports not ${supportsQuery.abs} {
             //         --switch-abs: max(var(--_switch), calc(-1 * var(--_switch)));
             //     }
             //     opacity: calc(1 - var(--switch-abs));

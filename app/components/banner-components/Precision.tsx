@@ -1,6 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {motion, visualElementStore} from "motion/react";
-import {animate, SpringOptions} from "motion";
+import {motion, visualElementStore, animate, BezierDefinition, SpringOptions} from "motion/react";
 import {css} from "@emotion/react";
 import {useFollowPointer} from "@/hooks/use-follow-pointer";
 import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
@@ -35,7 +34,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
 			const value = x.get();
 
-			const easing: [number, number, number, number] = [0.9, -0.6, 0.75, 0.2];
+			const easing: BezierDefinition = [0.9, -0.6, 0.75, 0.2];
 			const phase1Dur = 1;
 			const phase2Dur = 2;
 			const phase3Dur = 0.3;
@@ -191,10 +190,10 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				className="clipped"
 			>
 				<g fill="var(--neutral-600)" css={css`
-					text {
-						--font-index: calc(-2 + 2 * var(--mobile-s-to-laptop));
-					}
-				`}>
+                    text {
+                        --font-index: calc(-2 + 2 * var(--mobile-s-to-laptop-mid));
+                    }
+                `}>
 					<text
 						className="indexed-font"
 						x={`${xHeightIndicatorStart - 1}%`}

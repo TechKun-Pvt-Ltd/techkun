@@ -1,4 +1,4 @@
-const POINTER_MOVE_DURATION = 1;
+const POINTER_MOVE_DURATION = 0.9;
 const STRETCH_DURATION = 0.5;
 const PRE_RELEASE_DELAY = POINTER_MOVE_DURATION + STRETCH_DURATION;
 
@@ -26,7 +26,7 @@ const BANNER_ANIMATION = {
 		delay: PRE_RELEASE_DELAY,
 		duration: 2.725
 	},
-	ctaBorderGradient: {
+	ctaFilter: {
 		delay: PRE_RELEASE_DELAY + 0.5,
 		duration: 2.25
 	},
@@ -35,7 +35,7 @@ const BANNER_ANIMATION = {
 		duration: 2.725
 	},
 	precision: {
-		delay: PRE_RELEASE_DELAY + 1.5
+		delay: PRE_RELEASE_DELAY + 2
 	}
 };
 

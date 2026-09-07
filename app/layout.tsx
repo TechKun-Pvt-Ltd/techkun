@@ -3,18 +3,21 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import Header from "@/app/Header";
-import {Quicksand} from "next/font/google";
 import localFont from "next/font/local";
 import Footer from "@/app/Footer";
 import Shared from "@/app/Shared";
-import {deviceBreakpoint} from "@/app/styles/device-query";
 
-// const rouge_script = Rouge_Script({ weight: "400" });
-const quicksand = Quicksand();
-const script_12_bt = localFont({
-    src: "./fonts/Feelfree.ttf",
-    weight: "100 900",
-    declarations: [{ prop: "size-adjust", value: "180%" }]
+// Do not import local files with transitive imports in any of the `css.mjs` files
+// The only job of these files is to export CSS strings
+// TODO: Figure out an alternative with Linaria or Wyw-in-js
+import "@/app/styles/generated-css/typography.css";
+import "@/app/styles/generated-css/colors.css";
+import "@/app/styles/generated-css/device-breakpoints.css";
+import BottomNav from "@/app/BottomNav";
+
+const Quicksand = localFont({
+    src: "./fonts/Quicksand-VariableFont_wght.ttf",
+    weight: "100 900"
 });
 
 export const metadata: Metadata = {
@@ -28,19 +31,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" style={{
-            "--mobile-s": `${deviceBreakpoint.mobileS}px`,
-            "--mobile-m": `${deviceBreakpoint.mobileM}px`,
-            "--mobile-l": `${deviceBreakpoint.mobileL}px`,
-            "--tablet": `${deviceBreakpoint.tablet}px`,
-            "--laptop": `${deviceBreakpoint.laptop}px`,
-            "--laptop-l": `${deviceBreakpoint.laptopL}px`,
-            "--desktop": `${deviceBreakpoint.desktop}px`
-        } as React.CSSProperties}>
+        <html lang="en">
             <body>
                 <Shared />
                 <Header />
                 {children}
+                <BottomNav />
                 <Footer />
             </body>
         </html>

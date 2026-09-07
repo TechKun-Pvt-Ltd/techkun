@@ -1,17 +1,15 @@
 'use client';
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {css} from "@emotion/react";
 import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
 import LogoImageFrame from "@/app/components/logo-image-frame";
-import {deviceQuery} from "@/app/styles/device-query";
+import {deviceQuery} from "@/app/utils/css/device-query";
 import EmailLink from "@/app/components/EmailLink";
-import {LINKEDIN_LOGO_CLIP_PATH_HREF, X_LOGO_CLIP_PATH_HREF} from "@/app/Shared";
-import Link from "next/link";
-import {gradientColor1, gradientColor2} from "@/app/utils/custom-properties";
-import {inView} from "motion/react";
+import LinkedInLink from "@/app/components/LinkedInLink";
+import XLink from "@/app/components/XLink";
 
 const people: {
     title: string;
@@ -20,8 +18,8 @@ const people: {
     image: StaticImageData;
     imageAlt: string;
     links: {
-        linkName: string;
-        link: string;
+        Component: typeof LinkedInLink;
+        href: string;
     }[];
 }[] = [
     {
@@ -31,11 +29,11 @@ const people: {
         image: khiz,
         imageAlt: "The image of the CEO, Khizar.",
         links: [{
-            linkName: "linkedin",
-            link: "https://www.linkedin.com/in/khizar-shakir-932003210/"
+            Component: LinkedInLink,
+            href: "https://www.linkedin.com/in/khizar-shakir-932003210/"
         }, {
-            linkName: "x",
-            link: "https://x.com/mohdkhizar36"
+            Component: XLink,
+            href: "https://x.com/mohdkhizar36"
         }]
     },
     {
@@ -45,11 +43,11 @@ const people: {
         image: uz,
         imageAlt: "The image of the managing director, Uzair.",
         links: [{
-            linkName: "linkedin",
-            link: "https://www.linkedin.com/in/mirza-farasat-89baba288/"
+            Component: LinkedInLink,
+            href: "https://www.linkedin.com/in/mirza-farasat-89baba288/"
         }, {
-            linkName: "x",
-            link: "https://x.com/MFarasat22794"
+            Component: XLink,
+            href: "https://x.com/mirza_uzr"
         }]
     },
     {
@@ -59,11 +57,11 @@ const people: {
         image: me,
         imageAlt: "The image of the CTO, Naved.",
         links: [{
-            linkName: "linkedin",
-            link: "https://www.linkedin.com/in/navedm1424/"
+            Component: LinkedInLink,
+            href: "https://www.linkedin.com/in/navedm1424/"
         }, {
-            linkName: "x",
-            link: "https://x.com/navedm1424"
+            Component: XLink,
+            href: "https://x.com/navedm1424"
         }]
     },
 ];
@@ -119,17 +117,6 @@ const people: {
 
 export default function Cofounders() {
     const ulRef = useRef<HTMLUListElement>(null);
-
-    useEffect(() => {
-        if (!ulRef.current) return;
-
-        const indicators = ulRef.current.querySelectorAll(".person-index-indicator");
-        inView(indicators, _ => {
-            indicators.forEach(item =>
-                item.setAttribute("data-visible", "true")
-            );
-        }, { margin: "-5% 0%" });
-    }, []);
 
     const ulCss = css`
         grid-column: 1 / -1;
@@ -192,36 +179,6 @@ export default function Cofounders() {
         .links {
             display: flex;
             gap: inherit;
-            .link {
-                color: inherit;
-            }
-        }
-
-        .links .link:before {
-            content: "";
-            display: block;
-
-            width: 1em;
-            aspect-ratio: 1 / 1;
-            transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-            transition-property: ${gradientColor1}, ${gradientColor2};
-            ${gradientColor1}: currentColor;
-            ${gradientColor2}: currentColor;
-            background: linear-gradient(
-                to bottom left,
-                var(${gradientColor1}) 20%,
-                var(${gradientColor2}) 80%
-            );
-        }
-        .links .link.linkedin:before {
-            clip-path: url(${LINKEDIN_LOGO_CLIP_PATH_HREF});
-        }
-        .links .link.x:before {
-            clip-path: url(${X_LOGO_CLIP_PATH_HREF});
-        }
-        .links .link:is(:hover, :focus-visible):before {
-            ${gradientColor1}: var(--primary-500);
-            ${gradientColor2}: var(--secondary-500);
         }
     `;
 
@@ -229,11 +186,6 @@ export default function Cofounders() {
         height: 4px;
         width: 32px;
         border-radius: 100px;
-        transition: clip-path 0.5s calc(var(--i) * 0.1s) ease;
-        clip-path: inset(0% 100% 0% 0% round 100px);
-        &[data-visible="true"] {
-            clip-path: inset(0% 0% 0% 0% round 100px);
-        }
     `;
 
     return <section>
@@ -252,56 +204,58 @@ export default function Cofounders() {
                 }
             `}>If we still feel like strangers...</h2>
             <ul ref={ulRef} css={ulCss}>
-                {people.map((item, personIndex) => <li
-                    key={item.title}
-                    className="cofounder" css={liCss}
-                >
-                    <div className="person-intro">
-                        <div style={{ display: "flex", gap: "16px", marginBlockEnd: "32px" }}>
-                            {people.map((_, iconIndex) => {
-                                return <div
-                                    key={iconIndex}
-                                    className="person-index-indicator" css={indicatorCss}
-                                    style={{
-                                        ["--i" as any]: iconIndex,
-                                        background: iconIndex === personIndex ?
-                                            "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
-                                            "var(--secondary-neutral-200)",
-                                        cursor: iconIndex === personIndex ? "" : "pointer"
-                                    }}
-                                    onClick={iconIndex === personIndex ? undefined : () => {
-                                        if (!ulRef.current) return;
+                {people.map((item, personIndex) => {
+                    return <li
+                        key={item.title}
+                        className="cofounder" css={liCss}
+                    >
+                        <div className="person-intro">
+                            <div style={{display: "flex", gap: "16px", marginBlockEnd: "32px"}}>
+                                {people.map((_, iconIndex) => {
+                                    return <div
+                                        key={iconIndex}
+                                        className="person-index-indicator" css={indicatorCss}
+                                        style={{
+                                            "--i": iconIndex,
+                                            background: iconIndex === personIndex ?
+                                                "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
+                                                "var(--secondary-neutral-200)",
+                                            cursor: "pointer"
+                                        } as React.CSSProperties}
+                                        onClick={() => {
+                                            if (!ulRef.current) return;
 
-                                        ulRef.current.children[iconIndex].scrollIntoView({
-                                            behavior: "smooth",
-                                            block: "center"
-                                        });
-                                    }}
-                                />;
-                            })}
-                        </div>
-                        <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
-                        <div css={contactsCss} className="item-subtitle">
-                            <EmailLink
-                                style={{ whiteSpace: "nowrap", color: "inherit" }}
-                                address={item.mail} text={item.subtitle}
-                                iconSize="1em" iconStrokeWidth="1.4"
-                            />
-                            <div className="links">
-                                {item.links.map(item => <Link
-                                    className={"link " + item.linkName}
-                                    key={item.link} href={item.link}
-                                    target="_blank" rel="noopener noreferrer"
-                                />)}
+                                            ulRef.current.children[iconIndex].scrollIntoView({
+                                                behavior: "smooth",
+                                                block: "center"
+                                            });
+                                        }}
+                                    />;
+                                })}
+                            </div>
+                            <h3 className="item-title" style={{marginBlockEnd: '0.4em'}}>{item.title}</h3>
+                            <div css={contactsCss} className="item-subtitle">
+                                <EmailLink
+                                    style={{whiteSpace: "nowrap"}}
+                                    address={item.mail} iconSize="1em" iconStrokeWidth="1.4"
+                                >{item.subtitle}</EmailLink>
+                                <div className="links">
+                                    {item.links.map(link =>
+                                        <link.Component key={link.href} className="link" href={link.href}/>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="person-img" css={css`
-                        scroll-snap-align: center;
-                    `}>
-                        <LogoImageFrame imageData={item.image} alt={item.imageAlt} style={{minWidth: "400px", flex: 1 }} />
-                    </div>
-                </li>)}
+                        <div className="person-img" css={css`
+                            scroll-snap-align: center;
+                        `}>
+                            <LogoImageFrame
+                                style={{minWidth: "400px", flex: 1}}
+                                imageData={item.image} alt={item.imageAlt}
+                            />
+                        </div>
+                    </li>;
+                })}
             </ul>
         </div>
     </section>;

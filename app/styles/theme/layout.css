@@ -1,12 +1,11 @@
 :root {
     --page-max-width: 84rem;
-    --page-padding: clamp(16px, 4vw, 32px);
+    --page-padding: clamp(24px, 4vw, 32px);
 
     --navbar-height: 4.8rem;
-    --section-min-height: 768px;
+    --section-min-height: 640px;
     --section-max-height: 1120px;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
-    /*--section-basis-height: 1024px;*/
     /*--footer-height: 16rem;*/
 
     height: 100%;
@@ -31,7 +30,8 @@ body {
     grid-template-rows:
         [navbar-start] var(--navbar-height)
         [navbar-end content-start] 1fr
-        [content-end footer-start] max-content
+        [content-end bottom-nav-start] max-content
+        [bottom-nav-end footer-start] max-content
         [footer-end];
 
     & > header, main, footer {
@@ -50,13 +50,7 @@ body {
         overflow-x: clip;
     }
     & > main {
-        /*--section-clamped-height: clamp(*/
-        /*    var(--section-min-height),*/
-        /*    80vh,*/
-        /*    var(--section-basis-height)*/
-        /*);*/
-
-        grid-row: navbar / content;
+        grid-row: navbar / bottom-nav;
         grid-auto-rows: auto;
         isolation: isolate;
 
@@ -68,13 +62,21 @@ body {
             overflow-x: clip;
         }
     }
+    & > .bottom-nav {
+        grid-column: page;
+        grid-row: bottom-nav;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        overflow-x: clip;
+    }
     & > footer {
         grid-row: footer;
     }
     & > header > *,
     & > main > section > *,
     & > footer > * {
-        /*padding-inline: var(--page-padding);*/
         grid-column: page;
     }
 }

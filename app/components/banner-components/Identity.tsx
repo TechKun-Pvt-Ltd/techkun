@@ -2,8 +2,8 @@ import {css, keyframes} from "@emotion/react";
 import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
-import cssSupports from "@/app/utils/css-supports";
+import supportsQuery from "@/app/utils/css/supports-query";
+import cssSupports from "@/app/utils/css/supports";
 
 const { pointerMove, pointerMoveBack, dotsPull, dotsRelease, initialDotsLightUp } = BANNER_ANIMATION;
 
@@ -26,10 +26,6 @@ const releaseTimingFunction = "linear(0, 0.003 0.2%, 0.016 0.5%, 0.03 0.7%, 0.06
 const DOT_COUNT = 4;
 
 const lightUpColorProp = "--light-up-color";
-const staggerProp = "--stagger";
-const minDelayProp = "--min-delay";
-
-const bulbIconWidthProp = "--_bulb-icon-width";
 
 const pullKeyframes = keyframes`
 	to {
@@ -134,7 +130,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			color: var(--neutral-100);
 			--pull-factor: 0.5;
 			--rotation-angle: -30deg;
-			@supports ${cssSupportsQuery.shape} {
+			@supports ${supportsQuery.shape} {
 				offset-path: shape(
 					from calc(100% + 0.2em) 25%,
 					curve to calc(100% - 0.25em) 110% with 0.6em 25% from start / 1em 0 from end,
@@ -170,7 +166,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 						pointer-move-back ${pointerMoveBack.duration}s ${pointerMoveBack.delay}s ease-in-out forwards;
 				}
 			}
-			@supports not ${cssSupportsQuery.shape} {
+			@supports not ${supportsQuery.shape} {
 				@property --translate-x {
 				  	syntax: "<length-percentage>";
 					inherits: false;
@@ -216,30 +212,29 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		<span css={css`
 			position: relative;
 			color: transparent;
+			--x-offset: 6%;
 
 			svg.icon {
-				transform: translateX(6%);
 				transform-box: view-box;
 				position: absolute;
-				inset: 0;
+				inset: 0 0 0 var(--x-offset);
 				height: auto;
 				width: 100%;
 				color: var(--neutral-700);
 			}
 
 			svg.bulb-icon, svg.dots circle {
-				${staggerProp}: ${dotsLightUp.stagger}s;
-                ${minDelayProp}: ${dotsLightUp.delay}s;
+				--stagger: ${dotsLightUp.stagger}s;
+                --delay: ${dotsLightUp.delay}s;
 				transition: fill ${dotsLightUp.duration}s ease-out;
-                transition-delay: calc(var(${minDelayProp}) + var(--i) * var(${staggerProp}));
+                transition-delay: calc(var(--delay) + var(--i) * var(--stagger));
 				fill: var(${lightUpColorProp});
 			}
 			svg.bulb-icon {
-				top: 0.24em;
-				${bulbIconWidthProp}: 90%;
-				transform: translateX(calc(-1 * (var(${bulbIconWidthProp}) - 100%) / 2 + 8%));
-				transform-origin: center bottom;
-				width: var(${bulbIconWidthProp});
+				--_bulb-icon-width: 120%;
+				--_extra-x-space: calc((var(--_bulb-icon-width) - 100%) / 2);
+				inset: 0.23em calc(-1 * var(--_extra-x-space)) auto calc(-1 * var(--_extra-x-space) + var(--x-offset));
+				width: var(--_bulb-icon-width);
 
 				${lightUpColorProp}: var(--foreground);
 			}
@@ -265,13 +260,13 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			}
 			[data-initial] & {
 				svg.bulb-icon, svg.dots circle {
-					${minDelayProp}: ${initialDotsLightUp.delay}s;
+					--delay: ${initialDotsLightUp.delay}s;
 					transition-duration: ${initialDotsLightUp.duration}s;
 				}
 				svg.dots circle {
 					@keyframes release {
 						to {
-							transform: translate(0);
+							transform: none;
 						}
 					}
 					animation:
@@ -281,8 +276,8 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			}
 			[data-lights-off] & {
 				svg.bulb-icon, svg.dots circle {
-					${staggerProp}: ${dotsLightDown.stagger}s;
-					${minDelayProp}: ${dotsLightDown.delay}s;
+					--stagger: ${dotsLightDown.stagger}s;
+					--delay: ${dotsLightDown.delay}s;
 					transition-duration: ${dotsLightDown.duration}s;
 					fill: currentColor;
 				}
@@ -290,11 +285,11 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		`}>
 			<svg className="icon bulb-icon"
 				 xmlns="http://www.w3.org/2000/svg"
-				 viewBox="-1 -6 12 15" fill="currentColor"
+				 viewBox="0 0 24 24" fill="currentColor"
 				 style={{ "--i": DOT_COUNT } as React.CSSProperties}
 			>
 				<path
-					d="M 0 0 C 0 -2.7614 2.2386 -5 5 -5 C 7.7614 -5 10 -2.7614 10 0 C 10 1.3261 9.4732 2.5979 8.5355 3.5355 C 7.5979 4.4732 7.0711 5.745 7.0711 7.0711 C 7.0711 7.6234 6.6234 8.0711 6.0711 8.0711 L 3.9289 8.0711 C 3.3766 8.0711 2.9289 7.6234 2.9289 7.0711 C 2.9289 5.745 2.4021 4.4732 1.4645 3.5355 C 0.5268 2.5979 0 1.3261 0 0"
+					d="M 4.41 9.59 C 4.41 5.3982 7.8082 2 12 2 C 16.1918 2 19.59 5.3982 19.59 9.59 C 19.59 11.603 18.7903 13.5336 17.3669 14.9569 C 15.9436 16.3803 15.1439 18.3109 15.1439 20.3239 C 15.1439 21.1623 14.4643 21.8419 13.6259 21.8419 L 10.3741 21.8419 C 9.5357 21.8419 8.8561 21.1623 8.8561 20.3239 C 8.8561 18.3109 8.0564 16.3803 6.6331 14.9569 C 5.2097 13.5336 4.41 11.603 4.41 9.59"
 				/>
 			</svg>
 			<svg className="icon dots" xmlns="http://www.w3.org/2000/svg" fill="currentColor">

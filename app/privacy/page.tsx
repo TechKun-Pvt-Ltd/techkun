@@ -3,6 +3,7 @@ import LegalBlocks from "@/app/privacy/components/legal-blocks";
 import {legalContentCss, linkCss, pageCss, summaryCardCss} from "@/app/privacy/styles";
 import {LAST_UPDATED, SUMMARY_BLOCKS, TRIMMED_BLOCKS} from "@/app/privacy/content";
 import {css} from "@emotion/react";
+import Link from "next/link";
 
 const headerCss = css`
     h1 {
@@ -33,9 +34,9 @@ export default function Privacy() {
                     <div css={legalContentCss}>
                         <LegalBlocks blocks={SUMMARY_BLOCKS} />
                     </div>
-                    <a href="/privacy/detailed" className="text-sm" css={linkCss}>
+                    <Link href="/privacy/detailed" className="text-sm" css={linkCss}>
                         Read the detailed Privacy Policy →
-                    </a>
+                    </Link>
                 </div>
 
                 <div>
@@ -46,7 +47,7 @@ export default function Privacy() {
                         <LegalBlocks blocks={TRIMMED_BLOCKS} />
                         <p className="text-base">
                             For full legal details, definitions, and region-specific rights, read our{" "}
-                            <a href="/privacy/detailed" css={linkCss}>Detailed Privacy Policy</a>.
+                            <Link href="/privacy/detailed" css={linkCss}>Detailed Privacy Policy</Link>.
                         </p>
                     </div>
                 </div>

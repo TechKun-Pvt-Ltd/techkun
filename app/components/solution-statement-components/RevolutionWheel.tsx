@@ -1,5 +1,5 @@
 import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "../TrigWheel";
-import cssSupportsQuery from "@/app/utils/css-supports-query";
+import supportsQuery from "@/app/utils/css/supports-query";
 import {css} from "@emotion/react";
 import React, {JSX, useEffect, useRef} from "react";
 import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
@@ -8,7 +8,7 @@ import {MotionValue} from "motion";
 import {Once} from "@/components/Once";
 import {animate, motion} from "motion/react";
 import {round} from "svg-path-kit/numbers";
-import cssSupports from "@/app/utils/css-supports";
+import cssSupports from "@/app/utils/css/supports";
 
 const VIEW_BOX_START = 0;
 const VIEW_BOX_SIZE = 100;
@@ -259,7 +259,7 @@ function CenterIcon(props: React.ComponentProps<"path">) {
     return <path
         ref={pathRef} d={shapes[0]}
         css={css`
-            @supports ${cssSupportsQuery.d} {
+            @supports ${supportsQuery.d} {
                 transition: d 0.3s ease;
             }
         `}
@@ -347,15 +347,15 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
             g.back-layer {
                 --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
                 --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                --_stroke-color: oklch(from var(--neutral-700) l c h / 0.75);
+                --_stroke-color: var(--neutral-800);
                 --_lighter-stroke: var(--neutral-400);
             }
 
             g.front-layer {
-                --_dial-fill-color: oklch(from var(--secondary-neutral-900) l c h / 0.25);
+                --_dial-fill-color: oklch(from var(--secondary-950) l c h / 0.25);
                 --_fill-color: none;
-                --_stroke-color: oklch(from var(--secondary-neutral-700) l c h / 0.75);
-                --_lighter-stroke: var(--primary-400);
+                --_stroke-color: var(--secondary-neutral-800);
+                --_lighter-stroke: var(--primary-500);
             }
         `}
     >
@@ -434,13 +434,13 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     color="var(--secondary-neutral-600)"
                 >{quotePart2}</TrigWheel.Text>
             </ClippedG>
-            <g stroke="var(--primary-900)" strokeWidth="0.25" fill="none">
+            <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
                 <TrigWheel.ExtendedRotor strokeDasharray="2"/>
                 <TrigWheel.Rotor style={{
                     filter:
-                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-900) l c h / 0.32)) " +
-                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-900) l c h / 0.32)) " +
-                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-900) l c h / 0.32))"
+                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
                 }}/>
             </g>
             <TrigWheel.Circle
@@ -465,14 +465,14 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 .progress-indicator {
                     --_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
                     --_switch: round(down, var(--_angle) / (90deg), 1);
-                    @supports not ${cssSupportsQuery.unitStripping} {
+                    @supports not ${supportsQuery.unitStripping} {
                         --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
                     }
 
                     r: var(--_radius);
                     stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
                     calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
-                    stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-800) calc(var(--_switch) * 100%));
+                    stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-700) calc(var(--_switch) * 100%));
 
                     transition: stroke 0.2s ease-in-out;
                 }
@@ -492,16 +492,16 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     r: var(--_radius);
                     stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
                     stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
-                    @supports not ${cssSupportsQuery.unitStripping} {
+                    @supports not ${supportsQuery.unitStripping} {
                         stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${TrigWheel.cssProps.angle}), 1rad)));
                     }
 
                     transition: 0.2s ease-in-out;
                     transition-property: opacity, filter;
                 `}
-                fill="none" stroke="var(--primary-900)" strokeWidth="0.1"
+                fill="none" stroke="var(--primary-800)" strokeWidth="0.1"
             />
-            <TrigWheel.RotorTerminal fill="var(--primary-700)"/>
+            <TrigWheel.RotorTerminal fill="var(--primary-600)"/>
             <TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5"/>
             <CenterIcon fill="var(--neutral-900)"/>
         </TrigWheel>

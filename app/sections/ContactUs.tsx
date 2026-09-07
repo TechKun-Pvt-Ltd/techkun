@@ -189,14 +189,14 @@ function ContactOptions() {
             padding: 1px;
             background: padding-box conic-gradient(
                 from var(--gradient-angle) at 50% 50%,
-                var(--tertiary-200),
+                var(--tertiary-300),
                 var(--secondary-500),
-                var(--primary-800),
-                oklch(from var(--primary-800) l c h / 0.25) 25%,
-                oklch(from var(--primary-800) l c h / 0.25) 75%,
-                var(--primary-800),
+                var(--primary-700),
+                oklch(from var(--primary-700) l c h / 0.25) 25%,
+                oklch(from var(--primary-700) l c h / 0.25) 75%,
+                var(--primary-700),
                 var(--secondary-500),
-                var(--tertiary-200)
+                var(--tertiary-300)
             ) 50% / 100%;
             mask: content-box linear-gradient(#000 0 0) subtract,
                 border-box linear-gradient(#000 0 0);
