@@ -7,6 +7,8 @@ import React, {
     PointerEvent as ReactPointerEvent,
 } from 'react';
 import { css } from '@emotion/react';
+import {Point2D} from "svg-path-kit";
+import {clamp} from "times-fps";
 
 /**
  * ---------------------------------------------------------------------------
@@ -35,8 +37,6 @@ export interface BezierEditorProps {
     onChange?: (value: CubicBezierValue) => void;
     /** Where the preset strip renders relative to the curve canvas. */
     presetsPosition?: 'top' | 'bottom' | 'none';
-    /** Pixel size (both dimensions) of the square curve canvas. */
-    size?: number;
     /** Show the numeric x1/y1/x2/y2 inputs and the cubic-bezier() readout. */
     showInspector?: boolean;
     className?: string;
@@ -110,18 +110,7 @@ const PRESET_GROUPS = Array.from(new Set(EASING_PRESETS.map((p) => p.group)));
 const Y_MIN = -0.6;
 const Y_MAX = 1.6;
 
-const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
 const round2 = (n: number) => Math.round(n * 100) / 100;
-
-const toPx = (x: number, y: number, size: number) => ({
-    x: x * size,
-    y: ((Y_MAX - y) / (Y_MAX - Y_MIN)) * size,
-});
-
-const fromPx = (px: number, py: number, size: number) => ({
-    x: clamp(px / size, 0, 1),
-    y: clamp(Y_MAX - (py / size) * (Y_MAX - Y_MIN), Y_MIN, Y_MAX),
-});
 
 const isSameCurve = (a: CubicBezierValue, b: CubicBezierValue) =>
     a.every((v, i) => Math.abs(v - b[i]) < 0.005);
@@ -135,7 +124,6 @@ const isSameCurve = (a: CubicBezierValue, b: CubicBezierValue) =>
 const rootCss = css`
     --ink: #e9e7e0;
     --ink-dim: #8b8e9c;
-    --bg: #14161f;
     --panel: #1b1e2a;
     --grid: #2a2e3d;
     --curve: #5eead4;
@@ -146,26 +134,59 @@ const rootCss = css`
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 20px;
-    background: var(--bg);
     border-radius: 12px;
     color: var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    width: max-content;
 `;
 
 const bodyCss = css`
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
     gap: 20px;
     align-items: flex-start;
+    & > * {
+        min-width: 0;
+    }
 `;
 
 const canvasWrapCss = css`
     position: relative;
     border-radius: 8px;
-    overflow: hidden;
-    background: var(--panel);
+    --padding-x: 8px;
+    --padding-y: 24px;
+    --grid-line-x: 10%;
+    --grid-line-y: 10%;
+    background:
+        linear-gradient(
+            to right,
+            transparent 0% calc(var(--padding-x) - 0.5px),
+            var(--secondary-neutral-700) calc(var(--padding-x) - 0.5px) calc(var(--padding-x) + 0.5px),
+            transparent calc(var(--padding-x) + 0.5px) calc(100% - var(--padding-x) - 0.5px),
+            var(--secondary-neutral-700) calc(100% - var(--padding-x) - 0.5px) calc(100% - var(--padding-x) + 0.5px),
+            transparent calc(100% - var(--padding-x) + 0.5px) 100%
+        ),
+        linear-gradient(
+            to bottom,
+            transparent 0% calc(var(--padding-y) - 0.5px),
+            var(--secondary-neutral-700) calc(var(--padding-y) - 0.5px) calc(var(--padding-y) + 0.5px),
+            transparent calc(var(--padding-y) + 0.5px) calc(100% - var(--padding-y) - 0.5px),
+            var(--secondary-neutral-700) calc(100% - var(--padding-y) - 0.5px) calc(100% - var(--padding-y) + 0.5px),
+            transparent calc(100% - var(--padding-y) + 0.5px) 100%
+        ),
+        repeating-linear-gradient(
+            to right,
+            transparent 0% calc(var(--grid-line-x) - 0.5px),
+            var(--secondary-neutral-700) calc(var(--grid-line-x) - 0.5px) calc(var(--grid-line-x) + 0.5px),
+            transparent calc(var(--grid-line-x) + 0.5px)
+        ) content-box,
+        repeating-linear-gradient(
+            transparent 0% calc(var(--grid-line-y) - 0.5px),
+            var(--secondary-neutral-700) calc(var(--grid-line-y) - 0.5px) calc(var(--grid-line-y) + 0.5px),
+            transparent calc(var(--grid-line-y) + 0.5px)
+        ) content-box,
+        var(--panel);
+    padding-inline: var(--padding-x);
+    padding-block: var(--padding-y);
+    width: 100%;
     touch-action: none;
 `;
 
@@ -173,12 +194,11 @@ const inspectorCss = css`
     display: flex;
     flex-direction: column;
     gap: 12px;
-    min-width: 200px;
 `;
 
 const fieldRowCss = css`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
 `;
 
@@ -188,6 +208,8 @@ const fieldCss = css`
     gap: 4px;
     font-size: 11px;
     color: var(--ink-dim);
+    flex: 1;
+    min-width: 0;
 `;
 
 const numberInputCss = css`
@@ -199,7 +221,6 @@ const numberInputCss = css`
     border: 1px solid var(--grid);
     border-radius: 6px;
     padding: 6px 8px;
-    width: 100%;
     box-sizing: border-box;
 
     &:focus {
@@ -313,7 +334,6 @@ export default function CubicBezierEditor({
                                               defaultValue = [0.42, 0, 0.58, 1],
                                               onChange,
                                               presetsPosition = 'bottom',
-                                              size = 280,
                                               showInspector = true,
                                               className,
                                           }: BezierEditorProps) {
@@ -337,15 +357,14 @@ export default function CubicBezierEditor({
         (handle: 1 | 2, clientX: number, clientY: number) => {
             if (!svgRef.current) return;
             const rect = svgRef.current.getBoundingClientRect();
-            const scale = size / rect.width;
-            const { x, y } = fromPx((clientX - rect.left) * scale, (clientY - rect.top) * scale, size);
+            const { x, y } = { x: clamp((clientX - rect.x) / rect.width, 0, 1), y: 1 - clamp((clientY - rect.y) / rect.height, -1, 2) };
             const next: CubicBezierValue =
                 handle === 1
                     ? [round2(x), round2(y), bezier[2], bezier[3]]
                     : [bezier[0], bezier[1], round2(x), round2(y)];
             commit(next);
         },
-        [bezier, commit, size]
+        [bezier, commit]
     );
 
     const onHandlePointerDown = (handle: 1 | 2) => (e: ReactPointerEvent<SVGCircleElement>) => {
@@ -402,12 +421,12 @@ export default function CubicBezierEditor({
         }
     };
 
-    const p0 = toPx(0, 0, size);
-    const p1 = toPx(x1, y1, size);
-    const p2 = toPx(x2, y2, size);
-    const p3 = toPx(1, 1, size);
-    const zero = toPx(0, 0, size);
-    const one = toPx(1, 1, size);
+    const p0 = Point2D.of(0, 1 - 0);
+    const p1 = Point2D.of(x1, 1 - y1);
+    const p2 = Point2D.of(x2, 1 - y2);
+    const p3 = Point2D.of(1, 1 - 1);
+    const zero = Point2D.of(0, 1 - 0);
+    const one = Point2D.of(1, 1 - 1);
 
     const pathD = `M ${p0.x} ${p0.y} C ${p1.x} ${p1.y} ${p2.x} ${p2.y} ${p3.x} ${p3.y}`;
 
@@ -445,12 +464,6 @@ export default function CubicBezierEditor({
                     </div>
                 </div>
             ))}
-            <p css={noteCss}>
-                Elastic and bounce aren&rsquo;t here — they overshoot and reverse direction more than once,
-                so no single cubic bezier can draw them. Everything above, including the &ldquo;back&rdquo;
-                family, only needs one curve because a bezier&rsquo;s control points can sit outside 0–1 on
-                the y-axis.
-            </p>
         </div>
     );
 
@@ -462,44 +475,42 @@ export default function CubicBezierEditor({
                 <div css={canvasWrapCss}>
                     <svg
                         ref={svgRef}
-                        width={size}
-                        height={size}
-                        viewBox={`0 0 ${size} ${size}`}
+                        width="100%"
+                        viewBox={`0 0 1 1`}
                         role="img"
                         aria-label={`Cubic bezier curve editor, current value ${cssString}`}
+                        style={{ overflow: "visible" }}
                     >
                         {/* grid */}
-                        {[0, 0.25, 0.5, 0.75, 1].map((t) => {
-                            const px = toPx(t, 0, size).x;
-                            return <line key={`v${t}`} x1={px} y1={0} x2={px} y2={size} stroke="var(--grid)" strokeWidth={1} />;
-                        })}
-                        {[0, 1].map((t) => {
-                            const py = toPx(0, t, size).y;
-                            return <line key={`h${t}`} x1={0} y1={py} x2={size} y2={py} stroke="var(--grid)" strokeWidth={1} />;
-                        })}
+                        {/*{[0, 0.25, 0.5, 0.75, 1].map((t) => {*/}
+                        {/*    const px = Point2D.of(t, 0).x;*/}
+                        {/*    return <line key={`v${t}`} x1={px} y1={0} x2={px} y2="1" stroke="var(--grid)" strokeWidth={0.1 * 1} />;*/}
+                        {/*})}*/}
+                        {/*{[0, 1].map((t) => {*/}
+                        {/*    const py = Point2D.of(0, t).y;*/}
+                        {/*    return <line key={`h${t}`} x1={0} y1={py} x2="1" y2={py} stroke="var(--grid)" strokeWidth={0.1 * 1} />;*/}
+                        {/*})}*/}
 
                         {/* linear reference */}
-                        <line x1={zero.x} y1={zero.y} x2={one.x} y2={one.y} stroke="var(--ref-line)" strokeWidth={1} strokeDasharray="3 4" />
+                        <line x1={zero.x} y1={zero.y} x2={one.x} y2={one.y} stroke="var(--ref-line)" strokeWidth={0.001 * 1} strokeDasharray="3 4" />
 
                         {/* handle stems */}
-                        <line x1={zero.x} y1={zero.y} x2={p1.x} y2={p1.y} stroke="var(--handle)" strokeWidth={1.5} opacity={0.6} />
-                        <line x1={one.x} y1={one.y} x2={p2.x} y2={p2.y} stroke="var(--handle)" strokeWidth={1.5} opacity={0.6} />
+                        <line x1={zero.x} y1={zero.y} x2={p1.x} y2={p1.y} stroke="var(--handle)" strokeWidth={0.001 * 1.5} opacity={0.6} />
+                        <line x1={one.x} y1={one.y} x2={p2.x} y2={p2.y} stroke="var(--handle)" strokeWidth={0.001 * 1.5} opacity={0.6} />
 
                         {/* the actual curve, drawn with a real SVG cubic bezier command */}
-                        <path d={pathD} fill="none" stroke="var(--curve)" strokeWidth={2.5} strokeLinecap="round" />
+                        <path d={pathD} fill="none" stroke="var(--curve)" strokeWidth={0.001 * 2.5} strokeLinecap="round" />
 
                         {/* fixed endpoints */}
-                        <circle cx={zero.x} cy={zero.y} r={3.5} fill="var(--ink-dim)" />
-                        <circle cx={one.x} cy={one.y} r={3.5} fill="var(--ink-dim)" />
+                        <circle cx={zero.x} cy={zero.y} r={0.02} fill="var(--ink-dim)" />
+                        <circle cx={one.x} cy={one.y} r={0.02} fill="var(--ink-dim)" />
 
                         {/* draggable control points */}
                         <circle
                             cx={p1.x}
                             cy={p1.y}
-                            r={7}
+                            r={0.02}
                             fill="var(--handle)"
-                            stroke="var(--bg)"
-                            strokeWidth={2}
                             tabIndex={0}
                             role="slider"
                             aria-label="First control point"
@@ -513,10 +524,8 @@ export default function CubicBezierEditor({
                         <circle
                             cx={p2.x}
                             cy={p2.y}
-                            r={7}
+                            r={0.02}
                             fill="var(--handle)"
-                            stroke="var(--bg)"
-                            strokeWidth={2}
                             tabIndex={0}
                             role="slider"
                             aria-label="Second control point"
@@ -539,7 +548,7 @@ export default function CubicBezierEditor({
                             </label>
                             <label css={fieldCss}>
                                 y1
-                                <input css={numberInputCss} type="number" step={0.01} value={y1} onChange={setField(1)} />
+                                <input css={numberInputCss} type="number" step={0.01} min={-1} max={2} value={y1} onChange={setField(1)} />
                             </label>
                             <label css={fieldCss}>
                                 x2
@@ -547,7 +556,7 @@ export default function CubicBezierEditor({
                             </label>
                             <label css={fieldCss}>
                                 y2
-                                <input css={numberInputCss} type="number" step={0.01} value={y2} onChange={setField(3)} />
+                                <input css={numberInputCss} type="number" step={0.01} min={-1} max={2} value={y2} onChange={setField(3)} />
                             </label>
                         </div>
 
@@ -557,11 +566,6 @@ export default function CubicBezierEditor({
                                 {copied ? 'Copied' : 'Copy'}
                             </button>
                         </div>
-
-                        <p css={noteCss}>
-                            Drag the amber handles, type exact values, or pick a preset. Arrow keys nudge the
-                            focused handle by 0.01 (0.1 with shift).
-                        </p>
                     </div>
                 )}
             </div>
