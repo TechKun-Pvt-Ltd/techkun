@@ -1,11 +1,11 @@
 "use client";
 
 import styles from "./PalettePreviewOverlay.module.css";
-import { getVarNames } from "./palette-items.config";
-import type { PaletteItemKey } from "./types";
+import {ColorRampKey} from "@/app/styles/theme/color.config";
+import colorRampsStatic from "@/app/styles/theme/color-ramps.static.mjs";
 
-export function PaletteStrip({ itemKey }: { itemKey: PaletteItemKey }) {
-    const varNames = getVarNames(itemKey).filter(Boolean);
+export function PaletteStrip({ itemKey }: { itemKey: ColorRampKey }) {
+    const varNames = colorRampsStatic[itemKey].filter(Boolean);
 
     return (
         <div className={styles.strip}>

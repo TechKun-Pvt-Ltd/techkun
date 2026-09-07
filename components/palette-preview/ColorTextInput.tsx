@@ -7,7 +7,7 @@ import { isValidCssColor } from "./color-validation";
 interface ColorTextInputProps {
     value: string;
     placeholder: string;
-    onChange(value: string | null): void;
+    onChange(value: string): void;
 }
 
 /** Free-text color input (any CSS syntax, including oklch()), validated on

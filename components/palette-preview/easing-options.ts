@@ -1,5 +1,6 @@
-import type { EasingFunction } from "times-fps";
+import {cubicBezierEasing, EasingFunction} from "times-fps";
 import * as easings from "./easing-functions";
+import {BezierDefinition} from "motion/react";
 
 export interface EasingOption {
     value: string;
@@ -44,6 +45,6 @@ export const EASING_FN_MAP: Record<string, EasingFunction> = Object.fromEntries(
     EASING_OPTIONS.map((opt) => [opt.value, opt.fn])
 );
 
-export function resolveEasing(key: string): EasingFunction {
-    return EASING_FN_MAP[key] ?? easings.linear;
+export function resolveEasing(key: BezierDefinition): EasingFunction {
+    return cubicBezierEasing(key[0], key[1], key[2], key[3]);
 }

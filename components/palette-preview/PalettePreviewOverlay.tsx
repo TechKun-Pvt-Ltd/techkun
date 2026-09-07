@@ -1,27 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import styles from "./PalettePreviewOverlay.module.css";
-import { PALETTE_ITEM_CONFIG, PALETTE_ITEM_KEYS } from "./palette-items.config";
-import { createDefaultCustomizationState } from "./default-state";
-import { buildPaletteCssRules } from "./build-palette-css-rules";
-import { usePaletteStyleInjector } from "./use-palette-style-injector";
+import {usePaletteStyleInjector} from "./use-palette-style-injector";
 import {anchorStyleMap, getPositionSide, OverlayPosition} from "./anchor-position";
-import { ShadesTintsForm } from "./ShadesTintsForm";
-import { InterpolatedForm } from "./InterpolatedForm";
-import { PaletteStrip } from "./PaletteStrip";
-import type { CustomizationState, PaletteCustomization, PaletteItemKey } from "./types";
+import {ShadesTintsForm} from "./ShadesTintsForm";
+import {InterpolatedForm} from "./InterpolatedForm";
+import {PaletteStrip} from "./PaletteStrip";
+import {processConfig} from "@/app/styles/generated-css/css-palette-generation-utils";
+import {PALETTE_CUSTOMIZATION, PaletteCustomization} from "@/app/styles/generated-css/css-palette-customization";
+import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/app/styles/generated-css/css-palette-generation-config";
 
 interface PalettePreviewOverlayProps {
     /** Where the floating overlay anchors. Defaults to center-right. */
     position?: OverlayPosition;
 }
 
-const DEFAULT_CUSTOMIZATION_STATE = createDefaultCustomizationState();
+const colorRampLabels: Record<ColorRampKey, string> = {
+    primary: "Primary",
+    secondary: "Secondary",
+    tertiary: "Tertiary",
+    secondaryNeutral: "Secondary Neutral",
+    neutral: "Neutral"
+};
+
 export function PalettePreviewOverlay({ position = "center-right" }: PalettePreviewOverlayProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<PaletteItemKey>(PALETTE_ITEM_KEYS[0]);
-    const customizations = useRef<CustomizationState>(DEFAULT_CUSTOMIZATION_STATE);
+    const [activeTab, setActiveTab] = useState<ColorRampKey>(COLOR_RAMP_KEYS[0]);
+    const customizations = useRef<PaletteCustomization>(PALETTE_CUSTOMIZATION);
 
     const { applyRules, clear } = usePaletteStyleInjector();
 
@@ -34,17 +40,16 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
     const anchorStyle = anchorStyleMap[position];
     const side = getPositionSide(position);
 
-    const activeConfig = PALETTE_ITEM_CONFIG[activeTab];
     const activeValue = customizations.current[activeTab];
 
     const updateActive = (value: PaletteCustomization) => {
         customizations.current[activeTab] = value;
-        applyRules(buildPaletteCssRules(customizations.current));
+        applyRules(processConfig(customizations.current));
     };
 
     const handleReset = () => {
         clear();
-        customizations.current = DEFAULT_CUSTOMIZATION_STATE;
+        customizations.current = PALETTE_CUSTOMIZATION;
     };
 
     if (!isOpen) {
@@ -70,8 +75,14 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
 
             <div className={styles.panelMain}>
                 <div className={styles.panelHeader}>
+                    <h6 className={styles.heading}>Palette Previewer</h6>
+                    <button type="button" className={styles.collapseButton} onClick={() => setIsOpen(false)} aria-label="Collapse palette preview">
+                        ×
+                    </button>
+                </div>
+                <div className={styles.panelHeader}>
                     <div className={styles.tabs} role="tablist">
-                        {PALETTE_ITEM_KEYS.map((key) => (
+                        {COLOR_RAMP_KEYS.map((key) => (
                             <button
                                 key={key}
                                 type="button"
@@ -80,21 +91,18 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
                                 className={key === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab}
                                 onClick={() => setActiveTab(key)}
                             >
-                                {PALETTE_ITEM_CONFIG[key].label}
+                                {colorRampLabels[key]}
                             </button>
                         ))}
                     </div>
-                    <button type="button" className={styles.collapseButton} onClick={() => setIsOpen(false)} aria-label="Collapse palette preview">
-                        ×
-                    </button>
                 </div>
 
                 <div className={styles.formScroll}>
-                    {activeConfig.type === "shades-tints" && activeValue.type === "shades-tints" && (
-                        <ShadesTintsForm config={activeConfig} value={activeValue} onChange={updateActive} />
+                    {activeValue.type === ColorRampType.TINTS_SHADES && (
+                        <ShadesTintsForm value={activeValue} onChange={updateActive} />
                     )}
-                    {activeConfig.type === "interpolated" && activeValue.type === "interpolated" && (
-                        <InterpolatedForm config={activeConfig} value={activeValue} onChange={updateActive} />
+                    {activeValue.type === ColorRampType.DEFAULT && (
+                        <InterpolatedForm value={activeValue} onChange={updateActive} />
                     )}
                 </div>
 

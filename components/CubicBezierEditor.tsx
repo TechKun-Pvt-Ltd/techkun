@@ -19,12 +19,12 @@ import {clamp} from "times-fps";
 /** [x1, y1, x2, y2] — the two control points of a cubic bezier timing function.
  *  Endpoints are implicitly fixed at (0,0) and (1,1), matching the CSS
  *  `cubic-bezier()` timing function convention. */
-export type CubicBezierValue = [number, number, number, number];
+export type CubicBezierValue = readonly [number, number, number, number];
 
 export interface EasingPreset {
     id: string;
     label: string;
-    group: string;
+    group?: string;
     value: CubicBezierValue;
 }
 
@@ -58,42 +58,44 @@ export interface BezierEditorProps {
  * also what most CSS/animation libraries ship as e.g. `--ease-out-quint`.
  */
 export const EASING_PRESETS: EasingPreset[] = [
+    { id: 'linear', label: 'linear', value: [0.5, 0.5, 0.5, 0.5] },
+
     { id: 'ease', label: 'ease', group: 'Standard', value: [0.25, 0.1, 0.25, 1] },
     { id: 'ease-in', label: 'ease-in', group: 'Standard', value: [0.42, 0, 1, 1] },
     { id: 'ease-out', label: 'ease-out', group: 'Standard', value: [0, 0, 0.58, 1] },
     { id: 'ease-in-out', label: 'ease-in-out', group: 'Standard', value: [0.42, 0, 0.58, 1] },
 
-    { id: 'in-sine', label: 'In', group: 'Sine', value: [0.12, 0, 0.39, 0] },
-    { id: 'out-sine', label: 'Out', group: 'Sine', value: [0.61, 1, 0.88, 1] },
-    { id: 'in-out-sine', label: 'In Out', group: 'Sine', value: [0.37, 0, 0.63, 1] },
+    { id: 'sine-in', label: 'sine-in', group: 'Sine', value: [0.12, 0, 0.39, 0] },
+    { id: 'sine-out', label: 'sine-out', group: 'Sine', value: [0.61, 1, 0.88, 1] },
+    { id: 'sine-in-out', label: 'sine-in-out', group: 'Sine', value: [0.37, 0, 0.63, 1] },
 
-    { id: 'in-quad', label: 'In', group: 'Quad', value: [0.11, 0, 0.5, 0] },
-    { id: 'out-quad', label: 'Out', group: 'Quad', value: [0.5, 1, 0.89, 1] },
-    { id: 'in-out-quad', label: 'In Out', group: 'Quad', value: [0.45, 0, 0.55, 1] },
+    { id: 'quad-in', label: 'quad-in', group: 'Quad', value: [0.11, 0, 0.5, 0] },
+    { id: 'quad-out', label: 'quad-out', group: 'Quad', value: [0.5, 1, 0.89, 1] },
+    { id: 'quad-in-out', label: 'quad-in-out', group: 'Quad', value: [0.45, 0, 0.55, 1] },
 
-    { id: 'in-cubic', label: 'In', group: 'Cubic', value: [0.32, 0, 0.67, 0] },
-    { id: 'out-cubic', label: 'Out', group: 'Cubic', value: [0.33, 1, 0.68, 1] },
-    { id: 'in-out-cubic', label: 'In Out', group: 'Cubic', value: [0.65, 0, 0.35, 1] },
+    { id: 'cubic-in', label: 'cubic-in', group: 'Cubic', value: [0.32, 0, 0.67, 0] },
+    { id: 'cubic-out', label: 'cubic-out', group: 'Cubic', value: [0.33, 1, 0.68, 1] },
+    { id: 'cubic-in-out', label: 'cubic-in-out', group: 'Cubic', value: [0.65, 0, 0.35, 1] },
 
-    { id: 'in-quart', label: 'In', group: 'Quart', value: [0.5, 0, 0.75, 0] },
-    { id: 'out-quart', label: 'Out', group: 'Quart', value: [0.25, 1, 0.5, 1] },
-    { id: 'in-out-quart', label: 'In Out', group: 'Quart', value: [0.76, 0, 0.24, 1] },
+    { id: 'quart-in', label: 'quart-in', group: 'Quart', value: [0.5, 0, 0.75, 0] },
+    { id: 'quart-out', label: 'quart-out', group: 'Quart', value: [0.25, 1, 0.5, 1] },
+    { id: 'quart-in-out', label: 'quart-in-out', group: 'Quart', value: [0.76, 0, 0.24, 1] },
 
-    { id: 'in-quint', label: 'In', group: 'Quint', value: [0.64, 0, 0.78, 0] },
-    { id: 'out-quint', label: 'Out', group: 'Quint', value: [0.22, 1, 0.36, 1] },
-    { id: 'in-out-quint', label: 'In Out', group: 'Quint', value: [0.83, 0, 0.17, 1] },
+    { id: 'quint-in', label: 'quint-in', group: 'Quint', value: [0.64, 0, 0.78, 0] },
+    { id: 'quint-out', label: 'quint-out', group: 'Quint', value: [0.22, 1, 0.36, 1] },
+    { id: 'quint-in-out', label: 'quint-in-out', group: 'Quint', value: [0.83, 0, 0.17, 1] },
 
-    { id: 'in-expo', label: 'In', group: 'Expo', value: [0.7, 0, 0.84, 0] },
-    { id: 'out-expo', label: 'Out', group: 'Expo', value: [0.16, 1, 0.3, 1] },
-    { id: 'in-out-expo', label: 'In Out', group: 'Expo', value: [0.87, 0, 0.13, 1] },
+    { id: 'expo-in', label: 'expo-in', group: 'Expo', value: [0.7, 0, 0.84, 0] },
+    { id: 'expo-out', label: 'expo-out', group: 'Expo', value: [0.16, 1, 0.3, 1] },
+    { id: 'expo-in-out', label: 'expo-in-out', group: 'Expo', value: [0.87, 0, 0.13, 1] },
 
-    { id: 'in-circ', label: 'In', group: 'Circ', value: [0.55, 0, 1, 0.45] },
-    { id: 'out-circ', label: 'Out', group: 'Circ', value: [0, 0.55, 0.45, 1] },
-    { id: 'in-out-circ', label: 'In Out', group: 'Circ', value: [0.85, 0, 0.15, 1] },
+    { id: 'circ-in', label: 'circ-in', group: 'Circ', value: [0.55, 0, 1, 0.45] },
+    { id: 'circ-out', label: 'circ-out', group: 'Circ', value: [0, 0.55, 0.45, 1] },
+    { id: 'circ-in-out', label: 'circ-in-out', group: 'Circ', value: [0.85, 0, 0.15, 1] },
 
-    { id: 'in-back', label: 'In', group: 'Back', value: [0.36, 0, 0.66, -0.56] },
-    { id: 'out-back', label: 'Out', group: 'Back', value: [0.34, 1.56, 0.64, 1] },
-    { id: 'in-out-back', label: 'In Out', group: 'Back', value: [0.68, -0.6, 0.32, 1.6] },
+    { id: 'back-in', label: 'back-in', group: 'Back', value: [0.36, 0, 0.66, -0.56] },
+    { id: 'back-out', label: 'back-out', group: 'Back', value: [0.34, 1.56, 0.64, 1] },
+    { id: 'back-in-out', label: 'back-in-out', group: 'Back', value: [0.68, -0.6, 0.32, 1.6] },
 ];
 
 const PRESET_GROUPS = Array.from(new Set(EASING_PRESETS.map((p) => p.group)));
@@ -141,7 +143,7 @@ const rootCss = css`
 const bodyCss = css`
     display: grid;
     grid-template-columns: 3fr 1fr;
-    gap: 20px;
+    gap: 16px;
     align-items: flex-start;
     & > * {
         min-width: 0;
@@ -233,32 +235,14 @@ const numberInputCss = css`
     }
 `;
 
-const codeRowCss = css`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--panel);
-    border: 1px solid var(--grid);
-    border-radius: 6px;
-    padding: 8px 10px;
-`;
-
-const codeCss = css`
-    flex: 1;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
-    color: var(--curve);
-    overflow-x: auto;
-    white-space: nowrap;
-`;
-
 const copyButtonCss = css`
     font: inherit;
     font-size: 11px;
-    color: var(--ink-dim);
+    color: var(--ink);
     background: transparent;
+    background: var(--panel);
     border: 1px solid var(--grid);
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 4px 8px;
     cursor: pointer;
     flex-shrink: 0;
@@ -269,58 +253,28 @@ const copyButtonCss = css`
     }
 `;
 
-const noteCss = css`
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.5;
-    color: var(--ink-dim);
-    max-width: 460px;
+const presetSelectCss = css`
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--grid);
+    border-radius: 6px;
+    padding: 7px 10px;
+    cursor: pointer;
+    width: 100%;
+
+    &:focus {
+        outline: 2px solid var(--focus);
+        outline-offset: 1px;
+        border-color: var(--focus);
+    }
 `;
 
 const presetPanelCss = css`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-`;
-
-const presetGroupRowCss = css`
-    display: flex;
-    align-items: center;
-    gap: 8px;
-`;
-
-const presetGroupLabelCss = css`
-    font-size: 11px;
-    color: var(--ink-dim);
-    width: 44px;
-    flex-shrink: 0;
-`;
-
-const presetButtonsCss = css`
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-`;
-
-const PresetButton = (active: boolean) => css`
-    font: inherit;
-    font-size: 12px;
-    color: ${active ? '#0f1115' : 'var(--ink)'};
-    background: ${active ? 'var(--curve)' : 'var(--panel)'};
-    border: 1px solid ${active ? 'var(--curve)' : 'var(--grid)'};
-    border-radius: 999px;
-    padding: 5px 12px;
-    cursor: pointer;
-    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
-    
-    &:hover {
-    border-color: ${active ? 'var(--curve)' : 'var(--ink-dim)'};
-    }
-    
-    &:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-    }
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 16px;
 `;
 
 /**
@@ -435,35 +389,41 @@ export default function CubicBezierEditor({
         []
     );
 
+    const selectedPresetId = useMemo(
+        () => EASING_PRESETS.find((preset) => isSameCurve(bezier, preset.value))?.id ?? '',
+        [bezier]
+    );
+
     const presetPanel = (
         <div css={presetPanelCss}>
-            <div css={presetButtonsCss}>
-                {grouped[0].items.map((preset) => (
-                    <button css={PresetButton(isSameCurve(bezier, preset.value))}
-                            key={preset.id}
-                            type="button"
-                            onClick={() => commit(preset.value)}
-                    >
-                        {preset.label}
-                    </button>
-                ))}
-            </div>
-            {grouped.slice(1).map(({ group, items }) => (
-                <div css={presetGroupRowCss} key={group}>
-                    <span css={presetGroupLabelCss}>{group}</span>
-                    <div css={presetButtonsCss}>
-                        {items.map((preset) => (
-                            <button css={PresetButton(isSameCurve(bezier, preset.value))}
-                                    key={preset.id}
-                                    type="button"
-                                    onClick={() => commit(preset.value)}
-                            >
-                                {preset.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            ))}
+            <select
+                css={presetSelectCss}
+                value={selectedPresetId}
+                onChange={(e) => {
+                    const preset = EASING_PRESETS.find((p) => p.id === e.target.value);
+                    if (preset) commit(preset.value);
+                }}
+                aria-label="Easing preset"
+            >
+                {!selectedPresetId && (
+                    <option value="" disabled>
+                        Custom easing
+                    </option>
+                )}
+
+                {grouped.map(({ group, items }) => {
+                    const options = items.map((preset) => (
+                        <option key={preset.id} value={preset.id}>
+                            {preset.label}
+                        </option>
+                    ));
+                    return group ? <optgroup label={group} key={group}>{options}</optgroup> : options;
+                })}
+            </select>
+
+            <button css={copyButtonCss} type="button" onClick={copyCss}>
+                {copied ? 'Copied' : 'Copy'}
+            </button>
         </div>
     );
 
@@ -481,15 +441,6 @@ export default function CubicBezierEditor({
                         aria-label={`Cubic bezier curve editor, current value ${cssString}`}
                         style={{ overflow: "visible" }}
                     >
-                        {/* grid */}
-                        {/*{[0, 0.25, 0.5, 0.75, 1].map((t) => {*/}
-                        {/*    const px = Point2D.of(t, 0).x;*/}
-                        {/*    return <line key={`v${t}`} x1={px} y1={0} x2={px} y2="1" stroke="var(--grid)" strokeWidth={0.1 * 1} />;*/}
-                        {/*})}*/}
-                        {/*{[0, 1].map((t) => {*/}
-                        {/*    const py = Point2D.of(0, t).y;*/}
-                        {/*    return <line key={`h${t}`} x1={0} y1={py} x2="1" y2={py} stroke="var(--grid)" strokeWidth={0.1 * 1} />;*/}
-                        {/*})}*/}
 
                         {/* linear reference */}
                         <line x1={zero.x} y1={zero.y} x2={one.x} y2={one.y} stroke="var(--ref-line)" strokeWidth={0.001 * 1} strokeDasharray="3 4" />
@@ -558,13 +509,6 @@ export default function CubicBezierEditor({
                                 y2
                                 <input css={numberInputCss} type="number" step={0.01} min={-1} max={2} value={y2} onChange={setField(3)} />
                             </label>
-                        </div>
-
-                        <div css={codeRowCss}>
-                            <code css={codeCss}>{cssString}</code>
-                            <button css={copyButtonCss} type="button" onClick={copyCss}>
-                                {copied ? 'Copied' : 'Copy'}
-                            </button>
                         </div>
                     </div>
                 )}

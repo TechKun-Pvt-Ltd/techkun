@@ -3,25 +3,24 @@
 import styles from "./PalettePreviewOverlay.module.css";
 import { LinkedPairInput } from "./LinkedPairInput";
 import { ColorTextInput } from "./ColorTextInput";
-import { EASING_OPTIONS } from "./easing-options";
-import type { ShadesTintsItemConfig } from "./palette-items.config";
-import type { ShadesTintsCustomization } from "./types";
+import CubicBezierEditor from "@/components/CubicBezierEditor";
+import {BezierDefinition} from "motion/react";
+import {TintsShadesCustomization} from "@/app/styles/generated-css/css-palette-customization";
 
 interface ShadesTintsFormProps {
-    config: ShadesTintsItemConfig;
-    value: ShadesTintsCustomization;
-    onChange: (value: ShadesTintsCustomization) => void;
+    value: TintsShadesCustomization;
+    onChange: (value: TintsShadesCustomization) => void;
 }
 
-export function ShadesTintsForm({ config, value, onChange }: ShadesTintsFormProps) {
+export function ShadesTintsForm({ value, onChange }: ShadesTintsFormProps) {
     return (
         <div className={styles.formBody}>
             <div className={styles.field}>
                 <span className={styles.fieldLabel}>Base color</span>
                 <ColorTextInput
-                    value={value.baseColorOverride ?? ""}
-                    placeholder={config.baseColorVar}
-                    onChange={(v) => onChange({ ...value, baseColorOverride: v })}
+                    value={value.baseColor}
+                    placeholder="Base color"
+                    onChange={v => onChange({ ...value, baseColor: v })}
                 />
             </div>
 
@@ -49,28 +48,30 @@ export function ShadesTintsForm({ config, value, onChange }: ShadesTintsFormProp
                 )}
             />
 
-            <LinkedPairInput
-                label="Easing"
-                primaryLabel="Tint"
-                secondaryLabel="Shade"
-                value={value.easing}
-                onChange={(easing) => onChange({ ...value, easing })}
-                renderInput={(v, onChangeEasing) => (
-                    <select className={styles.select} value={v} onChange={(e) => onChangeEasing(e.target.value)}>
-                        {EASING_OPTIONS.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </select>
-                )}
-            />
+            {/*<LinkedPairInput*/}
+            {/*    label="Easing"*/}
+            {/*    primaryLabel="Tint"*/}
+            {/*    secondaryLabel="Shade"*/}
+            {/*    value={value.easing}*/}
+            {/*    onChange={(easing) => onChange({ ...value, easing })}*/}
+            {/*    renderInput={(v, onChangeEasing) => (*/}
+            {/*        <select className={styles.select} value={v} onChange={(e) => onChangeEasing(e.target.value)}>*/}
+            {/*            {EASING_OPTIONS.map((opt) => (*/}
+            {/*                <option key={opt.value} value={opt.value}>*/}
+            {/*                    {opt.label}*/}
+            {/*                </option>*/}
+            {/*            ))}*/}
+            {/*        </select>*/}
+            {/*    )}*/}
+            {/*/>*/}
+
+            <CubicBezierEditor defaultValue={value.easing as BezierDefinition} onChange={bezier => onChange({ ...value, easing: bezier })} />
 
             <div className={styles.field}>
                 <span className={styles.fieldLabel}>White (tint target)</span>
                 <ColorTextInput
                     value={value.whiteColorOverride ?? ""}
-                    placeholder={config.defaultWhiteColor}
+                    placeholder={config.whiteOverride ?? "white"}
                     onChange={(v) => onChange({ ...value, whiteColorOverride: v })}
                 />
             </div>
@@ -79,7 +80,7 @@ export function ShadesTintsForm({ config, value, onChange }: ShadesTintsFormProp
                 <span className={styles.fieldLabel}>Black (shade target)</span>
                 <ColorTextInput
                     value={value.blackColorOverride ?? ""}
-                    placeholder={config.defaultBlackColor}
+                    placeholder={config.blackOverride ?? "black"}
                     onChange={(v) => onChange({ ...value, blackColorOverride: v })}
                 />
             </div>

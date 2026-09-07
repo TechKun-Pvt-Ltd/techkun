@@ -2,7 +2,7 @@
 
 import styles from "./PalettePreviewOverlay.module.css";
 import { EASING_OPTIONS } from "./easing-options";
-import type { InterpolatedItemConfig } from "./palette-items.config";
+import type { InterpolatedItemConfig } from "../../app/styles/theme/color.config";
 import type { InterpolatedCustomization } from "./types";
 
 interface InterpolatedFormProps {
@@ -15,7 +15,7 @@ export function InterpolatedForm({ config, value, onChange }: InterpolatedFormPr
     return (
         <div className={styles.formBody}>
             <p className={styles.hintText}>
-                Interpolates between <code>{config.startColorVar}</code> and <code>{config.endColorVar}</code>.
+                Interpolates between <code>{config.startColor}</code> and <code>{config.endColor}</code>.
             </p>
             <div className={styles.field}>
                 <span className={styles.fieldLabel}>Easing</span>

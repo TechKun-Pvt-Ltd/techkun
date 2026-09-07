@@ -20,15 +20,15 @@
 .panel {
     display: flex;
     align-items: stretch;
-    width: 380px;
-    max-width: calc(100vw - 48px);
-    height: min(640px, calc(100vh - 48px));
-    background: color-mix(in oklch, canvas, transparent 8%);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    border-radius: 20px;
-    border: 1px solid rgba(127, 127, 127, 0.25);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    padding-block: 16px;
+    padding-inline: 16px;
+    gap: 24px;
+    width: min(480px, 100vw - 48px);
+    height: min(640px, 100vh - 48px);
+    background: var(--muted);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    /*box-shadow: 0 20px 60px var(--secondary-neutral-950);*/
     overflow: hidden;
     z-index: 2147483000;
 }
@@ -38,13 +38,36 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .panelHeader {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    padding: 10px 10px 0;
+
+    .heading {
+        font-weight: 600;
+        line-height: 1;
+    }
+    .collapseButton {
+        background: transparent;
+        cursor: pointer;
+        font-size: 24px;
+        color: var(--neutral-200);
+        line-height: 1;
+        height: 32px;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+        /*opacity: 0.7;*/
+        border: 1px solid var(--border);
+        transition: 0.075s ease-in-out;
+        transition-property: color, background-color;
+    }
+    .collapseButton:hover {
+        color: var(--neutral-100);
+        background-color: var(--neutral-800);
+    }
 }
 
 .tabs {
@@ -71,25 +94,9 @@
     font-weight: 600;
 }
 
-.collapseButton {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 4px 8px;
-    border-radius: 999px;
-    opacity: 0.7;
-}
-.collapseButton:hover {
-    opacity: 1;
-    background: rgba(127, 127, 127, 0.18);
-}
-
 .formScroll {
     flex: 1;
     overflow-y: auto;
-    padding: 12px 14px;
 }
 
 .formBody {
@@ -182,10 +189,13 @@
 }
 
 .strip {
-    width: 28px;
+    width: 48px;
+    border-radius: 8px;
+    overflow: hidden;
     flex: none;
     display: flex;
     flex-direction: column;
+
 }
 
 .stripSwatch {
@@ -193,7 +203,6 @@
 }
 
 .panelFooter {
-    padding: 10px 14px 14px;
 }
 
 .resetButton {
