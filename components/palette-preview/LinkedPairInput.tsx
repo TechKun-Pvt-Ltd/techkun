@@ -5,7 +5,7 @@ import styles from "./PalettePreviewOverlay.module.css";
 
 interface LinkedPairInputProps<T> {
     label: string;
-    value: T | [T, T];
+    value: T | { tints: T; shades: T; };
     onChange: (value: T | [T, T]) => void;
     renderInput: (value: T, onChange: (v: T) => void) => ReactNode;
     primaryLabel?: string;
@@ -25,7 +25,7 @@ export function LinkedPairInput<T>({
                                        primaryLabel = "Start",
                                        secondaryLabel = "End",
                                    }: LinkedPairInputProps<T>) {
-    const isSplit = Array.isArray(value);
+    const isSplit = value && typeof value === "object" && "tints" in value && "shades" in value;
     const pair = (isSplit ? value : [value, value]) as [T, T];
 
     const toggle = () => {

@@ -358,7 +358,7 @@ export default function CubicBezierEditor({
     const setField = (index: 0 | 1 | 2 | 3) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = parseFloat(e.target.value);
         if (Number.isNaN(raw)) return;
-        const n = [...bezier] as CubicBezierValue;
+        const n = [...bezier] as [number, number, number, number];
         n[index] = index % 2 === 0 ? clamp(raw, 0, 1) : clamp(raw, Y_MIN, Y_MAX);
         commit(n);
     };

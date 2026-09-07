@@ -1,35 +1,32 @@
 "use client";
 
 import styles from "./PalettePreviewOverlay.module.css";
-import { EASING_OPTIONS } from "./easing-options";
-import type { InterpolatedItemConfig } from "../../app/styles/theme/color.config";
-import type { InterpolatedCustomization } from "./types";
+import {GenericColorRampCustomization} from "@/app/styles/generated-css/css-palette-customization.ts";
 
 interface InterpolatedFormProps {
-    config: InterpolatedItemConfig;
-    value: InterpolatedCustomization;
-    onChange: (value: InterpolatedCustomization) => void;
+    value: GenericColorRampCustomization;
+    onChange: <K extends keyof GenericColorRampCustomization>(key: K, value: GenericColorRampCustomization[K]) => void;
 }
 
-export function InterpolatedForm({ config, value, onChange }: InterpolatedFormProps) {
+export function InterpolatedForm({ value}: InterpolatedFormProps) {
     return (
         <div className={styles.formBody}>
             <p className={styles.hintText}>
-                Interpolates between <code>{config.startColor}</code> and <code>{config.endColor}</code>.
+                Interpolates between <code>{value.startColor}</code> and <code>{value.endColor}</code>.
             </p>
             <div className={styles.field}>
                 <span className={styles.fieldLabel}>Easing</span>
-                <select
-                    className={styles.select}
-                    value={value.easing}
-                    onChange={(e) => onChange({ ...value, easing: e.target.value })}
-                >
-                    {EASING_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
+                {/*<select*/}
+                {/*    className={styles.select}*/}
+                {/*    value={value.easing}*/}
+                {/*    onChange={(e) => onChange({ ...value, easing: e.target.value })}*/}
+                {/*>*/}
+                {/*    {EASING_OPTIONS.map((opt) => (*/}
+                {/*        <option key={opt.value} value={opt.value}>*/}
+                {/*            {opt.label}*/}
+                {/*        </option>*/}
+                {/*    ))}*/}
+                {/*</select>*/}
             </div>
         </div>
     );

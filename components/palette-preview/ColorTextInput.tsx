@@ -1,41 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, {useRef} from "react";
 import styles from "./PalettePreviewOverlay.module.css";
 import { isValidCssColor } from "./color-validation";
 
-interface ColorTextInputProps {
-    value: string;
+interface ColorTextInputProps extends Omit<React.ComponentProps<"input">, "onChange"> {
+    initialValue: string;
     placeholder: string;
     onChange(value: string): void;
 }
 
 /** Free-text color input (any CSS syntax, including oklch()), validated on
  * blur via CSS.supports so nothing invalid ever reaches the generator. */
-export function ColorTextInput({ value, placeholder, onChange }: ColorTextInputProps) {
-    const [draft, setDraft] = useState(value);
-
-    const isValid = isValidCssColor(draft.trim());
-
-    useEffect(() => {
-        setDraft(value);
-    }, [value]);
-
+export function ColorTextInput({ initialValue, placeholder, onChange }: ColorTextInputProps) {
+    const colorPreviewRef = useRef<HTMLSpanElement>(null);
+    const isValid = isValidCssColor(initialValue);
     return (
         <div className={styles.colorInputRow}>
-            <span className={styles.colorSwatch} style={{ background: value || placeholder }} aria-hidden />
+            <span ref={colorPreviewRef} className={styles.colorSwatch} style={{ backgroundColor: initialValue }} aria-hidden />
             <input
                 type="text"
-                className={isValid ? styles.textInput : `${styles.textInput} ${styles.invalid}`}
-                value={draft}
+                className={styles.textInput}
+                defaultValue={initialValue}
+                data-valid={isValid}
                 placeholder={placeholder}
-                onChange={(e) => {
+                onChange={e => {
                     const latest = e.target.value;
-                    setDraft(latest);
+                    e.target.setAttribute("data-valid", String(isValidCssColor(latest)));
+                    if (colorPreviewRef.current)
+                        colorPreviewRef.current.style.backgroundColor = latest;
                     onChange(latest);
                 }}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                onKeyDown={e => {
+                    if (e.key === "Enter") e.currentTarget.blur();
                 }}
             />
         </div>

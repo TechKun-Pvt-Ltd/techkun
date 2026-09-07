@@ -8,7 +8,11 @@ import {ShadesTintsForm} from "./ShadesTintsForm";
 import {InterpolatedForm} from "./InterpolatedForm";
 import {PaletteStrip} from "./PaletteStrip";
 import {processConfig} from "@/app/styles/generated-css/css-palette-generation-utils";
-import {PALETTE_CUSTOMIZATION, PaletteCustomization} from "@/app/styles/generated-css/css-palette-customization";
+import {
+    ColorRampCustomization,
+    PALETTE_CUSTOMIZATION,
+    PaletteCustomization
+} from "@/app/styles/generated-css/css-palette-customization";
 import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/app/styles/generated-css/css-palette-generation-config";
 
 interface PalettePreviewOverlayProps {
@@ -42,10 +46,10 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
 
     const activeValue = customizations.current[activeTab];
 
-    const updateActive = (value: PaletteCustomization) => {
-        customizations.current[activeTab] = value;
+    function updateActive<K extends keyof ColorRampCustomization>(key: K, value: ColorRampCustomization[K]) {
+        customizations.current[activeTab][key] = value;
         applyRules(processConfig(customizations.current));
-    };
+    }
 
     const handleReset = () => {
         clear();
@@ -88,7 +92,8 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
                                 type="button"
                                 role="tab"
                                 aria-selected={key === activeTab}
-                                className={key === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+                                className={styles.tab}
+                                data-active={key === activeTab}
                                 onClick={() => setActiveTab(key)}
                             >
                                 {colorRampLabels[key]}
@@ -97,14 +102,14 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
                     </div>
                 </div>
 
-                <div className={styles.formScroll}>
-                    {activeValue.type === ColorRampType.TINTS_SHADES && (
-                        <ShadesTintsForm value={activeValue} onChange={updateActive} />
-                    )}
-                    {activeValue.type === ColorRampType.DEFAULT && (
-                        <InterpolatedForm value={activeValue} onChange={updateActive} />
-                    )}
-                </div>
+                {/*<div className={styles.formScroll}>*/}
+                {/*    {activeValue.type === ColorRampType.TINTS_SHADES && (*/}
+                {/*        <ShadesTintsForm key={activeTab} value={activeValue} onChange={updateActive} />*/}
+                {/*    )}*/}
+                {/*    {activeValue.type === ColorRampType.DEFAULT && (*/}
+                {/*        <InterpolatedForm value={activeValue} onChange={updateActive} />*/}
+                {/*    )}*/}
+                {/*</div>*/}
 
                 <div className={styles.panelFooter}>
                     <button type="button" className={styles.resetButton} onClick={handleReset}>
