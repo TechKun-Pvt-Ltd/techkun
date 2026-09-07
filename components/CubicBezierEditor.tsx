@@ -6,7 +6,7 @@ import React, {
     KeyboardEvent,
     PointerEvent as ReactPointerEvent,
 } from 'react';
-import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
 /**
  * ---------------------------------------------------------------------------
@@ -132,174 +132,174 @@ const isSameCurve = (a: CubicBezierValue, b: CubicBezierValue) =>
  * ---------------------------------------------------------------------------
  */
 
-const Root = styled.div`
-  --ink: #e9e7e0;
-  --ink-dim: #8b8e9c;
-  --bg: #14161f;
-  --panel: #1b1e2a;
-  --grid: #2a2e3d;
-  --curve: #5eead4;
-  --handle: #f2b45b;
-  --ref-line: #3a3f52;
-  --focus: #7dd3fc;
+const rootCss = css`
+    --ink: #e9e7e0;
+    --ink-dim: #8b8e9c;
+    --bg: #14161f;
+    --panel: #1b1e2a;
+    --grid: #2a2e3d;
+    --curve: #5eead4;
+    --handle: #f2b45b;
+    --ref-line: #3a3f52;
+    --focus: #7dd3fc;
 
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: var(--bg);
-  border-radius: 12px;
-  color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  width: max-content;
-`;
-
-const Body = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: flex-start;
-`;
-
-const CanvasWrap = styled.div`
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--panel);
-  touch-action: none;
-`;
-
-const Inspector = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 200px;
-`;
-
-const FieldRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-`;
-
-const Field = styled.label`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--ink-dim);
-`;
-
-const NumberInput = styled.input`
-  font: inherit;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--panel);
-  border: 1px solid var(--grid);
-  border-radius: 6px;
-  padding: 6px 8px;
-  width: 100%;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: var(--focus);
-  }
-
-  &::-webkit-inner-spin-button {
-    opacity: 0.4;
-  }
-`;
-
-const CodeRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--panel);
-  border: 1px solid var(--grid);
-  border-radius: 6px;
-  padding: 8px 10px;
-`;
-
-const Code = styled.code`
-  flex: 1;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-  color: var(--curve);
-  overflow-x: auto;
-  white-space: nowrap;
-`;
-
-const CopyButton = styled.button`
-  font: inherit;
-  font-size: 11px;
-  color: var(--ink-dim);
-  background: transparent;
-  border: 1px solid var(--grid);
-  border-radius: 5px;
-  padding: 4px 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-
-  &:hover {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background: var(--bg);
+    border-radius: 12px;
     color: var(--ink);
-    border-color: var(--ink-dim);
-  }
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    width: max-content;
 `;
 
-const Note = styled.p`
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--ink-dim);
-  max-width: 460px;
+const bodyCss = css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
 `;
 
-const PresetPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+const canvasWrapCss = css`
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--panel);
+    touch-action: none;
 `;
 
-const PresetGroupRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
+const inspectorCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 200px;
 `;
 
-const PresetGroupLabel = styled.span`
-  font-size: 11px;
-  color: var(--ink-dim);
-  width: 44px;
-  flex-shrink: 0;
+const fieldRowCss = css`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 `;
 
-const PresetButtons = styled.div`
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+const fieldCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ink-dim);
 `;
 
-const PresetButton = styled.button<{ active: boolean }>`
-  font: inherit;
-  font-size: 12px;
-  color: ${(p) => (p.active ? '#0f1115' : 'var(--ink)')};
-  background: ${(p) => (p.active ? 'var(--curve)' : 'var(--panel)')};
-  border: 1px solid ${(p) => (p.active ? 'var(--curve)' : 'var(--grid)')};
-  border-radius: 999px;
-  padding: 5px 12px;
-  cursor: pointer;
-  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+const numberInputCss = css`
+    font: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--grid);
+    border-radius: 6px;
+    padding: 6px 8px;
+    width: 100%;
+    box-sizing: border-box;
 
-  &:hover {
-    border-color: ${(p) => (p.active ? 'var(--curve)' : 'var(--ink-dim)')};
-  }
+    &:focus {
+        outline: none;
+        border-color: var(--focus);
+    }
 
-  &:focus-visible {
+    &::-webkit-inner-spin-button {
+        opacity: 0.4;
+    }
+`;
+
+const codeRowCss = css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--grid);
+    border-radius: 6px;
+    padding: 8px 10px;
+`;
+
+const codeCss = css`
+    flex: 1;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--curve);
+    overflow-x: auto;
+    white-space: nowrap;
+`;
+
+const copyButtonCss = css`
+    font: inherit;
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: transparent;
+    border: 1px solid var(--grid);
+    border-radius: 5px;
+    padding: 4px 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+        color: var(--ink);
+        border-color: var(--ink-dim);
+    }
+`;
+
+const noteCss = css`
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+    max-width: 460px;
+`;
+
+const presetPanelCss = css`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+const presetGroupRowCss = css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`;
+
+const presetGroupLabelCss = css`
+    font-size: 11px;
+    color: var(--ink-dim);
+    width: 44px;
+    flex-shrink: 0;
+`;
+
+const presetButtonsCss = css`
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+`;
+
+const PresetButton = (active: boolean) => css`
+    font: inherit;
+    font-size: 12px;
+    color: ${active ? '#0f1115' : 'var(--ink)'};
+    background: ${active ? 'var(--curve)' : 'var(--panel)'};
+    border: 1px solid ${active ? 'var(--curve)' : 'var(--grid)'};
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+    
+    &:hover {
+    border-color: ${active ? 'var(--curve)' : 'var(--ink-dim)'};
+    }
+    
+    &:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
-  }
+    }
 `;
 
 /**
@@ -309,14 +309,14 @@ const PresetButton = styled.button<{ active: boolean }>`
  */
 
 export default function CubicBezierEditor({
-                                         value,
-                                         defaultValue = [0.42, 0, 0.58, 1],
-                                         onChange,
-                                         presetsPosition = 'bottom',
-                                         size = 280,
-                                         showInspector = true,
-                                         className,
-                                     }: BezierEditorProps) {
+                                              value,
+                                              defaultValue = [0.42, 0, 0.58, 1],
+                                              onChange,
+                                              presetsPosition = 'bottom',
+                                              size = 280,
+                                              showInspector = true,
+                                              className,
+                                          }: BezierEditorProps) {
     const [internalValue, setInternalValue] = useState<CubicBezierValue>(defaultValue);
     const bezier = value ?? internalValue;
     const [x1, y1, x2, y2] = bezier;
@@ -417,51 +417,49 @@ export default function CubicBezierEditor({
     );
 
     const presetPanel = (
-        <PresetPanel>
-            <PresetButtons>
+        <div css={presetPanelCss}>
+            <div css={presetButtonsCss}>
                 {grouped[0].items.map((preset) => (
-                    <PresetButton
-                        key={preset.id}
-                        type="button"
-                        active={isSameCurve(bezier, preset.value)}
-                        onClick={() => commit(preset.value)}
+                    <button css={PresetButton(isSameCurve(bezier, preset.value))}
+                            key={preset.id}
+                            type="button"
+                            onClick={() => commit(preset.value)}
                     >
                         {preset.label}
-                    </PresetButton>
+                    </button>
                 ))}
-            </PresetButtons>
+            </div>
             {grouped.slice(1).map(({ group, items }) => (
-                <PresetGroupRow key={group}>
-                    <PresetGroupLabel>{group}</PresetGroupLabel>
-                    <PresetButtons>
+                <div css={presetGroupRowCss} key={group}>
+                    <span css={presetGroupLabelCss}>{group}</span>
+                    <div css={presetButtonsCss}>
                         {items.map((preset) => (
-                            <PresetButton
-                                key={preset.id}
-                                type="button"
-                                active={isSameCurve(bezier, preset.value)}
-                                onClick={() => commit(preset.value)}
+                            <button css={PresetButton(isSameCurve(bezier, preset.value))}
+                                    key={preset.id}
+                                    type="button"
+                                    onClick={() => commit(preset.value)}
                             >
                                 {preset.label}
-                            </PresetButton>
+                            </button>
                         ))}
-                    </PresetButtons>
-                </PresetGroupRow>
+                    </div>
+                </div>
             ))}
-            <Note>
+            <p css={noteCss}>
                 Elastic and bounce aren&rsquo;t here — they overshoot and reverse direction more than once,
                 so no single cubic bezier can draw them. Everything above, including the &ldquo;back&rdquo;
                 family, only needs one curve because a bezier&rsquo;s control points can sit outside 0–1 on
                 the y-axis.
-            </Note>
-        </PresetPanel>
+            </p>
+        </div>
     );
 
     return (
-        <Root className={className}>
+        <div css={rootCss} className={className}>
             {presetsPosition === 'top' && presetPanel}
 
-            <Body>
-                <CanvasWrap>
+            <div css={bodyCss}>
+                <div css={canvasWrapCss}>
                     <svg
                         ref={svgRef}
                         width={size}
@@ -530,45 +528,45 @@ export default function CubicBezierEditor({
                             onKeyDown={onHandleKeyDown(2)}
                         />
                     </svg>
-                </CanvasWrap>
+                </div>
 
                 {showInspector && (
-                    <Inspector>
-                        <FieldRow>
-                            <Field>
+                    <div css={inspectorCss}>
+                        <div css={fieldRowCss}>
+                            <label css={fieldCss}>
                                 x1
-                                <NumberInput type="number" step={0.01} min={0} max={1} value={x1} onChange={setField(0)} />
-                            </Field>
-                            <Field>
+                                <input css={numberInputCss} type="number" step={0.01} min={0} max={1} value={x1} onChange={setField(0)} />
+                            </label>
+                            <label css={fieldCss}>
                                 y1
-                                <NumberInput type="number" step={0.01} value={y1} onChange={setField(1)} />
-                            </Field>
-                            <Field>
+                                <input css={numberInputCss} type="number" step={0.01} value={y1} onChange={setField(1)} />
+                            </label>
+                            <label css={fieldCss}>
                                 x2
-                                <NumberInput type="number" step={0.01} min={0} max={1} value={x2} onChange={setField(2)} />
-                            </Field>
-                            <Field>
+                                <input css={numberInputCss} type="number" step={0.01} min={0} max={1} value={x2} onChange={setField(2)} />
+                            </label>
+                            <label css={fieldCss}>
                                 y2
-                                <NumberInput type="number" step={0.01} value={y2} onChange={setField(3)} />
-                            </Field>
-                        </FieldRow>
+                                <input css={numberInputCss} type="number" step={0.01} value={y2} onChange={setField(3)} />
+                            </label>
+                        </div>
 
-                        <CodeRow>
-                            <Code>{cssString}</Code>
-                            <CopyButton type="button" onClick={copyCss}>
+                        <div css={codeRowCss}>
+                            <code css={codeCss}>{cssString}</code>
+                            <button css={copyButtonCss} type="button" onClick={copyCss}>
                                 {copied ? 'Copied' : 'Copy'}
-                            </CopyButton>
-                        </CodeRow>
+                            </button>
+                        </div>
 
-                        <Note>
+                        <p css={noteCss}>
                             Drag the amber handles, type exact values, or pick a preset. Arrow keys nudge the
                             focused handle by 0.01 (0.1 with shift).
-                        </Note>
-                    </Inspector>
+                        </p>
+                    </div>
                 )}
-            </Body>
+            </div>
 
             {presetsPosition === 'bottom' && presetPanel}
-        </Root>
+        </div>
     );
 }
