@@ -4,7 +4,10 @@ export default {
 		// autoLabel defaults to 'dev-only', but that check doesn't currently fire under
 		// `next dev` with Turbopack (verified: default produces zero labels in dev here) —
 		// 'always' is what actually works, at the cost of carrying labels into prod too.
-		emotion: {autoLabel: "always"},
+		// Currently 'never': the label-injection path corrupts app/utils/css/property.ts's
+		// tag-factory pattern (verified — see property.ts). sourceMap/minification still run
+		// regardless of autoLabel; only the readable-classname labeling is lost project-wide.
+		emotion: {autoLabel: "never"},
 	},
 	turbopack: {
 		rules: {
