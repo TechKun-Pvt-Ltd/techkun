@@ -29,16 +29,39 @@ const lsOffset = 0.01;
 // language=CSS prefix=":root {" suffix="}"
 typeScaleProperties.push(
     `--scale-ratio: calc(${minScaleRatio} + ${maxScaleRatio - minScaleRatio} * var(--mobile-s-to-laptop-mid))`,
-    `--base-lh-ratio: ${baseLhRatio}`,
+    `--base-line-height: ${baseLhRatio}`,
     `--base-letter-spacing: ${baseLetterSpacing}em`,
     `--ls-offset: ${lsOffset}em`,
 );
+// Single source of truth for the t-shirt token behind each scale step —
+// both the :root custom properties below and the .text-* utility classes
+// further down read the token from here instead of separately re-deriving
+// it from the step count fed into pow(--scale-ratio, n). Flip of the old
+// TEXT_TSHIRT_SIZES map (token -> step); step 8 has no token and is skipped,
+// same as before the flip.
+const TSHIRT_SIZE_TOKENS = {
+    [-2]: "xs",
+    [-1]: "sm",
+    0: "base",
+    1: "lg",
+    2: "xl",
+    3: "2xl",
+    4: "3xl",
+    5: "4xl",
+    6: "5xl",
+    7: "6xl",
+    9: "8xl",
+    10: "9xl"
+};
+
 const lhAddend = baseLhRatio - 1;
 for (let i = -2; i <= 10; i++) {
     if (i === 0) continue;
 
+    const token = TSHIRT_SIZE_TOKENS[i];
+    if (token === undefined) continue;
+
     const step = i < 0 ? -i : i;
-    const token = i < 0 ? `neg-${step}` : step;
     const operation = i < 0 ? "/" : "*";
     const operand2 = i === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${step})`;
 
@@ -85,25 +108,13 @@ for (const [tag, index] of Object.entries(HEADING_TOKENS)) {
     );
 }
 
-const TEXT_TSHIRT_SIZES = {
-    xs: -2,
-    sm: -1,
-    base: 0,
-    lg: 1,
-    xl: 2,
-    "2xl": 3,
-    "3xl": 4,
-    "4xl": 5,
-    "5xl": 6,
-    "6xl": 7,
-    "8xl": 9,
-    "9xl": 10
-};
-
 const textTshirtSizeRules = [];
 
-for (const [token, index] of Object.entries(TEXT_TSHIRT_SIZES)) {
-    const { fontSize, lineHeight, letterSpacing } = TYPE_SCALE[index];
+for (let i = -2; i <= 10; i++) {
+    const token = TSHIRT_SIZE_TOKENS[i];
+    if (token === undefined) continue;
+
+    const { fontSize, lineHeight, letterSpacing } = TYPE_SCALE[i];
 
     // language=CSS
     textTshirtSizeRules.push(

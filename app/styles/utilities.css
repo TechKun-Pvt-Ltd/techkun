@@ -7,6 +7,6 @@
 .indexed-font {
     --_scale-ratio: pow(var(--scale-ratio), var(--font-index));
     font-size: round(var(--base-font-size) * var(--_scale-ratio), 1px);
-    line-height: round(1 + (var(--base-lh-ratio) - 1) / var(--_scale-ratio), 0.1);
+    line-height: round(1 + (var(--base-line-height) - 1) / var(--_scale-ratio), 0.1);
     letter-spacing: calc((var(--base-letter-spacing) + var(--ls-offset)) / var(--_scale-ratio) - var(--ls-offset));
 }

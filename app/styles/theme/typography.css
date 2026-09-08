@@ -3,7 +3,7 @@
     --base-font-size: 1rem;
 
     font-size: var(--base-font-size);
-    line-height: var(--base-lh-ratio);
+    line-height: var(--base-line-height);
     letter-spacing: var(--base-letter-spacing);
     font-family: Quicksand, Quicksand Fallback, sans-serif;
     font-style: normal;

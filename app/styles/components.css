@@ -55,50 +55,50 @@
 }
 
 .display-text {
-    font-size: var(--font-size-1);
-    line-height: var(--line-height-1);
-    letter-spacing: var(--letter-spacing-1);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
 }
 .display-lg {
-    font-size: var(--font-size-3);
-    line-height: var(--line-height-3);
-    letter-spacing: var(--letter-spacing-3);
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
 }
 .hero-heading {
-    font-size: var(--font-size-6);
-    line-height: var(--line-height-6);
-    letter-spacing: var(--letter-spacing-6);
+    font-size: var(--font-size-5xl);
+    line-height: var(--line-height-5xl);
+    letter-spacing: var(--letter-spacing-5xl);
     font-weight: normal;
 }
 .hero-button {
-    font-size: var(--font-size-1);
-    line-height: var(--line-height-1);
-    letter-spacing: var(--letter-spacing-1);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    letter-spacing: var(--letter-spacing-lg);
     font-weight: normal;
 }
 .section-title {
-    font-size: var(--font-size-5);
-    line-height: var(--line-height-5);
-    letter-spacing: var(--letter-spacing-5);
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+    letter-spacing: var(--letter-spacing-4xl);
     font-weight: normal;
 }
 .section-subtitle {
-    font-size: var(--font-size-3);
-    line-height: var(--line-height-3);
-    letter-spacing: var(--letter-spacing-3);
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-2xl);
+    letter-spacing: var(--letter-spacing-2xl);
     font-weight: normal;
     color: var(--secondary-neutral-100);
 }
 .item-title {
-    font-size: var(--font-size-4);
-    line-height: var(--line-height-4);
-    letter-spacing: var(--letter-spacing-4);
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-3xl);
+    letter-spacing: var(--letter-spacing-3xl);
     font-weight: normal;
 }
 .item-subtitle {
-    font-size: var(--font-size-2);
-    line-height: var(--line-height-2);
-    letter-spacing: var(--letter-spacing-2);
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    letter-spacing: var(--letter-spacing-xl);
     font-weight: normal;
     color: var(--secondary-neutral-300);
 }
