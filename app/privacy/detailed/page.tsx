@@ -13,7 +13,6 @@ const headerCss = css`
         color: var(--muted-foreground);
         background-color: var(--muted);
         width: max-content;
-        padding: 4px 12px;
         border-radius: 0.5rem;
     }
 `;
@@ -21,18 +20,18 @@ const headerCss = css`
 export default function DetailedPrivacyPolicy() {
     return <main id="top">
         <section>
-            <div css={pageCss}>
+            <div className="pt-24 gap-16" css={pageCss}>
                 <header css={headerCss}>
-                    <Link href="/privacy" css={linkCss} className="text-sm" style={{display: "block", marginBlockEnd: "0.75rem"}}>← Back to Privacy Policy</Link>
+                    <Link href="/privacy" css={linkCss} className="text-sm mb-3" style={{display: "block"}}>← Back to Privacy Policy</Link>
                     <h1 className="section-title">Detailed Privacy Policy</h1>
-                    <p className="text-base">
+                    <p className="text-base py-1 px-3">
                         Last updated: {LAST_UPDATED}
                     </p>
                 </header>
 
                 <div>
-                    <nav aria-label="Detailed Privacy Policy contents" css={tocCss}>
-                        <ul>
+                    <nav aria-label="Detailed Privacy Policy contents" className="mb-8 py-5 px-6" css={tocCss}>
+                        <ul className="gap-y-2 gap-x-6">
                             {TOC_ITEMS.map(item => <li key={item.id} className="text-sm">
                                 <Link href={`#${item.id}`} css={linkCss}>{item.title}</Link>
                             </li>)}
@@ -41,7 +40,7 @@ export default function DetailedPrivacyPolicy() {
                     <div css={legalContentCss}>
                         <LegalBlocks blocks={FULL_POLICY_BLOCKS} />
                     </div>
-                    <p className="text-sm" style={{marginBlockStart: "2.5rem"}}>
+                    <p className="text-sm mt-10">
                         <Link href="#top" css={linkCss}>Back to top ↑</Link>
                     </p>
                 </div>

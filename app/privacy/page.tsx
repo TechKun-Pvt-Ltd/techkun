@@ -13,7 +13,6 @@ const headerCss = css`
         color: var(--muted-foreground);
         background-color: var(--muted);
         width: max-content;
-        padding: 4px 12px;
         border-radius: 0.5rem;
     }
 `;
@@ -21,15 +20,15 @@ const headerCss = css`
 export default function Privacy() {
     return <main>
         <section>
-            <div css={pageCss}>
+            <div className="pt-24 gap-16" css={pageCss}>
                 <header css={headerCss}>
                     <h1 className="section-title">Privacy Policy</h1>
-                    <p className="text-base">
+                    <p className="text-base py-1 px-3">
                         Last updated: {LAST_UPDATED}
                     </p>
                 </header>
 
-                <div css={summaryCardCss}>
+                <div className="gap-3 py-6 px-7" css={summaryCardCss}>
                     <h2 className="text-lg" style={{fontWeight: 600}}>Privacy Summary</h2>
                     <div css={legalContentCss}>
                         <LegalBlocks blocks={SUMMARY_BLOCKS} />
@@ -40,7 +39,7 @@ export default function Privacy() {
                 </div>
 
                 <div>
-                    <h2 className="item-title" style={{marginBlockEnd: "1.5rem"}}>
+                    <h2 className="item-title mb-6">
                         Privacy Policy — Short Version
                     </h2>
                     <div css={legalContentCss}>

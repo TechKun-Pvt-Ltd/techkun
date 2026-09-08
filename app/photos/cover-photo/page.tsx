@@ -33,8 +33,7 @@ export default function ProfilePic() {
 
     const jointRegionStretch = 10;
     return <main>
-        <section css={css`
-            padding-block-start: 8rem;
+        <section className="pt-32" css={css`
             justify-items: center;
         `}>
             <div>

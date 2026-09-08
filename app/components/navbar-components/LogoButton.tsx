@@ -70,13 +70,13 @@ const linkCss = css`
 	}
 	&::before {
 		content: "";
-		padding-inline-start: 28px;
+		padding-inline-start: var(--space-7);
 		border-top-left-radius: 100vw;
 		border-bottom-left-radius: 100vw;
 		border-left-width: 1px;
 	}
 	.after {
-		padding-inline-end: 28px;
+		padding-inline-end: var(--space-7);
 		border-top-right-radius: 100vw;
 		border-bottom-right-radius: 100vw;
 		border-right-width: 1px;
@@ -103,7 +103,6 @@ const disappearingTextCss = css`
 		var(--primary-500) calc(var(--gradient-progress) - 20%),
 		transparent var(--gradient-progress)
 	);
-	padding-inline-start: 16px;
 	background-clip: text;
 
 	transition: --gradient-progress ${calcEnterDuration}ms ${enterSpringEasing};
@@ -189,6 +188,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 			<motion.span css={disappearingTextContainerCss}>
 				<motion.span
 					layout="size"
+					className="pl-4"
 					css={disappearingTextCss}
 					data-state={textState}
 				>TechKun</motion.span>

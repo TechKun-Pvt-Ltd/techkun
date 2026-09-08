@@ -9,11 +9,11 @@ export default function Footer() {
         border-top: 1px solid var(--border);
         grid-template-rows: 1fr max-content;
     `}>
-        <div css={css`
+        <div className="pt-18 pb-12" css={css`
             display: grid;
             grid-template-columns: subgrid;
             align-content: space-between;
-            padding-block: 72px 48px;
+            padding-block: var(--space-18) var(--space-12);
             position: relative;
             overflow: hidden;
             &::before, &::after {
@@ -33,7 +33,7 @@ export default function Footer() {
                 );
             }
             &::after {
-                height: calc(2 * 72px);
+                height: calc(2 * var(--space-18));
                 transform: translateY(-50%);
                 background: radial-gradient(
                     oklch(from var(--secondary-900) l c h / 0.25),
@@ -41,22 +41,20 @@ export default function Footer() {
                 );
             }
         `}>
-            <div css={css`
+            <div className="gap-8" css={css`
                 grid-column: 1 / -1;
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
-                gap: 32px;
                 flex-wrap: wrap;
 
                 & > p {
                     font-weight: 500;
                 }
             `}>
-                <div className="display-text" css={css`
+                <div className="display-text gap-4" css={css`
                     display: flex;
                     align-items: center;
-                    gap: 16px;
                     font-weight: 500;
                 `}>
                     <TechKunLogo />
@@ -67,12 +65,9 @@ export default function Footer() {
                     & > a {
                         color: var(--foreground);
                         text-decoration: none;
-                        &:first-of-type {
-                            margin-inline-end: 20px;
-                        }
                     }
                 `}>
-                    <Link href="/privacy">Privacy</Link>
+                    <Link href="/privacy" className="mr-5">Privacy</Link>
                     <Link href="/terms">Terms</Link>
                 </p>
                 <p style={{color: 'var(--muted-foreground)'}}>© 2026 TechKun. All rights reserved.</p>
@@ -85,11 +80,10 @@ export default function Footer() {
             color: var(--neutral-500);
 
             & > p {
-                margin-block: 8px;
                 font-weight: 500;
             }
         `}>
-            <p className="text-sm">This site is made by humans.</p>
+            <p className="text-sm my-2">This site is made by humans.</p>
         </div>
     </footer>
 }

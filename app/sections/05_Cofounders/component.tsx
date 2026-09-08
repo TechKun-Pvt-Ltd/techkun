@@ -133,7 +133,7 @@ export default function Cofounders() {
         display: grid;
         grid-template-columns: 1fr;
         align-items: center;
-        gap: 48px;
+        gap: var(--space-12);
 
         & .person-intro {
             min-width: 0;
@@ -154,7 +154,7 @@ export default function Cofounders() {
         @media ${deviceQuery.laptop} {
             max-width: revert;
             grid-template-columns: 5fr 7fr;
-            gap: 16px;
+            gap: var(--space-4);
             & .person-intro {
                 grid-row: 1 / span 1;
                 padding-block-start: calc(550.287 / 1541 * 100%);
@@ -174,7 +174,7 @@ export default function Cofounders() {
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 16px;
+        gap: var(--space-4);
 
         .links {
             display: flex;
@@ -210,7 +210,7 @@ export default function Cofounders() {
                         className="cofounder" css={liCss}
                     >
                         <div className="person-intro">
-                            <div style={{display: "flex", gap: "16px", marginBlockEnd: "32px"}}>
+                            <div className="gap-4 mb-8" style={{display: "flex"}}>
                                 {people.map((_, iconIndex) => {
                                     return <div
                                         key={iconIndex}

@@ -12,7 +12,7 @@ const baseGroupCss = css`
     height: 100%;
     pointer-events: auto;
     display: flex;
-    gap: 12px;
+    gap: var(--space-3);
 
     opacity: var(--_switch);
     transition: 0.3s ease;
@@ -25,7 +25,7 @@ const variantCss = {
         transform: translateY(calc((1 - var(--_switch)) * -150%));
     `,
 	"bottom-nav": css`
-        padding-block: 16px;
+        padding-block: var(--space-4);
         justify-content: space-between;
         transform: translateY(calc((1 - var(--_switch)) * 150%));
     `
@@ -33,10 +33,6 @@ const variantCss = {
 const socialLinksGroupCss = css`
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-
-    padding-block: 0.5rem;
-    padding-inline: 1rem;
     border-radius: 100vh;
     corner-shape: superellipse(1.1);
 
@@ -44,7 +40,7 @@ const socialLinksGroupCss = css`
     backdrop-filter: blur(4px);
     border: 1px solid var(--secondary-900);
     a {
-        padding: 0.25rem;
+        padding: var(--space-1);
         color: var(--secondary-neutral-400);
     }
     .divider {
@@ -55,7 +51,7 @@ const socialLinksGroupCss = css`
 `;
 
 function SocialLinksGroup() {
-	return <div className="text-lg" css={socialLinksGroupCss}>
+	return <div className="text-lg gap-3 py-2 px-4" css={socialLinksGroupCss}>
 		<XLink className="contact-option" href={xAccountUrl} />
 		<div className="divider" />
 		<LinkedInLink className="contact-option" href={linkedInAccountUrl} />

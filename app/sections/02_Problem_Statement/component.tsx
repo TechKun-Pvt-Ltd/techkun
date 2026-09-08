@@ -6,9 +6,8 @@ export default function ProblemStatement() {
 	return <section css={css`
 		border-block: 1px solid var(--border);
 	`}>
-		<div css={css`
+		<div className="pt-12 pb-16" css={css`
             grid-column: breakout;
-            padding-block: 48px 64px;
             padding-inline: var(--page-padding);
             border-inline: 1px solid var(--border);
             min-height: 0;

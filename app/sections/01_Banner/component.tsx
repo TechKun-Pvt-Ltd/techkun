@@ -106,15 +106,13 @@ export default function Banner() {
             text-align: center;
 		`}>
 			<div>
-				<p className="text-lg" css={css`
-					margin-block-end: 16px;
+				<p className="text-lg mb-4" css={css`
 					font-weight: 500;
                     color: var(--secondary-neutral-400);
 				`}>Hello there!</p>
-				<h1 className="hero-heading" css={css`
+				<h1 className="hero-heading mb-14" css={css`
 					isolation: isolate;
 					user-select: none;
-					margin-block-end: 56px;
 				`}>
 					We&nbsp;build&nbsp;software
 					<br/>with
@@ -127,17 +125,13 @@ export default function Banner() {
 						<br css={mobileBrCss}/> <Identity ref={identityRef} />.
 					</span>
 				</h1>
-				<p className="text-lg" css={css`
-                    padding-inline: 96px;
-                    margin-block-end: 32px;
+				<p className="text-lg px-24 mb-8" css={css`
                     font-weight: 500;
 					white-space: nowrap;
                     color: var(--secondary-neutral-400);
 				`}>If that resonates...</p>
-				<div className="cta-group text-lg" css={css`
-					padding-inline: 96px;
+				<div className="cta-group text-lg px-24 gap-6" css={css`
 					display: flex;
-					gap: 24px;
 					align-items: center;
 					justify-content: center;
 
@@ -149,7 +143,7 @@ export default function Banner() {
 					<MainCTA className="cta" style={{ width: "max-content" }}>
 						Let's get on call
 					</MainCTA>
-					<div style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", gap: "12px", alignItems: "center" }}>
+					<div className="gap-3" style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", alignItems: "center" }}>
 						<p>or chat on</p>
 						<XLink href={xAccountUrl} />
 						<LinkedInLink href={linkedInAccountUrl} />

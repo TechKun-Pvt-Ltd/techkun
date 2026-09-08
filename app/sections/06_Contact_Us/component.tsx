@@ -173,7 +173,7 @@ function ContactOptions() {
             initial-value: 0;
         }
         color: var(--foreground);
-        padding-block: 0.75rem;
+        padding-block: var(--space-3);
         border-radius: var(${brRadiusProp});
         width: 100%;
         white-space: nowrap;
@@ -273,12 +273,11 @@ function ShimmerText(
 
 export default function ContactUs() {
     return <section>
-        <div css={css`
+        <div className="gap-y-16" css={css`
             align-self: end;
             height: clamp(560px, 75vh, 960px);
             display: flex;
             flex-direction: column;
-            row-gap: 4rem;
             justify-content: center;
         `}>
             <div css={css`

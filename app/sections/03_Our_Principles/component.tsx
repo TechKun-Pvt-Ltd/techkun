@@ -110,13 +110,10 @@ export default function OurPrinciples() {
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
 	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
 
-	return <section css={css`
-        padding-block: 128px;
-	`}>
-		<div css={css`
+	return <section className="py-32">
+		<div className="gap-20" css={css`
             display: flex;
 			flex-direction: column;
-			gap: 80px;
 		`}>
 			<div>
 				<h2 className="section-title" css={css`
@@ -154,7 +151,7 @@ export default function OurPrinciples() {
 							grid-template-columns: 7fr 13fr;
 							grid-template-rows: 1fr;
 							align-items: stretch;
-							gap: 32px;
+							gap: var(--space-8);
 						}
 					`}>
 						<PrincipleTitles angle={angle} angleRangeStart={ANGLE_RANGE_START} titles={titles} />

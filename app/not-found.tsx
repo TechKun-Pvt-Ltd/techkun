@@ -5,7 +5,6 @@ import Link from "next/link";
 
 const buttonCss = css`
     display: inline-block;
-    padding: 0.75rem 1.75rem;
     border-radius: 1rem;
     border: 1px solid var(--border);
     color: var(--foreground);
@@ -36,10 +35,10 @@ export default function NotFound() {
                 <h1 className="section-title" css={css`margin-block-end: 0.5em;`}>
                     Page not found
                 </h1>
-                <p className="section-subtitle" css={css`margin-block-end: 40px;`}>
+                <p className="section-subtitle mb-10">
                     The page you're looking for doesn't exist or has been moved.
                 </p>
-                <Link href="/" className="text-lg" css={buttonCss}>
+                <Link href="/" className="text-lg py-3 px-7" css={buttonCss}>
                     Take me home
                 </Link>
             </div>

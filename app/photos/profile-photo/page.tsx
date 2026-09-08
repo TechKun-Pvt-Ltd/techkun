@@ -11,8 +11,7 @@ const yOffset = 2;
 
 export default function ProfilePic() {
     return <main>
-        <section css={css`
-            padding-block-start: 8rem;
+        <section className="pt-32" css={css`
             justify-items: center;
         `}>
             <div>
