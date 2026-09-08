@@ -1,6 +1,6 @@
 'use client';
 import {css} from "@emotion/react";
-import LogoButton from "@/app/components/navbar-components/logo-button";
+import LogoButton from "@/app/components/navbar-components/LogoButton";
 import React from "react";
 import {usePathname} from "next/navigation";
 import {useMediaQuery} from "@/hooks/use-media-query";

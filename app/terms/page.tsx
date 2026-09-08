@@ -1,6 +1,6 @@
 "use client";
 import {css} from "@emotion/react";
-import LegalBlocks from "@/app/components/legal-blocks";
+import LegalBlocks from "@/app/components/LegalBlocks";
 import {INTRO_BLOCKS, LAST_UPDATED, TERMS_BLOCKS, TOC_ITEMS} from "@/app/terms/content";
 import Link from "next/link";
 

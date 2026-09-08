@@ -1,5 +1,5 @@
 import {contactMailAddress} from "@/app/utils/constants";
-import type {LegalBlock} from "@/app/components/legal-blocks";
+import type {LegalBlock} from "@/app/components/LegalBlocks";
 
 export type {LegalBlock};
 

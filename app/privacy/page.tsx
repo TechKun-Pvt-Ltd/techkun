@@ -1,5 +1,5 @@
 "use client";
-import LegalBlocks from "@/app/components/legal-blocks";
+import LegalBlocks from "@/app/components/LegalBlocks";
 import {legalContentCss, linkCss, pageCss, summaryCardCss} from "@/app/privacy/styles";
 import {LAST_UPDATED, SUMMARY_BLOCKS, TRIMMED_BLOCKS} from "@/app/privacy/content";
 import {css} from "@emotion/react";

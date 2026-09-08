@@ -1,6 +1,6 @@
 'use client'
 import {css} from "@emotion/react";
-import TechKunLogo from "@/app/components/techkun-logo";
+import TechKunLogo from "@/app/components/TechKunLogo";
 import React from "react";
 import Link from "next/link";
 
