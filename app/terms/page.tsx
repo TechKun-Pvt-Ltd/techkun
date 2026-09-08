@@ -1,6 +1,6 @@
 "use client";
 import {css} from "@emotion/react";
-import LegalBlocks from "@/app/terms/components/legal-blocks";
+import LegalBlocks from "@/app/components/legal-blocks";
 import {INTRO_BLOCKS, LAST_UPDATED, TERMS_BLOCKS, TOC_ITEMS} from "@/app/terms/content";
 import Link from "next/link";
 
@@ -52,6 +52,9 @@ const legalContentCss = css`
     }
     & p {
         color: var(--muted-foreground);
+    }
+    & a {
+        color: var(--primary-200);
     }
     & ul {
         list-style: disc;

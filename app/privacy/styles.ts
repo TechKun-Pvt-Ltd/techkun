@@ -52,6 +52,9 @@ export const legalContentCss = css`
     & p {
         color: var(--muted-foreground);
     }
+    & a {
+        color: var(--primary-300);
+    }
     & ul {
         list-style: disc;
         padding-inline-start: 1.25em;

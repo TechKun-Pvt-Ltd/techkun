@@ -1,14 +1,9 @@
 import {contactMailAddress} from "@/app/utils/constants";
+import type {LegalBlock} from "@/app/components/legal-blocks";
+
+export type {LegalBlock};
 
 export const LAST_UPDATED = "August 15, 2026";
-
-export type LegalBlock =
-    | { type: "heading"; level: 3 | 4 | 5; text: string; id?: string }
-    | { type: "p"; text: string }
-    | { type: "ul"; items: string[] }
-    | { type: "dl"; items: { term: string; def: string }[] }
-    | { type: "fields"; items: { label: string; value: string; email?: boolean }[] }
-    | { type: "email"; address: string; label?: string };
 
 export const TOC_ITEMS: { id: string; title: string }[] = [
     { id: "section-1", title: "Owner and Data Controller" },

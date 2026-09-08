@@ -1,7 +1,14 @@
 "use client";
 import React from "react";
 import EmailLink from "@/app/components/EmailLink";
-import type {LegalBlock} from "@/app/privacy/content";
+
+export type LegalBlock =
+    | { type: "heading"; level: 3 | 4 | 5; text: string; id?: string }
+    | { type: "p"; text: string }
+    | { type: "ul"; items: string[] }
+    | { type: "dl"; items: { term: string; def: string }[] }
+    | { type: "fields"; items: { label: string; value: string }[] }
+    | { type: "email"; address: string; label?: string };
 
 const HEADING_CLASS_NAME: Record<3 | 4 | 5, string> = {
     3: "item-subtitle",
@@ -49,7 +56,7 @@ export default function LegalBlocks({blocks}: { blocks: LegalBlock[] }) {
                     </dl>;
                 case "email":
                     return <p key={index} className="text-base">
-                        <EmailLink style={{ color: "var(--primary-300)" }} address={block.address}>{block.label ?? block.address}</EmailLink>
+                        <EmailLink address={block.address}>{block.label ?? block.address}</EmailLink>
                     </p>;
             }
         })}
