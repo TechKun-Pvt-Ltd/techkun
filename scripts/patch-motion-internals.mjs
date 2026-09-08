@@ -18,6 +18,15 @@ const pkg = JSON.parse(
 	fs.readFileSync(pkgJsonPath, "utf8")
 );
 
+const seqSourcePath = path.join(pkgRoot, "dist/es/animation/sequence/create.mjs");
+if (!fs.existsSync(seqSourcePath)) {
+	console.error(
+		`framer-motion internal path moved (expected ${seqSourcePath} for framer-motion@${pkg.version}). ` +
+		`Update patch-motion-internals.mjs before this install can proceed.`
+	);
+	process.exit(1);
+}
+
 fs.writeFileSync(
 	path.join(pkgRoot, "dist/es/internals.mjs"),
 	`export * from "./animation/sequence/create.mjs";\n`

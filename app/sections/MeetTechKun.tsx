@@ -5,7 +5,7 @@ import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate} from "motion/react";
 import {BR_BRAND_GRADIENT_HREF} from "@/app/Shared";
-import useBrowser, {BrowserName} from "@/hooks/use-browser";
+import useBrowserDetection, {BrowserName} from "@/hooks/use-browser-detection";
 
 const ANIMATED_LOGO_CLIP_PATH_ID = "animated-logo-clip-path";
 
@@ -120,7 +120,7 @@ const animatedLogoCss = css`
     }
 `;
 export default function MeetTechKun() {
-    const isStupidFirefox = useBrowser(BrowserName.STUPID_FIREFOX);
+    const isStupidFirefox = useBrowserDetection(BrowserName.STUPID_FIREFOX);
     const [starsMounted, setStarsMounted] = React.useState(true);
     const randomnessIndex = Array.from({ length: STARS_COUNT }, Math.random);
 

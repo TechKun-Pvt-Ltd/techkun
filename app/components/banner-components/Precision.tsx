@@ -6,7 +6,7 @@ import {type FontMetrics, measureFont} from "@/app/utils/measure-font";
 import {frame} from "motion-dom";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import useAbortSignal from "@/hooks/use-abort-signal";
-import {BrowserName, detectBrowser} from "@/hooks/use-browser";
+import {BrowserName, detectBrowser} from "@/hooks/use-browser-detection";
 
 const xHeightIndicatorStart = 16;
 const capHeightIndicatorStart = 67.25;

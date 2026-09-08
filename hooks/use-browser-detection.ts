@@ -34,8 +34,8 @@ export function detectBrowser(browserName: BrowserName) {
 	}
 }
 
-function useBrowser(browserName: BrowserName) {
-	const [isDetected, setIsDetected] = useState(false);
+function useBrowserDetection(browserName: BrowserName) {
+	const [isDetected, setIsDetected] = useState<boolean | null>(null);
 
 	useEffect(() => {
 		const detected = detectBrowser(browserName);
@@ -46,4 +46,4 @@ function useBrowser(browserName: BrowserName) {
 	return isDetected;
 }
 
-export default useBrowser;
+export default useBrowserDetection;
