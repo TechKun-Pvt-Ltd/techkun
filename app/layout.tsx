@@ -12,6 +12,7 @@ import Shared from "@/app/Shared";
 // TODO: Figure out an alternative with Linaria or Wyw-in-js
 import "@/app/styles/generated-css/typography.css";
 import "@/app/styles/generated-css/colors.css";
+import "@/app/styles/generated-css/spacing.css";
 import "@/app/styles/generated-css/device-breakpoints.css";
 import BottomNav from "@/app/BottomNav";
 
