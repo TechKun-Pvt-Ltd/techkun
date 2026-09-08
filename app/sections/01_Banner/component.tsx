@@ -1,10 +1,10 @@
 'use client'
 import React, {useEffect, useRef} from "react";
 import {css, keyframes} from "@emotion/react";
-import Precision, {PrecisionRef} from "@/app/components/banner-components/Precision";
-import Beauty, {BeautyRef} from "@/app/components/banner-components/Beauty";
-import Identity, {IdentityRef} from "@/app/components/banner-components/Identity";
-import MainCTA from "@/app/components/banner-components/MainCTA";
+import Precision, {PrecisionRef} from "./components/Precision";
+import Beauty, {BeautyRef} from "./components/Beauty";
+import Identity, {IdentityRef} from "./components/Identity";
+import MainCTA from "@/app/components/MainCTA";
 import EmailLink from "@/app/components/EmailLink";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import {inView} from "motion/react";

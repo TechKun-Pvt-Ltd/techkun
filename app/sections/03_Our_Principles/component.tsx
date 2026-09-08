@@ -13,8 +13,8 @@ import {
 } from "motion/react";
 import {Angle} from "svg-path-kit";
 import {deviceQuery} from "@/app/utils/css/device-query";
-import RevolutionWheel from "@/app/components/solution-statement-components/RevolutionWheel";
-import PrincipleTitles from "@/app/components/solution-statement-components/PrincipleTitles";
+import RevolutionWheel from "./components/RevolutionWheel";
+import PrincipleTitles from "./components/PrincipleTitles";
 
 const IDLE_ANIMATION_REPEAT_DELAY = 8;
 function SPRING_OPTIONS(duration: number): ValueAnimationTransition {

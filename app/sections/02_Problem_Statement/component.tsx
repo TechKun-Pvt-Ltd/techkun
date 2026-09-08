@@ -1,6 +1,6 @@
 import React from "react";
 import {css} from "@emotion/react";
-import ErrorConsole from "@/app/components/problem-statement-windows/ErrorConsole";
+import ErrorConsole from "./components/ErrorConsole";
 
 export default function ProblemStatement() {
 	return <section css={css`

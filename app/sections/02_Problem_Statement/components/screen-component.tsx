@@ -1,6 +1,6 @@
 import React from "react";
 import {css} from "@emotion/react";
-import {windowCssProperties} from "@/app/components/problem-statement-windows/window-component";
+import {windowCssProperties} from "./window-component";
 
 export type ScreenComponentProps = {
 	borderRadius?: string;

@@ -1,7 +1,7 @@
 'use client';
 import {css} from "@emotion/react";
 import React, {useRef} from "react";
-import MainCTA from "@/app/components/banner-components/MainCTA.tsx";
+import MainCTA from "@/app/components/MainCTA.tsx";
 import EmailLink from "@/app/components/EmailLink.tsx";
 import LinkedInLink from "@/app/components/LinkedInLink.tsx";
 import XLink from "@/app/components/XLink.tsx";

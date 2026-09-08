@@ -1,4 +1,4 @@
-import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "../TrigWheel";
+import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "./TrigWheel";
 import supportsQuery from "@/app/utils/css/supports-query";
 import {css} from "@emotion/react";
 import React, {JSX, useEffect, useRef} from "react";

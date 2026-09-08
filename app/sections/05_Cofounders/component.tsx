@@ -5,7 +5,7 @@ import {StaticImageData} from "next/image";
 import khiz from "@/public/cofounders/khiz.jpg";
 import uz from "@/public/cofounders/uz_reads.jpeg";
 import me from "@/public/cofounders/me_dark.png";
-import LogoImageFrame from "@/app/components/LogoImageFrame";
+import LogoImageFrame from "./components/LogoImageFrame";
 import {deviceQuery} from "@/app/utils/css/device-query";
 import EmailLink from "@/app/components/EmailLink";
 import LinkedInLink from "@/app/components/LinkedInLink";
