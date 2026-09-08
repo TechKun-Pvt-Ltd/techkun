@@ -4,6 +4,8 @@ import { css } from '@emotion/react';
 type Property = {
 	name: string
 	styles: string
+	toString(): string
+	[Symbol.toPrimitive](): string
 };
 
 export function property(name: string): (
