@@ -1,6 +1,7 @@
 // A linear 4px-base scale: --space-N is always N * 4px, for every N from 1
-// to MAX_STEP. 24 (96px) covers the largest round gap/padding value seen in
-// the design-system audit of existing sections.
+// to MAX_STEP. 32 (128px) covers the largest round gap/padding value seen
+// repeated more than once in the design-system audit of existing sections
+// (03_Our_Principles + all three app/photos pages).
 //
 // Values are px, not rem: this scale is for layout rhythm (gap/padding/margin
 // between elements), which — unlike `theme/layout.css`'s --navbar-height or
@@ -8,7 +9,7 @@
 // px also avoids silently coupling every gap/padding in the app to
 // --base-font-size if that ever becomes viewport-fluid (see
 // --mobile-s-to-laptop-mid in theme/viewport.css).
-const MAX_STEP = 24;
+const MAX_STEP = 32;
 
 // Single source of truth for the custom property name behind each step.
 // Both the :root declarations and the utility classes read from this instead
