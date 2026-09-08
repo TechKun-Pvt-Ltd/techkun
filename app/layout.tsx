@@ -34,6 +34,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Shared />
+                {/*process.env.NODE_ENV === "development" && <PalettePreviewOverlay/>*/}
                 <Header />
                 {children}
                 <BottomNav />

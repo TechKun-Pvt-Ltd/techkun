@@ -58,7 +58,7 @@ export interface BezierEditorProps {
  * also what most CSS/animation libraries ship as e.g. `--ease-out-quint`.
  */
 export const EASING_PRESETS: EasingPreset[] = [
-    { id: 'linear', label: 'linear', value: [0.5, 0.5, 0.5, 0.5] },
+    { id: 'linear', label: 'linear', value: [0, 0, 1, 1] },
 
     { id: 'ease', label: 'ease', group: 'Standard', value: [0.25, 0.1, 0.25, 1] },
     { id: 'ease-in', label: 'ease-in', group: 'Standard', value: [0.42, 0, 1, 1] },

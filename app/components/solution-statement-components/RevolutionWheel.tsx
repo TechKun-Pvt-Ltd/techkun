@@ -366,7 +366,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
         >
             <defs>
                 <radialGradient id="brand-radial-gradient">
-                    <stop offset="-20%" stopColor="var(--secondary-800)"/>
+                    <stop offset="-20%" stopColor="var(--secondary-700)"/>
                     <stop offset="80%" stopColor="var(--secondary-neutral-950)"/>
                 </radialGradient>
             </defs>
@@ -499,7 +499,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     transition: 0.2s ease-in-out;
                     transition-property: opacity, filter;
                 `}
-                fill="none" stroke="var(--primary-800)" strokeWidth="0.1"
+                fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
             />
             <TrigWheel.RotorTerminal fill="var(--primary-600)"/>
             <TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5"/>
