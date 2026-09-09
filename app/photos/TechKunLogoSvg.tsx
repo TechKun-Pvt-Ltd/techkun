@@ -4,7 +4,6 @@ import {viewBoxString} from "@/app/utils/graphics-utils";
 import logoPath from "@/public/logo-path.json";
 import {TECHKUN_LOGO_PATH_HREF} from "@/app/Shared";
 
-/** This component is not supposed to use any theme variables. It is supposed to be a pure image. */
 export default function TechKunLogoSvg({xPadding = 15, xOffset = 0.5, yOffset = 2, ...props}: { xPadding?: number; xOffset?: number; yOffset?: number; } & React.ComponentProps<"svg">) {
     return <svg
         width="400" viewBox="0 0 400 400"
@@ -23,7 +22,7 @@ export default function TechKunLogoSvg({xPadding = 15, xOffset = 0.5, yOffset = 
             width={`${100 - 2 * xPadding}%`} height="100%"
             viewBox={viewBoxString(logoPath.viewBox)}
         >
-            <use href={TECHKUN_LOGO_PATH_HREF} fill="oklch(0.56 0.18 256)" />
+            <use href={TECHKUN_LOGO_PATH_HREF} fill="var(--primary-color)" />
         </svg>
     </svg>;
 }
