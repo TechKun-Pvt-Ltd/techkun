@@ -47,14 +47,6 @@ export const metadata: Metadata = {
         site: "@TechKun_",
         title: "TechKun",
         description: DESCRIPTION,
-        images: [
-            {
-                url: "https://www.tech-kun.com/twitter-image",
-                width: 1200,
-                height: 630,
-                type: "image/png",
-            },
-        ],
     },
 };
 
