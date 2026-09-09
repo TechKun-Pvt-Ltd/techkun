@@ -44,8 +44,7 @@ export default function ProblemStatement() {
 			{/*		rs*/}
 			{/*	</span>.</h2>*/}
 			{/*</div>*/}
-			<div style={{ marginBlockEnd: '0', minHeight: '0' }}>
-				<ErrorConsole/>
+			<ErrorConsole/>
 				{/*<ScreenComponent borderRadius="24px">*/}
 					{/*<Window*/}
 					{/*	title="tasks"*/}
@@ -77,7 +76,6 @@ export default function ProblemStatement() {
 					{/*	<ChatPage/>*/}
 					{/*</Window>*/}
 				{/*</ScreenComponent>*/}
-			</div>
 		</div>
 	</section>;
 };

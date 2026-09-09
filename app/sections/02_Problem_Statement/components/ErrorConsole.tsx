@@ -62,9 +62,12 @@ export default function ErrorConsole() {
 		color: var(--secondary-neutral-700);
 		height: 100%;
 	`}>
+		<h2 className="sr-only">
+			{hightlightedLogs.map(log => log.message).filter(Boolean).join(" ")}
+		</h2>
 		{/*<p className="text-lg" style={{whiteSpace: 'nowrap'}}>*/}
 		{/*</p>*/}
-		<div className="text-lg">
+		<div className="text-lg" aria-hidden="true">
 			<p css={css`
                 //white-space: pre;
 				user-select: none;
@@ -80,10 +83,10 @@ export default function ErrorConsole() {
 			`}>
 				{hightlightedLogs.flatMap((log, logIndex) =>
 					<React.Fragment key={logIndex}>
-						<span aria-hidden="true">{log.timestamp}</span>
+						<span>{log.timestamp}</span>
 						<span>
 							<span className="highlighted">{log.message}</span>
-							{log.location && <span aria-hidden="true"> {log.location}</span>}
+							{log.location && <span> {log.location}</span>}
 						</span>
 					</React.Fragment>
 				)}
@@ -96,8 +99,8 @@ export default function ErrorConsole() {
 				    none of this is meant to be read as prose. */}
 				{applicationLogs.flatMap((log, logIndex) =>
 					log.lines.map((line, lineIndex) => <React.Fragment key={`${logIndex}-${lineIndex}`}>
-						<span aria-hidden="true">{line.timestamp}</span>
-						<span aria-hidden="true">{line.message}</span>
+						<span>{line.timestamp}</span>
+						<span>{line.message}</span>
 					</React.Fragment>)
 				)}
 			</p>

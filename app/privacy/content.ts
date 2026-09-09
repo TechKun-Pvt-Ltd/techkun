@@ -271,8 +271,8 @@ export const FULL_POLICY_BLOCKS: LegalBlock[] = [
         "File a grievance"
     ] },
     { type: "fields", items: [
-        { label: "Grievance Officer", value: "[Name — to be added before publishing]" },
-        { label: "Designation", value: "[Designation — to be added before publishing]" }
+        { label: "Grievance Officer", value: "Mirza Farasat" },
+        { label: "Designation", value: "Managing Director" }
     ] },
     { type: "email", address: contactMailAddress, label: `Grievances or requests can be sent to: ${contactMailAddress}` },
     { type: "heading", level: 4, text: "F. Data Retention" },
