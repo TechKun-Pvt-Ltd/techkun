@@ -23,7 +23,7 @@ export async function renderSocialCard() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: 48,
+            gap: 32,
             backgroundColor: "#030304"
         }}>
             <svg
@@ -32,8 +32,8 @@ export async function renderSocialCard() {
             >
                 <path d={logoPath.value} fill="#1572db" />
             </svg>
-            <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "#dddee1" }}>
-                <h1 style={{ margin: 0, letterSpacing: "0.06em", fontSize: "56px", lineHeight: 1 }}>TechKun</h1>
+            <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", color: "#dddee1" }}>
+                <h1 style={{ margin: 0, letterSpacing: "0.06em", fontSize: "56px", lineHeight: "88px" }}>TechKun</h1>
                 <p
                     style={{
                         margin: 0,
