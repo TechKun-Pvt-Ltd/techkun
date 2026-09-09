@@ -3,8 +3,11 @@ import type {Metadata} from "next";
 import PrivacyPageContent from "@/app/privacy/PrivacyPageContent";
 
 export const metadata: Metadata = {
-    title: "Privacy Policy — TechKun",
-    description: "How TechKun collects, uses, and protects your data."
+    title: "Privacy Policy",
+    description: "How TechKun collects, uses, and protects your data.",
+    alternates: {
+        canonical: "/privacy",
+    },
 };
 
 export default function Privacy() {

@@ -15,15 +15,48 @@ import "@/app/styles/generated-css/colors.css";
 import "@/app/styles/generated-css/spacing.css";
 import "@/app/styles/generated-css/device-breakpoints.css";
 import BottomNav from "@/app/BottomNav";
+import {siteUrl, xAccountUrl, linkedInAccountUrl} from "@/app/utils/constants";
 
 const Quicksand = localFont({
     src: "./fonts/Quicksand-VariableFont_wght.ttf",
     weight: "100 900"
 });
 
+const DESCRIPTION = "TechKun is a software studio building interfaces, products, and brand systems with beauty, precision, and identity.";
+
 export const metadata: Metadata = {
-    title: "TechKun",
-    description: "We build software with beauty, precision, and identity.",
+    metadataBase: new URL(siteUrl),
+    title: {
+        default: "TechKun",
+        template: "%s — TechKun",
+    },
+    description: DESCRIPTION,
+    alternates: {
+        canonical: "/",
+    },
+    openGraph: {
+        type: "website",
+        url: siteUrl,
+        siteName: "TechKun",
+        title: "TechKun",
+        description: DESCRIPTION,
+        locale: "en_US",
+    },
+    twitter: {
+        card: "summary_large_image",
+        site: "@TechKun_",
+        title: "TechKun",
+        description: DESCRIPTION,
+    },
+};
+
+const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "TechKun",
+    url: siteUrl,
+    logo: `${siteUrl}/icon.svg`,
+    sameAs: [linkedInAccountUrl, xAccountUrl],
 };
 
 export default function RootLayout({
@@ -34,6 +67,11 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
+                <script
+                    type="application/ld+json"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{__html: JSON.stringify(organizationJsonLd)}}
+                />
                 <Shared />
                 {/*process.env.NODE_ENV === "development" && <PalettePreviewOverlay/>*/}
                 <Header />
