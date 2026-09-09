@@ -23,7 +23,7 @@ export default function TechKunLogoSvg({xPadding = 15, xOffset = 0.5, yOffset = 
             width={`${100 - 2 * xPadding}%`} height="100%"
             viewBox={viewBoxString(logoPath.viewBox)}
         >
-            <use href={TECHKUN_LOGO_PATH_HREF} fill="var(--primary-color)" />
+            <use href={TECHKUN_LOGO_PATH_HREF} fill="oklch(0.56 0.18 256)" />
         </svg>
     </svg>;
 }
