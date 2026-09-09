@@ -9,7 +9,7 @@ export const SOCIAL_CARD_ALT = "TechKun — we build software with beauty, preci
 export const SOCIAL_CARD_SIZE = {width: 1200, height: 630};
 export const SOCIAL_CARD_CONTENT_TYPE = "image/png";
 
-const logoWidth = 320;
+const logoWidth = 336;
 export async function renderSocialCard() {
     const font = await fs.readFile(
         path.join(process.cwd(), "app/fonts/Quicksand-Regular.ttf")
@@ -33,14 +33,14 @@ export async function renderSocialCard() {
                 <path d={logoPath.value} fill="#1572db" />
             </svg>
             <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 16, color: "#dddee1" }}>
-                <h1 style={{ margin: 0, letterSpacing: "0.06em", fontSize: "64px", lineHeight: 1 }}>TechKun</h1>
+                <h1 style={{ margin: 0, letterSpacing: "0.06em", fontSize: "60px", lineHeight: 1 }}>TechKun</h1>
                 <p
                     style={{
                         margin: 0,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        fontSize: "32px",
+                        fontSize: "28px",
                         lineHeight: 1.3,
                         color: "#a2a9cb",
                     }}
