@@ -1,5 +1,4 @@
 "use client";
-import {css} from "@emotion/react";
 import {PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import React from "react";
 
@@ -33,9 +32,7 @@ export default function ProfilePic() {
 
     const jointRegionStretch = 10;
     return <main>
-        <section className="pt-32" css={css`
-            justify-items: center;
-        `}>
+        <section className="pt-32" style={{justifyItems: "center"}}>
             <div>
                 <svg viewBox={`0 0 ${width} ${height}`} width={width}>
                     <path d={pb.toSVGPathString()} fill="url(#cover-photo-gradient)" />
