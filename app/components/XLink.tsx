@@ -18,6 +18,7 @@ export default function XLink(props: React.ComponentProps<typeof Link>) {
     const FILL_GRADIENT_ID = "x-fill-gradient" + useId();
     return <Link
         target="_blank" rel="noopener noreferrer"
+        aria-label="Find us on X"
         css={linkCss} {...props}
     >
         <svg className="link-icon" width="1em" viewBox="0 0 24 24" style={{ display: "block" }} xmlns="http://www.w3.org/2000/svg">

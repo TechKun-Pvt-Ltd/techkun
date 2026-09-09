@@ -54,6 +54,11 @@ export default forwardRef<BeautyRef, React.ComponentPropsWithoutRef<typeof motio
 			&[data-play="true"] {
 				animation-play-state: running;
 			}
+
+			@media (prefers-reduced-motion: reduce) {
+				animation: none;
+				--gradient-progress: 100%;
+			}
 		`}
 	>beauty</motion.span>;
 })

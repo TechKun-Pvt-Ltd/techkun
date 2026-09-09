@@ -212,16 +212,21 @@ export default function Cofounders() {
                         <div className="person-intro">
                             <div className="gap-4 mb-8" style={{display: "flex"}}>
                                 {people.map((_, iconIndex) => {
-                                    return <div
+                                    return <button
                                         key={iconIndex}
+                                        type="button"
                                         className="person-index-indicator" css={indicatorCss}
                                         style={{
                                             "--i": iconIndex,
+                                            border: "none",
+                                            padding: 0,
                                             background: iconIndex === personIndex ?
                                                 "linear-gradient(to right, var(--primary-400), var(--secondary-400))" :
                                                 "var(--secondary-neutral-200)",
                                             cursor: "pointer"
                                         } as React.CSSProperties}
+                                        aria-label={`Go to person ${iconIndex + 1} of ${people.length}`}
+                                        aria-current={iconIndex === personIndex ? "true" : undefined}
                                         onClick={() => {
                                             if (!ulRef.current) return;
 

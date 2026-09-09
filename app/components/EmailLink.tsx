@@ -82,6 +82,7 @@ export default function EmailLink(
 					}
 				}
 			`}
+			aria-label={children ? undefined : `Email us at ${address}`}
 			{...props}
 			initial={INITIAL}
 			whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}

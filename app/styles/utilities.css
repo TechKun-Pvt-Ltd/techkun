@@ -4,6 +4,19 @@
     initial-value: 0;
 }
 
+/* Visually hides content while keeping it readable by assistive tech. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .indexed-font {
     --_scale-ratio: pow(var(--scale-ratio), var(--font-index));
     font-size: round(var(--base-font-size) * var(--_scale-ratio), 1px);

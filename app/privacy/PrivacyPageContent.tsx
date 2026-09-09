@@ -1,0 +1,56 @@
+"use client";
+import LegalBlocks from "@/app/components/LegalBlocks";
+import {legalContentCss, linkCss, pageCss, summaryCardCss} from "@/app/privacy/styles";
+import {LAST_UPDATED, SUMMARY_BLOCKS, TRIMMED_BLOCKS} from "@/app/privacy/content";
+import {css} from "@emotion/react";
+import Link from "next/link";
+
+const headerCss = css`
+    h1 {
+        margin-block-end: 0.25em;
+    }
+    p {
+        color: var(--muted-foreground);
+        background-color: var(--muted);
+        width: max-content;
+        border-radius: 0.5rem;
+    }
+`;
+
+export default function PrivacyPageContent() {
+    return <main>
+        <section>
+            <div className="pt-24 gap-16" css={pageCss}>
+                <header css={headerCss}>
+                    <h1 className="section-title">Privacy Policy</h1>
+                    <p className="text-base py-1 px-3">
+                        Last updated: {LAST_UPDATED}
+                    </p>
+                </header>
+
+                <div className="gap-3 py-6 px-7" css={summaryCardCss}>
+                    <h2 className="text-lg" style={{fontWeight: 600}}>Privacy Summary</h2>
+                    <div css={legalContentCss}>
+                        <LegalBlocks blocks={SUMMARY_BLOCKS} />
+                    </div>
+                    <Link href="/privacy/detailed" className="text-sm" css={linkCss}>
+                        Read the detailed Privacy Policy →
+                    </Link>
+                </div>
+
+                <div>
+                    <h2 className="item-title mb-6">
+                        Privacy Policy — Short Version
+                    </h2>
+                    <div css={legalContentCss}>
+                        <LegalBlocks blocks={TRIMMED_BLOCKS} />
+                        <p className="text-base">
+                            For full legal details, definitions, and region-specific rights, read our{" "}
+                            <Link href="/privacy/detailed" css={linkCss}>Detailed Privacy Policy</Link>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>;
+};

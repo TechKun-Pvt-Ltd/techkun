@@ -50,6 +50,9 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
             &[data-initial] {
                 --transition: none;
             }
+            @media (prefers-reduced-motion: reduce) {
+                --transition: none;
+            }
 
             --_direction: 1;
             &::after {

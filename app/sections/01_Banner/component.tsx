@@ -95,6 +95,15 @@ export default function Banner() {
 		&[data-play="true"] {
 			animation-play-state: running;
 		}
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+			--gradient-progress: 100%;
+			.cta {
+				animation: none;
+				filter: none;
+			}
+		}
 	`}>
 		<div css={css`
 			min-height: var(--section-height);

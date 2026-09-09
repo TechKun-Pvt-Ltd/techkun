@@ -47,6 +47,22 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 		play() {
 			if (!spanRef.current) return;
 			const el = spanRef.current;
+
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				// Skip the pointer-fly-in/dots-pull sequence and land straight on its
+				// settled end state: lights on, pointer at rest (its default, un-animated
+				// position already matches where the sequence would leave it), and the
+				// click-to-toggle-lights interaction wired up immediately instead of
+				// waiting for an "animationend" that will now never fire.
+				el.removeAttribute("data-lights-off");
+				el.style.cursor = "pointer";
+				el.addEventListener(
+					"click", () => el.toggleAttribute("data-lights-off"),
+					{ signal: abortSignal }
+				);
+				return;
+			}
+
 			el.setAttribute("data-initial", "true");
 			el.removeAttribute("data-lights-off");
 
@@ -199,6 +215,14 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					translate(var(--pull-x), var(--pull-y))
 					rotate(var(--rotate));
 			}
+
+			@media (prefers-reduced-motion: reduce) {
+				/* Belt-and-suspenders: play() already avoids setting [data-initial] and
+				   never calls .animate() under reduced motion, so offset-distance/the
+				   custom transform properties are already at their resting values. This
+				   just guards against the keyframe animation running some other way. */
+				animation: none !important;
+			}
 		`}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -229,6 +253,10 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				transition: fill ${dotsLightUp.duration}s ease-out;
                 transition-delay: calc(var(--delay) + var(--i) * var(--stagger));
 				fill: var(${lightUpColorProp});
+
+				@media (prefers-reduced-motion: reduce) {
+					transition: none;
+				}
 			}
 			svg.bulb-icon {
 				--_bulb-icon-width: 120%;

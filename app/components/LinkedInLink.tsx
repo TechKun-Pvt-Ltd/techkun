@@ -18,6 +18,7 @@ export default function LinkedInLink(props: React.ComponentProps<typeof Link>) {
     const FILL_GRADIENT_ID = "linked-in-icon-fill-gradient" + useId();
     return <Link
         target="_blank" rel="noopener noreferrer"
+        aria-label="Find us on LinkedIn"
         css={linkCss} {...props}
     >
         <svg className="link-icon" width="1em" viewBox="0 0 24 24" style={{ display: "block" }} xmlns="http://www.w3.org/2000/svg">

@@ -30,6 +30,11 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 
 	useImperativeHandle(ref, () => ({
 		play() {
+			// The un-animated resting state (--r at radius_normal, x/y at their default
+			// follow-pointer position) already matches this sequence's end state, so
+			// under reduced motion we just skip the sweep-and-pulse entirely.
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
 			const container = containerRef.current!;
 			const xRay = container.querySelector<HTMLSpanElement>(".x-ray")!;
 			const value = x.get();
@@ -116,6 +121,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 	>
 		<motion.span
 			className="x-ray"
+			aria-hidden="true"
 			style={{"--x": x, "--y": y} as React.CSSProperties}
 			css={css`
 				@property --r {

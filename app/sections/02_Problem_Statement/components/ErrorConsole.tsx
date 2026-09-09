@@ -80,10 +80,10 @@ export default function ErrorConsole() {
 			`}>
 				{hightlightedLogs.flatMap((log, logIndex) =>
 					<React.Fragment key={logIndex}>
-						<span>{log.timestamp}</span>
+						<span aria-hidden="true">{log.timestamp}</span>
 						<span>
 							<span className="highlighted">{log.message}</span>
-							{log.location && <span> {log.location}</span>}
+							{log.location && <span aria-hidden="true"> {log.location}</span>}
 						</span>
 					</React.Fragment>
 				)}
@@ -92,10 +92,12 @@ export default function ErrorConsole() {
 				{/*	ref={scrambleRef} innerRef={scrambleInnerRef}*/}
 				{/*	as="span" duration={SCRAMBLE_DURATION}*/}
 				{/*>{texts[itemIndex] ?? ""}</TextScramble>*/}
+				{/* Fake log noise for visual texture only — unlike the highlighted lines above,
+				    none of this is meant to be read as prose. */}
 				{applicationLogs.flatMap((log, logIndex) =>
 					log.lines.map((line, lineIndex) => <React.Fragment key={`${logIndex}-${lineIndex}`}>
-						<span>{line.timestamp}</span>
-						<span>{line.message}</span>
+						<span aria-hidden="true">{line.timestamp}</span>
+						<span aria-hidden="true">{line.message}</span>
 					</React.Fragment>)
 				)}
 			</p>
