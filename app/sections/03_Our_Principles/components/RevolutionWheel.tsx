@@ -337,6 +337,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
     const quoteCharAngle = 0.064;
 
     return <svg
+        aria-hidden="true"
         viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
         strokeLinejoin="round" strokeLinecap="round"
         css={css`
