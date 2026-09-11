@@ -9,7 +9,6 @@ import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/c
 import useContactOptionsSwitch from "@/app/components/contact-options/use-contact-options-switch.ts";
 
 const baseGroupCss = css`
-    height: 100%;
     pointer-events: auto;
     display: flex;
     gap: var(--space-3);

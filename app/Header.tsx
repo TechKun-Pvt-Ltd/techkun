@@ -10,8 +10,7 @@ import {NAV_CONTACT_OPTIONS_NARROW_QUERY} from "@/app/components/contact-options
 const navCss = css`
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    height: 3.2rem;
+    align-items: stretch;
 `;
 export default function Header() {
     const pathname = usePathname();
@@ -20,7 +19,7 @@ export default function Header() {
 
     return <header style={{ pointerEvents: "none" }}>
         <nav css={navCss}>
-            <LogoButton style={{ pointerEvents: "auto" }} />
+            <LogoButton style={{ pointerEvents: "auto", marginBlock: "-2px" }} />
             {!isNarrowViewport && <ContactOptionsGroup isHomepage={isHomepage} variant="header" />}
         </nav>
     </header>;

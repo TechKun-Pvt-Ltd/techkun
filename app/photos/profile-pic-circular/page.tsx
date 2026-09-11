@@ -3,7 +3,7 @@ import TechKunLogoSvg from "@/app/photos/TechKunLogoSvg.tsx";
 
 const xPadding = 18;
 const xOffset = 0.5;
-const yOffset = 4;
+const yOffset = 3.6;
 
 export default function ProfilePic() {
     return <main>

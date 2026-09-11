@@ -13,7 +13,6 @@ export default function Footer() {
             display: grid;
             grid-template-columns: subgrid;
             align-content: space-between;
-            padding-block: var(--space-18) var(--space-12);
             position: relative;
             overflow: hidden;
             &::before, &::after {

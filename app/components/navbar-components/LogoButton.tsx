@@ -46,7 +46,6 @@ enum TextState {
 }
 
 const linkCss = css`
-	height: 110%;
 	//padding-inline: 28px;
 	//background-color: oklch(from var(--background) 0.15 c h);
 	//border: 1px solid var(--secondary-neutral-700);

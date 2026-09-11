@@ -2,7 +2,7 @@
     --page-max-width: 84rem;
     --page-padding: clamp(24px, 4vw, 32px);
 
-    --navbar-height: 4.8rem;
+    --navbar-height: 3.2rem;
     --section-min-height: 640px;
     --section-max-height: 1120px;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
@@ -43,7 +43,7 @@ body {
         grid-row: navbar;
         grid-template-rows: 1fr;
         position: sticky;
-        top: 8px;
+        top: var(--space-5);
         left: 0;
         z-index: 1;
         align-items: center;
