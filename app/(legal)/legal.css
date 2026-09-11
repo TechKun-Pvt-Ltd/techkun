@@ -1,6 +1,6 @@
 /* Shared chrome for the legal pages (/privacy, /privacy/detailed, /terms).
    Previously duplicated per-page as near-identical Emotion `css` blocks
-   (app/privacy/styles.ts and a hand-copied twin inside TermsPageContent.tsx)
+   (app/privacy/styles.ts and a hand-copied twin inside page.tsx)
    that had already drifted — e.g. link color was --primary-300 on Privacy
    and --primary-200 on Terms for the same role. This file is the single
    source for that shared chrome; page-specific styles (like the Privacy
