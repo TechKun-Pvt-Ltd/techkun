@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, {useId} from "react";
 import {gradientColor1, gradientColor2} from "@/app/utils/css/custom-properties";
-import {X_LOGO_PATH_HREF} from "@/app/Shared";
+import {X_LOGO_PATH_HREF} from "@/app/(site)/components/Shared.tsx";
 import {css} from "@emotion/react";
 
 const linkCss = css`

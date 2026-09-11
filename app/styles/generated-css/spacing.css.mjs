@@ -1,8 +1,7 @@
 // A linear 4px-base scale: --space-N is always N * 4px, for every N from 1
 // to MAX_STEP. 32 (128px) covers the largest round gap/padding value seen
-// repeated more than once in the design-system audit of existing sections
-// (03_Our_Principles + all three app/photos pages).
-//
+// repeated more than once in the design-system audit of existing sections.
+
 // Values are px, not rem: this scale is for layout rhythm (gap/padding/margin
 // between elements), which — unlike `theme/layout.css`'s --navbar-height or
 // the type scale — has no reason to track the root font-size. Keeping it in

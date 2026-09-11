@@ -18,8 +18,9 @@
 body {
     min-height: 100%;
     margin: 0;
-    --columns: 6;
+}
 
+body.root-layout {
     display: grid;
     grid-template-columns:
         minmax(0, 1fr)

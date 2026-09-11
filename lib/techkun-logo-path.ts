@@ -324,10 +324,9 @@ const durStr = matchArray?.[matchArray?.index ?? 0] ?? "0ms";
 const duration = parseInt(durStr);
 const collected = sampler.collect({duration: duration / 1000, easing: t => springGenerator.next(duration * t).value});
 (collected as any)["viewBox"] = {
-    "x": -10,
-    "y": -10,
-    "width": 955.02,
-    "height": 795
+    "x": 0, "y": 0,
+    "width": 935.02,
+    "height": 775
 };
 FrameExporter.exportToJson(
     collected,
