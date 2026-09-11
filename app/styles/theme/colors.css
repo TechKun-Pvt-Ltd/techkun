@@ -1,13 +1,7 @@
 :root {
     color-scheme: dark;
-    --primary-hue: 256;
-    /*--primary-hue: 270;*/
     --secondary-hue: calc(var(--primary-hue) + 20);
     --tertiary-hue: calc(var(--primary-hue) + 40);
-
-    --lightness: 0.56;
-    --chroma: 0.18;
-    /*--chroma: 0.2;*/
 
     --primary-color: oklch(var(--lightness) var(--chroma) var(--primary-hue) / 1);
 

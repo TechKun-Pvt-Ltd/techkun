@@ -12,7 +12,7 @@ export default {
 	turbopack: {
 		rules: {
 			"*.css.mjs": {
-				loaders: ["./loaders/gen-css-loader.mjs"],
+				loaders: ["./loaders/static-string-loader.mjs"],
 				as: "*.css"
 			},
 			"*.static.mjs": {
