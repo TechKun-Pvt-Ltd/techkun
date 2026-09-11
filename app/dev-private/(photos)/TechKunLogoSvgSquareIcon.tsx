@@ -7,6 +7,7 @@ export default function TechKunLogoSvgSquareIcon({xPadding = 15, xOffset = 0.5, 
     return <svg
         width="400" viewBox="0 0 400 400"
         style={{
+            backgroundColor: "var(--background)"
             // border: "2px solid var(--border)",
             // outline: "1px dashed var(--border)", outlineOffset: "-56px"
         }}

@@ -2,10 +2,10 @@
 import React from "react";
 
 export default function PhotosLayout({children}: Readonly<{ children: React.ReactNode; }>) {
-    return <div style={{
-        height: "100%",
+    return <body style={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
-    }}>{children}</div>;
+        alignItems: "center",
+        backgroundColor: "var(--neutral-800)"
+    }}>{children}</body>;
 }

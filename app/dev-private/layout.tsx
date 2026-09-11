@@ -6,5 +6,5 @@ export default function DevPrivateLayout({children}: Readonly<{ children: React.
     if (process.env.NODE_ENV === "production")
         notFound();
 
-    return <body>{children}</body>;
+    return children;
 }
