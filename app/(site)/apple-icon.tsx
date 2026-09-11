@@ -2,6 +2,8 @@
 import {ImageResponse} from "next/og";
 import logoPath from "@/public/logo-path.json";
 import {viewBoxString} from "@/app/utils/graphics-utils.ts";
+import {oklchToHex} from "@/app/(site)/utils/color-conversion.ts";
+import {PRIMARY_CHROMA, PRIMARY_HUE, PRIMARY_LIGHTNESS} from "@/app/styles/theme/color-constants.ts";
 
 export const size = {width: 180, height: 180};
 export const contentType = "image/png";
@@ -16,7 +18,7 @@ export default function Icon() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "#1572DB",
+                    backgroundColor: oklchToHex(PRIMARY_LIGHTNESS, PRIMARY_CHROMA, PRIMARY_HUE),
                 }}
             >
                 <svg
