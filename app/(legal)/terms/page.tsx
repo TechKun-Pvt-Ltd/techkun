@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import type {Metadata} from "next";
-import TermsPageContent from "@/app/terms/TermsPageContent";
+import TermsPageContent from "@/app/(legal)/terms/TermsPageContent";
 
 export const metadata: Metadata = {
     title: "Terms and Conditions",

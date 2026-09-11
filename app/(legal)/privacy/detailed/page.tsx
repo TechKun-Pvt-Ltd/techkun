@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import type {Metadata} from "next";
-import DetailedPrivacyPolicyContent from "@/app/privacy/detailed/DetailedPrivacyPolicyContent";
+import DetailedPrivacyPolicyContent from "@/app/(legal)/privacy/detailed/DetailedPrivacyPolicyContent";
 
 export const metadata: Metadata = {
     title: "Detailed Privacy Policy",
