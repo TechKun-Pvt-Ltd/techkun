@@ -18,7 +18,7 @@ const SPACE_VAR_NAMES = Object.fromEntries(
 );
 
 const spacingProperties = Object.entries(SPACE_VAR_NAMES)
-    .map(([step, varName]) => `${varName}: ${step * 4}px`);
+    .map(([step, varName]) => `${varName}: ${step * 0.25}rem`);
 
 // Prefixes follow Tailwind's naming, but map onto logical properties (not
 // physical top/bottom) to match how the rest of this codebase writes

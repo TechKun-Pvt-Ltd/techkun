@@ -22,8 +22,8 @@ const transition: {
 const buttonCss = css`
     color: var(--secondary-50);
     background: transparent;
-    padding-block: 0.5rem;
-    padding-inline: 1.6rem 1.4rem;
+    padding-block: 0.75rem;
+    padding-inline: 1.6em 1.4em;
     //border-radius: 0.75rem;
     border-radius: 100vh;
     corner-shape: superellipse(1.1);

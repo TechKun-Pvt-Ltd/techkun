@@ -37,9 +37,6 @@ const socialLinksGroupCss = css`
     background: oklch(from var(--secondary-950) l c h / 0.96);
     backdrop-filter: blur(4px);
     border: 1px solid var(--secondary-900);
-	padding-block: 0.5rem;
-	padding-inline: 1.4rem;
-	gap: 0.5rem;
     a {
         padding: var(--space-1);
         color: var(--secondary-neutral-400);
@@ -52,7 +49,7 @@ const socialLinksGroupCss = css`
 `;
 
 function SocialLinksGroup() {
-	return <div className="text-lg" css={socialLinksGroupCss}>
+	return <div className="text-lg py-2 px-5 gap-2" css={socialLinksGroupCss}>
 		<XLink className="contact-option" href={xAccountUrl} />
 		<div className="divider" />
 		<LinkedInLink className="contact-option" href={linkedInAccountUrl} />

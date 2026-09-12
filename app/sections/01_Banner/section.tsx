@@ -129,7 +129,7 @@ export default function Banner() {
 						&nbsp;<Beauty ref={beautyRef} />,
 						<br css={mobileBrCss}/> <Precision ref={precisionRef} style={{ zIndex: 1 }} />,
 					</span>
-					<br css={tabletBrCss}/>and
+					<br css={tabletBrCss}/> and
 					<span css={keywordCss} style={{ textWrap: "nowrap" }}>
 						<br css={mobileBrCss}/> <Identity ref={identityRef} />.
 					</span>
