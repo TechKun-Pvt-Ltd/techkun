@@ -1,98 +1,14 @@
 import {css} from "@emotion/react";
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 import {
-	animate,
-	AnimationPlaybackControlsWithThen,
 	interpolate,
-	inView,
-	motion,
-	useMotionValue,
 	useScroll,
-	useTransform,
-	ValueAnimationTransition
+	useTransform
 } from "motion/react";
 import {Angle} from "svg-path-kit";
 import {deviceQuery} from "@/app/utils/css/device-query";
 import RevolutionWheel from "./components/RevolutionWheel";
 import PrincipleTitles from "./components/PrincipleTitles";
-
-const IDLE_ANIMATION_REPEAT_DELAY = 8;
-function SPRING_OPTIONS(duration: number): ValueAnimationTransition {
-	return {
-		type: "spring",
-		bounce: 0,
-		duration
-	};
-}
-const idleAnimationOptions: ValueAnimationTransition = {
-	...SPRING_OPTIONS(2),
-	repeat: Infinity,
-	repeatType: 'loop',
-	repeatDelay: IDLE_ANIMATION_REPEAT_DELAY
-};
-
-function SectionHeading() {
-	const activeAnimation = useRef<AnimationPlaybackControlsWithThen>(null);
-	const strokeDashoffset = useMotionValue(11);
-	function setActiveAnimation(anim: AnimationPlaybackControlsWithThen) {
-		activeAnimation.current?.stop();
-		activeAnimation.current = anim;
-	}
-
-	useEffect(() => inView(
-		"svg.w-graph-svg",
-		() => setActiveAnimation(animate(strokeDashoffset, [11, -11], idleAnimationOptions)),
-		{ margin: "-10% 0%" }
-	), []);
-
-	function fillPath() {
-		const value = strokeDashoffset.get();
-		if (value >= 0) {
-			setActiveAnimation(animate(strokeDashoffset, 0, SPRING_OPTIONS(value / 11)));
-			return;
-		}
-
-		setActiveAnimation(animate([
-			[strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11)],
-			[strokeDashoffset, [11, 0], SPRING_OPTIONS(1)]
-		]));
-	}
-	function emptyPath() {
-		const value = strokeDashoffset.get();
-		const animation = animate(strokeDashoffset, -11, SPRING_OPTIONS((value + 11) / 11));
-		setActiveAnimation(animation);
-		animation.finished.then(() =>
-			setActiveAnimation(animate(strokeDashoffset, [11, -11], {...idleAnimationOptions, delay: IDLE_ANIMATION_REPEAT_DELAY}))
-		);
-	}
-
-	return <h1 className="section-title">
-		Start funding <span style={{whiteSpace: 'nowrap'}}>gro
-		<motion.svg className="w-graph-svg"
-			xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10"
-			css={css`
-				width: 1em;
-				vertical-align: -0.0625em;
-			`}
-			onHoverStart={fillPath}
-			onHoverEnd={emptyPath}
-		>
-			<defs>
-				<path id="w-graph"
-					  d="M 1 5 L 2 3 L 4.25 9 L 6 4.5 L 7.75 9 L 11 1 L 9.4216 2.2283 L 11 1 L 11.2746 2.9811"
-					  pathLength="10" strokeWidth="0.6" strokeLinejoin="round" strokeLinecap="round"
-					  fill="transparent"
-				/>
-			</defs>
-			<use href="#w-graph" stroke="currentColor"/>
-			<motion.use href="#w-graph" stroke="var(--primary-400)"
-						strokeDasharray="11 11"
-						style={{strokeDashoffset}}
-			/>
-		</motion.svg>
-		th.</span>
-	</h1>;
-}
 
 const ANGLE_RANGE_START = 0;
 

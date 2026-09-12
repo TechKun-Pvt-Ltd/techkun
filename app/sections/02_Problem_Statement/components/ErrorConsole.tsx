@@ -65,8 +65,6 @@ export default function ErrorConsole() {
 		<h2 className="sr-only">
 			{hightlightedLogs.map(log => log.message).filter(Boolean).join(" ")}
 		</h2>
-		{/*<p className="text-lg" style={{whiteSpace: 'nowrap'}}>*/}
-		{/*</p>*/}
 		<div className="text-lg" aria-hidden="true">
 			<p css={css`
                 //white-space: pre;
@@ -90,11 +88,6 @@ export default function ErrorConsole() {
 						</span>
 					</React.Fragment>
 				)}
-				{/*<span>{"02:11:42.881"}</span>*/}
-				{/*<TextScramble*/}
-				{/*	ref={scrambleRef} innerRef={scrambleInnerRef}*/}
-				{/*	as="span" duration={SCRAMBLE_DURATION}*/}
-				{/*>{texts[itemIndex] ?? ""}</TextScramble>*/}
 				{/* Fake log noise for visual texture only — unlike the highlighted lines above,
 				    none of this is meant to be read as prose. */}
 				{applicationLogs.flatMap((log, logIndex) =>

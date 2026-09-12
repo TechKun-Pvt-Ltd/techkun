@@ -185,7 +185,7 @@ export default function Cofounders() {
     const indicatorCss = css`
         height: 4px;
         width: 32px;
-        border-radius: 100px;
+        border-radius: 100vh;
     `;
 
     return <section>

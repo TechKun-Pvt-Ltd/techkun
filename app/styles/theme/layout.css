@@ -3,8 +3,9 @@
     --page-padding: clamp(24px, 4vw, 32px);
 
     --navbar-height: 3.2rem;
-    --section-min-height: 640px;
-    --section-max-height: 1120px;
+    --bottom-nav-height: calc(var(--navbar-height) + var(--space-5));
+    --section-min-height: 40rem;
+    --section-max-height: 70rem;
     --section-height: clamp(var(--section-min-height), 100vh, var(--section-max-height));
     /*--footer-height: 16rem;*/
 
@@ -31,7 +32,7 @@ body.root-layout {
     grid-template-rows:
         [navbar-start] var(--navbar-height)
         [navbar-end content-start] 1fr
-        [content-end bottom-nav-start] max-content
+        [content-end bottom-nav-start] var(--bottom-nav-height)
         [bottom-nav-end footer-start] max-content
         [footer-end];
 
@@ -40,15 +41,18 @@ body.root-layout {
         display: grid;
         grid-template-columns: subgrid;
     }
-    & > header {
-        grid-row: navbar;
-        grid-template-rows: 1fr;
+    & > header, .bottom-nav {
         position: sticky;
-        top: var(--space-5);
         left: 0;
         z-index: 1;
-        align-items: center;
         overflow-x: clip;
+    }
+    & > header {
+        height: var(--navbar-height);
+        grid-row: navbar;
+        grid-template-rows: 1fr;
+        top: var(--space-5);
+        align-items: stretch;
     }
     & > main {
         grid-row: navbar / bottom-nav;
@@ -64,13 +68,11 @@ body.root-layout {
         }
     }
     & > .bottom-nav {
+        height: var(--bottom-nav-height);
+        padding-block-end: var(--space-5);
         grid-column: page;
         grid-row: bottom-nav;
-        position: sticky;
         bottom: 0;
-        left: 0;
-        z-index: 1;
-        overflow-x: clip;
     }
     & > footer {
         grid-row: footer;

@@ -69,15 +69,15 @@ const linkCss = css`
 	}
 	&::before {
 		content: "";
-		padding-inline-start: var(--space-7);
-		border-top-left-radius: 100vw;
-		border-bottom-left-radius: 100vw;
+		padding-inline-start: 1.75rem;
+		border-top-left-radius: 100vh;
+		border-bottom-left-radius: 100vh;
 		border-left-width: 1px;
 	}
 	.after {
-		padding-inline-end: var(--space-7);
-		border-top-right-radius: 100vw;
-		border-bottom-right-radius: 100vw;
+		padding-inline-end: 1.75rem;
+		border-top-right-radius: 100vh;
+		border-bottom-right-radius: 100vh;
 		border-right-width: 1px;
 	}
 	//corner-shape: squircle;

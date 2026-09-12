@@ -30,7 +30,7 @@
     color: var(--muted-foreground);
     background-color: var(--muted);
     width: max-content;
-    border-radius: 0.5rem;
+    border-radius: 8px;
 }
 
 .legal-content {

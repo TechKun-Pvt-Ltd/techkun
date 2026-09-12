@@ -4,14 +4,14 @@ import {deviceBreakpoint} from "../../utils/css/device-query.ts";
 export default `
 @layer base {
     :root {
-        --mobile-s: ${deviceBreakpoint.mobileS}px;
-        --mobile-m: ${deviceBreakpoint.mobileM}px;
-        --mobile-l: ${deviceBreakpoint.mobileL}px;
-        --tablet: ${deviceBreakpoint.tablet}px;
-        --laptop: ${deviceBreakpoint.laptop}px;
-        --laptop-mid: ${deviceBreakpoint.laptopMid}px;
-        --laptop-l: ${deviceBreakpoint.laptopL}px;
-        --desktop: ${deviceBreakpoint.desktop}px;
+        --mobile-s: ${deviceBreakpoint.mobileS}rem;
+        --mobile-m: ${deviceBreakpoint.mobileM}rem;
+        --mobile-l: ${deviceBreakpoint.mobileL}rem;
+        --tablet: ${deviceBreakpoint.tablet}rem;
+        --laptop: ${deviceBreakpoint.laptop}rem;
+        --laptop-mid: ${deviceBreakpoint.laptopMid}rem;
+        --laptop-l: ${deviceBreakpoint.laptopL}rem;
+        --desktop: ${deviceBreakpoint.desktop}rem;
     }
 }
 `;

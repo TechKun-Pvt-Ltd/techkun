@@ -11,6 +11,8 @@ const navCss = css`
     display: flex;
     justify-content: space-between;
     align-items: stretch;
+    min-height: 0;
+    max-height: 100%;
 `;
 export default function Header() {
     const pathname = usePathname();

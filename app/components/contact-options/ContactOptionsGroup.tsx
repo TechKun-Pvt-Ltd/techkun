@@ -24,7 +24,6 @@ const variantCss = {
         transform: translateY(calc((1 - var(--_switch)) * -150%));
     `,
 	"bottom-nav": css`
-        padding-block: var(--space-4);
         justify-content: space-between;
         transform: translateY(calc((1 - var(--_switch)) * 150%));
     `
@@ -38,6 +37,9 @@ const socialLinksGroupCss = css`
     background: oklch(from var(--secondary-950) l c h / 0.96);
     backdrop-filter: blur(4px);
     border: 1px solid var(--secondary-900);
+	padding-block: 0.5rem;
+	padding-inline: 1.4rem;
+	gap: 0.5rem;
     a {
         padding: var(--space-1);
         color: var(--secondary-neutral-400);
@@ -50,7 +52,7 @@ const socialLinksGroupCss = css`
 `;
 
 function SocialLinksGroup() {
-	return <div className="text-lg gap-3 py-2 px-4" css={socialLinksGroupCss}>
+	return <div className="text-lg" css={socialLinksGroupCss}>
 		<XLink className="contact-option" href={xAccountUrl} />
 		<div className="divider" />
 		<LinkedInLink className="contact-option" href={linkedInAccountUrl} />
