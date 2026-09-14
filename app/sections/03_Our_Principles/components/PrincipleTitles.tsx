@@ -32,6 +32,11 @@ export default function PrincipleTitles({titles}: {
                 --active-index: min(round(down, tan(atan2(var(${rotationCssVars.angle}), 90deg)), 1), ${titles.length - 1});
             }
 
+            @property --active-index {
+                syntax: "<number>";
+                inherits: true;
+                initial-value: 0;
+            }
             --transition: --active-index 0.8s ease-in-out;
             &[data-initial] {
                 --transition: none;
