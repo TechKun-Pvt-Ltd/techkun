@@ -10,7 +10,7 @@ import {css} from "@emotion/react";
 const DEFAULT_START = 0;
 const DEFAULT_SIZE = 100;
 
-export type TrigWheelProps = {
+export type PolarSpaceProps = {
 	angle: MotionValue<Angle>;
 	startX?: number;
 	startY?: number;
@@ -19,12 +19,12 @@ export type TrigWheelProps = {
 	children?: React.ReactNode;
 };
 
-export type TrigAngleTransformer<T = any> = (a: Angle, c: BaseTrigWheelContext["props"]) => T;
+export type AngleTransformer<T = any> = (a: Angle, c: BasePolarSpaceContext["props"]) => T;
 type TransformersMap = {
-	[key: keyof any]: TrigAngleTransformer;
+	[key: keyof any]: AngleTransformer;
 };
 type MapTransformersToMotionValues<T extends TransformersMap> = {
-	[K in keyof T]: MotionValue<T[K] extends TrigAngleTransformer<infer R> ? R : never>;
+	[K in keyof T]: MotionValue<T[K] extends AngleTransformer<infer R> ? R : never>;
 };
 
 const transformersMap = {
@@ -39,7 +39,7 @@ const transformersMap = {
 	}
 } satisfies TransformersMap;
 
-type BaseTrigWheelContext = {
+type BasePolarSpaceContext = {
 	props: {
 		angle: MotionValue<Angle>;
 		radius: number;
@@ -47,16 +47,16 @@ type BaseTrigWheelContext = {
 		start: Point2D;
 		end: Point2D;
 	};
-	getOrRegister<T>(key: string | symbol, transformer: TrigAngleTransformer<T>): MotionValue<T>;
+	getOrRegister<T>(key: string | symbol, transformer: AngleTransformer<T>): MotionValue<T>;
 	unregister(key: string | symbol): void;
 };
-type TrigWheelContext =
-	Omit<BaseTrigWheelContext, "props"> & BaseTrigWheelContext["props"]
+type PolarSpaceContext =
+	Omit<BasePolarSpaceContext, "props"> & BasePolarSpaceContext["props"]
 	& MapTransformersToMotionValues<typeof transformersMap>;
 
-const TrigWheelContext = createContext<TrigWheelContext | null>(null);
+const PolarSpaceContext = createContext<PolarSpaceContext | null>(null);
 
-const proxyHandler: ProxyHandler<BaseTrigWheelContext> = {
+const proxyHandler: ProxyHandler<BasePolarSpaceContext> = {
 	get(target, p, receiver): any {
 		if (p in target.props)
 			return Reflect.get(target.props, p, receiver);
@@ -65,19 +65,19 @@ const proxyHandler: ProxyHandler<BaseTrigWheelContext> = {
 		if (!(p in transformersMap))
 			return undefined;
 
-		const transformer: TrigAngleTransformer = transformersMap[p as keyof typeof transformersMap];
+		const transformer: AngleTransformer = transformersMap[p as keyof typeof transformersMap];
 		return target.getOrRegister(p, transformer);
 	}
 };
 
-function TrigWheel({
+function PolarSpace({
 	angle,
 	size = DEFAULT_SIZE,
 	startX = DEFAULT_START,
 	startY = DEFAULT_START,
 	radius = 0.4 * size,
 	children
-}: TrigWheelProps) {
+}: PolarSpaceProps) {
 	const endX = startX + size;
 	const endY = startY + size;
 	const centerX = startX + size / 2;
@@ -86,7 +86,7 @@ function TrigWheel({
 	const abortSignal = useAbortSignal();
 	const valuesMap = useConstant(() => new Map<string | symbol, MotionValue>);
 
-	const baseTrigWheelContext: BaseTrigWheelContext = {
+	const baseTrigWheelContext: BasePolarSpaceContext = {
 		props: {
 			angle, radius,
 			center: Point2D.of(centerX, centerY),
@@ -119,17 +119,17 @@ function TrigWheel({
 			valuesMap.delete(key);
 		}
 	};
-	return <TrigWheelContext.Provider value={
-		new Proxy(baseTrigWheelContext, proxyHandler) as unknown as TrigWheelContext
+	return <PolarSpaceContext.Provider value={
+		new Proxy(baseTrigWheelContext, proxyHandler) as unknown as PolarSpaceContext
 	}>
 		<Container>{children}</Container>
-	</TrigWheelContext.Provider>;
+	</PolarSpaceContext.Provider>;
 }
 
-export function useTrigWheel() {
-	const context = useContext(TrigWheelContext);
+export function usePolarSpace() {
+	const context = useContext(PolarSpaceContext);
 	if (context === null)
-		throw new Error("TrigWheelContext can only be used inside TrigWheel.");
+		throw new Error("PolarSpaceContext can only be used inside TrigWheel.");
 	return context;
 }
 
@@ -141,10 +141,10 @@ const cssProps = {
 	// rotorX: "--rotor-x",
 	// rotorY: "--rotor-y"
 } satisfies Record<string, string>;
-TrigWheel.cssProps = cssProps;
+PolarSpace.cssProps = cssProps;
 
 function Container({ children }: { children: React.ReactNode }) {
-	const { center, radius, cssAngle } = useTrigWheel();
+	const { center, radius, cssAngle } = usePolarSpace();
 	return <motion.g
 		style={{
 			[cssProps.angle]: cssAngle,
@@ -155,7 +155,7 @@ function Container({ children }: { children: React.ReactNode }) {
 			// [cssProps.rotorY]: `calc(var(${cssProps.centerY}) + var(${cssProps.radius}) * sin(var(${cssProps.angle})))`
 		} as React.CSSProperties}
 		css={css`
-			.trig-wheel-rotate {
+			.rotating {
 				transform-box: view-box;
 				transform-origin: var(${cssProps.centerX}) var(${cssProps.centerY});
 				transform: rotate(var(${cssProps.angle}));
@@ -166,75 +166,80 @@ function Container({ children }: { children: React.ReactNode }) {
 	</motion.g>;
 }
 
-TrigWheel.Circle = function Circle(props: React.ComponentProps<"circle">) {
-	const { radius, center } = useTrigWheel();
+PolarSpace.Circle = function Circle(props: React.ComponentProps<"circle">) {
+	const { radius, center } = usePolarSpace();
 	return <circle r={radius} cx={center.x} cy={center.y} {...props} />;
 };
 
-TrigWheel.DashedWheel = function DashedWheel({radius, markerSize = 2.5, markersPerQuarter = 5, ...props}: {
+PolarSpace.AngularTicks = function AngularTicks({radius, tickLength = 2.5, angularSpacing = Math.PI / 10, ...props}: {
 	radius: number;
-	markerSize?: number;
-	markersPerQuarter?: number;
-} & React.ComponentProps<"circle">) {
-	const { center } = useTrigWheel();
-	const markerThickness = 0.1;
-	const effectiveRadius = radius - markerSize / 2;
+	tickLength?: number;
+	angularSpacing?: number;
+} & React.ComponentProps<"path">) {
+	const { center } = usePolarSpace();
+	const tickThickness = 0.1;
+	const totalTicks = 2 * Math.PI / angularSpacing;
 
-	return <circle
-		r={effectiveRadius} cx={center.x} cy={center.y}
-		fill="none" stroke="currentColor"
-		strokeWidth={markerSize}
-		strokeDasharray={markerThickness + " " + (Math.PI * effectiveRadius / (2 * markersPerQuarter) - markerThickness)}
-		strokeDashoffset={markerThickness / 2}
-		strokeLinecap="butt"
-		className="trig-wheel-rotate"
+	const pb = PathBuilder.m(center.add(Vector2D.polar(radius, Angle.ZERO)));
+	pb.l(Vector2D.polar(tickLength, Angle.ZERO));
+	for (let i = 1; i < totalTicks; i++) {
+		const angle = Angle.of(i * angularSpacing);
+		pb.m(center.add(Vector2D.polar(radius, angle)));
+		pb.l(Vector2D.polar(tickLength, angle));
+	}
+
+	return <path
+		d={pb.toSVGPathString()}
+		strokeWidth={tickThickness} stroke="currentColor"
+		strokeLinecap="round" fill="none"
+		className="rotating"
 		{...props}
 	/>;
 };
 
-TrigWheel.XAxis = function XAxis(props: React.ComponentProps<"line">) {
-	const { start, center, end } = useTrigWheel();
+PolarSpace.XAxis = function XAxis(props: React.ComponentProps<"line">) {
+	const { start, center, end } = usePolarSpace();
 	return <line x1={start.x} y1={center.y} x2={end.x} y2={center.y} {...props} />;
 };
 
-TrigWheel.YAxis = function YAxis(props: React.ComponentProps<"line">) {
-	const { start, center, end } = useTrigWheel();
+PolarSpace.YAxis = function YAxis(props: React.ComponentProps<"line">) {
+	const { start, center, end } = usePolarSpace();
 	return <line x1={center.x} y1={start.y} x2={center.x} y2={end.y} {...props} />
 };
 
-TrigWheel.Rotor = function Rotor(props: React.ComponentProps<"line">) {
-	const { center, radius } = useTrigWheel();
+PolarSpace.Rotor = function Rotor(props: React.ComponentProps<"line">) {
+	const { center, radius } = usePolarSpace();
 
 	return <line
 		x1={center.x} y1={center.y}
 		x2={center.x + radius} y2={center.y}
-		className="trig-wheel-rotate"
+		className="rotating"
 		{...props}
 	/>
 };
 
-TrigWheel.ExtendedRotor = function ExtendedRotor(props: React.ComponentProps<"line">) {
-	const { center, end } = useTrigWheel();
+PolarSpace.ExtendedRotor = function ExtendedRotor(props: React.ComponentProps<"line">) {
+	const { center, end } = usePolarSpace();
 
 	return <line
 		x1={center.x} y1={center.y}
 		x2={end.x} y2={center.y}
-		className="trig-wheel-rotate"
+		className="rotating"
 		{...props}
 	/>
 };
 
-TrigWheel.RotorTerminal = function RotorTerminal(props: React.ComponentProps<typeof motion.circle>) {
-	const {center, radius} = useTrigWheel();
+PolarSpace.RotorTerminal = function RotorTerminal(props: React.ComponentProps<typeof motion.circle>) {
+	const {center, radius} = usePolarSpace();
 	return <motion.circle
 		r={1} cx={center.x + radius} cy={center.y}
-		className="trig-wheel-rotate"
+		className="rotating"
 		{...props}
 	></motion.circle>;
 };
 
-TrigWheel.RotorXProjection = function RotorXProjection(props: React.ComponentProps<typeof motion.line>) {
-	const {center, rotorX, rotorY} = useTrigWheel();
+PolarSpace.RotorXProjection = function RotorXProjection(props: React.ComponentProps<typeof motion.line>) {
+	const {center, rotorX, rotorY} = usePolarSpace();
 	return <motion.line
 		x1={center.x} y1={rotorY}
 		x2={rotorX} y2={rotorY}
@@ -243,8 +248,8 @@ TrigWheel.RotorXProjection = function RotorXProjection(props: React.ComponentPro
 	></motion.line>;
 };
 
-TrigWheel.RotorYProjection = function RotorYProjection(props: React.ComponentProps<typeof motion.line>) {
-	const {center, rotorX, rotorY} = useTrigWheel();
+PolarSpace.RotorYProjection = function RotorYProjection(props: React.ComponentProps<typeof motion.line>) {
+	const {center, rotorX, rotorY} = usePolarSpace();
 	return <motion.line
 		x1={rotorX} y1={center.y}
 		x2={rotorX} y2={rotorY}
@@ -253,7 +258,7 @@ TrigWheel.RotorYProjection = function RotorYProjection(props: React.ComponentPro
 	></motion.line>
 };
 
-TrigWheel.Text = function Text({
+PolarSpace.Text = function Text({
 	radius, startAngle, charAngle,
 	rotationStartThreshold,
 	rotationEndThreshold,
@@ -324,7 +329,7 @@ TrigWheel.Text = function Text({
 	</g>;
 };
 
-TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize, rotationStartThreshold, rotationEndThreshold, ...props}: {
+PolarSpace.RadialBox = function RadialBox({radius, angle, radialSize, angularSize, rotationStartThreshold, rotationEndThreshold, ...props}: {
 	radius: number;
 	angle: number;
 	radialSize: number;
@@ -332,7 +337,7 @@ TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize
 	rotationStartThreshold?: string;
 	rotationEndThreshold?: string;
 } & React.ComponentProps<"path">) {
-	const {center} = useTrigWheel();
+	const {center} = usePolarSpace();
 
 	const pb = PathBuilder.m(center.add(Vector2D.polar(radius, angle)));
 	pb.l(Vector2D.polar(radialSize, angle));
@@ -360,4 +365,4 @@ TrigWheel.RadialBox = function RadialBox({radius, angle, radialSize, angularSize
 	/>;
 };
 
-export default TrigWheel;
+export default PolarSpace;

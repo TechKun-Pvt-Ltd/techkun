@@ -1,4 +1,4 @@
-import TrigWheel, {TrigAngleTransformer, useTrigWheel} from "./TrigWheel";
+import PolarSpace, {AngleTransformer, usePolarSpace} from "./PolarSpace.tsx";
 import supportsQuery from "@/app/utils/css/supports-query";
 import {css} from "@emotion/react";
 import React, {JSX, useEffect, useRef} from "react";
@@ -39,7 +39,7 @@ function IconRing({ radius, size = 4, renderers }: {
     size: number;
     renderers: ((position: Point2D, size: number) => JSX.Element)[];
 }) {
-    const { center } = useTrigWheel();
+    const { center } = usePolarSpace();
     const HALF_PI = 0.5 * Math.PI;
     const RELATIVE_POSITION = Math.PI / 6 - Math.PI / 60;
     return renderers.map((render, i) => {
@@ -60,14 +60,14 @@ function TextRing({radius, texts, charAngle, fontSize = 3}: {
 }) {
     return texts.map((text, i) => {
         const sweepDirection = MINUS_ONE_AND_ONE[Math.floor(i / 2) % 2];
-        return <TrigWheel.Text
+        return <PolarSpace.Text
             key={text}
             startAngle={`${Math.PI / 4 + i * Math.PI / 2 + -sweepDirection * charAngle * text.length / 2}rad`}
             sweepDirection={sweepDirection}
             charAngle={charAngle + "rad"}
             radius={radius}
             fontSize={fontSize}
-        >{text}</TrigWheel.Text>;
+        >{text}</PolarSpace.Text>;
     });
 }
 
@@ -238,9 +238,9 @@ const shapes: string[] = [];
 //     shapes.push(pb2.toSVGPathString());
 // }
 
-const centerIconPath: TrigAngleTransformer<string> = a => shapes[Math.floor(+a / +Angle.HALF_PI)] ?? shapes[shapes.length - 1];
+const centerIconPath: AngleTransformer<string> = a => shapes[Math.floor(+a / +Angle.HALF_PI)] ?? shapes[shapes.length - 1];
 function CenterIcon(props: React.ComponentProps<"path">) {
-    const { getOrRegister } = useTrigWheel();
+    const { getOrRegister } = usePolarSpace();
 
     const pathRef = useRef<SVGPathElement>(null);
     const pathData = getOrRegister("center-icon-path", centerIconPath);
@@ -281,7 +281,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
     });
 
     const innerCircleRadius = TRIG_CIRCLE_RADIUS * 0.48;
-    const innerCircle = <TrigWheel.Circle
+    const innerCircle = <PolarSpace.Circle
         r={innerCircleRadius}
         fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
         strokeWidth="0.1"
@@ -307,18 +307,18 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
         const pb = PathBuilder.m(centerPoint.add(Vector2D.polar(box.radius + box.radialSize, box.angle)));
         pb.circularArc(box.radius + box.radialSize, box.angle, box.angle + box.angularSize);
         return <React.Fragment key={`${box.radius}-${box.angle}-${box.radialSize}-${box.angularSize}`}>
-            <TrigWheel.RadialBox
+            <PolarSpace.RadialBox
                 {...box}
                 rotationStartThreshold="0rad"
                 fill="var(--_fill-color)" stroke="var(--_stroke-color)"
                 strokeWidth={STROKE_WIDTH}
             />
-            <path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className="trig-wheel-rotate" d={pb.toSVGPathString()} />
+            <path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className="rotating" d={pb.toSVGPathString()} />
         </React.Fragment>;
     });
 
     const tinyRadialBoxes = <>
-        <TrigWheel.RadialBox
+        <PolarSpace.RadialBox
             radius={TRIG_CIRCLE_RADIUS * 0.6} angle={Math.PI / 60}
             radialSize={TRIG_CIRCLE_RADIUS * 0.2} angularSize={Math.PI / 2.6}
             rotationStartThreshold="0rad"
@@ -328,8 +328,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
     </>;
 
     const dashedWheel = <>
-        <TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_stroke-color)" />
-        <TrigWheel.DashedWheel radius={TRIG_CIRCLE_RADIUS * 0.4} stroke="var(--_lighter-stroke)" markersPerQuarter={1} />
+        <PolarSpace.AngularTicks radius={TRIG_CIRCLE_RADIUS * 0.35} stroke="var(--_stroke-color)" />
+        <PolarSpace.AngularTicks radius={TRIG_CIRCLE_RADIUS * 0.35} stroke="var(--_lighter-stroke)" angularSpacing={Math.PI / 2} />
     </>;
 
     const quotePart1 = "Design is not just what it looks and feels like";
@@ -360,7 +360,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
             }
         `}
     >
-        <TrigWheel
+        <PolarSpace
             angle={angle}
             startX={VIEW_BOX_START} startY={VIEW_BOX_START}
             size={VIEW_BOX_SIZE} radius={TRIG_CIRCLE_RADIUS}
@@ -371,18 +371,18 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     <stop offset="80%" stopColor="var(--secondary-neutral-950)"/>
                 </radialGradient>
             </defs>
-            <g stroke="var(--secondary-neutral-800)" strokeWidth="0.25" fill="none">
-                <TrigWheel.XAxis/>
-                <TrigWheel.YAxis/>
-                <TrigWheel.RotorXProjection/>
-                <TrigWheel.RotorYProjection/>
+            <g stroke="var(--secondary-neutral-800)" strokeWidth="0.1" fill="none">
+                <PolarSpace.XAxis/>
+                <PolarSpace.YAxis/>
+                <PolarSpace.RotorXProjection/>
+                <PolarSpace.RotorYProjection/>
             </g>
             <ClippedG clipPathId="back-clip-path" pathData={backClipPath} className="back-layer">
                 {innerCircle}
                 {tinyRadialBoxes}
                 {radialBoxes}
                 {dashedWheel}
-                <TrigWheel.Text
+                <PolarSpace.Text
                     style={{textTransform: "uppercase"}}
                     radius={TRIG_CIRCLE_RADIUS - 5}
                     startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
@@ -391,13 +391,13 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     sweepDirection="ccw"
                     fontSize={2.5}
                     color="var(--neutral-400)"
-                >{firstText}</TrigWheel.Text>
-                <TrigWheel.Text
+                >{firstText}</PolarSpace.Text>
+                <PolarSpace.Text
                     radius={TRIG_CIRCLE_RADIUS * 0.54}
                     charAngle={quoteCharAngle + "rad"} fontSize={2.5}
                     startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
                     color="var(--neutral-600)"
-                >{quotePart1}</TrigWheel.Text>
+                >{quotePart1}</PolarSpace.Text>
             </ClippedG>
             <ClippedG clipPathId="front-clip-path" pathData={frontClipPath} className="front-layer">
                 <rect fill="url(#brand-radial-gradient)" fillOpacity="0.25" x="0%" y="0%" width="100%" height="100%"
@@ -409,7 +409,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     {radialBoxes}
                 </clipPath>
                 {dashedWheel}
-                <TrigWheel.Text
+                <PolarSpace.Text
                     style={{textTransform: "uppercase"}}
                     radius={TRIG_CIRCLE_RADIUS - 5}
                     startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
@@ -417,8 +417,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     rotationStartThreshold={"0rad"}
                     fontSize={2.5}
                     color="var(--secondary-neutral-200)"
-                >{revealedText}</TrigWheel.Text>
-                <TrigWheel.Text
+                >{revealedText}</PolarSpace.Text>
+                <PolarSpace.Text
                     style={{textTransform: "uppercase"}}
                     radius={TRIG_CIRCLE_RADIUS - 5}
                     startAngle={"0rad"} charAngle={`${charAngle}rad`}
@@ -426,25 +426,25 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     rotationStartThreshold={(2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad"}
                     fontSize={2.5}
                     color="var(--secondary-neutral-200)"
-                >{"LET'S KICKSTART YOUR"}</TrigWheel.Text>
-                <TrigWheel.Text
+                >{"LET'S KICKSTART YOUR"}</PolarSpace.Text>
+                <PolarSpace.Text
                     radius={TRIG_CIRCLE_RADIUS * 0.54}
                     charAngle={quoteCharAngle + "rad"} fontSize={2.5}
                     startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
                     rotationStartThreshold={(3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"}
                     color="var(--secondary-neutral-600)"
-                >{quotePart2}</TrigWheel.Text>
+                >{quotePart2}</PolarSpace.Text>
             </ClippedG>
             <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
-                <TrigWheel.ExtendedRotor strokeDasharray="2"/>
-                <TrigWheel.Rotor style={{
+                <PolarSpace.ExtendedRotor strokeDasharray="2"/>
+                <PolarSpace.Rotor style={{
                     filter:
                         "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
                         "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
                         "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
                 }}/>
             </g>
-            <TrigWheel.Circle
+            <PolarSpace.Circle
                 fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
                 r={TRIG_CIRCLE_RADIUS * 0.32}
                 // style={{
@@ -454,17 +454,17 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 // 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
                 // }}
             />
-            <TrigWheel.Circle
+            <PolarSpace.Circle
                 fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
                 r={TRIG_CIRCLE_RADIUS * 0.24}
             />
             <g css={css`
-                --_radius: calc(0.2 * var(${TrigWheel.cssProps.radius}));
+                --_radius: calc(0.2 * var(${PolarSpace.cssProps.radius}));
                 --_gap: calc(0.2 * var(--_radius));
                 --_circumference: calc(2 * pi * var(--_radius));
 
                 .progress-indicator {
-                    --_angle: clamp(0deg, var(${TrigWheel.cssProps.angle}) - var(--i) * 90deg, 90deg);
+                    --_angle: clamp(0deg, var(${PolarSpace.cssProps.angle}) - var(--i) * 90deg, 90deg);
                     --_switch: round(down, var(--_angle) / (90deg), 1);
                     @supports not ${supportsQuery.unitStripping} {
                         --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
@@ -478,23 +478,23 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     transition: stroke 0.2s ease-in-out;
                 }
             `}>
-                {Array.from({length: 4}, (_, i) => <TrigWheel.Circle
+                {Array.from({length: 4}, (_, i) => <PolarSpace.Circle
                     key={i} className="progress-indicator"
                     style={{'--i': i} as React.CSSProperties}
                     fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
                     strokeLinecap="butt"
                 />)}
             </g>
-            <TrigWheel.Circle
+            <PolarSpace.Circle
                 css={css`
-                    --_radius: calc(0.24 * var(${TrigWheel.cssProps.radius}));
+                    --_radius: calc(0.24 * var(${PolarSpace.cssProps.radius}));
                     --_circumference: calc(2 * pi * var(--_radius));
 
                     r: var(--_radius);
                     stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
-                    stroke-dashoffset: calc(-4 * var(--_radius) * var(${TrigWheel.cssProps.angle}) / (1rad));
+                    stroke-dashoffset: calc(-4 * var(--_radius) * var(${PolarSpace.cssProps.angle}) / (1rad));
                     @supports not ${supportsQuery.unitStripping} {
-                        stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${TrigWheel.cssProps.angle}), 1rad)));
+                        stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${PolarSpace.cssProps.angle}), 1rad)));
                     }
 
                     transition: 0.2s ease-in-out;
@@ -502,9 +502,9 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 `}
                 fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
             />
-            <TrigWheel.RotorTerminal fill="var(--primary-600)"/>
-            <TrigWheel.RotorTerminal fill="var(--primary-400)" r="0.5"/>
+            <PolarSpace.RotorTerminal fill="var(--primary-600)"/>
+            <PolarSpace.RotorTerminal fill="var(--primary-400)" r="0.5"/>
             <CenterIcon fill="var(--neutral-900)"/>
-        </TrigWheel>
+        </PolarSpace>
     </svg>;
 }
