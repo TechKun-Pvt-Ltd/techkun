@@ -1,16 +1,11 @@
 import {css} from "@emotion/react";
 import React, {useRef} from "react";
-import {
-	interpolate,
-	useScroll,
-	useTransform
-} from "motion/react";
-import {Angle} from "svg-path-kit";
-import {deviceQuery} from "@/app/utils/css/device-query";
-import RevolutionWheel from "./components/RevolutionWheel";
+import {interpolate, motion, MotionStyle, useScroll, useTransform} from "motion/react";
+import {deviceQuery} from "@/app/utils/css/device-query.ts";
+import RevolutionWheel from "./components/RevolutionWheel.tsx";
 import PrincipleTitles from "./components/PrincipleTitles";
-
-const ANGLE_RANGE_START = 0;
+import {Angle} from "svg-path-kit";
+import "./Rotation.module.css";
 
 const titles = [
 	{ title: "An interface should feel\u00A0human", subtitle: "Users feel connected to interfaces that talk to them, interfaces that feel human." },
@@ -21,12 +16,16 @@ const titles = [
 
 const svgSizeProp = "--_svg-size";
 
+const ANGLE_RANGE_START = 0;
+const interpolateAngle = interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI]);
+
 export default function OurPrinciples() {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const {scrollYProgress} = useScroll({target: targetRef, offset: ["start 50%", "end 60%"]});
-	const angle = useTransform(scrollYProgress, sp => Angle.of(interpolate([0, 1], [ANGLE_RANGE_START, ANGLE_RANGE_START + 2 * Math.PI])(sp)));
+	const angle = useTransform(scrollYProgress, p => Angle.of(interpolateAngle(p)));
+	const cssAngle = useTransform(angle, a => `${+a}rad`);
 
-	return <section className="py-32">
+	return <motion.section className="py-32" style={{ "--angle": cssAngle } as MotionStyle}>
 		<div className="gap-20" css={css`
             display: flex;
 			flex-direction: column;
@@ -93,5 +92,5 @@ export default function OurPrinciples() {
 				</div>
 			</div>
 		</div>
-	</section>
+	</motion.section>
 };
