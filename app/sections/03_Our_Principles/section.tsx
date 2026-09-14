@@ -24,7 +24,7 @@ export default function OurPrinciples() {
 	const angle = useTransform(scrollYProgress, p => Angle.of(interpolateAngle(p)));
 	const cssAngle = useTransform(angle, a => `${+a}rad`);
 
-	return <motion.section className="py-32" style={{ "--angle": cssAngle } as MotionStyle}>
+	return <motion.section className="py-32" style={{ "--angle": cssAngle, '--angle-range-start': ANGLE_RANGE_START } as MotionStyle}>
 		<div className="gap-20" css={css`
             display: flex;
 			flex-direction: column;
@@ -68,7 +68,7 @@ export default function OurPrinciples() {
 							gap: var(--space-8);
 						}
 					`}>
-						<PrincipleTitles angle={angle} angleRangeStart={ANGLE_RANGE_START} titles={titles} />
+						<PrincipleTitles titles={titles} />
 						<div css={css`
 							min-height: 0;
 							isolation: isolate;

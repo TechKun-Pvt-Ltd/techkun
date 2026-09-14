@@ -2,12 +2,9 @@ import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
 import {deviceQuery} from "@/app/utils/css/device-query";
 import supportsQuery from "@/app/utils/css/supports-query";
-import {Angle} from "svg-path-kit";
-import {MotionValue} from "motion";
+import {rotationCssVars} from "@/app/sections/03_Our_Principles/components/rotation-css-api.ts";
 
-export default function PrincipleTitles({angle, angleRangeStart, titles}: {
-    angle: MotionValue<Angle>;
-    angleRangeStart: number;
+export default function PrincipleTitles({titles}: {
     titles: {
         title: string
         subtitle: string
@@ -19,33 +16,22 @@ export default function PrincipleTitles({angle, angleRangeStart, titles}: {
         if (!scope.current) return;
 
         const container = scope.current;
-        let currentIndex = 0;
-        function callback(a: Angle) {
-            const targetIndex = Math.min(Math.floor((+a - angleRangeStart) / +Angle.HALF_PI), titles.length - 1);
-            if (targetIndex === currentIndex) return;
-
-            container.style.setProperty("--active-index", targetIndex.toString());
-            currentIndex = targetIndex;
-        }
-        callback(angle.get());
         requestAnimationFrame(() => container.removeAttribute("data-initial"));
-        return angle.on("change", callback);
     }, []);
 
     return <div
         ref={scope}
         data-initial
-        style={{ '--active-index': 0 } as React.CSSProperties}
         css={css`
             align-self: stretch;
             position: relative;
             isolation: isolate;
 
-            @property --active-index {
-                syntax: "<number>";
-                inherits: true;
-                initial-value: 0;
+            --active-index: min(round(down, var(${rotationCssVars.angle}) / (90deg), 1), ${titles.length - 1});
+            @supports not ${supportsQuery.unitStripping} {
+                --active-index: min(round(down, tan(atan2(var(${rotationCssVars.angle}), 90deg)), 1), ${titles.length - 1});
             }
+
             --transition: --active-index 0.8s ease-in-out;
             &[data-initial] {
                 --transition: none;

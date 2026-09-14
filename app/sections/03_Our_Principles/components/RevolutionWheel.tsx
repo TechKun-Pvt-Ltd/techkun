@@ -275,35 +275,35 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
     const quotePart2 = "Design is how it works";
     const quoteCharAngle = 0.064;
 
-    return <svg
-        aria-hidden="true"
-        viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
-        strokeLinejoin="round" strokeLinecap="round"
-        style={{
-            [rotationCssVars.centerX]: `${CIRCLE_CENTER}px`,
-            [rotationCssVars.centerY]: `${CIRCLE_CENTER}px`
-        } as React.CSSProperties}
-        css={css`
-            height: 110%;
-            width: 100%;
-            will-change: transform;
-
-            g.back-layer {
-                --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                --_stroke-color: var(--neutral-800);
-                --_lighter-stroke: var(--neutral-400);
-            }
-
-            g.front-layer {
-                --_dial-fill-color: oklch(from var(--secondary-950) l c h / 0.25);
-                --_fill-color: none;
-                --_stroke-color: var(--secondary-neutral-800);
-                --_lighter-stroke: var(--primary-500);
-            }
-        `}
-    >
-        <PolarSpace centerX={CIRCLE_CENTER} centerY={CIRCLE_CENTER}>
+    return <PolarSpace centerX={CIRCLE_CENTER} centerY={CIRCLE_CENTER}>
+        <svg
+            aria-hidden="true"
+            viewBox={`${VIEW_BOX_START} ${VIEW_BOX_START} ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
+            strokeLinejoin="round" strokeLinecap="round"
+            style={{
+                [rotationCssVars.centerX]: `${CIRCLE_CENTER}px`,
+                [rotationCssVars.centerY]: `${CIRCLE_CENTER}px`
+            } as React.CSSProperties}
+            css={css`
+                height: 110%;
+                width: 100%;
+                will-change: transform;
+    
+                g.back-layer {
+                    --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
+                    --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
+                    --_stroke-color: var(--neutral-800);
+                    --_lighter-stroke: var(--neutral-400);
+                }
+    
+                g.front-layer {
+                    --_dial-fill-color: oklch(from var(--secondary-950) l c h / 0.25);
+                    --_fill-color: none;
+                    --_stroke-color: var(--secondary-neutral-800);
+                    --_lighter-stroke: var(--primary-500);
+                }
+            `}
+        >
             <defs>
                 <radialGradient id="brand-radial-gradient">
                     <stop offset="-20%" stopColor="var(--secondary-700)"/>
@@ -458,6 +458,6 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
             <RotorTerminal r={1} fill="var(--primary-600)"/>
             <RotorTerminal r={0.5} fill="var(--primary-400)"/>
             <CenterIcon angle={angle} fill="var(--neutral-900)"/>
-        </PolarSpace>
-    </svg>;
+        </svg>
+    </PolarSpace>;
 }
