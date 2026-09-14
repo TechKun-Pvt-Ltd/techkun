@@ -1,8 +1,8 @@
-import styles from "./Rotation.module.css";
+import "./rotation.css";
 
 export const rotationCssApi = {
-	rotating: styles.rotating,
-	rotatingClamped: styles.rotatingClamped
+	rotating: "rotating",
+	rotatingClamped: "rotating-clamped"
 };
 export const rotationCssVars = {
 	angle: "--angle",

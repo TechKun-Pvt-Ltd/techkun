@@ -5,7 +5,6 @@ import {deviceQuery} from "@/app/utils/css/device-query.ts";
 import RevolutionWheel from "./components/RevolutionWheel.tsx";
 import PrincipleTitles from "./components/PrincipleTitles";
 import {Angle} from "svg-path-kit";
-import "./Rotation.module.css";
 
 const titles = [
 	{ title: "An interface should feel\u00A0human", subtitle: "Users feel connected to interfaces that talk to them, interfaces that feel human." },
