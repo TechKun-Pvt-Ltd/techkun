@@ -1,5 +1,5 @@
 import PolarSpace, {usePolarSpace} from "./PolarSpace.tsx";
-import {rotationCssApi, rotationCssVars} from "./rotation-css-api.ts";
+import {rotationCssApi, rotationCssVars, rotationThresholdStyle} from "./rotation-css-api.ts";
 import supportsQuery from "@/app/utils/css/supports-query.ts";
 import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
@@ -56,120 +56,50 @@ function RotorTerminal(props: React.ComponentProps<typeof motion.circle>) {
     />;
 }
 
-const shapes: string[] = [];
-{
-    const headSize = 1.5;
-    const armLength = 1.5;
-    const armHeight = 1.25;
+// A "blade" is a head (3-pointed chevron) plus two swept arms. The command
+// sequence is identical for every blade (that's what makes them animatable
+// into one another via the shared `d` attribute); only the sizes/angles and
+// which way the head points differ between shapes, so those are the only
+// things parameterized here.
+//
+// `direction` flips the whole construction top/bottom: derived by writing
+// the "points up" and "points down" shapes side by side and factoring out
+// their sign differences (verified against the original hand-written paths).
+function buildBladeShape({direction: s, headSize, headSlantAngle, armLength, armHeight, armSlantAngle, gap}: {
+    direction: 1 | -1;
+    headSize: number; headSlantAngle: number;
+    armLength: number; armHeight: number; armSlantAngle: number;
+    gap: number;
+}) {
+    const armOffsetY = (s - 1) / 2 * armHeight;
 
-    const gap = 0.25;
-    const slantAngle = Math.PI / 6;
-
-    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gap)));
-    pb.l(Vector2D.polar(headSize, Math.PI + slantAngle));
-    pb.l(Vector2D.polar(headSize, -slantAngle));
-    pb.l(Vector2D.polar(headSize, slantAngle));
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -s * gap)));
+    pb.l(Vector2D.polar(headSize, Math.PI + s * headSlantAngle));
+    pb.l(Vector2D.polar(headSize, -s * headSlantAngle));
+    pb.l(Vector2D.polar(headSize, s * headSlantAngle));
     pb.z();
 
-    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI - slantAngle)));
-    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
+    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI - s * armSlantAngle)).add(Vector2D.of(0, armOffsetY)));
+    pb.l(Vector2D.polar(armLength, Math.PI + s * armSlantAngle));
     pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, slantAngle));
+    pb.l(Vector2D.polar(armLength, s * armSlantAngle));
     pb.z();
 
-    pb.m(centerPoint.add(Vector2D.polar(gap, slantAngle)));
-    pb.l(Vector2D.polar(armLength, -slantAngle));
+    pb.m(centerPoint.add(Vector2D.polar(gap, s * armSlantAngle)).add(Vector2D.of(0, armOffsetY)));
+    pb.l(Vector2D.polar(armLength, -s * armSlantAngle));
     pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
+    pb.l(Vector2D.polar(armLength, Math.PI - s * armSlantAngle));
     pb.z();
 
-    shapes.push(pb.toSVGPathString());
+    return pb.toSVGPathString();
 }
-{
-    const headSize = 1.25;
-    const armLength = 2;
-    const armHeight = 1.25;
 
-    const gap = 0.25;
-    const slantAngle = Math.PI / 6;
-
-    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, -gap)));
-    pb.l(Vector2D.polar(headSize, Math.PI + slantAngle));
-    pb.l(Vector2D.polar(headSize, -slantAngle));
-    pb.l(Vector2D.polar(headSize, slantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI - slantAngle)));
-    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, slantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, slantAngle)));
-    pb.l(Vector2D.polar(armLength, -slantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
-    pb.z();
-
-    shapes.push(pb.toSVGPathString());
-}
-{
-    const headSize = 1.25;
-    const armLength = 2;
-    const armHeight = 1.25;
-
-    const gap = 0.25;
-    const slantAngle = Math.PI / 6;
-
-    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, gap)));
-    pb.l(Vector2D.polar(headSize, Math.PI - slantAngle));
-    pb.l(Vector2D.polar(headSize, slantAngle));
-    pb.l(Vector2D.polar(headSize, -slantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI + slantAngle)).add(Vector2D.of(0, -armHeight)));
-    pb.l(Vector2D.polar(armLength, Math.PI - slantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, -slantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, -slantAngle)).add(Vector2D.of(0, -armHeight)));
-    pb.l(Vector2D.polar(armLength, slantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, Math.PI + slantAngle));
-    pb.z();
-
-    shapes.push(pb.toSVGPathString());
-}
-{
-    const headSize = 1.25;
-    const armLength = 2;
-    const armHeight = 1.25;
-
-    const gap = 0.25;
-    const headSlantAngle = Math.PI / 3;
-    const armSlantAngle = Math.PI / 5;
-
-    const pb = PathBuilder.m(centerPoint.add(Vector2D.of(0, gap)));
-    pb.l(Vector2D.polar(headSize, Math.PI - headSlantAngle));
-    pb.l(Vector2D.polar(headSize, headSlantAngle));
-    pb.l(Vector2D.polar(headSize, -headSlantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, Math.PI + armSlantAngle)).add(Vector2D.of(0, -armHeight)));
-    pb.l(Vector2D.polar(armLength, Math.PI - armSlantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, -armSlantAngle));
-    pb.z();
-
-    pb.m(centerPoint.add(Vector2D.polar(gap, -armSlantAngle)).add(Vector2D.of(0, -armHeight)));
-    pb.l(Vector2D.polar(armLength, armSlantAngle));
-    pb.l(Vector2D.of(0, armHeight));
-    pb.l(Vector2D.polar(armLength, Math.PI + armSlantAngle));
-    pb.z();
-
-    shapes.push(pb.toSVGPathString());
-}
+const shapes: string[] = [
+    buildBladeShape({direction: 1, headSize: 1.5, headSlantAngle: Math.PI / 6, armLength: 1.5, armHeight: 1.25, armSlantAngle: Math.PI / 6, gap: 0.25}),
+    buildBladeShape({direction: 1, headSize: 1.25, headSlantAngle: Math.PI / 6, armLength: 2, armHeight: 1.25, armSlantAngle: Math.PI / 6, gap: 0.25}),
+    buildBladeShape({direction: -1, headSize: 1.25, headSlantAngle: Math.PI / 6, armLength: 2, armHeight: 1.25, armSlantAngle: Math.PI / 6, gap: 0.25}),
+    buildBladeShape({direction: -1, headSize: 1.25, headSlantAngle: Math.PI / 3, armLength: 2, armHeight: 1.25, armSlantAngle: Math.PI / 5, gap: 0.25})
+];
 
 function centerIconPath(a: Angle) {
     return shapes[Math.floor(+a / +Angle.HALF_PI)] ?? shapes[shapes.length - 1];
@@ -249,7 +179,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 fill="var(--_fill-color)" stroke="var(--_stroke-color)"
                 strokeWidth={STROKE_WIDTH}
                 className={rotationCssApi.rotatingClamped}
-                style={{[rotationCssVars.thresholdStart]: "0rad"} as React.CSSProperties}
+                style={rotationThresholdStyle("0rad")}
             />
             <path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className={rotationCssApi.rotating} d={pb.toSVGPathString()} />
         </React.Fragment>;
@@ -262,7 +192,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
             fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
             strokeWidth="0.1"
             className={rotationCssApi.rotatingClamped}
-            style={{[rotationCssVars.thresholdStart]: "0rad"} as React.CSSProperties}
+            style={rotationThresholdStyle("0rad")}
         />
     </>;
 
@@ -325,9 +255,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     className={rotationCssApi.rotatingClamped}
                     style={{
                         textTransform: "uppercase",
-                        [rotationCssVars.thresholdStart]: `${charAngle}rad`,
-                        [rotationCssVars.thresholdEnd]: `${Math.PI - charAngle * (firstText.length + 1)}rad`
-                    } as React.CSSProperties}
+                        ...rotationThresholdStyle(`${charAngle}rad`, `${Math.PI - charAngle * (firstText.length + 1)}rad`)
+                    }}
                     radius={WHEEL_RADIUS - 5}
                     startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
                     sweepDirection="ccw"
@@ -353,7 +282,7 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 {dashedWheel}
                 <PolarSpace.Text
                     className={rotationCssApi.rotatingClamped}
-                    style={{textTransform: "uppercase", [rotationCssVars.thresholdStart]: "0rad"} as React.CSSProperties}
+                    style={{textTransform: "uppercase", ...rotationThresholdStyle("0rad")}}
                     radius={WHEEL_RADIUS - 5}
                     startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
                     sweepDirection="ccw"
@@ -364,8 +293,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     className={rotationCssApi.rotatingClamped}
                     style={{
                         textTransform: "uppercase",
-                        [rotationCssVars.thresholdStart]: (2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad"
-                    } as React.CSSProperties}
+                        ...rotationThresholdStyle((2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad")
+                    }}
                     radius={WHEEL_RADIUS - 5}
                     startAngle={"0rad"} charAngle={`${charAngle}rad`}
                     sweepDirection="ccw"
@@ -374,10 +303,9 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 >{"LET'S KICKSTART YOUR"}</PolarSpace.Text>
                 <PolarSpace.Text
                     className={rotationCssApi.rotatingClamped}
-                    style={{
-                        [rotationCssVars.thresholdStart]:
-                            (3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"
-                    } as React.CSSProperties}
+                    style={rotationThresholdStyle(
+                        (3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"
+                    )}
                     radius={WHEEL_RADIUS * 0.54}
                     charAngle={quoteCharAngle + "rad"} fontSize={2.5}
                     startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
