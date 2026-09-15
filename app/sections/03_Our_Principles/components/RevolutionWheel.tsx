@@ -32,28 +32,50 @@ function ClippedG({clipPathId, pathData, ...props}: {
     </>;
 }
 
-// The only Cartesian bit this wheel needs. PolarSpace has no notion of
-// bounds any more (just a center point), so the one consumer that wants
-// axis lines spanning the viewBox draws them from its own known constants.
-function XAxis(props: React.ComponentProps<"line">) {
-    const { centerY } = usePolarSpace();
-    return <line x1={VIEW_BOX_START} y1={centerY} x2={VIEW_BOX_START + VIEW_BOX_SIZE} y2={centerY} {...props} />;
-}
-function YAxis(props: React.ComponentProps<"line">) {
-    const { centerX } = usePolarSpace();
-    return <line x1={centerX} y1={VIEW_BOX_START} x2={centerX} y2={VIEW_BOX_START + VIEW_BOX_SIZE} {...props} />
+function AxisCrosshair() {
+    const { centerX, centerY } = usePolarSpace();
+    return <>
+        <line className="x-axis" x1={VIEW_BOX_START} y1={centerY} x2={VIEW_BOX_START + VIEW_BOX_SIZE} y2={centerY} />
+        <line className="y-axis" x1={centerX} y1={VIEW_BOX_START} x2={centerX} y2={VIEW_BOX_START + VIEW_BOX_SIZE} />
+    </>;
 }
 
-// Static position (center + radius, angle 0) spun by useRotation's plain
-// rotating class — not a shared primitive, since "a circle at an arbitrary
-// polar point" doesn't generalize the way PolarSpace.Circle's "circle at
-// the center" does. One-off, so it's local to this file.
-function RotorTerminal(props: React.ComponentProps<typeof motion.circle>) {
-    return <motion.circle
-        cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
-        className={rotationCssApi.rotating}
-        {...props}
-    />;
+function Rotor() {
+    return <>
+        <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
+            <PolarSpace.Spoke radius={VIEW_BOX_SIZE / 2} className={rotationCssApi.rotating} strokeDasharray="2"/>
+            <PolarSpace.Spoke
+                radius={WHEEL_RADIUS}
+                className={rotationCssApi.rotating}
+                style={{
+                    filter:
+                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
+                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
+                }}
+            />
+        </g>
+        <motion.circle
+            cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
+            r={1} fill="var(--primary-600)"
+            className={rotationCssApi.rotating}
+        />
+        <motion.circle
+            cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
+            r={0.5} fill="var(--primary-400)"
+            className={rotationCssApi.rotating}
+        />
+    </>;
+}
+
+function RotorProjections({ angle }: { angle: MotionValue<Angle> }) {
+    const rotorX = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.cosine);
+    const rotorY = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.sine);
+
+    return <>
+        <motion.line x1={CIRCLE_CENTER} y1={rotorY} x2={rotorX} y2={rotorY} strokeDasharray="2"/>
+        <motion.line x1={rotorX} y1={CIRCLE_CENTER} x2={rotorX} y2={rotorY} strokeDasharray="2"/>
+    </>;
 }
 
 // A "blade" is a head (3-pointed chevron) plus two swept arms. The command
@@ -131,6 +153,70 @@ function CenterIcon({angle, ...props}: {angle: MotionValue<Angle>} & React.Compo
     />;
 }
 
+function WheelHub({angle}: {angle: MotionValue<Angle>}) {
+    return <>
+        <PolarSpace.Circle
+            fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
+            r={WHEEL_RADIUS * 0.32}
+            // style={{
+            // 	filter:
+            // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+            // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
+            // 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
+            // }}
+        />
+        <PolarSpace.Circle
+            fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
+            r={WHEEL_RADIUS * 0.24}
+        />
+        <g css={css`
+            --_radius: calc(0.2 * ${WHEEL_RADIUS}px);
+            --_gap: calc(0.2 * var(--_radius));
+            --_circumference: calc(2 * pi * var(--_radius));
+
+            .progress-indicator {
+                --_angle: clamp(0deg, var(${rotationCssVars.angle}) - var(--i) * 90deg, 90deg);
+                --_switch: round(down, var(--_angle) / (90deg), 1);
+                @supports not ${supportsQuery.unitStripping} {
+                    --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
+                }
+
+                r: var(--_radius);
+                stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
+                calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
+                stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-700) calc(var(--_switch) * 100%));
+
+                transition: stroke 0.2s ease-in-out;
+            }
+        `}>
+            {Array.from({length: 4}, (_, i) => <PolarSpace.Circle
+                key={i} className="progress-indicator"
+                style={{'--i': i} as React.CSSProperties}
+                fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
+                strokeLinecap="butt"
+            />)}
+        </g>
+        <PolarSpace.Circle
+            css={css`
+                --_radius: calc(0.24 * ${WHEEL_RADIUS}px);
+                --_circumference: calc(2 * pi * var(--_radius));
+
+                r: var(--_radius);
+                stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
+                stroke-dashoffset: calc(-4 * var(--_radius) * var(${rotationCssVars.angle}) / (1rad));
+                @supports not ${supportsQuery.unitStripping} {
+                    stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${rotationCssVars.angle}), 1rad)));
+                }
+
+                transition: 0.2s ease-in-out;
+                transition-property: opacity, filter;
+            `}
+            fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
+        />
+        <CenterIcon angle={angle} fill="var(--neutral-900)"/>
+    </>;
+}
+
 const firstText = "Your product needs a";
 const revealedText = "revolution";
 const charAngle = 0.064;
@@ -143,9 +229,6 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
         centerY: CIRCLE_CENTER,
         radius: VIEW_BOX_SIZE / 2
     });
-
-    const rotorX = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.cosine);
-    const rotorY = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.sine);
 
     const innerCircleRadius = WHEEL_RADIUS * 0.48;
     const innerCircle = <PolarSpace.Circle
@@ -241,10 +324,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 </radialGradient>
             </defs>
             <g stroke="var(--secondary-neutral-800)" strokeWidth="0.1" fill="none">
-                <motion.line x1={CIRCLE_CENTER} y1={rotorY} x2={rotorX} y2={rotorY} strokeDasharray="2"/>
-                <motion.line x1={rotorX} y1={CIRCLE_CENTER} x2={rotorX} y2={rotorY} strokeDasharray="2"/>
-                <XAxis />
-                <YAxis />
+                <AxisCrosshair />
+                <RotorProjections angle={angle} />
             </g>
             <ClippedG clipPathId="back-clip-path" pathData={backClipPath} className="back-layer">
                 {innerCircle}
@@ -312,80 +393,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                     color="var(--secondary-neutral-600)"
                 >{quotePart2}</PolarSpace.Text>
             </ClippedG>
-            <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
-                <PolarSpace.Spoke radius={VIEW_BOX_SIZE / 2} className={rotationCssApi.rotating} strokeDasharray="2"/>
-                <PolarSpace.Spoke
-                    radius={WHEEL_RADIUS}
-                    className={rotationCssApi.rotating}
-                    style={{
-                        filter:
-                            "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
-                            "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
-                            "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
-                    }}
-                />
-            </g>
-            <PolarSpace.Circle
-                fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
-                r={WHEEL_RADIUS * 0.32}
-                // style={{
-                // 	filter:
-                // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-                // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-                // 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
-                // }}
-            />
-            <PolarSpace.Circle
-                fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
-                r={WHEEL_RADIUS * 0.24}
-            />
-            <g css={css`
-                --_radius: calc(0.2 * ${WHEEL_RADIUS}px);
-                --_gap: calc(0.2 * var(--_radius));
-                --_circumference: calc(2 * pi * var(--_radius));
-
-                .progress-indicator {
-                    --_angle: clamp(0deg, var(${rotationCssVars.angle}) - var(--i) * 90deg, 90deg);
-                    --_switch: round(down, var(--_angle) / (90deg), 1);
-                    @supports not ${supportsQuery.unitStripping} {
-                        --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
-                    }
-
-                    r: var(--_radius);
-                    stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
-                    calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
-                    stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-700) calc(var(--_switch) * 100%));
-
-                    transition: stroke 0.2s ease-in-out;
-                }
-            `}>
-                {Array.from({length: 4}, (_, i) => <PolarSpace.Circle
-                    key={i} className="progress-indicator"
-                    style={{'--i': i} as React.CSSProperties}
-                    fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
-                    strokeLinecap="butt"
-                />)}
-            </g>
-            <PolarSpace.Circle
-                css={css`
-                    --_radius: calc(0.24 * ${WHEEL_RADIUS}px);
-                    --_circumference: calc(2 * pi * var(--_radius));
-
-                    r: var(--_radius);
-                    stroke-dasharray: 0, var(--_circumference), var(--_circumference), 0;
-                    stroke-dashoffset: calc(-4 * var(--_radius) * var(${rotationCssVars.angle}) / (1rad));
-                    @supports not ${supportsQuery.unitStripping} {
-                        stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${rotationCssVars.angle}), 1rad)));
-                    }
-
-                    transition: 0.2s ease-in-out;
-                    transition-property: opacity, filter;
-                `}
-                fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
-            />
-            <RotorTerminal r={1} fill="var(--primary-600)"/>
-            <RotorTerminal r={0.5} fill="var(--primary-400)"/>
-            <CenterIcon angle={angle} fill="var(--neutral-900)"/>
+            <Rotor/>
+            <WheelHub angle={angle}/>
         </svg>
     </PolarSpace>;
 }

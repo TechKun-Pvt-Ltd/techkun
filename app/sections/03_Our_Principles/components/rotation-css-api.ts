@@ -15,8 +15,8 @@ export const rotationCssVars = {
 
 // For use alongside rotationCssApi.rotatingClamped, which reads these vars.
 export function rotationThresholdStyle(start: string, end?: string): CSSProperties {
-	return {
-		[rotationCssVars.thresholdStart]: start,
-		...(end !== undefined ? {[rotationCssVars.thresholdEnd]: end} : {})
-	} as CSSProperties;
+	const properties: { [key: string]: string } = { [rotationCssVars.thresholdStart]: start };
+	if (end)
+		properties[rotationCssVars.thresholdEnd] = end;
+	return properties;
 }
