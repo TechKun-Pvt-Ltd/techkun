@@ -1,5 +1,5 @@
-import PolarSpace, {usePolarSpace} from "./PolarSpace.tsx";
-import {rotationCssApi, rotationCssVars, rotationThresholdStyle} from "./rotation-css-api.ts";
+import PolarSpace, {usePolarSpace} from "../../../../components/PolarSpace.tsx";
+import {rotationClasses, rotationCssVars, rotationThresholdStyle} from "./rotation-css-api.ts";
 import supportsQuery from "@/app/utils/css/supports-query.ts";
 import {css} from "@emotion/react";
 import React, {useEffect, useRef} from "react";
@@ -43,10 +43,10 @@ function AxisCrosshair() {
 function Rotor() {
     return <>
         <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
-            <PolarSpace.Spoke radius={VIEW_BOX_SIZE / 2} className={rotationCssApi.rotating} strokeDasharray="2"/>
+            <PolarSpace.Spoke radius={VIEW_BOX_SIZE / 2} className={rotationClasses.rotating} strokeDasharray="2"/>
             <PolarSpace.Spoke
                 radius={WHEEL_RADIUS}
-                className={rotationCssApi.rotating}
+                className={rotationClasses.rotating}
                 style={{
                     filter:
                         "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
@@ -58,12 +58,12 @@ function Rotor() {
         <motion.circle
             cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
             r={1} fill="var(--primary-600)"
-            className={rotationCssApi.rotating}
+            className={rotationClasses.rotating}
         />
         <motion.circle
             cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
             r={0.5} fill="var(--primary-400)"
-            className={rotationCssApi.rotating}
+            className={rotationClasses.rotating}
         />
     </>;
 }
@@ -175,11 +175,7 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
             --_circumference: calc(2 * pi * var(--_radius));
 
             .progress-indicator {
-                --_angle: clamp(0deg, var(${rotationCssVars.angle}) - var(--i) * 90deg, 90deg);
-                --_switch: round(down, var(--_angle) / (90deg), 1);
-                @supports not ${supportsQuery.unitStripping} {
-                    --_switch: round(down, tan(atan2(var(--_angle), 90deg)), 1);
-                }
+                --_switch: clamp(0, var(${rotationCssVars.activeQuadrantIndex}) - var(--i), 1);
 
                 r: var(--_radius);
                 stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
@@ -198,7 +194,7 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
         </g>
         <PolarSpace.Circle
             css={css`
-                --_radius: calc(0.24 * ${WHEEL_RADIUS}px);
+                --_radius: ${0.24 * WHEEL_RADIUS}px;
                 --_circumference: calc(2 * pi * var(--_radius));
 
                 r: var(--_radius);
@@ -207,9 +203,6 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
                 @supports not ${supportsQuery.unitStripping} {
                     stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${rotationCssVars.angle}), 1rad)));
                 }
-
-                transition: 0.2s ease-in-out;
-                transition-property: opacity, filter;
             `}
             fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
         />
@@ -221,6 +214,138 @@ const firstText = "Your product needs a";
 const revealedText = "revolution";
 const charAngle = 0.064;
 
+const quotePart1 = "Design is not just what it looks and feels like";
+const quotePart2 = "Design is how it works";
+const quoteCharAngle = 0.064;
+
+// Shared by both wheel faces below — none of these depend on the live
+// rotation angle, so they're built once here rather than per render.
+const innerCircleRadius = WHEEL_RADIUS * 0.48;
+const innerCircle = <PolarSpace.Circle
+    r={innerCircleRadius}
+    fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
+    strokeWidth="0.1"
+    strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
+/>;
+
+const radialBoxesDefs = [
+    {
+        radius: WHEEL_RADIUS * 0.6,
+        angle: Math.PI + Math.PI / 3 + Math.PI / 30,
+        radialSize: WHEEL_RADIUS * 0.4,
+        angularSize: Math.PI / 4
+    },
+    {
+        radius: WHEEL_RADIUS * 0.6,
+        angle: Math.PI,
+        radialSize: WHEEL_RADIUS * 0.4,
+        angularSize: Math.PI / 3
+    }
+];
+const radialBoxes = radialBoxesDefs.map(box => {
+    const STROKE_WIDTH = 0.1;
+    const pb = PathBuilder.m(centerPoint.add(Vector2D.polar(box.radius + box.radialSize, box.angle)));
+    pb.circularArc(box.radius + box.radialSize, box.angle, box.angle + box.angularSize);
+    return <React.Fragment key={`${box.radius}-${box.angle}-${box.radialSize}-${box.angularSize}`}>
+        <PolarSpace.RadialBox
+            {...box}
+            fill="var(--_fill-color)" stroke="var(--_stroke-color)"
+            strokeWidth={STROKE_WIDTH}
+            className={rotationClasses.rotatingClamped}
+            style={rotationThresholdStyle("0rad")}
+        />
+        <path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className={rotationClasses.rotating} d={pb.toSVGPathString()} />
+    </React.Fragment>;
+});
+
+const tinyRadialBoxes = <>
+    <PolarSpace.RadialBox
+        radius={WHEEL_RADIUS * 0.6} angle={Math.PI / 60}
+        radialSize={WHEEL_RADIUS * 0.2} angularSize={Math.PI / 2.6}
+        fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
+        strokeWidth="0.1"
+        className={rotationClasses.rotatingClamped}
+        style={rotationThresholdStyle("0rad")}
+    />
+</>;
+
+const dashedWheel = <g className={rotationClasses.rotating}>
+    <PolarSpace.AngularTicks radius={WHEEL_RADIUS * 0.35} stroke="var(--_stroke-color)" />
+    <PolarSpace.AngularTicks radius={WHEEL_RADIUS * 0.35} stroke="var(--_lighter-stroke)" angularSpacing={Math.PI / 2} />
+</g>;
+
+function BackWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
+    return <ClippedG clipPathId="back-clip-path" pathData={pathData} className="back-layer">
+        {innerCircle}
+        {tinyRadialBoxes}
+        {radialBoxes}
+        {dashedWheel}
+        <PolarSpace.Text
+            className={rotationClasses.rotatingClamped}
+            style={{
+                textTransform: "uppercase",
+                ...rotationThresholdStyle(`${charAngle}rad`, `${Math.PI - charAngle * (firstText.length + 1)}rad`)
+            }}
+            radius={WHEEL_RADIUS - 5}
+            startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
+            sweepDirection="ccw"
+            fontSize={2.5}
+            color="var(--neutral-400)"
+        >{firstText}</PolarSpace.Text>
+        <PolarSpace.Text
+            radius={WHEEL_RADIUS * 0.54}
+            charAngle={quoteCharAngle + "rad"} fontSize={2.5}
+            startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
+            color="var(--neutral-600)"
+        >{quotePart1}</PolarSpace.Text>
+    </ClippedG>;
+}
+
+function FrontWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
+    return <ClippedG clipPathId="front-clip-path" pathData={pathData} className="front-layer">
+        <rect fill="url(#brand-radial-gradient)" fillOpacity="0.25" x="0%" y="0%" width="100%" height="100%"
+              clipPath="url(#radial-boxes-clip-path)"/>
+        {innerCircle}
+        {tinyRadialBoxes}
+        {radialBoxes}
+        <clipPath id="radial-boxes-clip-path">
+            {radialBoxes}
+        </clipPath>
+        {dashedWheel}
+        <PolarSpace.Text
+            className={rotationClasses.rotatingClamped}
+            style={{textTransform: "uppercase", ...rotationThresholdStyle("0rad")}}
+            radius={WHEEL_RADIUS - 5}
+            startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
+            sweepDirection="ccw"
+            fontSize={2.5}
+            color="var(--secondary-neutral-200)"
+        >{revealedText}</PolarSpace.Text>
+        <PolarSpace.Text
+            className={rotationClasses.rotatingClamped}
+            style={{
+                textTransform: "uppercase",
+                ...rotationThresholdStyle((2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad")
+            }}
+            radius={WHEEL_RADIUS - 5}
+            startAngle={"0rad"} charAngle={`${charAngle}rad`}
+            sweepDirection="ccw"
+            fontSize={2.5}
+            color="var(--secondary-neutral-200)"
+        >{"LET'S KICKSTART YOUR"}</PolarSpace.Text>
+        <PolarSpace.Text
+            className={rotationClasses.rotatingClamped}
+            style={rotationThresholdStyle(
+                (3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"
+            )}
+            radius={WHEEL_RADIUS * 0.54}
+            charAngle={quoteCharAngle + "rad"} fontSize={2.5}
+            startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
+            color="var(--secondary-neutral-600)"
+        >{quotePart2}</PolarSpace.Text>
+    </ClippedG>;
+}
+
 export default function RevolutionWheel({angle, angleRangeStart}: { angle: MotionValue<Angle>; angleRangeStart: number; }) {
     const [frontClipPath, backClipPath] = useConicReveal({
         angle: angle,
@@ -229,64 +354,6 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
         centerY: CIRCLE_CENTER,
         radius: VIEW_BOX_SIZE / 2
     });
-
-    const innerCircleRadius = WHEEL_RADIUS * 0.48;
-    const innerCircle = <PolarSpace.Circle
-        r={innerCircleRadius}
-        fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
-        strokeWidth="0.1"
-        strokeDasharray={`0 1 ${Math.PI * innerCircleRadius / 2 - 2} 2 ${Math.PI * innerCircleRadius / 2 - 2} 1`}
-    />;
-
-    const radialBoxesDefs = [
-        {
-            radius: WHEEL_RADIUS * 0.6,
-            angle: Math.PI + Math.PI / 3 + Math.PI / 30,
-            radialSize: WHEEL_RADIUS * 0.4,
-            angularSize: Math.PI / 4
-        },
-        {
-            radius: WHEEL_RADIUS * 0.6,
-            angle: Math.PI,
-            radialSize: WHEEL_RADIUS * 0.4,
-            angularSize: Math.PI / 3
-        }
-    ];
-    const radialBoxes = radialBoxesDefs.map(box => {
-        const STROKE_WIDTH = 0.1;
-        const pb = PathBuilder.m(centerPoint.add(Vector2D.polar(box.radius + box.radialSize, box.angle)));
-        pb.circularArc(box.radius + box.radialSize, box.angle, box.angle + box.angularSize);
-        return <React.Fragment key={`${box.radius}-${box.angle}-${box.radialSize}-${box.angularSize}`}>
-            <PolarSpace.RadialBox
-                {...box}
-                fill="var(--_fill-color)" stroke="var(--_stroke-color)"
-                strokeWidth={STROKE_WIDTH}
-                className={rotationCssApi.rotatingClamped}
-                style={rotationThresholdStyle("0rad")}
-            />
-            <path fill="none" stroke="var(--_lighter-stroke)" strokeWidth={STROKE_WIDTH} className={rotationCssApi.rotating} d={pb.toSVGPathString()} />
-        </React.Fragment>;
-    });
-
-    const tinyRadialBoxes = <>
-        <PolarSpace.RadialBox
-            radius={WHEEL_RADIUS * 0.6} angle={Math.PI / 60}
-            radialSize={WHEEL_RADIUS * 0.2} angularSize={Math.PI / 2.6}
-            fill="var(--_dial-fill-color)" stroke="var(--_stroke-color)"
-            strokeWidth="0.1"
-            className={rotationCssApi.rotatingClamped}
-            style={rotationThresholdStyle("0rad")}
-        />
-    </>;
-
-    const dashedWheel = <g className={rotationCssApi.rotating}>
-        <PolarSpace.AngularTicks radius={WHEEL_RADIUS * 0.35} stroke="var(--_stroke-color)" />
-        <PolarSpace.AngularTicks radius={WHEEL_RADIUS * 0.35} stroke="var(--_lighter-stroke)" angularSpacing={Math.PI / 2} />
-    </g>;
-
-    const quotePart1 = "Design is not just what it looks and feels like";
-    const quotePart2 = "Design is how it works";
-    const quoteCharAngle = 0.064;
 
     return <PolarSpace centerX={CIRCLE_CENTER} centerY={CIRCLE_CENTER}>
         <svg
@@ -327,72 +394,8 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 <AxisCrosshair />
                 <RotorProjections angle={angle} />
             </g>
-            <ClippedG clipPathId="back-clip-path" pathData={backClipPath} className="back-layer">
-                {innerCircle}
-                {tinyRadialBoxes}
-                {radialBoxes}
-                {dashedWheel}
-                <PolarSpace.Text
-                    className={rotationCssApi.rotatingClamped}
-                    style={{
-                        textTransform: "uppercase",
-                        ...rotationThresholdStyle(`${charAngle}rad`, `${Math.PI - charAngle * (firstText.length + 1)}rad`)
-                    }}
-                    radius={WHEEL_RADIUS - 5}
-                    startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
-                    sweepDirection="ccw"
-                    fontSize={2.5}
-                    color="var(--neutral-400)"
-                >{firstText}</PolarSpace.Text>
-                <PolarSpace.Text
-                    radius={WHEEL_RADIUS * 0.54}
-                    charAngle={quoteCharAngle + "rad"} fontSize={2.5}
-                    startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
-                    color="var(--neutral-600)"
-                >{quotePart1}</PolarSpace.Text>
-            </ClippedG>
-            <ClippedG clipPathId="front-clip-path" pathData={frontClipPath} className="front-layer">
-                <rect fill="url(#brand-radial-gradient)" fillOpacity="0.25" x="0%" y="0%" width="100%" height="100%"
-                      clipPath="url(#radial-boxes-clip-path)"/>
-                {innerCircle}
-                {tinyRadialBoxes}
-                {radialBoxes}
-                <clipPath id="radial-boxes-clip-path">
-                    {radialBoxes}
-                </clipPath>
-                {dashedWheel}
-                <PolarSpace.Text
-                    className={rotationCssApi.rotatingClamped}
-                    style={{textTransform: "uppercase", ...rotationThresholdStyle("0rad")}}
-                    radius={WHEEL_RADIUS - 5}
-                    startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
-                    sweepDirection="ccw"
-                    fontSize={2.5}
-                    color="var(--secondary-neutral-200)"
-                >{revealedText}</PolarSpace.Text>
-                <PolarSpace.Text
-                    className={rotationCssApi.rotatingClamped}
-                    style={{
-                        textTransform: "uppercase",
-                        ...rotationThresholdStyle((2 * Math.PI - charAngle * "LET'S KICKSTART YOUR".length) + "rad")
-                    }}
-                    radius={WHEEL_RADIUS - 5}
-                    startAngle={"0rad"} charAngle={`${charAngle}rad`}
-                    sweepDirection="ccw"
-                    fontSize={2.5}
-                    color="var(--secondary-neutral-200)"
-                >{"LET'S KICKSTART YOUR"}</PolarSpace.Text>
-                <PolarSpace.Text
-                    className={rotationCssApi.rotatingClamped}
-                    style={rotationThresholdStyle(
-                        (3 * Math.PI / 2 - quoteCharAngle * (quotePart1.length / 2 - quotePart2.length - 1)) + "rad"
-                    )}
-                    radius={WHEEL_RADIUS * 0.54}
-                    charAngle={quoteCharAngle + "rad"} fontSize={2.5}
-                    startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
-                    color="var(--secondary-neutral-600)"
-                >{quotePart2}</PolarSpace.Text>
-            </ClippedG>
+            <BackWheelFace pathData={backClipPath} />
+            <FrontWheelFace pathData={frontClipPath} />
             <Rotor/>
             <WheelHub angle={angle}/>
         </svg>

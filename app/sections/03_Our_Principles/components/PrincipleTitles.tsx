@@ -27,17 +27,12 @@ export default function PrincipleTitles({titles}: {
             position: relative;
             isolation: isolate;
 
-            --active-index: min(round(down, var(${rotationCssVars.angle}) / (90deg), 1), ${titles.length - 1});
-            @supports not ${supportsQuery.unitStripping} {
-                --active-index: min(round(down, tan(atan2(var(${rotationCssVars.angle}), 90deg)), 1), ${titles.length - 1});
-            }
-
-            @property --active-index {
-                syntax: "<number>";
-                inherits: true;
-                initial-value: 0;
-            }
-            --transition: --active-index 0.8s ease-in-out;
+			@property --_active-index {
+				syntax: "<number>";
+				inherits: true;
+				initial-value: 0;
+			}
+            --transition: --_active-index 0.8s ease-in-out;
             &[data-initial] {
                 --transition: none;
             }
@@ -45,18 +40,20 @@ export default function PrincipleTitles({titles}: {
                 --transition: none;
             }
 
+            --_active-index: min(var(${rotationCssVars.activeQuadrantIndex}), ${titles.length - 1});
             --_direction: 1;
             &::after {
                 content: "";
                 position: absolute;
                 z-index: 1;
+                pointer-events: none;
                 --blur-radius: 6px;
                 inset: calc(-2 * var(--blur-radius));
                 backdrop-filter: blur(var(--blur-radius));
                 mask-image: linear-gradient(to right, transparent 25%, black 50%, black 75%, transparent 100%);
                 mask-size: 400% 100%;
                 mask-repeat: repeat-x;
-                mask-position: calc(var(--active-index) * var(--_direction) * -133.33%) 0;
+                mask-position: calc(var(--_active-index) * var(--_direction) * -133.33%) 0;
                 transition: var(--transition);
             }
             div.title-group {
@@ -72,7 +69,7 @@ export default function PrincipleTitles({titles}: {
                 }
                 transition: var(--transition);
 
-                --active-offset: clamp(-1, var(--_direction) * (var(--i) - var(--active-index)), 1);
+                --active-offset: clamp(-1, var(--_direction) * (var(--i) - var(--_active-index)), 1);
                 mask-image: linear-gradient(to right, transparent 10%, black 33.33%, black 66.66%, transparent 90%);
                 mask-size: 300% 100%;
                 mask-repeat: no-repeat;

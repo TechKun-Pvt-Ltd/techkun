@@ -5,6 +5,7 @@ import {deviceQuery} from "@/app/utils/css/device-query.ts";
 import RevolutionWheel from "./components/RevolutionWheel.tsx";
 import PrincipleTitles from "./components/PrincipleTitles";
 import {Angle} from "svg-path-kit";
+import {rotationCssScope, rotationCssVars} from "@/app/sections/03_Our_Principles/components/rotation-css-api.ts";
 
 const titles = [
 	{ title: "An interface should feel\u00A0human", subtitle: "Users feel connected to interfaces that talk to them, interfaces that feel human." },
@@ -24,7 +25,11 @@ export default function OurPrinciples() {
 	const angle = useTransform(scrollYProgress, p => Angle.of(interpolateAngle(p)));
 	const cssAngle = useTransform(angle, a => `${+a}rad`);
 
-	return <motion.section className="py-32" style={{ "--angle": cssAngle, '--angle-range-start': ANGLE_RANGE_START } as MotionStyle}>
+	return <motion.section
+		className="py-32"
+		css={rotationCssScope}
+		style={{ [rotationCssVars.angle]: cssAngle } as MotionStyle}
+	>
 		<div className="gap-20" css={css`
             display: flex;
 			flex-direction: column;
