@@ -3,16 +3,12 @@ import React, {useEffect, useRef} from "react";
 import {deviceQuery} from "@/app/utils/css/device-query";
 import supportsQuery from "@/app/utils/css/supports-query";
 import {rotationCssVars} from "@/app/sections/03_Our_Principles/components/rotation-css-api.ts";
-import type {MotionValue} from "motion/react";
-import {Angle} from "svg-path-kit";
-import cssSupports from "@/app/utils/css/supports";
 
-export default function PrincipleTitles({titles, angle}: {
+export default function PrincipleTitles({titles}: {
     titles: {
         title: string
         subtitle: string
     }[];
-    angle: MotionValue<Angle>;
 }) {
     const scope = useRef<HTMLDivElement>(null);
 
@@ -21,21 +17,6 @@ export default function PrincipleTitles({titles, angle}: {
 
         const container = scope.current;
         requestAnimationFrame(() => container.removeAttribute("data-initial"));
-
-        if (cssSupports.interactivity) return;
-        // Fallback for browsers without the `interactivity` CSS property
-
-        const groups = container.querySelectorAll<HTMLElement>(".title-group");
-        let lastIndex = -1;
-        function applyInert(a: Angle) {
-            const index = Math.min(Math.floor(+a / +Angle.HALF_PI), titles.length - 1);
-            if (index === lastIndex) return;
-            lastIndex = index;
-            groups.forEach((el, i) => { el.inert = i !== index; });
-        }
-        applyInert(angle.get());
-
-        return angle.on("change", applyInert);
     }, []);
 
     return <div
@@ -103,9 +84,7 @@ export default function PrincipleTitles({titles, angle}: {
                 }
                 container-type: normal;
                 & > .title, & > .subtitle {
-                    interactivity: inert;
                     @container style(--active-offset = 0) {
-                        interactivity: auto;
                         pointer-events: auto;
                     }
                 }
