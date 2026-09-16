@@ -12,7 +12,7 @@ export default function CoverPhoto() {
     const pb = PathBuilder.m(Point2D.of(width / 2, height / 2 - radius));
     pb.circularArc(radius, -Math.PI / 2, -Math.PI / 4);
     let currentVelocity = pb.currentVelocity.scale(1.5);
-    pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.negated()), Vector2D.of(gap, 0));
+    pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.negate()), Vector2D.of(gap, 0));
     pb.circularArc(radius, -3 * Math.PI / 4, 3 * Math.PI / 4);
     currentVelocity = pb.currentVelocity.scale(1.5);
     pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.supplement()).opposite(), Vector2D.of(-gap, 0));
@@ -21,7 +21,7 @@ export default function CoverPhoto() {
     pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.supplement()).opposite(), Vector2D.of(-gap, 0));
     pb.circularArc(radius, Math.PI / 4, 2 * Math.PI - Math.PI / 4);
     currentVelocity = pb.currentVelocity.scale(1.5);
-    pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.negated()), Vector2D.of(gap, 0));
+    pb.hermiteCurve(currentVelocity, Vector2D.polar(currentVelocity.length, currentVelocity.angle.negate()), Vector2D.of(gap, 0));
     pb.circularArc(radius, -3 * Math.PI / 4, -Math.PI / 2);
 
     const oneMinusCosine = radius * (1 - Math.cos(Math.PI / 4));

@@ -111,7 +111,7 @@ function path(progress: TimelineProgress) {
     pb.l(Vector2D.of(0, -(bottomDropLength - filletSize + startingCurveYDistance + thickness / 2 * (1 - linecapInnerAngle.cosine))));
     pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI, Math.PI);
     pb.l(origin.add(Vector2D.of(0, -thickness)));
-    pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI, Angle.HALF_PI.negated());
+    pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI, Angle.HALF_PI.negate());
     pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI);
     pb.z();
 
@@ -132,7 +132,7 @@ function formUpperArm(
         .to(+Angle.HALF_PI, 0, 0, props.orbEntryAngle)
     );
     const cornerAngle = ti(p.upperArmAppears).hasFinished() ?
-        Angle.PI : orbEntryAngle.flipForward();
+        Angle.PI : orbEntryAngle.plusPi();
     const cornerYDistance = ti(p.upperArmElongates).hasFinished() ?
         filletSize : filletSize + thickness / 2 * (1 - orbEntryAngle.cosine);
 
@@ -148,7 +148,7 @@ function formUpperArm(
     pb.chordScaledBezier(Vector2D.of(
         -filletXDistance,
         map(p.shaftEmerging).to(0, cornerYDistance)
-    ), cornerAngle.negated(), Angle.HALF_PI.negated(), filletChordScale);
+    ), cornerAngle.negate(), Angle.HALF_PI.negate(), filletChordScale);
 }
 
 function formOrb(
@@ -168,7 +168,7 @@ function formOrb(
         (thickness / 2 - orbRestHeight) / orbEntryAngle.cosine : thickness / 2;
 
     pb.chordScaledBezier(
-        Vector2D.of(orbRestBase, orbRestHeight), 0, orbEntryAngle.flipForward(), 1 / 2.25
+        Vector2D.of(orbRestBase, orbRestHeight), 0, orbEntryAngle.plusPi(), 1 / 2.25
     );
     for (let i = 0; i < arcDivisions; i++) {
         pb.bezierCircularArc(
@@ -206,7 +206,7 @@ function formLoop(
             -cornerCurveClamped,
             -map(p.shaftEmerging).to(0, filletSize + thickness / 2 - linecapAngleVector.x)
         ),
-        Angle.HALF_PI.negated(), -loopLinecapAngle, filletChordScale
+        Angle.HALF_PI.negate(), -loopLinecapAngle, filletChordScale
     );
     pb.l(Vector2D.of(0, -2 * linecapAngleVector.x));
     pb.chordScaledBezier(
@@ -236,25 +236,25 @@ function formLoop(
     const outerElbowEnd = innerElbowStart.add(elbowInnerStartToOuterEnd);
 
     pb.l(Vector2D.of(-(loopTopWidth - 50), 0));
-    pb.bezierCircularArc(innerSpacing / 2, 0, loopTopCurveAngle.negated(), Angle.HALF_PI.negated());
-    pb.bezierCircularArc(innerSpacing / 2, 0, loopBottomCurveAngle.negated(), -Math.PI);
+    pb.bezierCircularArc(innerSpacing / 2, 0, loopTopCurveAngle.negate(), Angle.HALF_PI.negate());
+    pb.bezierCircularArc(innerSpacing / 2, 0, loopBottomCurveAngle.negate(), -Math.PI);
     pb.l(Vector2D.of(loopBottomWidth, 0));
 
     const lineCapRotation = loopBottomCurveAngle.complement()
-        .add(loopTopCurveAngle.complement())
-        .add(innerAngleEndAngle)
-        .subtract(bottomLeftCurveAngle.complement())
-        .subtract(bottomRightCurveAngle.complement());
+        .plus(loopTopCurveAngle.complement())
+        .plus(innerAngleEndAngle)
+        .minus(bottomLeftCurveAngle.complement())
+        .minus(bottomRightCurveAngle.complement());
 
     if (loopElbowAppearing) {
         const outerElbowStart = outerElbowEnd.add(Vector2D.from(loopElbowOuter.startingPoint, loopElbowOuter.endingPoint));
-        let innerLinecapAngleUnrotation = Angle.of(innerAngleEndAngle).halfTurnBackward().negated();
+        let innerLinecapAngleUnrotation = Angle.of(innerAngleEndAngle).minusHalfPi().negate();
         const innerElbowEndToOuterStartUnrotated = Vector2D.from(loopElbowInner.terminalPoint, outerElbowStart)
             .rotate(innerLinecapAngleUnrotation);
 
         const outerElbowSecondHandleVec = Vector2D.from(loopElbowOuter.endingPoint, loopElbowOuter.secondControlPoint)
             .rotate(innerLinecapAngleUnrotation);
-        const outerLinecapAngle = outerElbowSecondHandleVec.angle.halfTurnBackward();
+        const outerLinecapAngle = outerElbowSecondHandleVec.angle.minusHalfPi();
         // vector from (cosine, sine) to (-1, 0) scaled by thickness / 2
         const outerElbowStartToCircleEnd = Vector2D.of(
             thickness / 2 * -outerLinecapAngle.cosine,
@@ -266,28 +266,28 @@ function formLoop(
             innerLinecapEllipse.x, innerLinecapEllipse.y,
             0, ti(p.bottomDropAppears).hasFinished() ?
                 loopLinecapAngle : linecapInnerAngle,
-            Angle.HALF_PI.negated()
-                .add(linecapInnerAngle.complement())
-                .add(lineCapRotation)
+            Angle.HALF_PI.negate()
+                .plus(linecapInnerAngle.complement())
+                .plus(lineCapRotation)
         );
         pb.l(Vector2D.of(0, 2 * linecapAngleVector.x));
         pb.bezierCircularArc(thickness / 2,
             -loopLinecapAngle, outerLinecapAngle,
-            Angle.HALF_PI.add(lineCapRotation)
+            Angle.HALF_PI.plus(lineCapRotation)
         );
     } else {
         pb.bezierCircularArc(
             thickness / 2,
             0, ti(p.bottomDropAppears).hasFinished() ?
                 loopLinecapAngle : linecapInnerAngle,
-            Angle.HALF_PI.negated()
-                .add(linecapInnerAngle.complement())
-                .add(lineCapRotation)
+            Angle.HALF_PI.negate()
+                .plus(linecapInnerAngle.complement())
+                .plus(lineCapRotation)
         );
         pb.l(Vector2D.of(0, 2 * linecapAngleVector.x));
         pb.bezierCircularArc(thickness / 2,
             -loopLinecapAngle, 0,
-            Angle.HALF_PI.add(lineCapRotation)
+            lineCapRotation.plusHalfPi()
         );
     }
     pb.l(Vector2D.of(-loopBottomWidth, 0));
@@ -295,7 +295,7 @@ function formLoop(
         -loopBottomCurveAngle, 0, -Math.PI
     );
     pb.bezierCircularArc(thickness + innerSpacing / 2,
-        -loopTopCurveAngle, 0, Angle.HALF_PI.negated()
+        -loopTopCurveAngle, 0, Angle.HALF_PI.negate()
     );
 
     pb.l(Vector2D.of(loopTopWidth - 50, 0));
