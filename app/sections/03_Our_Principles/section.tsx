@@ -73,7 +73,7 @@ export default function OurPrinciples() {
 							gap: var(--space-8);
 						}
 					`}>
-						<PrincipleTitles titles={titles} />
+						<PrincipleTitles titles={titles} angle={angle} />
 						<div css={css`
 							min-height: 0;
 							isolation: isolate;
