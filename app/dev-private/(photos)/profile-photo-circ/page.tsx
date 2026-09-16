@@ -7,5 +7,8 @@ const xOffset = 0.5;
 const yOffset = 3.6;
 
 export default function ProfilePhotoCirc() {
-    return <TechKunLogoSvgSquareIcon xPadding={xPadding} xOffset={xOffset} yOffset={yOffset} />;
+    return <TechKunLogoSvgSquareIcon
+        xPadding={xPadding} xOffset={xOffset} yOffset={yOffset}
+        style={{backgroundColor: "var(--background)", borderRadius: "50%"}}
+    />;
 }

@@ -31,7 +31,7 @@ export default function CoverPhoto() {
     const totalLength = stop3 + gap + diameter - oneMinusCosine;
 
     const jointRegionStretch = 10;
-    return <svg viewBox={`0 0 ${width} ${height}`} width={width}>
+    return <svg viewBox={`0 0 ${width} ${height}`} width={width} style={{ backgroundColor: "var(--background)" }}>
         <path d={pb.toSVGPathString()} fill="url(#cover-photo-gradient)" />
         <linearGradient id="cover-photo-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset={(stop1 - jointRegionStretch) / totalLength * 100 + "%"} stopColor="var(--primary-500)" />

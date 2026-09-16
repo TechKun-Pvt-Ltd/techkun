@@ -6,17 +6,16 @@ import logoPath from "@/public/logo-path.json";
 export default function TechKunLogoSvgSquareIcon({xPadding = 15, xOffset = 0.5, yOffset = 2, ...props}: { xPadding?: number; xOffset?: number; yOffset?: number; } & React.ComponentProps<"svg">) {
     return <svg
         width="400" viewBox="0 0 400 400"
-        style={{
-            backgroundColor: "var(--background)"
-            // border: "2px solid var(--border)",
-            // outline: "1px dashed var(--border)", outlineOffset: "-56px"
-        }}
         {...props}
     >
-        {/*<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="2" stroke="var(--border)" />*/}
-        {/*<line x1="50%" y1="0%" x2="50%" y2="100%" strokeWidth="2" stroke="var(--border)" />*/}
-        {/*<line x1={`${xPadding}%`} y1="0%" x2={`${xPadding}%`} y2="100%" strokeWidth="2" stroke="var(--border)" />*/}
-        {/*<line x1={`${100 - xPadding}%`} y1="0%" x2={`${100 - xPadding}%`} y2="100%" strokeWidth="2" stroke="var(--border)" />*/}
+        <g style={{ display: "none" }} strokeWidth="1" stroke="var(--border)" strokeDasharray="10" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="0%" y1="50%" x2="100%" y2="50%" />
+            <line x1="50%" y1="0%" x2="50%" y2="100%" />
+            <line x1={`${xPadding}%`} y1="0%" x2={`${xPadding}%`} y2="100%" />
+            <line x1={`${100 - xPadding}%`} y1="0%" x2={`${100 - xPadding}%`} y2="100%" />
+            <circle cx="50%" cy="50%" r="50%" fill="none" />
+            <circle cx="50%" cy="50%" r={(50 - xPadding) + "%"} fill="none" />
+        </g>
         <svg
             x={`${xPadding + xOffset}%`} y={`${yOffset}%`}
             width={`${100 - 2 * xPadding}%`} height="100%"
