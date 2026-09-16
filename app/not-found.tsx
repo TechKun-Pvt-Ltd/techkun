@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import type {Metadata} from "next";
+import SiteChrome from "@/app/(site)/components/SiteChrome.tsx";
 import NotFoundContent from "@/app/(site)/components/NotFoundContent.tsx";
 
 export const metadata: Metadata = {
@@ -12,5 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function NotFound() {
-    return <NotFoundContent />;
+    return <SiteChrome>
+        <NotFoundContent />
+    </SiteChrome>;
 }
