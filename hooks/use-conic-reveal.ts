@@ -30,7 +30,7 @@ function conicRevealClipPath({ startAngle = 0, centerX, centerY, radius }: Conic
             `a 0 0 0 0 1 0 0`;
         return `
 			M ${center.x} ${center.y}
-			l ${roundOff(radius * a.cosine)} ${roundOff(radius * a.sine)}
+			l ${roundOff(radius * a.cos)} ${roundOff(radius * a.sin)}
 			${firstArc}
 			A ${radius} ${radius} 0 0 1 ${roundOff(circleEnd.x)} ${roundOff(circleEnd.y)}
 			Z
@@ -43,12 +43,12 @@ function conicRevealClipPath({ startAngle = 0, centerX, centerY, radius }: Conic
         // a = a.subtract(offset);
         const firstArcAngle = +a < +semicircleThreshold ? a : semicircleThreshold;
         const secondArc = firstArcAngle === semicircleThreshold ?
-            `A ${radius} ${radius} 0 0 1 ${roundOff(center.x + radius * a.cosine)} ${roundOff(center.y + radius * a.sine)}` :
+            `A ${radius} ${radius} 0 0 1 ${roundOff(center.x + radius * a.cos)} ${roundOff(center.y + radius * a.sin)}` :
             `a 0 0 0 0 1 0 0`;
         return `
 			M ${center.x} ${center.y}
 			l ${roundOff(startPolarVector.x)} ${roundOff(startPolarVector.y)}
-			A ${radius} ${radius} 0 ${+firstArcAngle > Math.PI ? 1 : 0} 1 ${roundOff(center.x + radius * firstArcAngle.cosine)} ${roundOff(center.y + radius * firstArcAngle.sine)}
+			A ${radius} ${radius} 0 ${+firstArcAngle > Math.PI ? 1 : 0} 1 ${roundOff(center.x + radius * firstArcAngle.cos)} ${roundOff(center.y + radius * firstArcAngle.sin)}
 			${secondArc}
 			Z
         `;

@@ -83,7 +83,7 @@ function path(progress: TimelineProgress) {
     const startingCurveYDistance = map(p.bottomDropAppears).to(0, filletSize);
     pb.l(Vector2D.of(-(lowerArmLength - filletSize), 0));
     pb.chordScaledBezier(Vector2D.of(
-            -map(p.lowerArmEmerges).to(0, filletSize + thickness / 2 * (1 - linecapInnerAngle.sine)),
+            -map(p.lowerArmEmerges).to(0, filletSize + thickness / 2 * (1 - linecapInnerAngle.sin)),
             startingCurveYDistance
         ), Math.PI, -linecapInnerAngle,
         map(p.bottomDropAppears).to(0, Math.SQRT1_2)
@@ -108,7 +108,7 @@ function path(progress: TimelineProgress) {
     pb.bezierCircularArc(innerSpacing / 2, bottomLeftCurveAngle, 0, Angle.HALF_PI);
     pb.bezierCircularArc(innerSpacing / 2, bottomRightCurveAngle, 0);
 
-    pb.l(Vector2D.of(0, -(bottomDropLength - filletSize + startingCurveYDistance + thickness / 2 * (1 - linecapInnerAngle.cosine))));
+    pb.l(Vector2D.of(0, -(bottomDropLength - filletSize + startingCurveYDistance + thickness / 2 * (1 - linecapInnerAngle.cos))));
     pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI, Math.PI);
     pb.l(origin.add(Vector2D.of(0, -thickness)));
     pb.bezierCircularArc(thickness / 2, 0, Angle.HALF_PI, Angle.HALF_PI.negate());
@@ -134,7 +134,7 @@ function formUpperArm(
     const cornerAngle = ti(p.upperArmAppears).hasFinished() ?
         Angle.PI : orbEntryAngle.plusPi();
     const cornerYDistance = ti(p.upperArmElongates).hasFinished() ?
-        filletSize : filletSize + thickness / 2 * (1 - orbEntryAngle.cosine);
+        filletSize : filletSize + thickness / 2 * (1 - orbEntryAngle.cos);
 
     pb.chordScaledBezier(Vector2D.of(
         filletXDistance,
@@ -165,7 +165,7 @@ function formOrb(
 
     const orbRestHeight = orbRestBase * Math.tan(+orbEntryAngle * orbBaseAngleRatio);
     const endcapCircleRadius = ti(p.upperArmAppears).hasFinished() ?
-        (thickness / 2 - orbRestHeight) / orbEntryAngle.cosine : thickness / 2;
+        (thickness / 2 - orbRestHeight) / orbEntryAngle.cos : thickness / 2;
 
     pb.chordScaledBezier(
         Vector2D.of(orbRestBase, orbRestHeight), 0, orbEntryAngle.plusPi(), 1 / 2.25
@@ -257,8 +257,8 @@ function formLoop(
         const outerLinecapAngle = outerElbowSecondHandleVec.angle.minusHalfPi();
         // vector from (cosine, sine) to (-1, 0) scaled by thickness / 2
         const outerElbowStartToCircleEnd = Vector2D.of(
-            thickness / 2 * -outerLinecapAngle.cosine,
-            thickness / 2 * -(1 + outerLinecapAngle.sine)
+            thickness / 2 * -outerLinecapAngle.cos,
+            thickness / 2 * -(1 + outerLinecapAngle.sin)
         );
         const innerLinecapEllipse = innerElbowEndToOuterStartUnrotated.add(outerElbowStartToCircleEnd);
 

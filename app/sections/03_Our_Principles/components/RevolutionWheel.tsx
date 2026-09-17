@@ -69,8 +69,8 @@ function Rotor() {
 }
 
 function RotorProjections({ angle }: { angle: MotionValue<Angle> }) {
-    const rotorX = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.cosine);
-    const rotorY = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.sine);
+    const rotorX = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.cos);
+    const rotorY = useTransform(angle, a => CIRCLE_CENTER + WHEEL_RADIUS * a.sin);
 
     return <>
         <motion.line x1={CIRCLE_CENTER} y1={rotorY} x2={rotorX} y2={rotorY} strokeDasharray="2"/>
