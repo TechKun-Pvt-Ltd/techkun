@@ -2,7 +2,7 @@
 import Image, {StaticImageData} from "next/image";
 import {css} from "@emotion/react";
 import logoPathImageFrame from "@/public/logo-path-image-frame.json";
-import {Once, useRenderOnce} from "@/components/Once";
+import {Once, useRenderOnce} from "@/components/Once.tsx";
 import React from "react";
 
 const LOGO_IMAGE_FRAME_ID = "logo-image-frame";

@@ -3,6 +3,7 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
+import {OnceProvider} from "@/components/Once.tsx";
 
 // Do not import local files with transitive imports in any of the `css.mjs` files
 // The only job of these files is to export CSS strings
@@ -50,5 +51,5 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return <html lang="en">{children}</html>;
+    return <html lang="en"><OnceProvider>{children}</OnceProvider></html>;
 }

@@ -1,5 +1,6 @@
 "use client";
-import {ReactNode, useEffect, useId, useSyncExternalStore} from "react";
+import {createContext, ReactNode, useContext, useEffect, useId, useSyncExternalStore} from "react";
+import {useConstant} from "@/hooks/use-constant.ts";
 
 interface OnceStore {
     subscribe(listener: VoidFunction): VoidFunction;
@@ -45,9 +46,19 @@ function createOnceStore(): OnceStore {
     };
 }
 
-const store = createOnceStore();
+const OnceContext = createContext<OnceStore | null>(null);
+
+export function OnceProvider({children}: {children: ReactNode}) {
+    return <OnceContext.Provider
+        value={useConstant(createOnceStore)}
+    >{children}</OnceContext.Provider>;
+}
 
 export function useRenderOnce(id: string) {
+    const store = useContext(OnceContext);
+    if (!store)
+        throw new Error("useRenderOnce/Once must be rendered within a <OnceProvider>.");
+
     const token = useId();
 
     // Claim during render (not in an effect) so that whichever instance
@@ -60,11 +71,10 @@ export function useRenderOnce(id: string) {
     useEffect(() => {
         store.claim(id, token); // re-affirm ownership after commit (handles StrictMode)
         return () => store.release(id, token);
-    }, [id, token]);
+    }, [store, id, token]);
 
-    function getSnapshot() {
-        return store.isOwner(id, token);
-    }
+    const getSnapshot = () => store.isOwner(id, token);
+
     return useSyncExternalStore(
         store.subscribe, getSnapshot, getSnapshot
     );

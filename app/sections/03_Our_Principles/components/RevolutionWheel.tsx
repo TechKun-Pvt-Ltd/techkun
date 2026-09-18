@@ -6,7 +6,7 @@ import React, {useEffect, useRef} from "react";
 import {Angle, PathBuilder, Point2D, Vector2D} from "svg-path-kit";
 import {useConicReveal} from "@/hooks/use-conic-reveal.ts";
 import {MotionValue} from "motion";
-import {Once} from "@/components/Once.ts";
+import {Once} from "@/components/Once.tsx";
 import {animate, motion, useTransform} from "motion/react";
 import cssSupports from "@/app/utils/css/supports.ts";
 
