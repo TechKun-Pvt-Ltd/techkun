@@ -1,55 +1,51 @@
 import {css} from "@emotion/react";
-import React, {useEffect, useRef, useState} from "react";
-import {TextScrambleRef} from "@/components/motion-primitives/text-scramble";
-import {delayInSeconds} from "motion";
+import React from "react";
 import {applicationLogs, hightlightedLogs} from "./applicationLogs";
-import {inView} from "motion/react";
 
-const texts = [
-	"Misalignment", "No documentation", "Scope creep", "Technical debt", "Design debt", "Short-term optimization"
-];
+// const texts = [
+// 	"Misalignment", "No documentation", "Scope creep", "Technical debt", "Design debt", "Short-term optimization"
+// ];
 
-const SCRAMBLE_DURATION = 1.6;
+// const SCRAMBLE_DURATION = 1.6;
 
 export default function ErrorConsole() {
-	const [itemIndex, setItemIndex] = useState(-1);
-	const scrambleRef = useRef<TextScrambleRef>(null);
-	const scrambleInnerRef = useRef<HTMLSpanElement>(null);
+	// const [itemIndex, setItemIndex] = useState(-1);
+	// const scrambleRef = useRef<TextScrambleRef>(null);
+	// const scrambleInnerRef = useRef<HTMLSpanElement>(null);
 
-	useEffect(() => {
-		if (!scrambleInnerRef.current) return;
-
-		let clear: (() => void) | undefined;
-		// let lastUpdate = -Infinity;
-		function update() {
-			// lastUpdate = Date.now();
-			setItemIndex(prev => (prev + 1) % texts.length);
-			clear = delayInSeconds(update, SCRAMBLE_DURATION * 2);
-		}
-		const stop = inView(
-			scrambleInnerRef.current,
-			// () => {
-				// const sinceLastUpdate = Date.now() - lastUpdate;
-				// const diff = SCRAMBLE_DURATION * 2 - sinceLastUpdate;
-				// if (diff > 0)
-				// 	clear = delayInSeconds(update, diff);
-				// else
-				// 	update();
-
-				// return () => { clear?.(); };
-			// },
-			update,
-			{ margin: "-10% 0%" }
-		);
-		return () => {
-			clear?.();
-			stop();
-		};
-	}, []);
-	useEffect(() => {
-		if (scrambleRef.current && itemIndex >= 0)
-			scrambleRef.current.scramble();
-	}, [itemIndex]);
+	// useEffect(() => {
+	// 	if (!scrambleInnerRef.current) return;
+	//
+	// 	let clear: (() => void) | undefined;
+	// 	let lastUpdate = -Infinity;
+	// 	function update() {
+	// 		lastUpdate = Date.now();
+	// 		setItemIndex(prev => (prev + 1) % texts.length);
+	// 		clear = delayInSeconds(update, SCRAMBLE_DURATION * 2);
+	// 	}
+	// 	const stop = inView(
+	// 		scrambleInnerRef.current,
+	// 		() => {
+	// 			const sinceLastUpdate = Date.now() - lastUpdate;
+	// 			const diff = SCRAMBLE_DURATION * 2 - sinceLastUpdate;
+	// 			if (diff > 0)
+	// 				clear = delayInSeconds(update, diff);
+	// 			else
+	// 				update();
+	//
+	// 			return () => { clear?.(); };
+	// 		},
+	// 		{ margin: "-10% 0%" }
+	// 	);
+	// 	return () => {
+	// 		clear?.();
+	// 		stop();
+	// 	};
+	// }, []);
+	// useEffect(() => {
+	// 	if (scrambleRef.current && itemIndex >= 0)
+	// 		scrambleRef.current.scramble();
+	// }, [itemIndex]);
 
 	return <div css={css`
         overflow: clip;
