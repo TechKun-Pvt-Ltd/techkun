@@ -51,7 +51,7 @@ export default function Footer() {
                     font-weight: 500;
                 }
             `}>
-                <div className="display-text gap-4" css={css`
+                <div className="logo-text gap-4" css={css`
                     display: flex;
                     align-items: center;
                     font-weight: 500;

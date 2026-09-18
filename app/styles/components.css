@@ -54,26 +54,15 @@
     transform: scale(0.97);
 }
 
-.display-text {
+.logo-text {
     font-size: var(--font-size-lg);
     line-height: var(--line-height-lg);
     letter-spacing: var(--letter-spacing-lg);
-}
-.display-lg {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
-    letter-spacing: var(--letter-spacing-2xl);
 }
 .hero-heading {
     font-size: var(--font-size-5xl);
     line-height: var(--line-height-5xl);
     letter-spacing: var(--letter-spacing-5xl);
-    font-weight: normal;
-}
-.hero-button {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-    letter-spacing: var(--letter-spacing-lg);
     font-weight: normal;
 }
 .section-title {
