@@ -1,6 +1,6 @@
-import {processConfig} from "./css-palette-generation-utils.ts";
-import {PALETTE_CUSTOMIZATION} from "./css-palette-customization.ts";
-import {PRIMARY_HUE, PRIMARY_LIGHTNESS, PRIMARY_CHROMA} from "../theme/color-constants.ts";
+import {processConfig} from "../utils/css-palette-generation-utils.ts";
+import {PALETTE_CUSTOMIZATION} from "../utils/css-palette-customization.ts";
+import {PRIMARY_HUE, PRIMARY_LIGHTNESS, PRIMARY_CHROMA} from "../../theme/color-constants.ts";
 
 const rules = processConfig(PALETTE_CUSTOMIZATION);
 

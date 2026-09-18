@@ -11,11 +11,11 @@ export default {
 	},
 	turbopack: {
 		rules: {
-			"*.css.mjs": {
+			"**/buildtime/css/*.{js,cjs,mjs}": {
 				loaders: ["./loaders/static-string-loader.mjs"],
 				as: "*.css"
 			},
-			"*.static.mjs": {
+			"**/buildtime/js/*.{js,cjs,mjs}": {
 				loaders: ["./loaders/static-js-loader.mjs"],
 				as: "*.js"
 			},

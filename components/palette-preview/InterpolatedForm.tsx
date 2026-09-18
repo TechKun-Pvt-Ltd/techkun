@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./PalettePreviewOverlay.module.css";
-import {GenericColorRampCustomization} from "@/app/styles/generated-css/css-palette-customization.ts";
+import {GenericColorRampCustomization} from "@/app/styles/buildtime/utils/css-palette-customization.ts";
 
 interface InterpolatedFormProps {
     value: GenericColorRampCustomization;

@@ -5,14 +5,14 @@ import "@/app/styles/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
 import {OnceProvider} from "@/components/Once.tsx";
 
-// Do not import local files with transitive imports in any of the `css.mjs` files
+// Do not import local files with transitive imports in any of the css files
 // The only job of these files is to export CSS strings
 // TODO: Figure out an alternative with Linaria or Wyw-in-js
-import "@/app/styles/generated-css/typography.css";
-import "@/app/styles/generated-css/colors.css";
-import "@/app/styles/generated-css/spacing.css";
-import "@/app/styles/generated-css/radius.css";
-import "@/app/styles/generated-css/device-breakpoints.css";
+import "@/app/styles/buildtime/css/typography";
+import "@/app/styles/buildtime/css/colors";
+import "@/app/styles/buildtime/css/spacing";
+import "@/app/styles/buildtime/css/radius";
+import "@/app/styles/buildtime/css/device-breakpoints";
 
 // const Quicksand = localFont({
 //     src: "../../fonts/Quicksand-VariableFont_wght.ttf",

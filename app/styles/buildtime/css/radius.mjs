@@ -1,5 +1,5 @@
 // A small t-shirt scale for corner rounding. Unlike spacing's linear 4px-base
-// scale (see spacing.css.mjs), radius has no reason to cover dozens of
+// scale (see spacing.mjs), radius has no reason to cover dozens of
 // steps — these are exactly the values already in use across the app
 // (design-system audit), named consistently with typography's t-shirt sizes.
 // --radius-full stays 100vh (not e.g. 9999px) to match every existing pill

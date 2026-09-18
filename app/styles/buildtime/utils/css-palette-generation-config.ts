@@ -1,5 +1,5 @@
 import type {EasingFunction} from "times-fps";
-import colorRampsStatic from "../theme/color-ramps.static.mjs";
+import colorRampsStatic from "../js/color-ramps.mjs";
 
 export interface TintsShadesGenerationConfig {
     baseColor: string;

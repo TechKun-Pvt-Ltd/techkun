@@ -4,7 +4,7 @@ import {
     type PaletteGenerationConfig,
     type TintsShadesGenerationConfig
 } from "./css-palette-generation-config.ts";
-import colorRampsStatic from "../theme/color-ramps.static.mjs";
+import colorRampsStatic from "../js/color-ramps.mjs";
 
 type ColorCssRules = { [key: string]: string };
 export type PropertyNameFn = (i: number, total: number) => string;

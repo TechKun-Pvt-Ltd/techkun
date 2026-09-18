@@ -4,7 +4,7 @@ import styles from "./PalettePreviewOverlay.module.css";
 import { LinkedPairInput } from "./LinkedPairInput";
 import { ColorTextInput } from "./ColorTextInput";
 import CubicBezierEditor from "@/components/CubicBezierEditor";
-import {TintsShadesCustomization} from "@/app/styles/generated-css/css-palette-customization";
+import {TintsShadesCustomization} from "@/app/styles/buildtime/utils/css-palette-customization.ts";
 import {cubicBezierEasing} from "times-fps";
 
 interface ShadesTintsFormProps {

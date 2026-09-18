@@ -1,4 +1,4 @@
-import {deviceBreakpoint} from "../../utils/css/device-query.ts";
+import {deviceBreakpoint} from "../../../utils/css/device-query.ts";
 
 // language=CSS
 export default `
