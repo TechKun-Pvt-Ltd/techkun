@@ -8,7 +8,7 @@ const summaryCardCss = css`
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     background: var(--muted);
 
     & p {

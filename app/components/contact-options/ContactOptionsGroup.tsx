@@ -31,7 +31,7 @@ const variantCss = {
 const socialLinksGroupCss = css`
     display: flex;
     align-items: center;
-    border-radius: 100vh;
+    border-radius: var(--radius-full);
     corner-shape: superellipse(1.1);
 
     background: oklch(from var(--secondary-950) l c h / 0.96);

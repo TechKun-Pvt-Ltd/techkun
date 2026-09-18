@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const buttonCss = css`
     display: inline-block;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     color: var(--foreground);
     text-decoration: none;

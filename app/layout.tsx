@@ -11,6 +11,7 @@ import {OnceProvider} from "@/components/Once.tsx";
 import "@/app/styles/generated-css/typography.css";
 import "@/app/styles/generated-css/colors.css";
 import "@/app/styles/generated-css/spacing.css";
+import "@/app/styles/generated-css/radius.css";
 import "@/app/styles/generated-css/device-breakpoints.css";
 
 // const Quicksand = localFont({

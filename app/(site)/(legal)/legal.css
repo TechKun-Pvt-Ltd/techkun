@@ -30,7 +30,7 @@
     color: var(--muted-foreground);
     background-color: var(--muted);
     width: max-content;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
 .legal-content {
@@ -94,7 +94,7 @@
 
 .legal-toc {
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: var(--muted);
 }
 .legal-toc ul {
