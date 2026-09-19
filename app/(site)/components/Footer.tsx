@@ -46,20 +46,16 @@ export default function Footer() {
                 justify-content: space-between;
                 align-items: flex-end;
                 flex-wrap: wrap;
-
-                & > p {
-                    font-weight: 500;
-                }
             `}>
                 <div className="logo-text gap-4" css={css`
                     display: flex;
                     align-items: center;
-                    font-weight: 500;
                 `}>
                     <TechKunLogo />
                     <span>TechKun</span>
                 </div>
                 <p css={css`
+					font-weight: var(--font-weight-medium);
                     flex-grow: 1;
                     & > a {
                         color: var(--foreground);
@@ -77,12 +73,8 @@ export default function Footer() {
             border-top: 1px solid var(--border);
             text-align: center;
             color: var(--neutral-500);
-
-            & > p {
-                font-weight: 500;
-            }
         `}>
-            <p className="type-body-sm my-2">This site is made by humans.</p>
+            <p className="type-body-sm font-medium my-2">This site is made by humans.</p>
         </div>
     </footer>
 }

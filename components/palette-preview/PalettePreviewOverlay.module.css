@@ -47,7 +47,7 @@
     align-items: center;
 
     .heading {
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         line-height: 1;
     }
     .collapseButton {
@@ -90,7 +90,7 @@
     &[data-active="true"] {
         opacity: 1;
         background: rgba(127, 127, 127, 0.18);
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 }
 
@@ -119,7 +119,7 @@
 
 .fieldLabel {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     opacity: 0.8;
 }
 
@@ -213,7 +213,7 @@
     background: rgba(127, 127, 127, 0.1);
     cursor: pointer;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 .resetButton:hover {
     background: rgba(127, 127, 127, 0.18);

@@ -23,3 +23,10 @@
     line-height: round(1 + (var(--base-line-height) - 1) / var(--_scale-ratio), 0.1);
     letter-spacing: calc((var(--base-letter-spacing) + var(--ls-offset)) / var(--_scale-ratio) - var(--ls-offset));
 }
+
+.section-subtitle {
+    color: var(--secondary-neutral-100);
+}
+.item-subtitle {
+    color: var(--secondary-neutral-300);
+}

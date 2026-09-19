@@ -64,7 +64,7 @@ export default function ProblemStatement() {
 					{/*	backgroundColor="oklch(from var(--background) 0.14 c h)"*/}
 					{/*	titleBar={*/}
 					{/*		<div css={css`*/}
-					{/*			font-weight: bold;*/}
+					{/*			font-weight: var(--font-weight-bold);*/}
 					{/*			position: absolute;*/}
 					{/*			inset: 0 0 auto 0;*/}
 					{/*			text-align: center;*/}

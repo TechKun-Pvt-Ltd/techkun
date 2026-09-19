@@ -3,6 +3,13 @@ import {round} from "svg-path-kit/numbers";
 const propertyDeclarations = [];
 const ruleDeclarations = [];
 
+const PRIMITIVE_WEIGHTS = {
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700
+};
+
 const PRIMITIVE_PROPERTIES_LOOKUP = {
     base: {
         fontSize: "var(--base-font-size)",
@@ -10,7 +17,18 @@ const PRIMITIVE_PROPERTIES_LOOKUP = {
         letterSpacing: "var(--base-letter-spacing)"
     }
 };
+const PRIMITIVE_WEIGHTS_PROPERTIES_LOOKUP = {};
 const SEMANTIC_PROPERTIES_LOOKUP = {};
+
+for (const weightToken in PRIMITIVE_WEIGHTS) {
+    const propertyName = `--font-weight-${weightToken}`;
+    // language=CSS prefix=":root {" suffix="}"
+    propertyDeclarations.push(`${propertyName}: ${PRIMITIVE_WEIGHTS[weightToken]}`);
+
+    // language=CSS
+    ruleDeclarations.push(`.font-${weightToken} { font-weight: var(${propertyName}); }`);
+    PRIMITIVE_WEIGHTS_PROPERTIES_LOOKUP[weightToken] = `var(${propertyName})`;
+}
 
 /* Scale ratio — choose a musical interval:
    Minor Second:   1.067  (2 semitones)
@@ -77,19 +95,31 @@ for (let i = -2; i <= 10; i++) {
     );
 }
 
-// Declares the custom properties and the utility class of a token, resolving its
-// values from `source` (a { fontSize, lineHeight, letterSpacing } entry of a lookup).
-// Returns the token's own lookup entry so the next layer can alias it.
-function declareToken(token, source) {
+function declareToken(token, source, declareProperties = true) {
     const fontSizePropertyName = `--${token}-size`;
     const lineHeightPropertyName = `--${token}-line-height`;
     const letterSpacingPropertyName = `--${token}-letter-spacing`;
+    const fontWeightPropertyName = `--${token}-weight`;
+
+    if (!declareProperties) {
+        // language=CSS
+        ruleDeclarations.push(
+`.${token} {
+    font-size: ${source.fontSize};
+    line-height: ${source.lineHeight};
+    letter-spacing: ${source.letterSpacing};
+    font-weight: ${source.fontWeight};
+}`
+        );
+        return;
+    }
 
     // language=CSS prefix=":root {" suffix="}"
     propertyDeclarations.push(
         `${fontSizePropertyName}: ${source.fontSize}`,
         `${lineHeightPropertyName}: ${source.lineHeight}`,
-        `${letterSpacingPropertyName}: ${source.letterSpacing}`
+        `${letterSpacingPropertyName}: ${source.letterSpacing}`,
+        `${fontWeightPropertyName}: ${source.fontWeight}`
     );
 
     // language=CSS
@@ -98,6 +128,7 @@ function declareToken(token, source) {
     font-size: var(${fontSizePropertyName});
     line-height: var(${lineHeightPropertyName});
     letter-spacing: var(${letterSpacingPropertyName});
+    font-weight: var(${fontWeightPropertyName});
 }`
     );
 
@@ -105,48 +136,75 @@ function declareToken(token, source) {
         fontSize: `var(${fontSizePropertyName})`,
         lineHeight: `var(${lineHeightPropertyName})`,
         letterSpacing: `var(${letterSpacingPropertyName})`,
+        fontWeight: `var(${fontWeightPropertyName})`,
     };
 }
 
+function primitiveTokens(size, weight = "regular") {
+    return { size, weight };
+}
 // Semantic tokens: type role -> scale (sm/md/lg/xl) -> t-shirt size of the primitive group.
 // Only the steps the site actually uses are defined.
 const SEMANTIC_TO_PRIMITIVE_MAP = Object.fromEntries(Object
     .entries({
-        display: {sm: "5xl"},
-        heading: {sm: "xl", md: "2xl", lg: "3xl", xl: "4xl"},
-        body: {sm: "sm", md: "base", lg: "lg"}
+        display: {
+            sm: primitiveTokens("5xl")
+        },
+        heading: {
+            sm: primitiveTokens("xl"),
+            md: primitiveTokens("2xl"),
+            lg: primitiveTokens("3xl"),
+            xl: primitiveTokens("4xl")
+        },
+        body: {
+            sm: primitiveTokens("sm"),
+            md: primitiveTokens("base"),
+            lg: primitiveTokens("lg")
+        }
     })
     .flatMap(([role, sizes]) => Object
         .entries(sizes)
-        .map(([size, tShirtToken]) => [`type-${role}-${size}`, tShirtToken])
+        .map(([size, primitiveTokens]) => [`type-${role}-${size}`, primitiveTokens])
     )
 );
 
-for (const [token, tShirtSize] of Object.entries(SEMANTIC_TO_PRIMITIVE_MAP)) {
-    const primitive = PRIMITIVE_PROPERTIES_LOOKUP[tShirtSize];
-    if (primitive === undefined)
-        throw new Error(`Unknown t-shirt size "${tShirtSize}" for ${token}`);
+for (const [token, primitiveTokens] of Object.entries(SEMANTIC_TO_PRIMITIVE_MAP)) {
+    const properties = PRIMITIVE_PROPERTIES_LOOKUP[primitiveTokens.size];
+    const fontWeight = PRIMITIVE_WEIGHTS_PROPERTIES_LOOKUP[primitiveTokens.weight];
+    if (properties === undefined)
+        throw new Error(`Unknown t-shirt size "${primitiveTokens.size}" for ${token}`);
+    if (fontWeight === undefined)
+        throw new Error(`Unknown font weight token "${fontWeight}" for ${token}`);
 
-    SEMANTIC_PROPERTIES_LOOKUP[token] = declareToken(token, primitive);
+    SEMANTIC_PROPERTIES_LOOKUP[token] = declareToken(token, {...properties, fontWeight});
 }
 
+function semanticMapping(semanticToken, weightOverride) {
+    return { semanticToken, weightOverride };
+}
 // Context tokens: where the text sits in the page's content structure -> semantic token.
 // Deliberately generic ("section", "item", "hero"), never tied to a single component.
 const CONTEXT_TO_SEMANTIC_MAP = {
-    "hero-heading": "type-display-sm",
-    "section-title": "type-heading-xl",
-    "section-subtitle": "type-heading-md",
-    "item-title": "type-heading-lg",
-    "item-subtitle": "type-heading-sm",
-    "logo-text": "type-body-lg"
+    "hero-heading": semanticMapping("type-display-sm"),
+    "section-title": semanticMapping("type-heading-xl"),
+    "section-subtitle": semanticMapping("type-heading-md"),
+    "item-title": semanticMapping("type-heading-lg"),
+    "item-subtitle": semanticMapping("type-heading-sm"),
+    "logo-text": semanticMapping("type-body-lg", "medium")
 };
 
-for (const [token, semanticToken] of Object.entries(CONTEXT_TO_SEMANTIC_MAP)) {
-    const semantic = SEMANTIC_PROPERTIES_LOOKUP[semanticToken];
+for (const [token, mapping] of Object.entries(CONTEXT_TO_SEMANTIC_MAP)) {
+    const semantic = SEMANTIC_PROPERTIES_LOOKUP[mapping.semanticToken];
+    const fontWeight = PRIMITIVE_WEIGHTS_PROPERTIES_LOOKUP[mapping.weightOverride];
     if (semantic === undefined)
-        throw new Error(`Unknown semantic token "${semanticToken}" for ${token}`);
+        throw new Error(`Unknown semantic token "${mapping.semanticToken}" for ${token}`);
+    if (mapping.weightOverride && fontWeight === undefined)
+        throw new Error(`Unknown font weight token "${fontWeight}" for ${token}`);
 
-    declareToken(token, semantic);
+    const source = {...semantic};
+    if (fontWeight)
+        source.fontWeight = fontWeight;
+    declareToken(token, source, false);
 }
 
 // language=CSS

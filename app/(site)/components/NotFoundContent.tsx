@@ -9,7 +9,7 @@ const buttonCss = css`
     border: 1px solid var(--border);
     color: var(--foreground);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     transition: background-color 0.15s ease, border-color 0.15s ease;
 
     &:hover, &:focus-visible {

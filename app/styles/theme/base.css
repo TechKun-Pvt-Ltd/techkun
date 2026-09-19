@@ -38,5 +38,5 @@ select {
 button {
     cursor: pointer;
     border: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
 }

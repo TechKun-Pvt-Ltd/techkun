@@ -27,7 +27,7 @@ const buttonCss = css`
     //border-radius: 0.75rem;
     border-radius: var(--radius-full);
     corner-shape: superellipse(1.1);
-    //font-weight: 600;
+    //font-weight: var(--font-weight-semibold);
 
     &::before {
         background: var(--secondary-900) padding-box;

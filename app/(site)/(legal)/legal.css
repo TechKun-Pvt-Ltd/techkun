@@ -85,7 +85,7 @@
 }
 .legal-content dt {
     color: var(--foreground);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
 }
 .legal-content dd {
     margin-inline-start: 0;

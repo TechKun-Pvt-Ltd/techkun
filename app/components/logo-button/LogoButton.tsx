@@ -51,7 +51,7 @@ const linkCss = css`
 	//border: 1px solid var(--secondary-neutral-700);
 	display: flex;
 	align-items: stretch;
-	font-weight: 500;
+	font-weight: var(--font-weight-medium);
 	text-decoration: none;
 	&::before, .wrapper, .after {
 		border: 0 solid var(--secondary-900);
@@ -172,7 +172,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 		}}
 	>
 		<motion.span
-			layout="size" className="type-body-lg wrapper"
+			layout="size" className="logo-text wrapper"
 		 	transition={{
 				 layout: {
 					 type: "spring",

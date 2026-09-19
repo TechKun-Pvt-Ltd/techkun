@@ -115,8 +115,7 @@ export default function Banner() {
             text-align: center;
 		`}>
 			<div>
-				<p className="type-body-lg mb-4" css={css`
-					font-weight: 500;
+				<p className="type-body-lg font-medium mb-4" css={css`
                     color: var(--secondary-neutral-400);
 				`}>Hello there!</p>
 				<h1 className="hero-heading mb-14" css={css`
@@ -134,8 +133,7 @@ export default function Banner() {
 						<br css={mobileBrCss}/> <Identity ref={identityRef} />.
 					</span>
 				</h1>
-				<p className="type-body-lg px-24 mb-8" css={css`
-                    font-weight: 500;
+				<p className="type-body-lg font-medium px-24 mb-8" css={css`
 					white-space: nowrap;
                     color: var(--secondary-neutral-400);
 				`}>If that resonates...</p>
@@ -152,7 +150,7 @@ export default function Banner() {
 					<MainCTA className="cta" style={{ width: "max-content" }}>
 						Let's get on call
 					</MainCTA>
-					<div className="gap-3" style={{ color: "var(--secondary-neutral-400)", fontWeight: "500", width: "max-content", display: "flex", alignItems: "center" }}>
+					<div className="gap-3 font-medium" style={{ color: "var(--secondary-neutral-400)", width: "max-content", display: "flex", alignItems: "center" }}>
 						<p>or chat on</p>
 						<XLink href={xAccountUrl} />
 						<LinkedInLink href={linkedInAccountUrl} />

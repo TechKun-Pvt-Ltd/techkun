@@ -28,7 +28,7 @@ export default function Page() {
                 </header>
 
                 <div className="gap-3 py-6 px-7" css={summaryCardCss}>
-                    <h2 className="type-body-lg" style={{fontWeight: 600}}>Privacy Summary</h2>
+                    <h2 className="type-body-lg font-semibold">Privacy Summary</h2>
                     <div className="legal-content">
                         <LegalBlocks blocks={SUMMARY_BLOCKS} />
                     </div>

@@ -222,7 +222,7 @@ function ContactOptions() {
             </defs>
         </svg>
         <button
-            className="type-body-lg contact-option tri-layered-button" css={contactOptionCss}
+            className="type-body-lg font-medium contact-option tri-layered-button" css={contactOptionCss}
             style={{ [opacityProp]: "1" } as React.CSSProperties}
         >
             Schedule a quick call with us
