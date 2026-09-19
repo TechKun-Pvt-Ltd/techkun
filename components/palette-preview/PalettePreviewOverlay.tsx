@@ -7,13 +7,13 @@ import {anchorStyleMap, getPositionSide, OverlayPosition} from "./anchor-positio
 import {ShadesTintsForm} from "./ShadesTintsForm";
 import {InterpolatedForm} from "./InterpolatedForm";
 import {PaletteStrip} from "./PaletteStrip";
-import {processConfig} from "@/app/styles/buildtime/utils/css-palette-generation-utils.ts";
+import {processConfig} from "@/app/styles/buildtime/color-system-utils/css-palette-generation-utils.ts";
 import {
     ColorRampCustomization,
     PALETTE_CUSTOMIZATION,
     PaletteCustomization
-} from "@/app/styles/buildtime/utils/css-palette-customization.ts";
-import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/app/styles/buildtime/utils/css-palette-generation-config.ts";
+} from "@/app/styles/buildtime/color-system-utils/css-palette-customization.ts";
+import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/app/styles/buildtime/color-system-utils/css-palette-generation-config.ts";
 
 interface PalettePreviewOverlayProps {
     /** Where the floating overlay anchors. Defaults to center-right. */

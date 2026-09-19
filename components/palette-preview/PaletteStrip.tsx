@@ -2,7 +2,7 @@
 
 import styles from "./PalettePreviewOverlay.module.css";
 import colorRampsStatic from "@/app/styles/buildtime/js/color-ramps.mjs";
-import {ColorRampKey} from "@/app/styles/buildtime/utils/css-palette-generation-config.ts";
+import {ColorRampKey} from "@/app/styles/buildtime/color-system-utils/css-palette-generation-config.ts";
 
 export function PaletteStrip({ itemKey }: { itemKey: ColorRampKey }) {
     const varNames = colorRampsStatic[itemKey].filter(Boolean);
