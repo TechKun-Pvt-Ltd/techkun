@@ -25,7 +25,7 @@ export default function ProblemStatement() {
 			{/*		color: var(--neutral-700);*/}
 			{/*	}*/}
 			{/*`}>*/}
-			{/*	<p className="text-lg">02:11:42.881</p>*/}
+			{/*	<p className="type-body-lg">02:11:42.881</p>*/}
 			{/*	<h2 className="section-title">{"Don't lose money on"} <span aria-label="repairs" style={{whiteSpace: 'nowrap'}}>*/}
 			{/*		repa*/}
 			{/*		<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="-1 -12 3.25 13" css={css`*/}

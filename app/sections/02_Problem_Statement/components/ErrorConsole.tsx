@@ -61,7 +61,7 @@ export default function ErrorConsole() {
 		<h2 className="sr-only">
 			{hightlightedLogs.map(log => log.message).filter(Boolean).join(" ")}
 		</h2>
-		<div className="text-lg" aria-hidden="true">
+		<div className="type-body-lg" aria-hidden="true">
 			<p css={css`
                 //white-space: pre;
 				user-select: none;

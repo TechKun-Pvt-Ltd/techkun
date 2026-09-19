@@ -115,7 +115,7 @@ export default function Banner() {
             text-align: center;
 		`}>
 			<div>
-				<p className="text-lg mb-4" css={css`
+				<p className="type-body-lg mb-4" css={css`
 					font-weight: 500;
                     color: var(--secondary-neutral-400);
 				`}>Hello there!</p>
@@ -134,12 +134,12 @@ export default function Banner() {
 						<br css={mobileBrCss}/> <Identity ref={identityRef} />.
 					</span>
 				</h1>
-				<p className="text-lg px-24 mb-8" css={css`
+				<p className="type-body-lg px-24 mb-8" css={css`
                     font-weight: 500;
 					white-space: nowrap;
                     color: var(--secondary-neutral-400);
 				`}>If that resonates...</p>
-				<div className="cta-group text-lg px-24 gap-6" css={css`
+				<div className="cta-group type-body-lg px-24 gap-6" css={css`
 					display: flex;
 					align-items: center;
 					justify-content: center;

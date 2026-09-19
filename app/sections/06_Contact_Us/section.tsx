@@ -222,18 +222,18 @@ function ContactOptions() {
             </defs>
         </svg>
         <button
-            className="text-lg contact-option tri-layered-button" css={contactOptionCss}
+            className="type-body-lg contact-option tri-layered-button" css={contactOptionCss}
             style={{ [opacityProp]: "1" } as React.CSSProperties}
         >
             Schedule a quick call with us
         </button>
-        <p className="text-lg" css={css`
+        <p className="type-body-lg" css={css`
             color: var(--secondary-neutral-500);
             line-height: 1;
             margin-block-end: calc(1rem - 1ex);
         `}>or</p>
         <Link
-            className="text-lg contact-option tri-layered-button" css={contactOptionCss}
+            className="type-body-lg contact-option tri-layered-button" css={contactOptionCss}
             style={{ textDecoration: 'none', [opacityProp]: 0 } as React.CSSProperties}
             href={`mailto:${contactMailAddress}`}
         >

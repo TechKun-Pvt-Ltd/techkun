@@ -12,8 +12,8 @@ export type LegalBlock =
 
 const HEADING_CLASS_NAME: Record<3 | 4 | 5, string> = {
     3: "item-subtitle",
-    4: "text-lg",
-    5: "text-base"
+    4: "type-body-lg",
+    5: "type-body-md"
 };
 const HEADING_STYLE: Record<3 | 4 | 5, React.CSSProperties> = {
     3: {color: "var(--foreground)"},
@@ -35,27 +35,27 @@ export default function LegalBlocks({blocks}: { blocks: LegalBlock[] }) {
                     </Heading>;
                 }
                 case "p":
-                    return <p key={index} className="text-base">{block.text}</p>;
+                    return <p key={index} className="type-body-md">{block.text}</p>;
                 case "ul":
                     return <ul key={index}>
-                        {block.items.map((item, itemIndex) => <li key={itemIndex} className="text-base">{item}</li>)}
+                        {block.items.map((item, itemIndex) => <li key={itemIndex} className="type-body-md">{item}</li>)}
                     </ul>;
                 case "dl":
                     return <dl key={index}>
                         {block.items.map((item, itemIndex) => <React.Fragment key={itemIndex}>
-                            <dt className="text-base">{item.term}</dt>
-                            <dd className="text-base">{item.def}</dd>
+                            <dt className="type-body-md">{item.term}</dt>
+                            <dd className="type-body-md">{item.def}</dd>
                         </React.Fragment>)}
                     </dl>;
                 case "fields":
                     return <dl key={index}>
                         {block.items.map((item, itemIndex) => <React.Fragment key={itemIndex}>
-                            <dt className="text-base">{item.label}</dt>
-                            <dd className="text-base">{item.value}</dd>
+                            <dt className="type-body-md">{item.label}</dt>
+                            <dd className="type-body-md">{item.value}</dd>
                         </React.Fragment>)}
                     </dl>;
                 case "email":
-                    return <p key={index} className="text-base">
+                    return <p key={index} className="type-body-md">
                         <EmailLink address={block.address}>{block.label ?? block.address}</EmailLink>
                     </p>;
             }

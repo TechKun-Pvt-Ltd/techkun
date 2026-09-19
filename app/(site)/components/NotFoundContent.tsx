@@ -38,7 +38,7 @@ export default function NotFoundContent() {
                 <p className="section-subtitle mb-10">
                     The page you're looking for doesn't exist or has been moved.
                 </p>
-                <Link href="/public" className="text-lg py-3 px-7" css={buttonCss}>
+                <Link href="/public" className="type-body-lg py-3 px-7" css={buttonCss}>
                     Take me home
                 </Link>
             </div>

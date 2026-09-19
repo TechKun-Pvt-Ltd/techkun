@@ -38,7 +38,7 @@ export default function OurPrinciples() {
 				<h2 className="section-title" css={css`
 					margin-block-end: 0.25em;
 				`}>We're guided by<br/>the following principles</h2>
-				<p className="text-lg" css={css`
+				<p className="type-body-lg" css={css`
 					font-weight: 500;
 					color: var(--secondary-neutral-300);
 				`}>OUR PRINCIPLES</p>

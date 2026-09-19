@@ -22,17 +22,17 @@ export default function Page() {
             <div className="legal-page pt-24 gap-16">
                 <header className="legal-header">
                     <h1 className="section-title">Privacy Policy</h1>
-                    <p className="text-base py-1 px-3">
+                    <p className="type-body-md py-1 px-3">
                         Last updated: {LAST_UPDATED}
                     </p>
                 </header>
 
                 <div className="gap-3 py-6 px-7" css={summaryCardCss}>
-                    <h2 className="text-lg" style={{fontWeight: 600}}>Privacy Summary</h2>
+                    <h2 className="type-body-lg" style={{fontWeight: 600}}>Privacy Summary</h2>
                     <div className="legal-content">
                         <LegalBlocks blocks={SUMMARY_BLOCKS} />
                     </div>
-                    <Link href="/privacy/detailed" className="legal-link text-sm">
+                    <Link href="/privacy/detailed" className="legal-link type-body-sm">
                         Read the detailed Privacy Policy →
                     </Link>
                 </div>
@@ -43,7 +43,7 @@ export default function Page() {
                     </h2>
                     <div className="legal-content">
                         <LegalBlocks blocks={TRIMMED_BLOCKS} />
-                        <p className="text-base">
+                        <p className="type-body-md">
                             For full legal details, definitions, and region-specific rights, read our{" "}
                             <Link href="/privacy/detailed" className="legal-link">Detailed Privacy Policy</Link>.
                         </p>

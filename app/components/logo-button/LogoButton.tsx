@@ -172,7 +172,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 		}}
 	>
 		<motion.span
-			layout="size" className="logo-text wrapper"
+			layout="size" className="type-body-lg wrapper"
 		 	transition={{
 				 layout: {
 					 type: "spring",

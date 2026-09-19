@@ -82,7 +82,7 @@ export default function Footer() {
                 font-weight: 500;
             }
         `}>
-            <p className="text-sm my-2">This site is made by humans.</p>
+            <p className="type-body-sm my-2">This site is made by humans.</p>
         </div>
     </footer>
 }

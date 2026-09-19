@@ -49,7 +49,7 @@ const socialLinksGroupCss = css`
 `;
 
 function SocialLinksGroup() {
-	return <div className="text-lg py-2 px-5 gap-2" css={socialLinksGroupCss}>
+	return <div className="type-body-lg py-2 px-5 gap-2" css={socialLinksGroupCss}>
 		<XLink className="contact-option" href={xAccountUrl} />
 		<div className="divider" />
 		<LinkedInLink className="contact-option" href={linkedInAccountUrl} />
