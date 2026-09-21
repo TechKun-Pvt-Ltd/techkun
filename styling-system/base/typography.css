@@ -15,12 +15,9 @@
 }
 
 :root {
-    /* Base font size in px */
-    --base-font-size: 1rem;
-
-    font-size: var(--base-font-size);
-    line-height: var(--base-line-height);
-    letter-spacing: var(--base-letter-spacing);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-base);
     font-family: Quicksand, Quicksand Fallback, sans-serif;
     font-style: normal;
 }

@@ -6,7 +6,7 @@
 // between elements), which — unlike `base/layout.css`'s --navbar-height or
 // the type scale — has no reason to track the root font-size. Keeping it in
 // px also avoids silently coupling every gap/padding in the app to
-// --base-font-size if that ever becomes viewport-fluid (see
+// --font-size-base if that ever becomes viewport-fluid (see
 // --mobile-s-to-laptop-mid in base/viewport.css).
 const MAX_STEP = 32;
 

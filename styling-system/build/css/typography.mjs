@@ -1,5 +1,5 @@
 // This module is the parser.
-import { declarations, rules } from "../type-system/interop.ts";
+import { declarations, rules } from "../type-system/index.ts";
 
 // language=CSS
 export default `

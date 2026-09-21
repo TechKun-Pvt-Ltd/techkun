@@ -1,31 +1,27 @@
-import type {CSSPropertiesByProperty, Property} from "./config.ts";
-
-export type CSSToken = `--${string}`;
-export type CSSValue = string | number;
-// type TokensByProperty = Record<string, string>;
-export type CSSDeclarations = Record<CSSToken, CSSValue>;
-export type CSSRules = {
-    [selector: string]: {
-        [P in CSSProperty]?: CSSValue;
-    };
-};
-
-export interface TypeTokensLayer {
-    getCSSDeclarations(): CSSDeclarations | null;
-    getCSSRules(): CSSRules | null;
-}
-
-export const PROPERTIES = ["font-size", "line-height", "letter-spacing", "font-weight"] as const;
-export type CSSProperty = typeof PROPERTIES[number];
+import type {CSSPropertiesOf, TokenFamily} from "./config.ts";
+import type {CSSToken, CSSValue} from "./types.ts";
 
 /* Everything the token levels (primitives, semantic, context) have in common.
-   Primitives are tied to a property, so their objects are keyed by property first: `object[property][token]`.
+   Primitives are tied to a token family, so their objects are keyed by property first: `object[property][token]`.
    Semantic and context tokens are tied to intent, so their objects are keyed by token first: `object[token][property]`. */
 
-export function toVarRefs<P extends Property = Property>(
-    cssPropertyValues: Record<CSSPropertiesByProperty<P>, CSSToken>
-): {[K in CSSPropertiesByProperty<P>]: CSSValue} {
+export function toVarRefs<F extends TokenFamily = TokenFamily>(
+    cssPropertyValues: Record<CSSPropertiesOf<F>, CSSToken>
+): {[K in CSSPropertiesOf<F>]: CSSValue} {
     return mapObjectValues(cssPropertyValues, name => `var(${name})`);
+}
+/* Merges records left to right, skipping nulls. A key defined by more than one record is a mistake
+   (a token would silently override another), so it throws instead. */
+export function mergeAll<T extends object>(records: (T | null)[]): T {
+    const merged: Record<string, unknown> = {};
+    for (const record of records) {
+        if (record === null) continue;
+        for (const [key, value] of Object.entries(record)) {
+            if (Object.hasOwn(merged, key)) throw new Error(`Duplicate key "${key}" while merging type-system tokens.`);
+            merged[key] = value;
+        }
+    }
+    return merged as T;
 }
 export function mapObjectEntries<O extends object, U extends keyof any, V>(
     object: O, mapper: (key: keyof O, value: O[keyof O]) => [U, V]
