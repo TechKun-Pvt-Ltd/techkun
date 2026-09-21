@@ -1,6 +1,6 @@
-import {PROPERTIES, declare, rule, mapObjectValues, mapObjectEntries} from "./shared.ts";
-import type {TShirtSizeToken, WeightToken, Property, TokensByProperty} from "./shared.ts";
-import {resolvePrimitiveToken} from "./primitives.ts";
+import {PROPERTIES, mapObjectValues, mapObjectEntries} from "./shared.ts";
+import type {TShirtSizeToken, WeightToken, Property, TokensByProperty, TypeTokensLayer, CSSToken} from "./shared.ts";
+import {resolvePrimitiveToken} from "./primitive-layer.ts";
 
 /* Semantic tokens: type roles (display, heading, body), each mapped onto primitive tokens. */
 
@@ -26,7 +26,6 @@ const semanticToPrimitiveGrouped = {
     }
 };
 
-
 type SemanticToPrimitiveGrouped = typeof semanticToPrimitiveGrouped;
 type KeysOfUnion<T> = T extends unknown ? keyof T : never;
 export type SemanticToken = KeysOfUnion<{
@@ -35,7 +34,7 @@ export type SemanticToken = KeysOfUnion<{
     };
 }[keyof SemanticToPrimitiveGrouped]>;
 
-const SEMANTIC_TO_PRIMITIVE = Object.fromEntries(Object
+const SemanticToPrimitive = Object.fromEntries(Object
     .entries(semanticToPrimitiveGrouped)
     .flatMap(([role, sizes]) => Object
         .entries(sizes)
@@ -43,7 +42,7 @@ const SEMANTIC_TO_PRIMITIVE = Object.fromEntries(Object
     )
 ) as Record<SemanticToken, { [P in Property]: TokensByProperty[P] }>;
 
-const SEMANTIC_TOKENS = Object.keys(SEMANTIC_TO_PRIMITIVE) as SemanticToken[];
+const SEMANTIC_TOKENS = Object.keys(SemanticToPrimitive) as SemanticToken[];
 
 const SEMANTIC_SUFFIX: Record<Property, string> = {
     fontSize: "size",
@@ -52,37 +51,45 @@ const SEMANTIC_SUFFIX: Record<Property, string> = {
     fontWeight: "weight"
 };
 
+const SemanticLayer: TypeTokensLayer = {
+    getCSSDeclarations() {
+        return Object.fromEntries(Object
+            .entries(SemanticCssTokensLookup)
+            .flatMap(([semanticToken, lookup]) => Object
+                .entries(lookup)
+                .map(([property, cssToken]) => [
+                    semanticToken, property, cssToken
+                ] as [SemanticToken, Property, CSSToken])
+            )
+            .map(([semanticToken, property, cssToken]) => [
+                cssToken, resolvePrimitiveToken(property, SemanticToPrimitive[semanticToken][property])
+            ])
+        );
+    },
+    getCSSRules() {
+        return mapObjectEntries(
+            SemanticCssTokensLookup,
+            (token, values) => [
+                `.${token}`,
+                mapObjectValues(values, value => `var(${value})`)
+            ]
+        );
+    }
+};
+export default SemanticLayer;
+
 // Lookup: token -> CSS custom property name. [token][property].
-const SEMANTIC_PROPERTY_NAMES_BY_TOKEN = Object.fromEntries(SEMANTIC_TOKENS
+const SemanticCssTokensLookup = Object.fromEntries(SEMANTIC_TOKENS
     .map(token => [
         token,
         Object.fromEntries(
             PROPERTIES.map(property => [property, `--${token}-${SEMANTIC_SUFFIX[property]}`])
         )
     ])
-) as Record<SemanticToken, Record<Property, string>>;
+) as Record<SemanticToken, Record<Property, CSSToken>>;
 
 export function resolveSemanticToken(token: SemanticToken) {
-    if (!(token in SEMANTIC_PROPERTY_NAMES_BY_TOKEN))
+    if (!(token in SemanticCssTokensLookup))
         throw new Error(`Unknown semantic token "${token}"`);
-    return mapObjectValues(SEMANTIC_PROPERTY_NAMES_BY_TOKEN[token], propertyName => `var(${propertyName})`);
+    return mapObjectValues(SemanticCssTokensLookup[token], propertyName => `var(${propertyName})`);
 }
-
-// Custom properties declared under :root: name -> value.
-export const SEMANTIC_PROPERTIES = declare(
-    mapObjectValues(
-        SEMANTIC_TO_PRIMITIVE,
-        mapping => mapObjectEntries(
-            mapping,
-            (property, token) => [property, resolvePrimitiveToken(property, token)]
-        )
-    ),
-    SEMANTIC_PROPERTY_NAMES_BY_TOKEN
-);
-
-export const SEMANTIC_RULES = Object
-    .entries(SEMANTIC_PROPERTY_NAMES_BY_TOKEN)
-    .map(([token, values]) => rule(
-        `.${token}`,
-        mapObjectValues(values, value => `var(${value})`)
-    ));

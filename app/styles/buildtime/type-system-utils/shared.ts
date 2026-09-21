@@ -1,3 +1,25 @@
+export type CSSToken = `--${string}`;
+export type CSSValue = string | number;
+// type TokensByProperty = Record<string, string>;
+export type CSSDeclarations = Record<CSSToken, CSSValue>;
+export type CSSRules = {
+    [selector: string]: {
+        [P in Property]?: CSSValue;
+    };
+};
+
+export interface TypeTokensLayer {
+    getCSSDeclarations(): CSSDeclarations | null;
+    getCSSRules(): CSSRules | null;
+}
+
+type CSSTokensLookup<T extends Record<string, string>> = {
+    [P in keyof T]: {
+        [K in T[P]]: CSSToken;
+    };
+};
+
+
 /* Everything the token levels (primitives, semantic, context) have in common.
    Primitives are tied to a property, so their objects are keyed by property first: `object[property][token]`.
    Semantic and context tokens are tied to intent, so their objects are keyed by token first: `object[token][property]`. */
@@ -32,33 +54,15 @@ export const CSS_PROPERTY_NAME: Record<Property, string> = {
     fontWeight: "font-weight"
 };
 
-export function mapObjectEntries<O extends object, U>(object: O, mapper: (key: keyof O, value: O[keyof O]) => [keyof O, U]): Record<keyof O, U> {
+export function mapObjectEntries<O extends object, U extends keyof any, V>(object: O, mapper: (key: keyof O, value: O[keyof O]) => [U, V]): Record<U, V> {
     return Object.fromEntries(Object.entries(object)
         .map(([key, value]) => mapper(key as keyof O, value))) as any;
 }
-export function mapObjectValues<O extends object, U>(object: O, mapper: (value: O[keyof O]) => U): Record<keyof O, U> {
+export function mapObjectValues<O extends object, V>(object: O, mapper: (value: O[keyof O]) => V): Record<keyof O, V> {
     return Object.fromEntries(Object.entries(object)
         .map(([key, value]) => [key, mapper(value)])) as any;
 }
-
-// Declarations: pairs each value with the lookup name at the same path -> {"--custom-property": value}.
-export function declare<V extends Record<string, Record<string, string | number>>>(values: V, lookup: { [K in keyof V]: { [K1 in keyof V[K]]: string; } }) {
-    const declarations: Record<string, string | number> = {};
-    for (const [outerKey, inner] of Object.entries(values)) {
-        for (const [innerKey, value] of Object.entries(inner)) {
-            const name = lookup[outerKey]?.[innerKey];
-            if (name === undefined)
-                throw new Error(`No property name for "${outerKey}" / "${innerKey}"`);
-            declarations[name] = value;
-        }
-    }
-    return declarations;
-}
-
-// Emits `selector { ... }` from a {property: value} object.
-export function rule(selector: string, values: Record<string, string>) {
-    const declarations = Object
-        .entries(values)
-        .map(([property, value]) => `    ${CSS_PROPERTY_NAME[property as Property]}: ${value};`);
-    return `${selector} {\n${declarations.join("\n")}\n}`;
+export function mapObjectKeys<O extends object, U extends keyof any>(object: O, mapper: (value: keyof O) => U): Record<U, O[keyof O]> {
+    return Object.fromEntries(Object.entries(object)
+        .map(([key, value]) => [mapper(key as keyof O), value])) as any;
 }

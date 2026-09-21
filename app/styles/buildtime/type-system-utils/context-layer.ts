@@ -1,7 +1,8 @@
-import {mapObjectEntries, mapObjectValues, type Property, rule, type TokensByProperty} from "./shared.ts";
-import {resolvePrimitiveToken} from "./primitives.ts";
-import {resolveSemanticToken} from "./semantic.ts";
-import type {SemanticToken} from "./semantic.ts";
+import {mapObjectEntries, mapObjectValues} from "./shared.ts";
+import type {Property, TokensByProperty, TypeTokensLayer} from "./shared.ts";
+import {resolvePrimitiveToken} from "./primitive-layer.ts";
+import type {SemanticToken} from "./semantic-layer.ts";
+import {resolveSemanticToken} from "./semantic-layer.ts";
 
 /* Context tokens: where the text sits in the page's content structure. They declare no custom
    properties of their own, only rules that resolve to semantic (and overriding primitive) variables. */
@@ -36,15 +37,22 @@ function resolveMapping(mapping: typeof CONTEXT_TO_SEMANTIC) {
         ({primitiveOverrides}) =>
             mapObjectEntries(
                 primitiveOverrides,
-                <P extends keyof typeof primitiveOverrides>(property: P, token: typeof primitiveOverrides[P]) => [property, resolvePrimitiveToken(property, token)]
+                (property, token) => [property, resolvePrimitiveToken(property, token)]
             )
     );
     return mapObjectEntries(mapping, (token, {semanticToken}) => {
         return [token, {...resolveSemanticToken(semanticToken), ...overrides[token]}];
     });
 }
-const CONTEXT_VARS = resolveMapping(CONTEXT_TO_SEMANTIC);
-
-export const CONTEXT_RULES = Object
-    .entries(CONTEXT_VARS)
-    .map(([token, values]) => rule(`.${token}`, values));
+const ContextLayer: TypeTokensLayer = {
+    getCSSDeclarations() {
+        return null;
+    },
+    getCSSRules() {
+        return mapObjectEntries(
+            resolveMapping(CONTEXT_TO_SEMANTIC),
+            (token, values) => [`.${token}`, values]
+        );
+    }
+};
+export default ContextLayer;
