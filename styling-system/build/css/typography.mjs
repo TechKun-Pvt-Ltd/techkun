@@ -1,6 +1,5 @@
 // This module is the parser.
-import {declarations, rules} from "../type-system-utils/registry.ts";
-import {CSS_PROPERTY_NAME} from "../type-system-utils/shared.ts";
+import { declarations, rules } from "../type-system/interop.ts";
 
 // language=CSS
 export default `
@@ -14,8 +13,8 @@ export default `
         .map(([selector, rules]) =>
             `${selector} {\n\t\t${Object
                 .entries(rules)
-                .map(([property, value]) => `${CSS_PROPERTY_NAME[/** @type {keyof typeof CSS_PROPERTY_NAME} */ (property)]}: ${value};`).join("\n\t\t")
-            };\n}`
+                .map(([property, value]) => `${property}: ${value};`).join("\n\t\t")
+            };\n\t}`
         ).join("\n\t")}
 }
 `.trim();
