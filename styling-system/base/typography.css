@@ -1,6 +1,6 @@
 @font-face {
     font-family: Quicksand;
-    src: url("../../fonts/Quicksand-VariableFont_wght.ttf") format("truetype");
+    src: url("../../app/fonts/Quicksand-VariableFont_wght.ttf") format("truetype");
     font-display: swap;
     font-weight: 100 900;
 }

@@ -9,7 +9,7 @@ const ROOT_ATTRIBUTE = "data-palette-preview";
  * Owns a single <style> tag in <head> plus a `data-palette-preview`
  * attribute on <html>. Rules are scoped as `html[data-palette-preview] {…}`
  * rather than `:root`, so they win on specificity over the page's own
- * `:root` theme rules regardless of stylesheet insertion order — no
+ * `:root` base rules regardless of stylesheet insertion order — no
  * `!important` needed. Removing the attribute + clearing the tag fully
  * reverts to the page's original look.
  */

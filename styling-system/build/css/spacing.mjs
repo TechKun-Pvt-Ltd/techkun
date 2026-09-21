@@ -3,11 +3,11 @@
 // repeated more than once in the design-system audit of existing sections.
 
 // Values are px, not rem: this scale is for layout rhythm (gap/padding/margin
-// between elements), which — unlike `theme/layout.css`'s --navbar-height or
+// between elements), which — unlike `base/layout.css`'s --navbar-height or
 // the type scale — has no reason to track the root font-size. Keeping it in
 // px also avoids silently coupling every gap/padding in the app to
 // --base-font-size if that ever becomes viewport-fluid (see
-// --mobile-s-to-laptop-mid in theme/viewport.css).
+// --mobile-s-to-laptop-mid in base/viewport.css).
 const MAX_STEP = 32;
 
 // Single source of truth for the custom property name behind each step.
@@ -18,11 +18,11 @@ const SPACE_VAR_NAMES = Object.fromEntries(
 );
 
 const spacingProperties = Object.entries(SPACE_VAR_NAMES)
-    .map(([step, varName]) => `${varName}: ${step * 0.25}rem`);
+    .map(([step, varName]) => `${varName}: ${Number(step) * 0.25}rem`);
 
 // Prefixes follow Tailwind's naming, but map onto logical properties (not
 // physical top/bottom) to match how the rest of this codebase writes
-// padding/margin/gap — see e.g. theme/layout.css and components.css. l/r
+// padding/margin/gap — see e.g. base/layout.css and components.css. l/r
 // still resolve to inline-start/inline-end (not literal left/right).
 const UTILITY_PROPERTIES = [
     { prefix: "p", property: "padding" },

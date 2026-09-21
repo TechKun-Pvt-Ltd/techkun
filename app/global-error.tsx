@@ -4,7 +4,7 @@ import {contactMailAddress} from "@/app/utils/constants";
 // Deliberately dependency-light: this only renders when something has already gone
 // wrong somewhere in the tree (including, potentially, the layout itself), so it
 // avoids Motion/Emotion and the generated design-token CSS and just uses plain
-// inline styles — nothing here should be able to fail for the same reason the
+// inline styling-system — nothing here should be able to fail for the same reason the
 // page it's replacing did.
 export default function GlobalError({reset}: { error: Error & { digest?: string }; reset: () => void }) {
     return <html lang="en">

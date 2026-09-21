@@ -1,18 +1,18 @@
 /** @jsxImportSource react */
 import React from 'react';
 import type { Metadata } from "next";
-import "@/app/styles/globals.css";
+import "@/styling-system/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
 import {OnceProvider} from "@/components/Once.tsx";
 
 // Do not import local files with transitive imports in any of the css files
 // The only job of these files is to export CSS strings
 // TODO: Figure out an alternative with Linaria or Wyw-in-js
-import "@/app/styles/buildtime/css/typography";
-import "@/app/styles/buildtime/css/colors";
-import "@/app/styles/buildtime/css/spacing";
-import "@/app/styles/buildtime/css/radius";
-import "@/app/styles/buildtime/css/device-breakpoints";
+import "@/styling-system/build/css/typography";
+import "@/styling-system/build/css/colors";
+import "@/styling-system/build/css/spacing";
+import "@/styling-system/build/css/radius";
+import "@/styling-system/build/css/device-breakpoints";
 
 // const Quicksand = localFont({
 //     src: "../../fonts/Quicksand-VariableFont_wght.ttf",

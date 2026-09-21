@@ -3,7 +3,7 @@ import {ImageResponse} from "next/og";
 import logoPath from "@/public/logo-path.json";
 import {viewBoxString} from "@/app/utils/graphics-utils.ts";
 import {oklchToHex} from "@/app/seo-utils/color-conversion.ts";
-import {PRIMARY_CHROMA, PRIMARY_HUE, PRIMARY_LIGHTNESS} from "@/app/styles/theme/color-constants.ts";
+import {PRIMARY_CHROMA, PRIMARY_HUE, PRIMARY_LIGHTNESS} from "@/styling-system/base/color-constants.ts";
 
 export const size = {width: 180, height: 180};
 export const contentType = "image/png";

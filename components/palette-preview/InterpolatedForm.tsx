@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./PalettePreviewOverlay.module.css";
-import {GenericColorRampCustomization} from "@/app/styles/buildtime/color-system-utils/css-palette-customization.ts";
+import {GenericColorRampCustomization} from "@/styling-system/build/color-system-utils/css-palette-customization.ts";
 
 interface InterpolatedFormProps {
     value: GenericColorRampCustomization;
@@ -17,7 +17,7 @@ export function InterpolatedForm({ value}: InterpolatedFormProps) {
             <div className={styles.field}>
                 <span className={styles.fieldLabel}>Easing</span>
                 {/*<select*/}
-                {/*    className={styles.select}*/}
+                {/*    className={styling-system.select}*/}
                 {/*    value={value.easing}*/}
                 {/*    onChange={(e) => onChange({ ...value, easing: e.target.value })}*/}
                 {/*>*/}

@@ -4,7 +4,7 @@ import styles from "./PalettePreviewOverlay.module.css";
 import { LinkedPairInput } from "./LinkedPairInput";
 import { ColorTextInput } from "./ColorTextInput";
 import CubicBezierEditor from "@/components/CubicBezierEditor";
-import {TintsShadesCustomization} from "@/app/styles/buildtime/color-system-utils/css-palette-customization.ts";
+import {TintsShadesCustomization} from "@/styling-system/build/color-system-utils/css-palette-customization.ts";
 import {cubicBezierEasing} from "times-fps";
 
 interface ShadesTintsFormProps {
@@ -55,7 +55,7 @@ export function ShadesTintsForm({ value, onChange }: ShadesTintsFormProps) {
             {/*    value={value.easing}*/}
             {/*    onChange={(easing) => onChange({ ...value, easing })}*/}
             {/*    renderInput={(v, onChangeEasing) => (*/}
-            {/*        <select className={styles.select} value={v} onChange={(e) => onChangeEasing(e.target.value)}>*/}
+            {/*        <select className={styling-system.select} value={v} onChange={(e) => onChangeEasing(e.target.value)}>*/}
             {/*            {EASING_OPTIONS.map((opt) => (*/}
             {/*                <option key={opt.value} value={opt.value}>*/}
             {/*                    {opt.label}*/}

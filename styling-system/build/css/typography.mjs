@@ -14,7 +14,7 @@ export default `
         .map(([selector, rules]) =>
             `${selector} {\n\t\t${Object
                 .entries(rules)
-                .map(([property, value]) => `${CSS_PROPERTY_NAME[property]}: ${value};`).join("\n\t\t")
+                .map(([property, value]) => `${CSS_PROPERTY_NAME[/** @type {keyof typeof CSS_PROPERTY_NAME} */ (property)]}: ${value};`).join("\n\t\t")
             };\n}`
         ).join("\n\t")}
 }

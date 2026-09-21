@@ -22,7 +22,7 @@ const MAX_SCALE_RATIO = 1.260;
 // language=CSS prefix="div { --var: " suffix="; }"
 const SCALE_RATIO = `calc(${MIN_SCALE_RATIO} + ${MAX_SCALE_RATIO - MIN_SCALE_RATIO} * var(--mobile-s-to-laptop-mid))`;
 
-// Inputs of the scale. `--base-font-size` is the remaining one and lives in theme/typography.css.
+// Inputs of the scale. `--base-font-size` is the remaining one and lives in base/typography.css.
 const BASE_LINE_HEIGHT = 1.6;
 const BASE_LETTER_SPACING = 0.035;
 const LS_OFFSET = 0.01;
@@ -50,7 +50,7 @@ function createCssTypeScale() {
         const lineHeightCssToken = PrimitiveCssTokensLookup.lineHeight[token];
         const letterSpacingCssToken = PrimitiveCssTokensLookup.letterSpacing[token];
         if (token === "base") {
-            // The scale's inputs. Font size has no base value: `--base-font-size` lives in theme/typography.css.
+            // The scale's inputs. Font size has no base value: `--base-font-size` lives in base/typography.css.
             lineHeight[lineHeightCssToken] = BASE_LINE_HEIGHT;
             letterSpacing[letterSpacingCssToken] = `${BASE_LETTER_SPACING}em`;
             continue;
