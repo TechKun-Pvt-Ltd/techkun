@@ -7,13 +7,13 @@ import {anchorStyleMap, getPositionSide, OverlayPosition} from "./anchor-positio
 import {ShadesTintsForm} from "./ShadesTintsForm";
 import {InterpolatedForm} from "./InterpolatedForm";
 import {PaletteStrip} from "./PaletteStrip";
-import {processConfig} from "@/styling-system/build/color-system-utils/css-palette-generation-utils.ts";
+import {processConfig} from "@/styling-system/build/color-system/css-palette-generation-utils.ts";
 import {
     ColorRampCustomization,
     PALETTE_CUSTOMIZATION,
     PaletteCustomization
-} from "@/styling-system/build/color-system-utils/css-palette-customization.ts";
-import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/styling-system/build/color-system-utils/css-palette-generation-config.ts";
+} from "@/styling-system/build/color-system/css-palette-customization.ts";
+import {COLOR_RAMP_KEYS, ColorRampKey, ColorRampType} from "@/styling-system/build/color-system/css-palette-generation-config.ts";
 
 interface PalettePreviewOverlayProps {
     /** Where the floating overlay anchors. Defaults to center-right. */
@@ -102,7 +102,7 @@ export function PalettePreviewOverlay({ position = "center-right" }: PalettePrev
                     </div>
                 </div>
 
-                {/*<div className={styling-system.formScroll}>*/}
+                {/*<div className={styles.formScroll}>*/}
                 {/*    {activeValue.type === ColorRampType.TINTS_SHADES && (*/}
                 {/*        <ShadesTintsForm key={activeTab} value={activeValue} onChange={updateActive} />*/}
                 {/*    )}*/}
