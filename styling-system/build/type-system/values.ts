@@ -44,13 +44,13 @@ function createCssTypeScale() {
         }
 
         // language=CSS prefix="div { --var: " suffix="; }"
-        const operand = power === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${Math.abs(power)})`;
+        const operand = power === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${power})`;
         // language=CSS prefix="div { --var: " suffix="; }"
-        tokenValues["font-size"] = `round(var(--font-size-base) ${(power < 0 ? "/" : "*")} ${operand}, 1px)`;
+        tokenValues["font-size"] = `round(var(--font-size-base) * ${operand}, 1px)`;
 
         const scaleRatioInverse = Math.pow(MAX_SCALE_RATIO, -power);
-        tokenValues["line-height"] = round(1 + lhAddend * scaleRatioInverse, 1);
-        tokenValues["letter-spacing"] = `${round((BASE_LETTER_SPACING + LS_OFFSET) * scaleRatioInverse - LS_OFFSET, 4)}em`;
+        tokenValues["line-height"] = round(1 + lhAddend * scaleRatioInverse, 1e-1);
+        tokenValues["letter-spacing"] = `${round((BASE_LETTER_SPACING + LS_OFFSET) * scaleRatioInverse - LS_OFFSET, 1e-4)}em`;
     }
     return values;
 }

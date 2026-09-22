@@ -20,7 +20,7 @@ export function generateColorMixRules(
 
     for (let i = 0; i < total; i++) {
         const step = stepGenerator(i, total);
-        rules[`${propertyNameFn(i, total)}`] = `color-mix(in oklch, ${baseColor}, ${mixColor} ${round((step < 0 ? 0 : step) * 100, 4)}%)`;
+        rules[`${propertyNameFn(i, total)}`] = `color-mix(in oklch, ${baseColor}, ${mixColor} ${round((step < 0 ? 0 : step) * 100, 1e-4)}%)`;
     }
 
     return rules;
@@ -100,7 +100,7 @@ export function generateColorBlendRules(
         rules[`${propertyNameFn(0, steps)}`] = startColor;
 
     for (let i = 1; i < steps; i++) {
-        rules[`${propertyNameFn(i, steps)}`] = `color-mix(in oklch, ${startColor}, ${endColor} ${round(easing(i / steps) * 100, 4)}%)`;
+        rules[`${propertyNameFn(i, steps)}`] = `color-mix(in oklch, ${startColor}, ${endColor} ${round(easing(i / steps) * 100, 1e-4)}%)`;
     }
 
     if (includeEnds)

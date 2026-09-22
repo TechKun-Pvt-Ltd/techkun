@@ -10,7 +10,7 @@ export type ConicRevealProps = {
     radius: number;
 };
 
-const roundOff = (num: number) => round(num, 4);
+const roundOff = (num: number) => round(num, 1e-4);
 
 // const offset = Math.PI / 120;
 function conicRevealClipPath({ startAngle = 0, centerX, centerY, radius }: ConicRevealProps) {

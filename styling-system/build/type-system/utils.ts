@@ -10,7 +10,7 @@ export function toVarRefs<F extends TokenFamily = TokenFamily>(
     cssPropertyValues: {[K in CSSPropertyOf<F>]: CSSToken}
 ) {
     return ObjectStream.of(cssPropertyValues)
-        .mapEntries<CSSPropertyOf<F>, CSSValue>((_, name) => [_, `var(${name})`])
+        .mapValues<CSSValue>(name => `var(${name})`)
         .collect();
 }
 /* Merges records left to right, skipping nulls. A key defined by more than one record is a mistake

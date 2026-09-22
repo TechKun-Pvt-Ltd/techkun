@@ -8,26 +8,22 @@
    `mapKeys`/`mapEntries`/the `map*To*` methods therefore return a *sound but conservative* type - "any
    of these new keys, holding any of these possible values" - rather than a precise per-key mapping.
    `mapValues` (and `mapKeyToValue`/`mapEntryToValue`) are the exception: since keys never change, their
-   result type stays exact.
-
-   Nothing runs until `collect()` is called - each `map*`/`filter`/`flatMap` call just records another
-   step over the entries array, and `collect()` is where `Object.fromEntries` finally runs. */
+   result type stays exact. */
 
 // export type Key<T extends object> = keyof T;
 export type Key<T extends object> = T extends object ? keyof T : never;
 // export type Value<T extends object> = T[Key<T>];
 export type Value<T extends object> = T extends object ? T[keyof T] : never;
+// export type Key<T extends object> = keyof T extends never ? T extends object ? keyof T : never : keyof T;
+// export type Value<T extends object> = T[keyof T] extends never ? T extends object ? T[keyof T] : never : T[keyof T];
+
 // type Entry<T extends object> = { [K in keyof T]: [K, T[K]] }[keyof T];
 type Entry<T extends object> = { [K in keyof T]: [T extends object ? K : never, T extends object ? T[K] : never] }[keyof T];
-
 // function isPlainObject(value: unknown): value is Record<PropertyKey, unknown> {
 //     return typeof value === "object" && value !== null && !Array.isArray(value);
 // }
 
 export class ObjectStream<T extends object> {
-    // Not a constructor parameter property: this file is imported by code that runs under Node's
-    // native TypeScript stripping (see styling-system/tsconfig.json's `erasableSyntaxOnly`), which
-    // rejects parameter properties since they require codegen beyond type erasure.
     private readonly entries: Entry<T>[];
 
     private constructor(entries: Entry<T>[]) {
@@ -86,10 +82,6 @@ export class ObjectStream<T extends object> {
         return this.mapEntries((_key, value) => mapper(value));
     }
 
-    /* Flattens each entry's mapped result onto the root: a plain-object result splices its own
-       entries in place of the original one, anything else keeps the original key with the new value.
-       Because flattening can introduce keys that don't exist on `T` at all, the result key type widens
-       to `PropertyKey` - this is the one method here that can't stay exact even in principle. */
     flatMap<R extends object>(
         mapper: (key: Key<T>, value: Value<T>) => R | ObjectStream<R>
     ): ObjectStream<R extends object ? { [K in keyof R]: R[K]; } : never> {
@@ -105,24 +97,10 @@ export class ObjectStream<T extends object> {
         return new ObjectStream(result as any);
     }
 
-    /* Which keys survive a filter is data-dependent, so the result type keeps every key of `T` but
-       marks them optional rather than guessing which subset remains.
-
-       A type-guard overload (`value is NV`, narrowing the way `Array.prototype.filter`'s does) was
-       tried here and reverted: TypeScript's inference through a type predicate doesn't reach through
-       this method's generics reliably - it silently falls back to the unnarrowed overload for inline
-       arrows, with or without an explicit annotation, and for named guard functions, both concrete and
-       generic. That failure is silent (no type error, just no narrowing), which is worse than not
-       having the overload at all, so this stays a plain boolean predicate. */
     filter(predicate: (key: Key<T>, value: Value<T>) => boolean): ObjectStream<Partial<T>> {
         return new ObjectStream(this.entries.filter(([key, value]) => predicate(key, value)) as any);
     }
 
-    /* Reorders entries without adding, removing, or retyping any key or value, so the result stays
-       ObjectStream<T> exactly - unlike filter, which can't make that guarantee. Entry order matters
-       because collect()'s Object.fromEntries preserves insertion order for string keys (integer-like
-       string keys are the one exception: JS always lists those first, ascending, regardless of this
-       method). */
     sort(comparator: (a: Entry<T>, b: Entry<T>) => number): ObjectStream<T> {
         return new ObjectStream([...this.entries].sort(comparator));
     }

@@ -182,7 +182,7 @@ export default function LogoButton(props: Partial<React.ComponentProps<typeof Li
 		 	}}
 		>
 			<motion.span layout="size">
-				<TechKunLogo style={{ display: "block", filter: "drop-shadow(0 2px 4px var(--background))" }} />
+				<TechKunLogo style={{ display: "block" }} />
 			</motion.span>
 			<motion.span css={disappearingTextContainerCss}>
 				<motion.span
