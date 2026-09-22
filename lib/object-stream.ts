@@ -118,6 +118,15 @@ export class ObjectStream<T extends object> {
         return new ObjectStream(this.entries.filter(([key, value]) => predicate(key, value)) as any);
     }
 
+    /* Reorders entries without adding, removing, or retyping any key or value, so the result stays
+       ObjectStream<T> exactly - unlike filter, which can't make that guarantee. Entry order matters
+       because collect()'s Object.fromEntries preserves insertion order for string keys (integer-like
+       string keys are the one exception: JS always lists those first, ascending, regardless of this
+       method). */
+    sort(comparator: (a: Entry<T>, b: Entry<T>) => number): ObjectStream<T> {
+        return new ObjectStream([...this.entries].sort(comparator));
+    }
+
     collect(): T {
         return Object.fromEntries(this.entries) as T;
     }

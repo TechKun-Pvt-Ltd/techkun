@@ -1,7 +1,7 @@
 import {toVarRefs} from "./utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import type {CSSToken, CSSValue, PrimitiveMapping, PrimitiveValues, TypeTokensLayer} from "./types.ts";
-import type {CSSPropertyOf, CSSPropertyValues, TokenFamily, TokenOf} from "./schema.ts";
+import type {CSSProperty, CSSPropertyOf, CSSPropertyValues, TokenFamily, TokenOf} from "./schema.ts";
 
 export interface PrimitiveTypeTokensLayer extends TypeTokensLayer {
     resolvePrimitiveMapping<PM extends Partial<PrimitiveMapping>>(propertyMapping: PM): { [CP in CSSPropertyOf<keyof PM & TokenFamily>]: CSSValue; };
@@ -30,6 +30,7 @@ function createPrimitiveCssTokensLookup(primitiveValues: PrimitiveValues): Primi
         .mapValues(valuesMapper)
         .collect();
 }
+const SORT_ORDER: CSSProperty[] = ["font-size", "line-height", "letter-spacing", "font-weight"];
 export default function getPrimitiveLayer(primitiveValues: PrimitiveValues): PrimitiveTypeTokensLayer {
     const primitiveCssTokensLookup = createPrimitiveCssTokensLookup(primitiveValues);
     function lookupPrimitiveCssTokens<F extends TokenFamily>(property: F, primitiveToken: TokenOf<F>): { [CP in CSSPropertyOf<F>]: CSSToken; } {
@@ -43,18 +44,29 @@ export default function getPrimitiveLayer(primitiveValues: PrimitiveValues): Pri
                 .reduce((a, b) => Object.assign(a, b), {} as CSSPropertyValues);
         },
         getCSSTokenDeclarations() {
+            const groupedByCssProperty = Object.fromEntries(SORT_ORDER.map(p => [p, []] as [CSSProperty, CSSToken[]])) as { [P in CSSProperty]: CSSToken[] };
+
             const flatMapper = (
                 property: TokenFamily,
                 tokenGroupedValues: PrimitiveValues[TokenFamily]
             ) => ObjectStream
                 .of(tokenGroupedValues)
-                .flatMap((primitiveToken, cssPropertyValues) => ObjectStream
-                    .of(cssPropertyValues)
-                    .mapKeys(cssProperty => lookupPrimitiveCssTokens(property, primitiveToken)[cssProperty])
-                );
-            return ObjectStream.of(primitiveValues)
+                .flatMap((primitiveToken, cssPropertyValues) => {
+                    const cssTokensByCssProperty = lookupPrimitiveCssTokens(property, primitiveToken);
+                    SORT_ORDER.forEach(p => cssTokensByCssProperty[p] && groupedByCssProperty[p].push(cssTokensByCssProperty[p]));
+
+                    return ObjectStream
+                        .of(cssPropertyValues)
+                        .mapKeys(cssProperty => cssTokensByCssProperty[cssProperty])
+                });
+            const tokenDeclarations = ObjectStream.of(primitiveValues)
                 .flatMap(flatMapper)
                 .collect();
+
+            return Object.fromEntries(SORT_ORDER
+                .flatMap(p => groupedByCssProperty[p])
+                .map(cssToken => [cssToken, tokenDeclarations[cssToken]])
+            );
         },
         getCSSRules() {
             return ObjectStream.of(primitiveCssTokensLookup.weight)

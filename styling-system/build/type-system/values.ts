@@ -43,6 +43,7 @@ function createCssTypeScale() {
             continue;
         }
 
+        // language=CSS prefix="div { --var: " suffix="; }"
         const operand = power === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${Math.abs(power)})`;
         // language=CSS prefix="div { --var: " suffix="; }"
         tokenValues["font-size"] = `round(var(--font-size-base) ${(power < 0 ? "/" : "*")} ${operand}, 1px)`;
