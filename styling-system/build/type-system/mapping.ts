@@ -47,6 +47,7 @@ export const SemanticToPrimitiveMap = Object.fromEntries(Object
         .map(([size, tokens]) => [`type-${role}-${size}`, tokens])
     )
 ) as SemanticToPrimitiveMap;
+export const SemanticTokens = Object.keys(SemanticToPrimitiveMap) as SemanticToken[];
 
 
 export type ContextualToSemanticMap = typeof ContextualToSemanticMap;

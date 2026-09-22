@@ -10,15 +10,16 @@
    `mapValues` (and `mapKeyToValue`/`mapEntryToValue`) are the exception: since keys never change, their
    result type stays exact. */
 
-// export type Key<T extends object> = keyof T;
-export type Key<T extends object> = T extends object ? keyof T : never;
-// export type Value<T extends object> = T[Key<T>];
-export type Value<T extends object> = T extends object ? T[keyof T] : never;
+export type Key<T extends object> = keyof T;
+// export type Key<T extends object> = T extends object ? keyof T : never;
+export type Value<T extends object> = T[Key<T>];
+// export type Value<T extends object> = T extends object ? T[keyof T] : never;
 // export type Key<T extends object> = keyof T extends never ? T extends object ? keyof T : never : keyof T;
 // export type Value<T extends object> = T[keyof T] extends never ? T extends object ? T[keyof T] : never : T[keyof T];
 
-// type Entry<T extends object> = { [K in keyof T]: [K, T[K]] }[keyof T];
-type Entry<T extends object> = { [K in keyof T]: [T extends object ? K : never, T extends object ? T[K] : never] }[keyof T];
+type Entry<T extends object> = { [K in keyof T]: [K, T[K]] }[keyof T];
+// type Entry<T extends object> = { [K in keyof T]: [T extends object ? K : never, T extends object ? T[K] : never] }[keyof T];
+
 // function isPlainObject(value: unknown): value is Record<PropertyKey, unknown> {
 //     return typeof value === "object" && value !== null && !Array.isArray(value);
 // }

@@ -2,7 +2,7 @@
 // token of the family sets.
 import type {CSSValue} from "./types.ts";
 
-const Schema = {
+export const Schema = {
     typeSize: {
         tokens: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
         cssProperties: ["font-size", "line-height", "letter-spacing"]
@@ -17,6 +17,8 @@ const Schema = {
         cssProperties: readonly string[];
     }
 };
+export const CSSProperties: CSSProperty[] = Object.values(Schema)
+    .flatMap(family => family.cssProperties);
 
 type UnwrapUnionArray<A extends readonly any[]> = A extends readonly any[] ? A[number] : never;
 

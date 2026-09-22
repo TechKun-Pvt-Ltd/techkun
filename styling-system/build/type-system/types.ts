@@ -12,11 +12,6 @@ export type CSSRules = {
     };
 };
 
-export interface TypeTokensLayer {
-    getCSSTokenDeclarations(): CSSTokenDeclarations | null;
-    getCSSRules(): CSSRules | null;
-}
-
 export type PrimitiveValues = {
     [F in TokenFamily]: {
         [T in TokenOf<F>]: CSSPropertyValues<F>;
