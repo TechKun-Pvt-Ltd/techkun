@@ -1,40 +1,38 @@
-import {
-    mapObjectEntries, mapObjectValues, toVarRefs
-} from "./shared.ts";
-import type {
-    CSSPropertiesOf, CSSProperty,
-    CSSPropertyValues,
-    PrimitiveMapping,
-    PrimitiveValues,
-    TokenFamily,
-    TokenOf, TypeTokensLayer
-} from "./config.ts";
-import type {CSSToken, CSSValue} from "./types.ts";
+import {toVarRefs} from "./utils.ts";
+import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {CSSToken, CSSValue, PrimitiveMapping, PrimitiveValues, TypeTokensLayer} from "./types.ts";
+import type {CSSPropertyOf, CSSPropertyValues, TokenFamily, TokenOf} from "./schema.ts";
 
 export interface PrimitiveTypeTokensLayer extends TypeTokensLayer {
-    resolvePrimitiveMapping<PM extends Partial<PrimitiveMapping>>(propertyMapping: PM): { [CP in CSSPropertiesOf<keyof PM & TokenFamily>]: CSSValue; };
+    resolvePrimitiveMapping<PM extends Partial<PrimitiveMapping>>(propertyMapping: PM): { [CP in CSSPropertyOf<keyof PM & TokenFamily>]: CSSValue; };
+}
+
+type PrimitiveCssTokensLookup = {
+    [F in TokenFamily]: {
+        [T in TokenOf<F>]: {
+            [CP in CSSPropertyOf<F>]: CSSToken;
+        };
+    };
+};
+function createPrimitiveCssTokensLookup(primitiveValues: PrimitiveValues): PrimitiveCssTokensLookup {
+    const valuesMapper = (tokenGroupedValues: PrimitiveValues[TokenFamily]) => ObjectStream
+        .of(tokenGroupedValues)
+        .mapEntryToValue((
+            primitiveToken,
+            cssPropertyValues
+        ) => ObjectStream
+            .of(cssPropertyValues)
+            .mapKeyToValue<CSSToken>(cssProperty => `--${cssProperty}-${primitiveToken}`)
+            .collect()
+        )
+        .collect();
+    return ObjectStream.of(primitiveValues)
+        .mapValues(valuesMapper)
+        .collect();
 }
 export default function getPrimitiveLayer(primitiveValues: PrimitiveValues): PrimitiveTypeTokensLayer {
-    const primitiveCssTokensLookup: {
-        [F in TokenFamily]: {
-            [T in TokenOf<F>]: {
-                [CP in CSSPropertiesOf<F>]: CSSToken;
-            };
-        };
-    } = mapObjectValues(
-        primitiveValues,
-        tokenGroupedValues => mapObjectEntries(
-            tokenGroupedValues,
-            <P extends TokenFamily>(primitiveToken: TokenOf<P>, cssPropertyValues: CSSPropertyValues<P>) => [
-                primitiveToken,
-                mapObjectEntries(
-                    cssPropertyValues,
-                    cssProperty => [cssProperty, `--${cssProperty}-${primitiveToken}` as CSSToken]
-                )
-            ]
-        )
-    );
-    function lookupPrimitiveCssTokens<P extends TokenFamily>(property: P, primitiveToken: TokenOf<P>): { [CP in CSSPropertiesOf<P>]: CSSToken; } {
+    const primitiveCssTokensLookup = createPrimitiveCssTokensLookup(primitiveValues);
+    function lookupPrimitiveCssTokens<F extends TokenFamily>(property: F, primitiveToken: TokenOf<F>): { [CP in CSSPropertyOf<F>]: CSSToken; } {
         return primitiveCssTokensLookup[property][primitiveToken];
     }
     return {
@@ -44,28 +42,24 @@ export default function getPrimitiveLayer(primitiveValues: PrimitiveValues): Pri
                 .map(toVarRefs)
                 .reduce((a, b) => Object.assign(a, b), {} as CSSPropertyValues);
         },
-        getCSSDeclarations() {
-            return Object.fromEntries(Object
-                .entries(primitiveValues)
-                .flatMap(([property, tokenGroupedValues]) => Object
-                    .entries(tokenGroupedValues)
-                    .flatMap(([primitiveToken, cssPropertyValues]) => Object
-                        .entries(cssPropertyValues)
-                        .map(([cssProperty, cssValue]) => [
-                            lookupPrimitiveCssTokens(property as TokenFamily, primitiveToken as TokenOf<TokenFamily>)[cssProperty as CSSProperty],
-                            cssValue
-                        ] as [CSSToken, CSSValue])
-                    )
-                )
-            );
+        getCSSTokenDeclarations() {
+            const flatMapper = (
+                property: TokenFamily,
+                tokenGroupedValues: PrimitiveValues[TokenFamily]
+            ) => ObjectStream
+                .of(tokenGroupedValues)
+                .flatMap((primitiveToken, cssPropertyValues) => ObjectStream
+                    .of(cssPropertyValues)
+                    .mapKeys(cssProperty => lookupPrimitiveCssTokens(property, primitiveToken)[cssProperty])
+                );
+            return ObjectStream.of(primitiveValues)
+                .flatMap(flatMapper)
+                .collect();
         },
         getCSSRules() {
-            return mapObjectEntries(
-                primitiveCssTokensLookup.weight,
-                (token, propertyName) => [
-                    `.font-${token}`, toVarRefs<"weight">(propertyName)
-                ]
-            );
+            return ObjectStream.of(primitiveCssTokensLookup.weight)
+                .mapEntries((token, propertyName) => [`.font-${token}`, toVarRefs<"weight">(propertyName)])
+                .collect();
         }
     };
 };
