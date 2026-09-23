@@ -1,6 +1,5 @@
 // This module is the parser.
 import {declarations, registrations, rules, themes} from "../color-system/index.ts";
-import {legacyAliases} from "../color-system/legacy-aliases.ts";
 
 /** @param {Record<string, string | number>} record @param {string} indent */
 const printDeclarations = (record, indent) => Object.entries(record)
@@ -16,7 +15,6 @@ ${Object.entries(registrations)
 @layer base {
     :root {
         ${printDeclarations(declarations, "\t\t")}
-        ${printDeclarations(legacyAliases, "\t\t")}
     }
     ${Object.values(themes)
         .map(({selector, colorScheme, declarations}) =>
