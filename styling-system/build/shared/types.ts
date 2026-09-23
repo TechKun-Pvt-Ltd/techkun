@@ -8,3 +8,9 @@ export type CSSRules = {
         [cssProperty: string]: CSSValue;
     };
 };
+// The descriptor block of an `@property` at-rule, for custom properties that need to be registered.
+export type CSSPropertyRegistration = {
+    syntax: string;
+    inherits: boolean;
+    initialValue: CSSValue;
+};
