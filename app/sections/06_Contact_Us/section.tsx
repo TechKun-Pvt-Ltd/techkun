@@ -172,15 +172,18 @@ function ContactOptions() {
             inherits: true;
             initial-value: 0;
         }
-        color: var(--color-text-btn-glow);
+        --_ring-1: var(--color-brand-3-300);
+        --_ring-2: var(--color-brand-2);
+        --_ring-3: var(--color-brand-1-700);
+        color: var(--color-text-primary);
         padding-block: var(--space-3);
         border-radius: var(${brRadiusProp});
         width: 100%;
         white-space: nowrap;
 
         &::before {
-            border: 1px solid var(--color-border-btn-glow);
-            background-color: var(--color-bg-btn-glow);
+            border: 1px solid var(--color-border-default);
+            background-color: var(--color-bg-canvas);
         }
         &::after {
             inset: calc(-1 * var(${outsetProp}));
@@ -189,14 +192,14 @@ function ContactOptions() {
             padding: 1px;
             background: padding-box conic-gradient(
                 from var(--gradient-angle) at 50% 50%,
-                var(--color-bg-btn-glow-ring-1),
-                var(--color-bg-btn-glow-ring-2),
-                var(--color-bg-btn-glow-ring-3),
-                oklch(from var(--color-bg-btn-glow-ring-3) l c h / 0.25) 25%,
-                oklch(from var(--color-bg-btn-glow-ring-3) l c h / 0.25) 75%,
-                var(--color-bg-btn-glow-ring-3),
-                var(--color-bg-btn-glow-ring-2),
-                var(--color-bg-btn-glow-ring-1)
+                var(--_ring-1),
+                var(--_ring-2),
+                var(--_ring-3),
+                oklch(from var(--_ring-3) l c h / 0.25) 25%,
+                oklch(from var(--_ring-3) l c h / 0.25) 75%,
+                var(--_ring-3),
+                var(--_ring-2),
+                var(--_ring-1)
             ) 50% / 100%;
             mask: content-box linear-gradient(#000 0 0) subtract,
                 border-box linear-gradient(#000 0 0);
@@ -247,16 +250,19 @@ function ShimmerText(
 ) {
     return <span
         css={css`
+            --_base: var(--color-text-accent);
+            --_highlight: var(--color-brand-1-100);
+            --_peak: var(--color-brand-1-50);
             color: transparent;
             background: linear-gradient(
                 45deg,
-                var(--color-text-shimmer-text) 0%,
-                var(--color-text-shimmer-text) 40%,
-                var(--color-text-shimmer-text-highlight),
-                var(--color-text-shimmer-text-peak),
-                var(--color-text-shimmer-text-highlight),
-                var(--color-text-shimmer-text) 60%,
-                var(--color-text-shimmer-text) 100%
+                var(--_base) 0%,
+                var(--_base) 40%,
+                var(--_highlight),
+                var(--_peak),
+                var(--_highlight),
+                var(--_base) 60%,
+                var(--_base) 100%
             ) 100% center / 400% 100%;
             background-clip: text;
             cursor: default;

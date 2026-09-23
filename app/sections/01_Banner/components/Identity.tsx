@@ -143,7 +143,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 	>
 		<span className="pointer" css={css`
 			position: absolute;
-			color: var(--color-text-identity-pointer);
+			color: var(--color-neutral-100);
 			--pull-factor: 0.5;
 			--rotation-angle: -30deg;
 			@supports ${supportsQuery.shape} {
@@ -244,7 +244,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				inset: 0 0 0 var(--x-offset);
 				height: auto;
 				width: 100%;
-				color: var(--color-text-keyword-unlit);
+				color: var(--_keyword-unlit);
 			}
 
 			svg.bulb-icon, svg.dots circle {
@@ -275,13 +275,13 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 						${lightUpColorProp}: var(--color-text-primary);
 					}
 					&:nth-of-type(2) {
-						${lightUpColorProp}: var(--color-fill-identity-dot-1);
+						${lightUpColorProp}: var(--color-brand-1-300);
 					}
 					&:nth-of-type(3) {
-						${lightUpColorProp}: var(--color-fill-identity-dot-2);
+						${lightUpColorProp}: var(--color-brand-2-300);
 					}
 					&:nth-of-type(4) {
-						${lightUpColorProp}: var(--color-fill-identity-dot-3);
+						${lightUpColorProp}: var(--color-brand-3-300);
 					}
 					--pull-factor: calc(0.25 + pow(1 - var(--i) / ${DOT_COUNT}, 2) * 0.75);
 				}

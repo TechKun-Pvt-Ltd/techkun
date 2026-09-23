@@ -67,23 +67,26 @@ export default function Banner() {
 	const keywordCss = css`
         font-size: 1.4em;
         line-height: 1.4;
-		color: var(--color-text-keyword);
+		color: var(--color-neutral-300);
 	`;
 
 	const mobileBrCss = css`@media ${BREAKPOINT_QUERY} { display: none; }`;
 	const tabletBrCss = css`display: none; @media ${BREAKPOINT_QUERY} { display: revert; }`;
 
 	return <section ref={scopeRef} css={css`
+		--_glow: oklch(from var(--color-brand-2-800) l c h / 0.25);
+		// The hero keywords' color before they light up, shared by Beauty, Precision and Identity.
+		--_keyword-unlit: var(--color-neutral-700);
 		justify-items: center;
 		background:
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% -50%,
-				var(--color-bg-banner-glow),
+				var(--_glow),
 				transparent var(--gradient-progress)
 			),
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% 145%,
-				var(--color-bg-banner-glow),
+				var(--_glow),
 				transparent var(--gradient-progress)
 			);
 		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease-out both;

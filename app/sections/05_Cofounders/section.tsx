@@ -84,7 +84,7 @@ const people: {
 //
 //     const viewBoxHeight = 32;
 //
-//     const color = active ? "var(--color-bg-slide-indicator-active-end)" : "var(--color-bg-slide-indicator)";
+//     const color = active ? "var(--color-brand-2-400)" : "var(--color-neutral-tinted-200)";
 //
 //     return <svg xmlns="http://www.w3.org/2000/svg" height={size} viewBox={`0 0 ${headWidth} ${viewBoxHeight}`} fill="none" overflow="visible">
 //         <circle cx={headRadius} cy={headRadius} r={headRadius} fill={color} />
@@ -221,8 +221,8 @@ export default function Cofounders() {
                                             border: "none",
                                             padding: 0,
                                             background: iconIndex === personIndex ?
-                                                "linear-gradient(to right, var(--color-bg-slide-indicator-active-start), var(--color-bg-slide-indicator-active-end))" :
-                                                "var(--color-bg-slide-indicator)",
+                                                "linear-gradient(to right, var(--color-brand-1-400), var(--color-brand-2-400))" :
+                                                "var(--color-neutral-tinted-200)",
                                             cursor: "pointer"
                                         } as React.CSSProperties}
                                         aria-label={`Go to person ${iconIndex + 1} of ${people.length}`}

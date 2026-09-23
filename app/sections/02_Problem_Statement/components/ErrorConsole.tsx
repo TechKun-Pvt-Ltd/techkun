@@ -55,7 +55,7 @@ export default function ErrorConsole() {
 			transparent
 		);
         font-family: monospace;
-		color: var(--color-text-error-console);
+		color: var(--color-neutral-tinted-700);
 		height: 100%;
 	`}>
 		<h2 className="sr-only">

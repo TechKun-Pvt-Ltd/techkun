@@ -27,7 +27,7 @@ export default function Footer() {
                 background: linear-gradient(
                     to right,
                     transparent,
-                    var(--color-bg-footer-divider) 45% 55%,
+                    var(--color-border-accent) 45% 55%,
                     transparent
                 );
             }
@@ -35,7 +35,7 @@ export default function Footer() {
                 height: calc(2 * var(--space-18));
                 transform: translateY(-50%);
                 background: radial-gradient(
-                    var(--color-bg-footer-glow),
+                    oklch(from var(--color-brand-2-900) l c h / 0.25),
                     transparent 75%
                 );
             }

@@ -22,7 +22,7 @@ export default function ProblemStatement() {
 			{/*	column-gap: clamp(32px, 5vw, 64px);*/}
 			{/*	p {*/}
 			{/*		font-family: monospace;*/}
-			{/*		color: var(--color-text-keyword-unlit);*/}
+			{/*		color: var(--color-neutral-700);*/}
 			{/*	}*/}
 			{/*`}>*/}
 			{/*	<p className="type-body-lg">02:11:42.881</p>*/}

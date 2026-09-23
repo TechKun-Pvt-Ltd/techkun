@@ -87,7 +87,7 @@ export default function OurPrinciples() {
 								width: 200vw;
 								margin-inline: -50vw;
 							`}>
-								<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="10" stroke="var(--color-stroke-revolution-wheel-track)" strokeDasharray="16" />
+								<line x1="0%" y1="50%" x2="100%" y2="50%" strokeWidth="10" stroke="var(--color-neutral-700)" strokeDasharray="16" />
 							</svg>
 							<RevolutionWheel angle={angle} angleRangeStart={ANGLE_RANGE_START} />
 						</div>

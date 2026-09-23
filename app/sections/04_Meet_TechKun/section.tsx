@@ -24,7 +24,7 @@ const sectionCss = css`
         background: radial-gradient(
             ellipse var(--page-max-width) 75% at 50% 50%,
             transparent 12.5%,
-            var(--color-bg-meet-glow) 62.5%,
+            var(--color-brand-2-950) 62.5%,
             transparent
         );
         mask: linear-gradient(
@@ -51,14 +51,15 @@ const graphicsContainerCss = css`
     position: relative;
 `;
 const starsContainerCss = css`
+    --_star: var(--color-neutral-tinted-50);
     position: absolute;
-    filter: drop-shadow(0 0 3px var(--color-bg-star));
+    filter: drop-shadow(0 0 3px var(--_star));
 
     .star {
         position: absolute;
         width: 3px;
         height: 3px;
-        background: var(--color-bg-star);
+        background: var(--_star);
         border-radius: 50%;
         transform-origin: center;
 

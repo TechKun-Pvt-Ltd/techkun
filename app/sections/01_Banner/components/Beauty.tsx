@@ -42,12 +42,12 @@ export default forwardRef<BeautyRef, React.ComponentPropsWithoutRef<typeof motio
 			color: transparent;
 			background-image: radial-gradient(
 				circle at calc(var(--center-x) * 100%) calc(var(--center-y) * 100%),
-				var(--color-bg-beauty-highlight) calc(var(--gradient-progress) / 4),
+				var(--color-brand-2-300) calc(var(--gradient-progress) / 4),
 				var(--color-brand-2) calc(var(--gradient-progress) / 4),
 				var(--color-brand-1) var(--gradient-progress),
 				transparent calc(var(--gradient-progress) + 25%)
 			);
-			background-color: var(--color-text-keyword-unlit);
+			background-color: var(--_keyword-unlit);
 			background-clip: text;
 			animation: ${gradientFill} ${duration}s ${delay}s ease-out both;
 			animation-play-state: paused;
