@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Footer() {
     return <footer css={css`
-        border-top: 1px solid var(--border);
+        border-top: 1px solid var(--color-border-default);
         grid-template-rows: 1fr max-content;
     `}>
         <div className="pt-18 pb-12" css={css`
@@ -27,7 +27,7 @@ export default function Footer() {
                 background: linear-gradient(
                     to right,
                     transparent,
-                    var(--secondary-900) 45% 55%,
+                    var(--color-bg-footer-divider) 45% 55%,
                     transparent
                 );
             }
@@ -35,7 +35,7 @@ export default function Footer() {
                 height: calc(2 * var(--space-18));
                 transform: translateY(-50%);
                 background: radial-gradient(
-                    oklch(from var(--secondary-900) l c h / 0.25),
+                    var(--color-bg-footer-glow),
                     transparent 75%
                 );
             }
@@ -58,21 +58,21 @@ export default function Footer() {
 					font-weight: var(--font-weight-medium);
                     flex-grow: 1;
                     & > a {
-                        color: var(--foreground);
+                        color: var(--color-text-primary);
                         text-decoration: none;
                     }
                 `}>
                     <Link href="/privacy" className="mr-5">Privacy</Link>
                     <Link href="/terms">Terms</Link>
                 </p>
-                <p style={{color: 'var(--muted-foreground)'}}>© 2026 TechKun. All rights reserved.</p>
+                <p style={{color: 'var(--color-text-tertiary)'}}>© 2026 TechKun. All rights reserved.</p>
             </div>
         </div>
         <div css={css`
             grid-column: 1 / -1;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--color-border-default);
             text-align: center;
-            color: var(--neutral-500);
+            color: var(--color-text-tertiary);
         `}>
             <p className="type-body-sm font-medium my-2">This site is made by humans.</p>
         </div>

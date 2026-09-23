@@ -115,7 +115,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 		{...props}
 		css={css`
 			position: relative;
-			color: var(--foreground);
+			color: var(--color-text-primary);
 		`}
 		ref={containerRef}
 	>
@@ -186,8 +186,8 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			<span
 				className="clipped"
 				css={css`
-					color: var(--neutral-700);
-					-webkit-text-stroke: 2px var(--neutral-700);
+					color: var(--color-text-keyword-unlit);
+					-webkit-text-stroke: 2px var(--color-text-keyword-unlit);
 				`}
 			>precision</span>
 
@@ -195,7 +195,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				xmlns="http://www.w3.org/2000/svg"
 				className="clipped"
 			>
-				<g fill="var(--neutral-600)" css={css`
+				<g fill="var(--color-fill-precision-label)" css={css`
                     text {
                         --font-index: calc(-2 + 2 * var(--mobile-s-to-laptop-mid));
                     }
@@ -217,7 +217,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 					>baseline</text>
 				</g>
 				<g
-					stroke="var(--neutral-400)"
+					stroke="var(--color-stroke-precision-guide)"
 					strokeWidth="1"
 				>
 					<line
@@ -270,7 +270,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				stroke="var(--neutral-400)"
+				stroke="var(--color-stroke-precision-guide)"
 				strokeWidth="2"
 				strokeDasharray="4%"
 				className="masked"
@@ -295,7 +295,7 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 			<svg xmlns="http://www.w3.org/2000/svg">
 				<circle
 					cx="0" cy="0"
-					stroke="var(--neutral-200)" strokeWidth="2.5%"
+					stroke="var(--color-stroke-precision-cursor)" strokeWidth="2.5%"
 					css={css`
 						r: var(--r);
 						transition: var(--transition);
@@ -305,6 +305,6 @@ export default forwardRef<PrecisionRef, React.ComponentPropsWithoutRef<"span">>(
 				/>
 			</svg>
 		</motion.span>
-		precisi<span style={{color: "var(--neutral-700)"}}>o</span>n
+		precisi<span style={{color: "var(--color-text-keyword-unlit)"}}>o</span>n
 	</span>;
 });

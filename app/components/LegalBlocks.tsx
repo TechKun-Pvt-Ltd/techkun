@@ -16,9 +16,9 @@ const HEADING_CLASS_NAME: Record<3 | 4 | 5, string> = {
     5: "type-body-md"
 };
 const HEADING_STYLE: Record<3 | 4 | 5, React.CSSProperties> = {
-    3: {color: "var(--foreground)"},
-    4: {color: "var(--foreground)"},
-    5: {color: "var(--foreground)", fontWeight: "var(--font-weight-semibold)"}
+    3: {color: "var(--color-text-primary)"},
+    4: {color: "var(--color-text-primary)"},
+    5: {color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)"}
 };
 
 export default function LegalBlocks({blocks}: { blocks: LegalBlock[] }) {

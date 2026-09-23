@@ -7,12 +7,12 @@ import Link from "next/link";
 const summaryCardCss = css`
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
     border-radius: var(--radius-lg);
-    background: var(--muted);
+    background: var(--color-bg-surface);
 
     & p {
-        color: var(--muted-foreground);
+        color: var(--color-text-secondary);
     }
 `;
 

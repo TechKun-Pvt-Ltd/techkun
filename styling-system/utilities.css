@@ -25,8 +25,8 @@
 }
 
 .section-subtitle {
-    color: var(--secondary-neutral-100);
+    color: var(--color-text-secondary);
 }
 .item-subtitle {
-    color: var(--secondary-neutral-300);
+    color: var(--color-text-secondary);
 }

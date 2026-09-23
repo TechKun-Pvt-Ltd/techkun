@@ -55,7 +55,7 @@ export default function ErrorConsole() {
 			transparent
 		);
         font-family: monospace;
-		color: var(--secondary-neutral-700);
+		color: var(--color-text-error-console);
 		height: 100%;
 	`}>
 		<h2 className="sr-only">
@@ -69,7 +69,7 @@ export default function ErrorConsole() {
                 grid-template-columns: auto 1fr;
 				column-gap: clamp(24px, 5vw, 64px);
 				.highlighted {
-					color: var(--foreground);
+					color: var(--color-text-primary);
 				}
 				span {
 					min-width: 0;

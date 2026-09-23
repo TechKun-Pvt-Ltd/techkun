@@ -31,10 +31,10 @@ export default function Shared() {
         >
             <defs>
                 <linearGradient id={BR_BRAND_GRADIENT_ID} x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="var(--primary-500)" />
-                    <stop offset="50%" stopColor="var(--primary-500)" />
-                    <stop offset="70%" stopColor="var(--secondary-500)" />
-                    <stop offset="100%" stopColor="var(--tertiary-500)" />
+                    <stop offset="0%" stopColor="var(--color-brand-1)" />
+                    <stop offset="50%" stopColor="var(--color-brand-1)" />
+                    <stop offset="70%" stopColor="var(--color-brand-2)" />
+                    <stop offset="100%" stopColor="var(--color-brand-3)" />
                 </linearGradient>
                 <path id={TECHKUN_LOGO_PATH_ID} d={logoPath.value} />
                 <path

@@ -34,17 +34,17 @@ const socialLinksGroupCss = css`
     border-radius: var(--radius-full);
     corner-shape: superellipse(1.1);
 
-    background: oklch(from var(--secondary-950) l c h / 0.96);
+    background: var(--color-bg-toolbar);
     backdrop-filter: blur(4px);
-    border: 1px solid var(--secondary-900);
+    border: 1px solid var(--color-border-toolbar);
     a {
         padding: var(--space-1);
-        color: var(--secondary-neutral-400);
+        color: var(--color-text-toolbar);
     }
     .divider {
         width: 1px;
         height: 1em;
-        background: var(--secondary-900);
+        background: var(--color-bg-toolbar-divider);
     }
 `;
 

@@ -4,12 +4,12 @@ import ErrorConsole from "./components/ErrorConsole";
 
 export default function ProblemStatement() {
 	return <section css={css`
-		border-block: 1px solid var(--border);
+		border-block: 1px solid var(--color-border-default);
 	`}>
 		<div className="pt-12 pb-16" css={css`
             grid-column: breakout;
             padding-inline: var(--page-padding);
-            border-inline: 1px solid var(--border);
+            border-inline: 1px solid var(--color-border-default);
             min-height: 0;
             margin-inline-start: calc(-1 * var(--space-20) + var(--space-20) * var(--mobile-s-to-laptop-mid));
             display: flex;
@@ -22,7 +22,7 @@ export default function ProblemStatement() {
 			{/*	column-gap: clamp(32px, 5vw, 64px);*/}
 			{/*	p {*/}
 			{/*		font-family: monospace;*/}
-			{/*		color: var(--neutral-700);*/}
+			{/*		color: var(--color-text-keyword-unlit);*/}
 			{/*	}*/}
 			{/*`}>*/}
 			{/*	<p className="type-body-lg">02:11:42.881</p>*/}
@@ -61,7 +61,7 @@ export default function ProblemStatement() {
 					{/*	width="min(100%, 384px)"*/}
 					{/*	height="max-content"*/}
 					{/*	inset="192px auto auto calc(24% * var(--mobile-l-to-laptop))"*/}
-					{/*	backgroundColor="oklch(from var(--background) 0.14 c h)"*/}
+					{/*	backgroundColor="oklch(from var(--color-bg-canvas) 0.14 c h)"*/}
 					{/*	titleBar={*/}
 					{/*		<div css={css`*/}
 					{/*			font-weight: var(--font-weight-bold);*/}

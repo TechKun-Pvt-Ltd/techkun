@@ -20,7 +20,7 @@ const transition: {
 };
 
 const buttonCss = css`
-    color: var(--secondary-50);
+    color: var(--color-text-btn-primary);
     background: transparent;
     padding-block: 0.75rem;
     padding-inline: 1.6em 1.4em;
@@ -30,7 +30,7 @@ const buttonCss = css`
     //font-weight: var(--font-weight-semibold);
 
     &::before {
-        background: var(--secondary-900) padding-box;
+        background: var(--color-bg-btn-primary) padding-box;
     }
     //&::before, &::after {
     //    border: 1px solid transparent;

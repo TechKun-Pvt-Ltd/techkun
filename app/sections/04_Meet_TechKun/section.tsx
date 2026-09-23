@@ -24,7 +24,7 @@ const sectionCss = css`
         background: radial-gradient(
             ellipse var(--page-max-width) 75% at 50% 50%,
             transparent 12.5%,
-            var(--secondary-950) 62.5%,
+            var(--color-bg-meet-glow) 62.5%,
             transparent
         );
         mask: linear-gradient(
@@ -52,13 +52,13 @@ const graphicsContainerCss = css`
 `;
 const starsContainerCss = css`
     position: absolute;
-    filter: drop-shadow(0 0 3px var(--secondary-neutral-50));
+    filter: drop-shadow(0 0 3px var(--color-bg-star));
 
     .star {
         position: absolute;
         width: 3px;
         height: 3px;
-        background: var(--secondary-neutral-50);
+        background: var(--color-bg-star);
         border-radius: 50%;
         transform-origin: center;
 
@@ -105,10 +105,10 @@ const animatedLogoCss = css`
     }
     @keyframes shine {
         0%, 100% {
-            filter: drop-shadow(0px 0px 0px var(--primary-color)) brightness(1);
+            filter: drop-shadow(0px 0px 0px var(--color-brand-1)) brightness(1);
         }
         49%, 51% {
-            filter: drop-shadow(0px 0px 4px var(--primary-color)) brightness(3);
+            filter: drop-shadow(0px 0px 4px var(--color-brand-1)) brightness(3);
         }
     }
     animation:

@@ -6,15 +6,15 @@ import Link from "next/link";
 const buttonCss = css`
     display: inline-block;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    color: var(--foreground);
+    border: 1px solid var(--color-border-default);
+    color: var(--color-text-primary);
     text-decoration: none;
     font-weight: var(--font-weight-medium);
     transition: background-color 0.15s ease, border-color 0.15s ease;
 
     &:hover, &:focus-visible {
-        background-color: var(--muted);
-        border-color: var(--secondary-neutral-700);
+        background-color: var(--color-bg-surface);
+        border-color: var(--color-border-strong);
     }
 `;
 

@@ -42,27 +42,27 @@ function AxisCrosshair() {
 
 function Rotor() {
     return <>
-        <g stroke="var(--primary-700)" strokeWidth="0.25" fill="none">
+        <g stroke="var(--color-stroke-revolution-wheel-rotor)" strokeWidth="0.25" fill="none">
             <PolarSpace.Spoke radius={VIEW_BOX_SIZE / 2} className={rotationClasses.rotating} strokeDasharray="2"/>
             <PolarSpace.Spoke
                 radius={WHEEL_RADIUS}
                 className={rotationClasses.rotating}
                 style={{
                     filter:
-                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--primary-700) l c h / 0.32)) " +
-                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--primary-700) l c h / 0.32)) " +
-                        "drop-shadow(1px 2px 2.5px oklch(from var(--primary-700) l c h / 0.32))"
+                        "drop-shadow(0.3px 0.5px 0.7px oklch(from var(--color-stroke-revolution-wheel-rotor) l c h / 0.32)) " +
+                        "drop-shadow(0.4px 0.8px 1px oklch(from var(--color-stroke-revolution-wheel-rotor) l c h / 0.32)) " +
+                        "drop-shadow(1px 2px 2.5px oklch(from var(--color-stroke-revolution-wheel-rotor) l c h / 0.32))"
                 }}
             />
         </g>
         <motion.circle
             cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
-            r={1} fill="var(--primary-600)"
+            r={1} fill="var(--color-fill-revolution-wheel-rotor-tip)"
             className={rotationClasses.rotating}
         />
         <motion.circle
             cx={CIRCLE_CENTER + WHEEL_RADIUS} cy={CIRCLE_CENTER}
-            r={0.5} fill="var(--primary-400)"
+            r={0.5} fill="var(--color-fill-revolution-wheel-rotor-tip-core)"
             className={rotationClasses.rotating}
         />
     </>;
@@ -156,17 +156,17 @@ function CenterIcon({angle, ...props}: {angle: MotionValue<Angle>} & React.Compo
 function WheelHub({angle}: {angle: MotionValue<Angle>}) {
     return <>
         <PolarSpace.Circle
-            fill="var(--neutral-950)" stroke="var(--neutral-900)" strokeWidth="0.1"
+            fill="var(--color-fill-revolution-wheel-hub)" stroke="var(--color-stroke-revolution-wheel-hub)" strokeWidth="0.1"
             r={WHEEL_RADIUS * 0.32}
             // style={{
             // 	filter:
-            // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-            // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--secondary-neutral-900) l c h / 0.16)) " +
-            // 		"drop-shadow(1px 2px 2.5px oklch(from var(--secondary-neutral-900) l c h / 0.16))"
+            // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--color-comet-900) l c h / 0.16)) " +
+            // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--color-comet-900) l c h / 0.16)) " +
+            // 		"drop-shadow(1px 2px 2.5px oklch(from var(--color-comet-900) l c h / 0.16))"
             // }}
         />
         <PolarSpace.Circle
-            fill="none" stroke="var(--neutral-900)" strokeWidth="0.1"
+            fill="none" stroke="var(--color-stroke-revolution-wheel-hub)" strokeWidth="0.1"
             r={WHEEL_RADIUS * 0.24}
         />
         <g css={css`
@@ -180,7 +180,7 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
                 r: var(--_radius);
                 stroke-dasharray: 0, calc(var(--i) * 0.5 * pi * var(--_radius) + var(--_gap)),
                 calc(0.5 * pi * var(--_radius) - 2 * var(--_gap)), var(--_circumference);
-                stroke: color-mix(in oklch, var(--neutral-900) calc((1 - var(--_switch)) * 100%), var(--primary-700) calc(var(--_switch) * 100%));
+                stroke: color-mix(in oklch, var(--color-stroke-revolution-wheel-hub) calc((1 - var(--_switch)) * 100%), var(--color-stroke-revolution-wheel-rotor) calc(var(--_switch) * 100%));
 
                 transition: stroke 0.2s ease-in-out;
             }
@@ -188,7 +188,7 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
             {Array.from({length: 4}, (_, i) => <PolarSpace.Circle
                 key={i} className="progress-indicator"
                 style={{'--i': i} as React.CSSProperties}
-                fill="none" stroke="var(--neutral-900)" strokeWidth="0.5"
+                fill="none" stroke="var(--color-stroke-revolution-wheel-hub)" strokeWidth="0.5"
                 strokeLinecap="butt"
             />)}
         </g>
@@ -204,9 +204,9 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
                     stroke-dashoffset: calc(-4 * var(--_radius) * tan(atan2(var(${rotationCssVars.angle}), 1rad)));
                 }
             `}
-            fill="none" stroke="var(--primary-700)" strokeWidth="0.08"
+            fill="none" stroke="var(--color-stroke-revolution-wheel-rotor)" strokeWidth="0.08"
         />
-        <CenterIcon angle={angle} fill="var(--neutral-900)"/>
+        <CenterIcon angle={angle} fill="var(--color-fill-revolution-wheel-hub-icon)"/>
     </>;
 }
 
@@ -290,13 +290,13 @@ function BackWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
             startAngle={`${charAngle * (firstText.length + 1)}rad`} charAngle={`${charAngle}rad`}
             sweepDirection="ccw"
             fontSize={2.5}
-            color="var(--neutral-400)"
+            color="var(--color-fill-revolution-wheel-back-text)"
         >{firstText}</PolarSpace.Text>
         <PolarSpace.Text
             radius={WHEEL_RADIUS * 0.54}
             charAngle={quoteCharAngle + "rad"} fontSize={2.5}
             startAngle={-(Math.PI / 2 + quoteCharAngle * quotePart1.length / 2) + "rad"}
-            color="var(--neutral-600)"
+            color="var(--color-fill-revolution-wheel-back-quote)"
         >{quotePart1}</PolarSpace.Text>
     </ClippedG>;
 }
@@ -319,7 +319,7 @@ function FrontWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
             startAngle={-" ".length * charAngle + "rad"} charAngle={`${charAngle}rad`}
             sweepDirection="ccw"
             fontSize={2.5}
-            color="var(--secondary-neutral-200)"
+            color="var(--color-fill-revolution-wheel-front-text)"
         >{revealedText}</PolarSpace.Text>
         <PolarSpace.Text
             className={rotationClasses.rotatingClamped}
@@ -331,7 +331,7 @@ function FrontWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
             startAngle={"0rad"} charAngle={`${charAngle}rad`}
             sweepDirection="ccw"
             fontSize={2.5}
-            color="var(--secondary-neutral-200)"
+            color="var(--color-fill-revolution-wheel-front-text)"
         >{"LET'S KICKSTART YOUR"}</PolarSpace.Text>
         <PolarSpace.Text
             className={rotationClasses.rotatingClamped}
@@ -341,7 +341,7 @@ function FrontWheelFace({pathData}: {pathData: string | MotionValue<string>}) {
             radius={WHEEL_RADIUS * 0.54}
             charAngle={quoteCharAngle + "rad"} fontSize={2.5}
             startAngle={(3 * Math.PI / 2 - quoteCharAngle * quotePart1.length / 2) + "rad"}
-            color="var(--secondary-neutral-600)"
+            color="var(--color-fill-revolution-wheel-front-quote)"
         >{quotePart2}</PolarSpace.Text>
     </ClippedG>;
 }
@@ -370,27 +370,27 @@ export default function RevolutionWheel({angle, angleRangeStart}: { angle: Motio
                 will-change: transform;
     
                 g.back-layer {
-                    --_dial-fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                    --_fill-color: oklch(from var(--neutral-900) l c h / 0.375);
-                    --_stroke-color: var(--neutral-800);
-                    --_lighter-stroke: var(--neutral-400);
+                    --_dial-fill-color: var(--color-fill-revolution-wheel-back-dial);
+                    --_fill-color: var(--color-fill-revolution-wheel-back);
+                    --_stroke-color: var(--color-stroke-revolution-wheel-back);
+                    --_lighter-stroke: var(--color-stroke-revolution-wheel-back-accent);
                 }
     
                 g.front-layer {
-                    --_dial-fill-color: oklch(from var(--secondary-950) l c h / 0.25);
+                    --_dial-fill-color: var(--color-fill-revolution-wheel-front-dial);
                     --_fill-color: none;
-                    --_stroke-color: var(--secondary-neutral-800);
-                    --_lighter-stroke: var(--primary-500);
+                    --_stroke-color: var(--color-stroke-revolution-wheel-front);
+                    --_lighter-stroke: var(--color-stroke-revolution-wheel-front-accent);
                 }
             `}
         >
             <defs>
                 <radialGradient id="brand-radial-gradient">
-                    <stop offset="-20%" stopColor="var(--secondary-700)"/>
-                    <stop offset="80%" stopColor="var(--secondary-neutral-950)"/>
+                    <stop offset="-20%" stopColor="var(--color-fill-revolution-wheel-glow)"/>
+                    <stop offset="80%" stopColor="var(--color-fill-revolution-wheel-glow-edge)"/>
                 </radialGradient>
             </defs>
-            <g stroke="var(--secondary-neutral-800)" strokeWidth="0.1" fill="none">
+            <g stroke="var(--color-stroke-revolution-wheel-axis)" strokeWidth="0.1" fill="none">
                 <AxisCrosshair />
                 <RotorProjections angle={angle} />
             </g>

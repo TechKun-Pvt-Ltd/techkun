@@ -8,7 +8,7 @@ export default function TechKunLogoSvgSquareIcon({xPadding = 15, xOffset = 0.5, 
         width="400" viewBox="0 0 400 400"
         {...props}
     >
-        <g style={{ display: "none" }} strokeWidth="1" stroke="var(--border)" strokeDasharray="10" strokeLinecap="round" strokeLinejoin="round">
+        <g style={{ display: "none" }} strokeWidth="1" stroke="var(--color-border-default)" strokeDasharray="10" strokeLinecap="round" strokeLinejoin="round">
             <line x1="0%" y1="50%" x2="100%" y2="50%" />
             <line x1="50%" y1="0%" x2="50%" y2="100%" />
             <line x1={`${xPadding}%`} y1="0%" x2={`${xPadding}%`} y2="100%" />
@@ -21,7 +21,7 @@ export default function TechKunLogoSvgSquareIcon({xPadding = 15, xOffset = 0.5, 
             width={`${100 - 2 * xPadding}%`} height="100%"
             viewBox={viewBoxString(logoPath.viewBox)}
         >
-            <path d={logoPath.value} fill="var(--primary-color)" />
+            <path d={logoPath.value} fill="var(--color-brand-1)" />
         </svg>
     </svg>;
 }

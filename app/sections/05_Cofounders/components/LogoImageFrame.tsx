@@ -40,8 +40,8 @@ export default function LogoImageFrame({imageData, alt, ...props}: {
             <Once id="logo-image-frame-gradient">
                 <defs>
                     <linearGradient id={LOGO_IMAGE_FRAME_GRADIENT_ID} x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="20%" stopColor="var(--primary-500)" />
-                        <stop offset="50%" stopColor="var(--secondary-500)" />
+                        <stop offset="20%" stopColor="var(--color-brand-1)" />
+                        <stop offset="50%" stopColor="var(--color-brand-2)" />
                     </linearGradient>
                 </defs>
             </Once>

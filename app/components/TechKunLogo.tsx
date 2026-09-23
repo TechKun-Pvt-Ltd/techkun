@@ -9,6 +9,6 @@ export default function TechKunLogo(props: React.ComponentProps<"svg">) {
         {...props}
         xmlns="http://www.w3.org/2000/svg"
     >
-        <use href={TECHKUN_LOGO_PATH_HREF} fill="var(--primary-color)"></use>
+        <use href={TECHKUN_LOGO_PATH_HREF} fill="var(--color-brand-1)"></use>
     </svg>;
 };

@@ -136,14 +136,14 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 	}), []);
 
 	return <span
-		style={{color: 'var(--foreground)', position: "relative", display: "inline-block", ...style} as React.CSSProperties}
+		style={{color: 'var(--color-text-primary)', position: "relative", display: "inline-block", ...style} as React.CSSProperties}
 		{...props}
 		ref={spanRef}
 		data-lights-off
 	>
 		<span className="pointer" css={css`
 			position: absolute;
-			color: var(--neutral-100);
+			color: var(--color-text-identity-pointer);
 			--pull-factor: 0.5;
 			--rotation-angle: -30deg;
 			@supports ${supportsQuery.shape} {
@@ -244,7 +244,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				inset: 0 0 0 var(--x-offset);
 				height: auto;
 				width: 100%;
-				color: var(--neutral-700);
+				color: var(--color-text-keyword-unlit);
 			}
 
 			svg.bulb-icon, svg.dots circle {
@@ -264,7 +264,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				inset: 0.23em calc(-1 * var(--_extra-x-space)) auto calc(-1 * var(--_extra-x-space) + var(--x-offset));
 				width: var(--_bulb-icon-width);
 
-				${lightUpColorProp}: var(--foreground);
+				${lightUpColorProp}: var(--color-text-primary);
 			}
 			svg.dots {
 				overflow: visible;
@@ -272,16 +272,16 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				height: 1ex;
 				circle {
 					&:nth-of-type(1) {
-						${lightUpColorProp}: var(--foreground);
+						${lightUpColorProp}: var(--color-text-primary);
 					}
 					&:nth-of-type(2) {
-						${lightUpColorProp}: var(--primary-300);
+						${lightUpColorProp}: var(--color-fill-identity-dot-1);
 					}
 					&:nth-of-type(3) {
-						${lightUpColorProp}: var(--secondary-300);
+						${lightUpColorProp}: var(--color-fill-identity-dot-2);
 					}
 					&:nth-of-type(4) {
-						${lightUpColorProp}: var(--tertiary-300);
+						${lightUpColorProp}: var(--color-fill-identity-dot-3);
 					}
 					--pull-factor: calc(0.25 + pow(1 - var(--i) / ${DOT_COUNT}, 2) * 0.75);
 				}

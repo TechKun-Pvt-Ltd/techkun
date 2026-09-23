@@ -9,6 +9,6 @@ const yOffset = 2;
 export default function ProfilePhotoRect() {
     return <TechKunLogoSvgSquareIcon
         xPadding={xPadding} xOffset={xOffset} yOffset={yOffset}
-        style={{backgroundColor: "var(--background)"}}
+        style={{backgroundColor: "var(--color-bg-canvas)"}}
     />;
 }

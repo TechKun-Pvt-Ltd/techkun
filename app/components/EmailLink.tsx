@@ -75,8 +75,8 @@ export default function EmailLink(
 				}
 
 				&:hover, &:focus-visible {
-					${gradientColor1}: var(--primary-500);
-					${gradientColor2}: var(--tertiary-500);
+					${gradientColor1}: var(--color-brand-1);
+					${gradientColor2}: var(--color-brand-3);
 					path {
 						d: path("${variants[FOCUSED].d}");
 					}

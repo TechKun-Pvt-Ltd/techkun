@@ -9,6 +9,6 @@ const yOffset = 3.6;
 export default function ProfilePhotoCirc() {
     return <TechKunLogoSvgSquareIcon
         xPadding={xPadding} xOffset={xOffset} yOffset={yOffset}
-        style={{backgroundColor: "var(--background)", borderRadius: "50%"}}
+        style={{backgroundColor: "var(--color-bg-canvas)", borderRadius: "50%"}}
     />;
 }

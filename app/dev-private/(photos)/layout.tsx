@@ -6,6 +6,6 @@ export default function PhotosLayout({children}: Readonly<{ children: React.Reac
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "var(--neutral-800)"
+        backgroundColor: "var(--color-bg-surface-raised)"
     }}>{children}</body>;
 }

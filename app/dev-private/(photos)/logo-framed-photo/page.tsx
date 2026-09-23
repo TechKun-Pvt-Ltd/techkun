@@ -7,7 +7,7 @@ export default function LogoFramedPhoto() {
     return <div style={{
         width: SIZE, height: SIZE,
         alignContent: "center",
-        backgroundColor: "var(--background)",
+        backgroundColor: "var(--color-bg-canvas)",
         paddingBlockEnd: SIZE * 0.0375,
         paddingInlineStart: SIZE * 0.075, paddingInlineEnd: SIZE * 0.0025,
         borderRadius: "50%", overflow: "clip"

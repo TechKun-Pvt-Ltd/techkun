@@ -10,8 +10,8 @@ const linkCss = css`
     ${gradientColor1}: currentColor;
     ${gradientColor2}: currentColor;
     &:hover, &:focus-visible {
-        ${gradientColor1}: var(--primary-500);
-        ${gradientColor2}: var(--tertiary-500);
+        ${gradientColor1}: var(--color-brand-1);
+        ${gradientColor2}: var(--color-brand-3);
     }
 `;
 export default function XLink(props: React.ComponentProps<typeof Link>) {

@@ -47,15 +47,15 @@ enum TextState {
 
 const linkCss = css`
 	//padding-inline: 28px;
-	//background-color: oklch(from var(--background) 0.15 c h);
-	//border: 1px solid var(--secondary-neutral-700);
+	//background-color: oklch(from var(--color-bg-canvas) 0.15 c h);
+	//border: 1px solid var(--color-border-strong);
 	display: flex;
 	align-items: stretch;
 	font-weight: var(--font-weight-medium);
 	text-decoration: none;
 	&::before, .wrapper, .after {
-		border: 0 solid var(--secondary-900);
-		background-color: oklch(from var(--secondary-950) l c h / 0.96);
+		border: 0 solid var(--color-border-btn-secondary);
+		background-color: var(--color-bg-btn-secondary);
 		border-top-width: 1px;
 		border-bottom-width: 1px;
 	}
@@ -97,9 +97,9 @@ const disappearingTextCss = css`
 	color: transparent;
 	background-image: linear-gradient(
 		to right in oklch,
-		var(--foreground) calc(var(--gradient-progress) - 60%),
-		var(--secondary-500) calc(var(--gradient-progress) - 40%),
-		var(--primary-500) calc(var(--gradient-progress) - 20%),
+		var(--color-text-primary) calc(var(--gradient-progress) - 60%),
+		var(--color-brand-2) calc(var(--gradient-progress) - 40%),
+		var(--color-brand-1) calc(var(--gradient-progress) - 20%),
 		transparent var(--gradient-progress)
 	);
 	background-clip: text;

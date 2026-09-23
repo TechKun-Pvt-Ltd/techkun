@@ -67,7 +67,7 @@ export default function Banner() {
 	const keywordCss = css`
         font-size: 1.4em;
         line-height: 1.4;
-		color: var(--neutral-300);
+		color: var(--color-text-keyword);
 	`;
 
 	const mobileBrCss = css`@media ${BREAKPOINT_QUERY} { display: none; }`;
@@ -78,12 +78,12 @@ export default function Banner() {
 		background:
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% -50%,
-				oklch(from var(--secondary-800) l c h / 0.25),
+				var(--color-bg-banner-glow),
 				transparent var(--gradient-progress)
 			),
 			radial-gradient(
 				ellipse var(--page-max-width) 75% at 50% 145%,
-				oklch(from var(--secondary-800) l c h / 0.25),
+				var(--color-bg-banner-glow),
 				transparent var(--gradient-progress)
 			);
 		animation: ${gradientFill} ${bgGradient.duration}s ${bgGradient.delay}s ease-out both;
@@ -116,7 +116,7 @@ export default function Banner() {
 		`}>
 			<div>
 				<p className="type-body-lg font-medium mb-4" css={css`
-                    color: var(--secondary-neutral-400);
+                    color: var(--color-text-secondary);
 				`}>Hello there!</p>
 				<h1 className="hero-heading mb-14" css={css`
 					isolation: isolate;
@@ -135,7 +135,7 @@ export default function Banner() {
 				</h1>
 				<p className="type-body-lg font-medium px-24 mb-8" css={css`
 					white-space: nowrap;
-                    color: var(--secondary-neutral-400);
+                    color: var(--color-text-secondary);
 				`}>If that resonates...</p>
 				<div className="cta-group type-body-lg px-24 gap-6" css={css`
 					display: flex;
@@ -150,7 +150,7 @@ export default function Banner() {
 					<MainCTA className="cta" style={{ width: "max-content" }}>
 						Let's get on call
 					</MainCTA>
-					<div className="gap-3 font-medium" style={{ color: "var(--secondary-neutral-400)", width: "max-content", display: "flex", alignItems: "center" }}>
+					<div className="gap-3 font-medium" style={{ color: "var(--color-text-secondary)", width: "max-content", display: "flex", alignItems: "center" }}>
 						<p>or chat on</p>
 						<XLink href={xAccountUrl} />
 						<LinkedInLink href={linkedInAccountUrl} />
