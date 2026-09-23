@@ -10,15 +10,15 @@
    `mapValues` (and `mapKeyToValue`/`mapEntryToValue`) are the exception: since keys never change, their
    result type stays exact. */
 
-export type Key<T extends object> = keyof T;
-// export type Key<T extends object> = T extends object ? keyof T : never;
-export type Value<T extends object> = T[Key<T>];
-// export type Value<T extends object> = T extends object ? T[keyof T] : never;
+// export type Key<T extends object> = keyof T;
+export type Key<T extends object> = T extends object ? keyof T : never;
+// export type Value<T extends object> = T[Key<T>];
+export type Value<T extends object> = T extends object ? T[keyof T] : never;
 // export type Key<T extends object> = keyof T extends never ? T extends object ? keyof T : never : keyof T;
 // export type Value<T extends object> = T[keyof T] extends never ? T extends object ? T[keyof T] : never : T[keyof T];
 
-type Entry<T extends object> = { [K in keyof T]: [K, T[K]] }[keyof T];
-// type Entry<T extends object> = { [K in keyof T]: [T extends object ? K : never, T extends object ? T[K] : never] }[keyof T];
+// type Entry<T extends object> = { [K in keyof T]: [K, T[K]] }[keyof T];
+type Entry<T extends object> = { [K in keyof T]: [T extends object ? K : never, T extends object ? T[K] : never] }[keyof T];
 
 // function isPlainObject(value: unknown): value is Record<PropertyKey, unknown> {
 //     return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -49,8 +49,8 @@ export class ObjectStream<T extends object> {
         return this.mapEntries((key, value) => [mapper(key, value), value]);
     }
 
-    mapEntryToValue<NV>(mapper: (key: Key<T>, value: Value<T>) => NV): ObjectStream<{ [K in Key<T>]: NV }> {
-        return this.mapEntries((key, value) => [key, mapper(key, value)]);
+    mapEntryToValue<NV>(mapper: (key: Key<T>, value: Value<T>) => NV): ObjectStream<{ [K in keyof T]: NV }> {
+        return this.mapEntries((key, value) => [key as keyof T, mapper(key, value)]);
     }
 
     /* --- Everything else, derived. --- */
@@ -59,11 +59,11 @@ export class ObjectStream<T extends object> {
         return this.mapEntryToKey(key => mapper(key));
     }
 
-    mapValues<NV>(mapper: (value: Value<T>) => NV): ObjectStream<{ [K in Key<T>]: NV }> {
+    mapValues<NV>(mapper: (value: Value<T>) => NV): ObjectStream<{ [K in keyof T]: NV }> {
         return this.mapEntryToValue((_key, value) => mapper(value));
     }
 
-    mapKeyToValue<NV>(mapper: (key: Key<T>) => NV): ObjectStream<{ [K in Key<T>]: NV }> {
+    mapKeyToValue<NV>(mapper: (key: Key<T>) => NV): ObjectStream<{ [K in keyof T]: NV }> {
         return this.mapEntryToValue(key => mapper(key));
     }
 

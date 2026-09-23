@@ -1,10 +1,7 @@
-import type {PrimitiveMapping, SemanticMapping} from "./types.ts";
-import type {TypeSizeToken, WeightToken} from "./schema.ts";
+import type {PrimitiveMapping, SemanticMapping, TypeSizeToken, WeightToken} from "./types.ts";
+import {ObjectStream} from "../../../lib/object-stream.ts";
 
-function primitiveMapping(typeSizeToken: TypeSizeToken, weightToken: WeightToken = "regular"): PrimitiveMapping {
-    return {typeSize: typeSizeToken, weight: weightToken};
-}
-const semanticToPrimitiveGrouped = {
+const SemanticToPrimitiveGrouped = {
     display: {
         sm: primitiveMapping("5xl")
     },
@@ -21,10 +18,7 @@ const semanticToPrimitiveGrouped = {
     }
 } satisfies { [role: string]: { [key: string]: PrimitiveMapping } };
 
-function semanticMapping(semanticToken: SemanticToken, primitiveOverrides?: SemanticMapping["primitiveOverrides"]): SemanticMapping {
-    return {semanticToken, primitiveOverrides};
-}
-export const ContextualToSemanticMap = {
+const ContextualToSemantic = {
     "hero-heading": semanticMapping("type-display-sm"),
     "section-title": semanticMapping("type-heading-xl"),
     "section-subtitle": semanticMapping("type-heading-md"),
@@ -33,22 +27,30 @@ export const ContextualToSemanticMap = {
     "logo-text": semanticMapping("type-body-lg", {weight: "medium"})
 } satisfies { [key: string]: SemanticMapping };
 
+function primitiveMapping(typeSizeToken: TypeSizeToken, weightToken: WeightToken = "regular"): PrimitiveMapping {
+    return {typeSize: typeSizeToken, weight: weightToken};
+}
+function semanticMapping(semanticToken: SemanticToken, primitiveOverrides?: SemanticMapping["primitiveOverrides"]): SemanticMapping {
+    return {semanticToken, primitiveOverrides};
+}
+type Grouped = typeof SemanticToPrimitiveGrouped;
 
-type Grouped = typeof semanticToPrimitiveGrouped;
+
 export type SemanticToken = {
     [R in keyof Grouped & string]: `type-${R}-${keyof Grouped[R] & string}`
 }[keyof Grouped & string];
+export type SemanticToPrimitiveMap = { [K in SemanticToken]: PrimitiveMapping; };
 
-export type SemanticToPrimitiveMap = Record<SemanticToken, PrimitiveMapping>;
-export const SemanticToPrimitiveMap = Object.fromEntries(Object
-    .entries(semanticToPrimitiveGrouped)
-    .flatMap(([role, sizes]) => Object
-        .entries(sizes)
-        .map(([size, tokens]) => [`type-${role}-${size}`, tokens])
+export type ContextualToken = keyof typeof ContextualToSemantic;
+export type ContextualToSemanticMap = { [K in ContextualToken]: SemanticMapping; };
+
+export const SemanticToPrimitiveMap: SemanticToPrimitiveMap = ObjectStream
+    .of(SemanticToPrimitiveGrouped)
+    .flatMap((role, sizes) => ObjectStream
+        .of(sizes)
+        .mapKeys(size => `type-${role}-${size}`)
     )
-) as SemanticToPrimitiveMap;
+    .collect();
+export const ContextualToSemanticMap: ContextualToSemanticMap = ContextualToSemantic;
+
 export const SemanticTokens = Object.keys(SemanticToPrimitiveMap) as SemanticToken[];
-
-
-export type ContextualToSemanticMap = typeof ContextualToSemanticMap;
-export type ContextualToken = keyof ContextualToSemanticMap;

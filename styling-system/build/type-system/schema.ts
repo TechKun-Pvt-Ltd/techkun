@@ -1,6 +1,6 @@
 // Token families: each one is a set of tokens (the names a mapping can pick from) plus the CSS properties every
 // token of the family sets.
-import type {CSSValue} from "./types.ts";
+import type {CSSProperty} from "./types.ts";
 
 export const Schema = {
     typeSize: {
@@ -19,16 +19,3 @@ export const Schema = {
 };
 export const CSSProperties: CSSProperty[] = Object.values(Schema)
     .flatMap(family => family.cssProperties);
-
-type UnwrapUnionArray<A extends readonly any[]> = A extends readonly any[] ? A[number] : never;
-
-export type TokenFamily = keyof typeof Schema;
-export type TokenOf<F extends TokenFamily> = UnwrapUnionArray<typeof Schema[F]["tokens"]>;
-export type TypeSizeToken = TokenOf<"typeSize">;
-export type WeightToken = TokenOf<"weight">;
-
-export type CSSPropertyOf<F extends TokenFamily> = typeof Schema[F]["cssProperties"][number];
-export type CSSProperty = UnwrapUnionArray<typeof Schema[TokenFamily]["cssProperties"]>;
-export type CSSPropertyValues<F extends TokenFamily = TokenFamily> = {
-    [CP in TokenFamily extends F ? CSSProperty : CSSPropertyOf<F>]: CSSValue;
-};

@@ -1,8 +1,7 @@
 import {CSSProperties, Schema} from "./schema.ts";
-import type {CSSProperty, CSSPropertyOf, TokenFamily, TokenOf} from "./schema.ts";
 import {SemanticTokens} from "./mapping.ts";
 import type {SemanticToken} from "./mapping.ts";
-import type {CSSToken} from "./types.ts";
+import type {CSSProperty, CSSPropertyOf, CSSToken, TokenFamily, TokenOf} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import {createObjectFromEntries} from "./utils.ts";
 

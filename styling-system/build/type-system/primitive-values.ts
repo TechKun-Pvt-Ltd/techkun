@@ -1,6 +1,5 @@
 import {round} from "svg-path-kit/numbers";
-import type {PrimitiveValues} from "./types.ts";
-import type {TypeSizeToken} from "./schema.ts";
+import type {PrimitiveValues, TypeSizeToken} from "./types.ts";
 
 /* Scale ratio — choose a musical interval:
    Minor Second:   1.067  (1 semitone)

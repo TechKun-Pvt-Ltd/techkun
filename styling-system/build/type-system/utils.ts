@@ -1,5 +1,4 @@
-import type {CSSToken, CSSValue} from "./types.ts";
-import type {CSSProperty} from "./schema.ts";
+import type {CSSProperty, CSSToken, CSSValue} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
 /* Everything the token levels (primitives, semantic, context) have in common.

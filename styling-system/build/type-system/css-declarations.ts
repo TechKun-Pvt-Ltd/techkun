@@ -1,10 +1,9 @@
 import {CSSProperties, Schema} from "./schema.ts";
-import type {CSSProperty, TokenFamily, TokenOf} from "./schema.ts";
 import {SemanticToPrimitiveMap} from "./mapping.ts";
 import type {SemanticToken} from "./mapping.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {lookupPrimitiveCssValues, lookupSemanticCssValues} from "./css-values-lookup.ts";
-import type {CSSToken, CSSTokenDeclarations, CSSValue} from "./types.ts";
+import type {CSSProperty, CSSToken, CSSTokenDeclarations, CSSValue, TokenFamily, TokenOf} from "./types.ts";
 import {createObjectFromEntries} from "./utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 

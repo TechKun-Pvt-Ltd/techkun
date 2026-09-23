@@ -1,11 +1,10 @@
 import {Schema} from "./schema.ts";
-import type {WeightToken} from "./schema.ts";
 import {ContextualToSemanticMap, SemanticToPrimitiveMap} from "./mapping.ts";
 import type {ContextualToken, SemanticToken} from "./mapping.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {lookupContextualCssValues} from "./css-values-lookup.ts";
 import {createObjectFromEntries, toVarRefs} from "./utils.ts";
-import type {CSSRules} from "./types.ts";
+import type {CSSRules, WeightToken} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
 /* Rules: walk the schema/mapping for each level's tokens, and for each one query the CSS token/value
