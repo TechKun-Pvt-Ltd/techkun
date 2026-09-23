@@ -1,17 +1,31 @@
-import {processConfig} from "../color-system/css-palette-generation-utils.ts";
-import {PALETTE_CUSTOMIZATION} from "../color-system/css-palette-customization.ts";
-import {PRIMARY_HUE, PRIMARY_LIGHTNESS, PRIMARY_CHROMA} from "../../base/color-constants.ts";
+// This module is the parser.
+import {declarations, registrations, rules, themes} from "../color-system/index.ts";
+import {legacyAliases} from "../color-system/legacy-aliases.ts";
 
-const rules = processConfig(PALETTE_CUSTOMIZATION);
+/** @param {Record<string, string | number>} record @param {string} indent */
+const printDeclarations = (record, indent) => Object.entries(record)
+    .map(([name, value]) => `${name}: ${value};`)
+    .join(`\n${indent}`);
 
 // language=CSS
-export default `@layer base {
+export default `
+${Object.entries(registrations)
+    .map(([name, {syntax, inherits, initialValue}]) =>
+        `@property ${name} {\n\tsyntax: "${syntax}";\n\tinherits: ${inherits};\n\tinitial-value: ${initialValue};\n}`
+    ).join("\n")}
+@layer base {
     :root {
-        --primary-hue: ${PRIMARY_HUE};
-        --lightness: ${PRIMARY_LIGHTNESS};
-        --chroma: ${PRIMARY_CHROMA};
-        ${Object.entries(rules)
-            .map(entry => entry.join(": "))
-            .join(";\n")};
+        ${printDeclarations(declarations, "\t\t")}
+        ${printDeclarations(legacyAliases, "\t\t")}
     }
-}`;
+    ${Object.values(themes)
+        .map(({selector, colorScheme, declarations}) =>
+            `${selector} {\n\t\tcolor-scheme: ${colorScheme};\n\t\t${printDeclarations(declarations, "\t\t")}\n\t}`
+        ).join("\n\t")}
+}
+@layer utilities {
+    ${Object.entries(rules)
+        .map(([selector, rule]) => `${selector} { ${printDeclarations(rule, "")} }`)
+        .join("\n\t")}
+}
+`.trim();

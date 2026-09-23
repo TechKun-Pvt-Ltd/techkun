@@ -4,14 +4,14 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import {viewBoxString} from "@/app/utils/graphics-utils.ts";
 import logoPath from "@/public/logo-path.json";
-import {PRIMARY_CHROMA, PRIMARY_HUE, PRIMARY_LIGHTNESS} from "@/styling-system/base/color-constants.ts";
+import {SEED} from "@/styling-system/build/color-system/primitive-values.ts";
 import {oklchToHex} from "@/app/seo-utils/color-conversion.ts";
 
 export const SOCIAL_CARD_ALT = "TechKun — we build software with beauty, precision, and identity.";
 export const SOCIAL_CARD_SIZE = {width: 1200, height: 630};
 export const SOCIAL_CARD_CONTENT_TYPE = "image/png";
 
-const PRIMARY_HEX = oklchToHex(PRIMARY_LIGHTNESS, PRIMARY_CHROMA, PRIMARY_HUE);
+const PRIMARY_HEX = oklchToHex(SEED.lightness, SEED.chroma, SEED.hue);
 
 const logoWidth = 336;
 export async function renderSocialCard() {

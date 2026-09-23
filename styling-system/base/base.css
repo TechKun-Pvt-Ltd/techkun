@@ -1,9 +1,10 @@
 @import "layout.css";
 @import "typography.css";
-@import "colors.css";
 @import "viewport.css";
 
 :root {
+    color: var(--color-text-primary);
+    background: var(--color-bg-canvas);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -19,8 +20,8 @@ ul {
 }
 
 ::selection {
-    color: var(--foreground);
-    background: var(--primary-950);
+    color: var(--color-text-primary);
+    background: var(--color-bg-selection);
 }
 
 a {
