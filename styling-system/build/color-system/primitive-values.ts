@@ -15,9 +15,9 @@ export const SEED = {hue: 256, lightness: 0.56, chroma: 0.18} as const;
 const HUE: CSSPropertyRegistration = {syntax: "<number> | <angle>", inherits: true, initialValue: 0};
 const FRACTION: CSSPropertyRegistration = {syntax: "<number> | <percentage>", inherits: true, initialValue: 0};
 export const seedValues = {
-    "--color-hue-mariner": {value: SEED.hue, registration: HUE},
-    "--color-hue-royal-blue": {value: "calc(var(--color-hue-mariner) + 20)", registration: HUE},
-    "--color-hue-fuchsia-blue": {value: "calc(var(--color-hue-mariner) + 40)", registration: HUE},
+    "--color-brand-1-hue": {value: SEED.hue, registration: HUE},
+    "--color-brand-2-hue": {value: "calc(var(--color-brand-1-hue) + 20)", registration: HUE},
+    "--color-brand-3-hue": {value: "calc(var(--color-brand-1-hue) + 40)", registration: HUE},
     "--color-brand-lightness": {value: SEED.lightness, registration: FRACTION},
     "--color-brand-chroma": {value: SEED.chroma, registration: FRACTION}
 } satisfies { [K in CSSToken]: { value: CSSValue; registration: CSSPropertyRegistration } };
@@ -35,19 +35,21 @@ function brandRamp(hue: CSSToken): RampGenerationConfig {
     };
 }
 const rampConfigs: Record<Palette, RampGenerationConfig> = {
-    "brand-1": brandRamp("--color-hue-mariner"),
-    "brand-2": brandRamp("--color-hue-royal-blue"),
-    "brand-3": brandRamp("--color-hue-fuchsia-blue"),
+    "brand-1": brandRamp("--color-brand-1-hue"),      // Mariner
+    "brand-2": brandRamp("--color-brand-2-hue"),      // Royal Blue
+    "brand-3": brandRamp("--color-brand-3-hue"),      // Fuchsia Blue
+    // Gray
     neutral: {
         type: "blend",
-        startColor: "oklch(0.9 0.005 var(--color-hue-royal-blue))",
-        endColor: "oklch(0.1 0.005 var(--color-hue-royal-blue))"
+        startColor: "oklch(0.9 0.005 var(--color-brand-2-hue))",
+        endColor: "oklch(0.1 0.005 var(--color-brand-2-hue))"
     },
+    // Comet
     "neutral-tinted": {
         type: "tints-shades",
-        baseColor: "oklch(0.5 0.05 var(--color-hue-royal-blue))",
-        whiteOverride: "oklch(1 0.05 var(--color-hue-royal-blue))",
-        blackOverride: "oklch(0 0.05 var(--color-hue-royal-blue))",
+        baseColor: "oklch(0.5 0.05 var(--color-brand-2-hue))",
+        whiteOverride: "oklch(1 0.05 var(--color-brand-2-hue))",
+        blackOverride: "oklch(0 0.05 var(--color-brand-2-hue))",
         mixStrength: 0.8
     }
 };

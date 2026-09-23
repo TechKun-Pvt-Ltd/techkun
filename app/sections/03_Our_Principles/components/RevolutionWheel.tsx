@@ -160,9 +160,9 @@ function WheelHub({angle}: {angle: MotionValue<Angle>}) {
             r={WHEEL_RADIUS * 0.32}
             // style={{
             // 	filter:
-            // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--color-comet-900) l c h / 0.16)) " +
-            // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--color-comet-900) l c h / 0.16)) " +
-            // 		"drop-shadow(1px 2px 2.5px oklch(from var(--color-comet-900) l c h / 0.16))"
+            // 		"drop-shadow(0.3px 0.5px 0.7px oklch(from var(--color-neutral-tinted-900) l c h / 0.16)) " +
+            // 		"drop-shadow(0.4px 0.8px 1px oklch(from var(--color-neutral-tinted-900) l c h / 0.16)) " +
+            // 		"drop-shadow(1px 2px 2.5px oklch(from var(--color-neutral-tinted-900) l c h / 0.16))"
             // }}
         />
         <PolarSpace.Circle
