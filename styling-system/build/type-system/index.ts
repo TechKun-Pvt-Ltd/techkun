@@ -1,5 +1,5 @@
 import {standaloneValues} from "./primitive-values.ts";
-import {mergeAll} from "./utils.ts";
+import {mergeAll} from "../shared/utils.ts";
 import {primitiveCssDeclarations, semanticCssDeclarations} from "./css-declarations.ts";
 import {contextualCssRules, primitiveCssRules, semanticCssRules} from "./css-rules.ts";
 

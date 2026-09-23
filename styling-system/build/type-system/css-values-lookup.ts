@@ -1,9 +1,10 @@
 import primitiveValues from "./primitive-values.ts";
-import {toVarRefs} from "./utils.ts";
+import {toVarRefs} from "../shared/utils.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {ContextualToSemanticMap, SemanticToPrimitiveMap} from "./mapping.ts";
 import type {ContextualToken, SemanticToken} from "./mapping.ts";
-import type {CSSPropertyOf, CSSPropertyValues, CSSValue, PrimitiveMapping, TokenFamily, TokenOf} from "./types.ts";
+import type {CSSPropertyOf, CSSPropertyValues, PrimitiveMapping, TokenFamily, TokenOf} from "./types.ts";
+import type {CSSValue} from "../shared/types.ts";
 
 /* Resolved values, one query function per level. Primitive values are read straight off the raw data;
    semantic and contextual values are var() references resolved by following the mapping down to

@@ -1,9 +1,10 @@
 import {CSSProperties, Schema} from "./schema.ts";
 import {SemanticTokens} from "./mapping.ts";
 import type {SemanticToken} from "./mapping.ts";
-import type {CSSProperty, CSSPropertyOf, CSSToken, TokenFamily, TokenOf} from "./types.ts";
+import type {CSSProperty, CSSPropertyOf, TokenFamily, TokenOf} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
-import {createObjectFromEntries} from "./utils.ts";
+import {createObjectFromEntries} from "../shared/utils.ts";
+import type {CSSToken} from "../shared/types.ts";
 
 /* Naming only: which CSS custom property a given token/property pair resolves to. Built from the
    schema and mapping - never from the actual values a token holds - so a token's declared shape never

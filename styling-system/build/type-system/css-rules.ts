@@ -3,9 +3,10 @@ import {ContextualToSemanticMap, SemanticToPrimitiveMap} from "./mapping.ts";
 import type {ContextualToken, SemanticToken} from "./mapping.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {lookupContextualCssValues} from "./css-values-lookup.ts";
-import {createObjectFromEntries, toVarRefs} from "./utils.ts";
-import type {CSSRules, WeightToken} from "./types.ts";
+import {createObjectFromEntries, toVarRefs} from "../shared/utils.ts";
+import type {WeightToken} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {CSSRules} from "../shared/types.ts";
 
 /* Rules: walk the schema/mapping for each level's tokens, and for each one query the CSS token/value
    a selector should resolve to. Primitive and semantic rules reference their own custom properties;

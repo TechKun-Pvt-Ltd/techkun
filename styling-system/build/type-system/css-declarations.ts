@@ -3,9 +3,10 @@ import {SemanticToPrimitiveMap} from "./mapping.ts";
 import type {SemanticToken} from "./mapping.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {lookupPrimitiveCssValues, lookupSemanticCssValues} from "./css-values-lookup.ts";
-import type {CSSProperty, CSSToken, CSSTokenDeclarations, CSSValue, TokenFamily, TokenOf} from "./types.ts";
-import {createObjectFromEntries} from "./utils.ts";
+import type {CSSProperty, TokenFamily, TokenOf} from "./types.ts";
+import {createObjectFromEntries} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {CSSToken, CSSTokenDeclarations, CSSValue} from "../shared/types.ts";
 
 /* Declarations: walk the schema/mapping for each level's tokens, and for each one zip its CSS-token
    lookup together with its resolved value. No contextual declarations - contextual tokens declare no
