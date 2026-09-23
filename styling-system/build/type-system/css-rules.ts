@@ -1,10 +1,8 @@
 import {Schema} from "./schema.ts";
 import {ContextualToSemanticMap, SemanticToPrimitiveMap} from "./mapping.ts";
-import type {ContextualToken, SemanticToken} from "./mapping.ts";
 import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
 import {lookupContextualCssValues} from "./css-values-lookup.ts";
 import {createObjectFromEntries, toVarRefs} from "../shared/utils.ts";
-import type {WeightToken} from "./types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import type {CSSRules} from "../shared/types.ts";
 

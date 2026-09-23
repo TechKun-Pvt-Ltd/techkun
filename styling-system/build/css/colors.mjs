@@ -1,7 +1,10 @@
 // This module is the parser.
 import {declarations, registrations, rules, themes} from "../color-system/index.ts";
 
-/** @param {Record<string, string | number>} record @param {string} indent */
+/**
+ * @param {Record<string, string | number>} record
+ * @param {string} indent
+ */
 const printDeclarations = (record, indent) => Object.entries(record)
     .map(([name, value]) => `${name}: ${value};`)
     .join(`\n${indent}`);

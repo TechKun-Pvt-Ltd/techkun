@@ -3,24 +3,21 @@ import {Palettes} from "./schema.ts";
 import type {Palette, StepOf} from "./types.ts";
 import {generateRamp} from "./generation/generate.ts";
 import type {RampGenerationConfig} from "./generation/config.ts";
-import type {CSSPropertyRegistration, CSSToken, CSSValue} from "../shared/types.ts";
+import type {CSSToken, CSSValue} from "../shared/types.ts";
 import {createObjectFromEntries} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
 // The brand's key color, as plain numbers for code that can't read CSS (icons, social cards).
 export const SEED = {hue: 256, lightness: 0.56, chroma: 0.18} as const;
 
-/* Seeds: not tokens and not part of the palette, just the standalone custom properties the ramps are
-   mixed from. Registered, so they stay typed (and animatable) numbers. */
-const HUE: CSSPropertyRegistration = {syntax: "<number> | <angle>", inherits: true, initialValue: 0};
-const FRACTION: CSSPropertyRegistration = {syntax: "<number> | <percentage>", inherits: true, initialValue: 0};
+/* Seeds: not tokens and not part of the palette, just the standalone values the ramps are mixed from. */
 export const seedValues = {
-    "--color-brand-1-hue": {value: SEED.hue, registration: HUE},
-    "--color-brand-2-hue": {value: "calc(var(--color-brand-1-hue) + 20)", registration: HUE},
-    "--color-brand-3-hue": {value: "calc(var(--color-brand-1-hue) + 40)", registration: HUE},
-    "--color-brand-lightness": {value: SEED.lightness, registration: FRACTION},
-    "--color-brand-chroma": {value: SEED.chroma, registration: FRACTION}
-} satisfies { [K in CSSToken]: { value: CSSValue; registration: CSSPropertyRegistration } };
+    brand1Hue: SEED.hue,
+    brand2Hue: "calc(var(--color-brand-1-hue) + 20)",
+    brand3Hue: "calc(var(--color-brand-1-hue) + 40)",
+    brandLightness: SEED.lightness,
+    brandChroma: SEED.chroma
+} satisfies Record<string, CSSValue>;
 
 const brandEasing = {
     tints: cubicBezierEasing(0.3, 0.2, 1, 1),
