@@ -1,6 +1,6 @@
 import {cubicBezierEasing} from "times-fps";
-import {Palettes} from "./schema.ts";
-import type {Palette, StepOf} from "./types.ts";
+import {flattenPrimitiveValues, primitiveTokens} from "./schema.ts";
+import type {PrimitiveValues, RampKey} from "./schema.ts";
 import {generateRamp} from "./generation/generate.ts";
 import type {RampGenerationConfig} from "./generation/config.ts";
 import type {CSSToken, CSSValue} from "../shared/types.ts";
@@ -31,7 +31,7 @@ function brandRamp(hue: CSSToken): RampGenerationConfig {
         easing: brandEasing
     };
 }
-const rampConfigs: Record<Palette, RampGenerationConfig> = {
+const rampConfigs: Record<RampKey, RampGenerationConfig> = {
     "brand-1": brandRamp("--color-brand-1-hue"),      // Mariner
     "brand-2": brandRamp("--color-brand-2-hue"),      // Royal Blue
     "brand-3": brandRamp("--color-brand-3-hue"),      // Fuchsia Blue
@@ -51,13 +51,14 @@ const rampConfigs: Record<Palette, RampGenerationConfig> = {
     }
 };
 
-type PrimitiveValues = { [P in Palette]: Record<StepOf<P>, CSSValue> };
-const primitiveValues: PrimitiveValues = ObjectStream.of(Palettes)
-    .mapEntryToValue((palette, steps) => {
-        const values = generateRamp(rampConfigs[palette], steps.length);
-        if (values.length !== steps.length)
-            throw new Error(`Palette "${palette}" has ${steps.length} steps but its ramp generated ${values.length} colors.`);
-        return createObjectFromEntries(steps.map((step, i) => [step, values[i]] as const));
+const primitiveValuesGrouped = ObjectStream.of(primitiveTokens)
+    .mapEntryToValue((rampKey, steps) => {
+        const stepKeys = Object.keys(steps);
+        const values = generateRamp(rampConfigs[rampKey], stepKeys.length);
+        if (values.length !== stepKeys.length)
+            throw new Error(`Ramp "${rampKey}" has ${stepKeys.length} steps but generated ${values.length} colors.`);
+        return createObjectFromEntries(stepKeys.map((step, i) => [step, values[i]] as const));
     })
     .collect() as PrimitiveValues;
+const primitiveValues = flattenPrimitiveValues(primitiveValuesGrouped);
 export default primitiveValues;

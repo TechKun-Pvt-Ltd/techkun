@@ -1,14 +1,13 @@
-import {PaletteTokens, Themes} from "./schema.ts";
-import {seedValues} from "./primitive-values.ts";
-import {ComponentTokens, SemanticTokens} from "./mapping.ts";
-import {lookupComponentCssToken, lookupPrimitiveCssToken, lookupSemanticCssToken} from "./css-tokens-lookup.ts";
-import {lookupComponentCssValue, lookupPrimitiveCssValue, lookupSemanticCssValue} from "./css-values-lookup.ts";
-import type {Theme} from "./types.ts";
+import type {Theme, TokenRef} from "./schema.ts";
+import primitiveValues, {seedValues} from "./primitive-values.ts";
+import {componentMapping, semanticMapping} from "./mapping.ts";
+import {cssCustomProperties} from "./css-custom-properties.ts";
 import type {CSSPropertyRegistration, CSSToken, CSSTokenDeclarations, CSSValue} from "../shared/types.ts";
-import {createObjectFromEntries} from "../shared/utils.ts";
+import {toVarRef} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
-/* Declarations: walk each level's tokens and zip their CSS-token lookup with their resolved value. Seeds
+/* Declarations: pair each token's custom property with its value. Primitive values are the generated ones;
+   semantic and component values are var() references to whatever token their mapping points at. Seeds
    aren't tokens, so their CSS names are paired with them here directly. Registered, so they stay typed
    (and animatable) numbers. */
 
@@ -22,6 +21,11 @@ const seedCssProperties = {
     "--color-brand-chroma": {value: seedValues.brandChroma, registration: FRACTION}
 } satisfies { [K in CSSToken]: { value: CSSValue; registration: CSSPropertyRegistration } };
 
+// Themes: where each theme's semantic tokens are declared, and the color-scheme declared with them.
+const themes = {
+    dark: {selector: ":root", colorScheme: "dark"}
+} as const satisfies { [T in Theme]: { selector: string; colorScheme: string } };
+
 export const seedCssDeclarations: CSSTokenDeclarations = ObjectStream.of(seedCssProperties)
     .mapValues(({value}) => value)
     .collect();
@@ -29,16 +33,24 @@ export const seedCssRegistrations: Record<CSSToken, CSSPropertyRegistration> = O
     .mapValues(({registration}) => registration)
     .collect();
 
-export const primitiveCssDeclarations: CSSTokenDeclarations = createObjectFromEntries(
-    PaletteTokens.map(token => [lookupPrimitiveCssToken(token), lookupPrimitiveCssValue(token)])
-);
+function resolveTokenRef({tokenRef, alpha}: TokenRef): CSSValue {
+    const varRef = toVarRef(cssCustomProperties[tokenRef]);
+    return alpha === undefined ? varRef : `oklch(from ${varRef} l c h / ${alpha})`;
+}
 
-export const semanticCssDeclarations: Record<Theme, CSSTokenDeclarations> = ObjectStream.of(Themes)
-    .mapKeyToValue(theme => createObjectFromEntries(
-        SemanticTokens.map(token => [lookupSemanticCssToken(token), lookupSemanticCssValue(theme, token)])
-    ))
+export const primitiveCssDeclarations: CSSTokenDeclarations = ObjectStream.of(primitiveValues)
+    .mapKeys(token => cssCustomProperties[token])
     .collect();
 
-export const componentCssDeclarations: CSSTokenDeclarations = createObjectFromEntries(
-    ComponentTokens.map(token => [lookupComponentCssToken(token), lookupComponentCssValue(token)])
-);
+export const themeCssDeclarations = ObjectStream.of(themes)
+    .mapEntryToValue((theme, spec) => ({
+        ...spec,
+        declarations: ObjectStream.of(semanticMapping[theme])
+            .mapEntries((token, ref) => [cssCustomProperties[token], resolveTokenRef(ref)])
+            .collect() as CSSTokenDeclarations
+    }))
+    .collect();
+
+export const componentCssDeclarations: CSSTokenDeclarations = ObjectStream.of(componentMapping)
+    .mapEntries((token, ref) => [cssCustomProperties[token], resolveTokenRef(ref)])
+    .collect();
