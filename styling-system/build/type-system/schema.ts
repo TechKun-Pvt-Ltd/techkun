@@ -1,5 +1,7 @@
 import {createObjectFromEntries} from "../shared/utils.ts";
 import type {CSSValue} from "../shared/types.ts";
+import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {Value} from "../../../lib/object-stream.ts";
 
 /* Every token of every level. Primitive tokens are grouped by alias property - a group of CSS properties
    a token sets together. Semantic tokens are grouped by role. Contextual tokens are a flat list. Semantic and
@@ -7,7 +9,7 @@ import type {CSSValue} from "../shared/types.ts";
    the flat token names, lookups for them, and the shapes mappings and values must adhere to. */
 const schema = {
     primitive: {
-        typeSize: {
+        "type-size": {
             tokens: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
             properties: ["font-size", "line-height", "letter-spacing"]
         },
@@ -29,12 +31,12 @@ const schema = {
 };
 type Schema = typeof schema;
 
-type KebabCase<S extends string> = S extends `${infer Head}${infer Tail}`
-    ? `${Head extends Lowercase<Head> ? Head : `-${Lowercase<Head>}`}${KebabCase<Tail>}`
-    : S;
-function kebabCase<S extends string>(s: S): KebabCase<S> {
-    return s.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`) as KebabCase<S>;
-}
+// type KebabCase<S extends string> = S extends `${infer Head}${infer Tail}`
+//     ? `${Head extends Lowercase<Head> ? Head : `-${Lowercase<Head>}`}${KebabCase<Tail>}`
+//     : S;
+// function kebabCase<S extends string>(s: S): KebabCase<S> {
+//     return s.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`) as KebabCase<S>;
+// }
 
 export type AliasProperty = keyof Schema["primitive"];
 export type TokenOf<P extends AliasProperty> = Schema["primitive"][P]["tokens"][number];
@@ -43,39 +45,39 @@ export type CSSProperty = PropertyOf<AliasProperty>;
 type Role = keyof Schema["semantic"];
 type VariantOf<R extends Role> = Schema["semantic"][R][number];
 
-/* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
-   `semanticTokens.heading.xl` is `"heading-xl"`. */
-type PrimitiveTokenLookup = { [P in AliasProperty]: { [T in TokenOf<P>]: `${KebabCase<P>}-${T}` } };
-type SemanticTokenLookup = { [R in Role]: { [V in VariantOf<R>]: `${R}-${V}` } };
-
-export const primitiveTokens = createObjectFromEntries((Object.keys(schema.primitive) as AliasProperty[])
-    .map(aliasProperty => [aliasProperty, createObjectFromEntries(schema.primitive[aliasProperty].tokens
-        .map(token => [token, `${kebabCase(aliasProperty)}-${token}`])
-    )])
-) as PrimitiveTokenLookup;
-export const semanticTokens = createObjectFromEntries((Object.keys(schema.semantic) as Role[])
-    .map(role => [role, createObjectFromEntries(schema.semantic[role]
-        .map(variant => [variant, `${role}-${variant}`])
-    )])
-) as SemanticTokenLookup;
-
-type Lookup = { readonly [key: string]: string | Lookup };
-type LeafOf<L> = L extends string ? L : { [K in keyof L]: LeafOf<L[K]> }[keyof L];
-type Shaped<L, V> = L extends string ? V : { [K in keyof L]: Shaped<L[K], V> };
-type LeafValueOf<L, N> = L extends string ? N : { [K in keyof L & keyof N]: LeafValueOf<L[K], N[K]> }[keyof L & keyof N];
-
-function leavesOf<L extends Lookup>(lookup: L): LeafOf<L>[] {
-    return Object.values(lookup).flatMap(entry => typeof entry === "string" ? [entry] : leavesOf(entry)) as LeafOf<L>[];
-}
-
-export type PrimitiveToken = LeafOf<PrimitiveTokenLookup>;
-export type SemanticToken = LeafOf<SemanticTokenLookup>;
+export type PrimitiveToken = { [P in AliasProperty]: `${P}-${TokenOf<P>}` }[AliasProperty];
+export type SemanticToken = { [R in Role]: `${R}-${VariantOf<R>}` }[Role];
 export type ContextualToken = Schema["contextual"][number];
 export type AliasToken = SemanticToken | ContextualToken;
 
-export const PrimitiveTokens: PrimitiveToken[] = leavesOf(primitiveTokens);
-export const SemanticTokens: SemanticToken[] = leavesOf(semanticTokens);
-export const ContextualTokens: ContextualToken[] = [...schema.contextual];
+// Flat token names of each level, filled in as the lookups below are built.
+export const PrimitiveTokensList: PrimitiveToken[] = [];
+export const SemanticTokensList: SemanticToken[] = [];
+export const ContextualTokensList: ContextualToken[] = [...schema.contextual];
+
+/* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
+   `semanticTokens.heading.xl` is `"heading-xl"`. */
+type PrimitiveTokenLookup = { [P in AliasProperty]: { [T in TokenOf<P>]: `${P}-${T}` } };
+type SemanticTokenLookup = { [R in Role]: { [V in VariantOf<R>]: `${R}-${V}` } };
+
+export const primitiveTokens = ObjectStream.of(schema.primitive)
+    .mapEntryToValue((aliasProperty, value) => createObjectFromEntries(
+        value.tokens.map(token => {
+            const flatToken = `${aliasProperty}-${token}` as PrimitiveToken;
+            PrimitiveTokensList.push(flatToken);
+            return [token, flatToken] as const;
+        })
+    ))
+    .collect() as PrimitiveTokenLookup;
+export const semanticTokens = ObjectStream.of(schema.semantic)
+    .mapEntryToValue((role, value) => createObjectFromEntries(
+        value.map(variant => {
+            const flatToken = `${role}-${variant}` as SemanticToken;
+            SemanticTokensList.push(flatToken);
+            return [variant, flatToken] as const;
+        })
+    ))
+    .collect() as SemanticTokenLookup;
 
 // Alias property -> the CSS properties it aliases.
 export const AliasProperties = createObjectFromEntries((Object.keys(schema.primitive) as AliasProperty[])
@@ -97,11 +99,13 @@ export type ContextualMapping = { [T in ContextualToken]: AliasTokenRef };
 
 /* Flattens a structure declared in a lookup's shape into a map from the lookup's flat token names to the
    values at the same paths. Driven by the lookup, so values can be objects themselves. */
-export function flatten<L extends Lookup, N extends Shaped<L, unknown>>(lookup: L, nested: N): { [T in LeafOf<L>]: LeafValueOf<L, N> } {
-    return createObjectFromEntries(flattenEntries(lookup, nested)) as { [T in LeafOf<L>]: LeafValueOf<L, N> };
-}
-function flattenEntries(lookup: Lookup, nested: any): [string, unknown][] {
-    return Object.entries(lookup).flatMap(([key, entry]) =>
-        typeof entry === "string" ? [[entry, nested[key]]] : flattenEntries(entry, nested[key])
-    );
+type Lookup = { readonly [group: string]: { readonly [key: string]: string } };
+type Shaped<L extends Lookup, V> = { [G in keyof L]: { [K in keyof L[G]]: V } };
+
+export function flatten<L extends Lookup, N extends Shaped<L, unknown>>(lookup: L, nested: N): { [T in Value<Value<L>>]: Value<Value<N>> } {
+    return ObjectStream.of(lookup)
+        .flatMap((group, tokens) => ObjectStream.of(tokens)
+            .mapEntries<Value<Value<L>>, Value<Value<N>>>((key, flatToken) => [flatToken, (nested as any)[group][key]])
+        )
+        .collect();
 }

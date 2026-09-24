@@ -1,4 +1,4 @@
-import {ContextualTokens, primitiveTokens, SemanticTokens} from "./schema.ts";
+import {ContextualTokensList, primitiveTokens, SemanticTokensList} from "./schema.ts";
 import type {AliasProperty, AliasToken, ContextualToken, SemanticToken, TokenOf} from "./schema.ts";
 import {aliasCustomProperties, primitiveCustomProperties} from "./css-custom-properties.ts";
 import {createObjectFromEntries, toVarRefs} from "../shared/utils.ts";
@@ -32,5 +32,5 @@ export const primitiveCssRules: CSSRules = ObjectStream.of(selectors.primitive)
 function aliasCssRules<T extends AliasToken>(tokens: T[], selector: (token: T) => string): CSSRules {
     return createObjectFromEntries(tokens.map(token => [selector(token), toVarRefs(aliasCustomProperties[token])]));
 }
-export const semanticCssRules: CSSRules = aliasCssRules(SemanticTokens, selectors.semantic);
-export const contextualCssRules: CSSRules = aliasCssRules(ContextualTokens, selectors.contextual);
+export const semanticCssRules: CSSRules = aliasCssRules(SemanticTokensList, selectors.semantic);
+export const contextualCssRules: CSSRules = aliasCssRules(ContextualTokensList, selectors.contextual);

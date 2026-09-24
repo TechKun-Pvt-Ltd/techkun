@@ -1,4 +1,4 @@
-import {AliasProperties, PrimitiveTokens, primitiveTokens} from "./schema.ts";
+import {AliasProperties, PrimitiveTokensList, primitiveTokens} from "./schema.ts";
 import type {AliasProperty, CSSProperty, PrimitiveToken, PrimitiveTokenRef} from "./schema.ts";
 import primitiveValues, {standaloneValues} from "./primitive-values.ts";
 import {contextualMapping, semanticMapping} from "./mapping.ts";
@@ -18,7 +18,7 @@ export const standaloneCssDeclarations: CSSTokenDeclarations = {
 
 // Grouped by CSS property: every font-size, then every line-height, and so on.
 export const primitiveCssDeclarations: CSSTokenDeclarations = createObjectFromEntries(
-    Object.values(AliasProperties).flat().flatMap(cssProperty => PrimitiveTokens.flatMap(token => {
+    Object.values(AliasProperties).flat().flatMap(cssProperty => PrimitiveTokensList.flatMap(token => {
         const cssToken = primitiveCustomProperties[token][cssProperty];
         return cssToken ? [[cssToken, (primitiveValues[token] as Record<CSSProperty, CSSValue>)[cssProperty]] as const] : [];
     }))

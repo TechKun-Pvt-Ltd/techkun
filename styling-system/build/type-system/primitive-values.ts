@@ -19,7 +19,7 @@ const BASE_LETTER_SPACING = 0.035;
 const LS_OFFSET = 0.01;
 
 // Size token -> power of the scale ratio its values derive from.
-const TOKEN_TO_POWER: Record<TokenOf<"typeSize">, number> = {
+const TOKEN_TO_POWER: Record<TokenOf<"type-size">, number> = {
     xs: -2,
     sm: -1,
     base: 0,
@@ -31,10 +31,10 @@ const TOKEN_TO_POWER: Record<TokenOf<"typeSize">, number> = {
     "5xl": 6,
     "6xl": 7
 };
-function createCssTypeScale(): PrimitiveValues["typeSize"] {
-    const values = Object.fromEntries(Object.keys(TOKEN_TO_POWER).map(token => [token, {}])) as PrimitiveValues["typeSize"];
+function createCssTypeScale(): PrimitiveValues["type-size"] {
+    const values = Object.fromEntries(Object.keys(TOKEN_TO_POWER).map(token => [token, {}])) as PrimitiveValues["type-size"];
     const lhAddend = BASE_LINE_HEIGHT - 1;
-    for (const [token, power] of Object.entries(TOKEN_TO_POWER) as [TokenOf<"typeSize">, number][]) {
+    for (const [token, power] of Object.entries(TOKEN_TO_POWER) as [TokenOf<"type-size">, number][]) {
         const tokenValues = values[token];
         if (token === "base") {
             tokenValues["font-size"] = "1rem";
@@ -61,7 +61,7 @@ export const standaloneValues = {
     letterSpacingOffset: `${LS_OFFSET}em`
 };
 const primitiveValuesGrouped: PrimitiveValues = {
-    typeSize: createCssTypeScale(),
+    "type-size": createCssTypeScale(),
     weight: {
         regular: {"font-weight": 400},
         medium: {"font-weight": 500},

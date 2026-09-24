@@ -27,8 +27,8 @@ export const contextualMapping: ContextualMapping = {
     "logo-text": alias(semanticTokens.body.lg, {weight: "medium"})
 };
 
-function primitive(typeSize: TokenOf<"typeSize">, weight: TokenOf<"weight"> = "regular"): PrimitiveTokenRef {
-    return {typeSize, weight};
+function primitive(typeSize: TokenOf<"type-size">, weight: TokenOf<"weight"> = "regular"): PrimitiveTokenRef {
+    return {"type-size": typeSize, weight};
 }
 function alias(tokenRef: SemanticToken, primitiveOverrides?: AliasTokenRef["primitiveOverrides"]): AliasTokenRef {
     return {tokenRef, primitiveOverrides};

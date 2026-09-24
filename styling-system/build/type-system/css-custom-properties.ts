@@ -1,4 +1,4 @@
-import {AliasProperties, ContextualTokens, primitiveTokens, SemanticTokens} from "./schema.ts";
+import {AliasProperties, ContextualTokensList, primitiveTokens, SemanticTokensList} from "./schema.ts";
 import type {AliasToken, CSSProperty, PrimitiveToken} from "./schema.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import {createObjectFromEntries} from "../shared/utils.ts";
@@ -28,6 +28,6 @@ function aliasCustomPropertiesOf<T extends AliasToken>(tokens: T[], naming: (tok
     ]));
 }
 export const aliasCustomProperties: AliasCustomProperties = {
-    ...aliasCustomPropertiesOf(SemanticTokens, (token, cssProperty) => `--type-${token}-${cssProperty}`),
-    ...aliasCustomPropertiesOf(ContextualTokens, (token, cssProperty) => `--${token}-${cssProperty}`)
+    ...aliasCustomPropertiesOf(SemanticTokensList, (token, cssProperty) => `--type-${token}-${cssProperty}`),
+    ...aliasCustomPropertiesOf(ContextualTokensList, (token, cssProperty) => `--${token}-${cssProperty}`)
 };
