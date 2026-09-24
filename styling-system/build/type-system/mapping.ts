@@ -1,4 +1,4 @@
-import {flatten, semanticTokens} from "./schema.ts";
+import {flattenSemanticMapping, semanticTokens} from "./schema.ts";
 import type {AliasTokenRef, ContextualMapping, PrimitiveTokenRef, SemanticMapping, SemanticToken, TokenOf} from "./schema.ts";
 
 const semanticMappingGrouped: SemanticMapping = {
@@ -34,4 +34,4 @@ function alias(tokenRef: SemanticToken, primitiveOverrides?: AliasTokenRef["prim
     return {tokenRef, primitiveOverrides};
 }
 
-export const semanticMapping = flatten(semanticTokens, semanticMappingGrouped);
+export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);

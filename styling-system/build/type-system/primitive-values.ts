@@ -1,5 +1,5 @@
 import {round} from "svg-path-kit/numbers";
-import {flatten, primitiveTokens} from "./schema.ts";
+import {flattenPrimitiveValues} from "./schema.ts";
 import type {PrimitiveValues, TokenOf} from "./schema.ts";
 
 /* Scale ratio — choose a musical interval:
@@ -69,5 +69,5 @@ const primitiveValuesGrouped: PrimitiveValues = {
         bold: {"font-weight": 700}
     }
 };
-const primitiveValues = flatten(primitiveTokens, primitiveValuesGrouped);
+const primitiveValues = flattenPrimitiveValues(primitiveValuesGrouped);
 export default primitiveValues;

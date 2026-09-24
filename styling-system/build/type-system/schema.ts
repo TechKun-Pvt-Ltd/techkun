@@ -1,6 +1,6 @@
 import {createObjectFromEntries} from "../shared/utils.ts";
 import type {CSSValue} from "../shared/types.ts";
-import {ObjectStream, type Value} from "../../../lib/object-stream.ts";
+import {ObjectStream} from "../../../lib/object-stream.ts";
 
 /* Every token of every level. Primitive tokens are grouped by alias property - a group of CSS properties
    a token sets together. Semantic tokens are grouped by role. Contextual tokens are a flat list. Semantic and
@@ -86,19 +86,33 @@ export type AliasTokenRef = {
 
 // Shapes values and mappings are declared in.
 export type PrimitiveValues = { [P in AliasProperty]: { [T in TokenOf<P>]: { [CP in PropertyOf<P>]: CSSValue } } };
-export type SemanticMapping = Shaped<SemanticTokenLookup, PrimitiveTokenRef>;
+export type SemanticMapping = { [R in Role]: { [V in VariantOf<R>]: PrimitiveTokenRef } };
 export type ContextualMapping = { [T in ContextualToken]: AliasTokenRef };
 
+// Flat counterparts: keyed by flat token name. A primitive token's values set only its own alias property's CSS properties.
+type PrimitiveValuesOf<T extends PrimitiveToken> = {
+    [P in AliasProperty]: T extends `${P}-${TokenOf<P>}` ? { [CP in PropertyOf<P>]: CSSValue } : never
+}[AliasProperty];
+export type FlatPrimitiveValues = { [T in PrimitiveToken]: PrimitiveValuesOf<T> };
+export type FlatSemanticMapping = { [T in SemanticToken]: PrimitiveTokenRef };
 
-/* Flattens a structure declared in a lookup's shape into a map from the lookup's flat token names to the
-   values at the same paths. Driven by the lookup, so values can be objects themselves. */
-type Lookup = { readonly [group: string]: { readonly [key: string]: string } };
-type Shaped<L extends Lookup, V> = { [G in keyof L]: { [K in keyof L[G]]: V } };
-
-export function flatten<L extends Lookup, N extends Shaped<L, unknown>>(lookup: L, nested: N): { [T in Value<Value<L>>]: Value<Value<N>> } {
-    return ObjectStream.of(lookup)
-        .flatMap((group, tokens) => ObjectStream.of(tokens)
-            .mapEntries<Value<Value<L>>, Value<Value<N>>>((key, flatToken) => [flatToken, (nested as any)[group][key]])
+/* Flatten values/mappings declared in a level's nested shape into maps keyed by flat token name, by walking
+   that level's lookup. */
+export function flattenPrimitiveValues(values: PrimitiveValues) {
+    return ObjectStream.of(primitiveTokens)
+        .flatMap((aliasProperty, tokens) => ObjectStream.of(tokens)
+            .mapEntries((token, flatToken) => [
+                flatToken, (values[aliasProperty] as Record<string, unknown>)[token]
+            ])
         )
-        .collect();
+        .collect() as FlatPrimitiveValues;
+}
+export function flattenSemanticMapping(mapping: SemanticMapping): FlatSemanticMapping {
+    return ObjectStream.of(semanticTokens)
+        .flatMap((role, variants) => ObjectStream.of(variants)
+            .mapEntries((variant, flatToken) => [
+                flatToken, (mapping[role] as Record<string, PrimitiveTokenRef>)[variant]
+            ])
+        )
+        .collect() as FlatSemanticMapping;
 }
