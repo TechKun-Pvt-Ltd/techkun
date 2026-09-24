@@ -1,5 +1,6 @@
 import {round} from "svg-path-kit/numbers";
-import type {PrimitiveValues, TypeSizeToken} from "./types.ts";
+import {flatten, primitiveTokens} from "./schema.ts";
+import type {PrimitiveValues, TokenOf} from "./schema.ts";
 
 /* Scale ratio — choose a musical interval:
    Minor Second:   1.067  (1 semitone)
@@ -18,7 +19,7 @@ const BASE_LETTER_SPACING = 0.035;
 const LS_OFFSET = 0.01;
 
 // Size token -> power of the scale ratio its values derive from.
-const TOKEN_TO_POWER: Record<TypeSizeToken, number> = {
+const TOKEN_TO_POWER: Record<TokenOf<"typeSize">, number> = {
     xs: -2,
     sm: -1,
     base: 0,
@@ -30,10 +31,10 @@ const TOKEN_TO_POWER: Record<TypeSizeToken, number> = {
     "5xl": 6,
     "6xl": 7
 };
-function createCssTypeScale() {
+function createCssTypeScale(): PrimitiveValues["typeSize"] {
     const values = Object.fromEntries(Object.keys(TOKEN_TO_POWER).map(token => [token, {}])) as PrimitiveValues["typeSize"];
     const lhAddend = BASE_LINE_HEIGHT - 1;
-    for (const [token, power] of Object.entries(TOKEN_TO_POWER) as [TypeSizeToken, number][]) {
+    for (const [token, power] of Object.entries(TOKEN_TO_POWER) as [TokenOf<"typeSize">, number][]) {
         const tokenValues = values[token];
         if (token === "base") {
             tokenValues["font-size"] = "1rem";
@@ -59,7 +60,7 @@ export const standaloneValues = {
     scaleRatio: `calc(${MIN_SCALE_RATIO} + ${MAX_SCALE_RATIO - MIN_SCALE_RATIO} * var(--mobile-s-to-laptop-mid))`,
     letterSpacingOffset: `${LS_OFFSET}em`
 };
-const primitiveValues: PrimitiveValues = {
+const primitiveValuesGrouped: PrimitiveValues = {
     typeSize: createCssTypeScale(),
     weight: {
         regular: {"font-weight": 400},
@@ -68,4 +69,5 @@ const primitiveValues: PrimitiveValues = {
         bold: {"font-weight": 700}
     }
 };
+const primitiveValues = flatten(primitiveTokens, primitiveValuesGrouped);
 export default primitiveValues;

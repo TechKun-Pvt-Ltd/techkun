@@ -1,16 +1,14 @@
-import {CSSProperties, Schema} from "./schema.ts";
-import {standaloneValues} from "./primitive-values.ts";
-import {SemanticToPrimitiveMap} from "./mapping.ts";
-import {lookupPrimitiveCssTokens, lookupSemanticCssTokens} from "./css-tokens-lookup.ts";
-import {lookupPrimitiveCssValues, lookupSemanticCssValues} from "./css-values-lookup.ts";
-import type {CSSProperty, TokenFamily} from "./types.ts";
-import {createObjectFromEntries} from "../shared/utils.ts";
+import {AliasProperties, PrimitiveTokens, primitiveTokens} from "./schema.ts";
+import type {AliasProperty, CSSProperty, PrimitiveToken, PrimitiveTokenRef} from "./schema.ts";
+import primitiveValues, {standaloneValues} from "./primitive-values.ts";
+import {contextualMapping, semanticMapping} from "./mapping.ts";
+import {aliasCustomProperties, primitiveCustomProperties} from "./css-custom-properties.ts";
+import {createObjectFromEntries, toVarRefs} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import type {CSSToken, CSSTokenDeclarations, CSSValue} from "../shared/types.ts";
 
-/* Declarations: walk the schema/mapping for each level's tokens, and for each one zip its CSS-token
-   lookup together with its resolved value. No contextual declarations - contextual tokens declare no
-   custom properties of their own, they only ever appear on the right-hand side of a rule. Standalone values
+/* Declarations: pair each token's custom properties with its values. Primitive values are the generated ones;
+   alias values are var() references to whatever custom properties their mapping points at. Standalone values
    aren't tokens, so their CSS names are paired with them here directly. */
 
 export const standaloneCssDeclarations: CSSTokenDeclarations = {
@@ -18,29 +16,34 @@ export const standaloneCssDeclarations: CSSTokenDeclarations = {
     "--ls-offset": standaloneValues.letterSpacingOffset
 };
 
-function buildPrimitiveCssDeclarations(): CSSTokenDeclarations {
-    const groups: Record<CSSProperty, [CSSToken, CSSValue][]> = createObjectFromEntries(CSSProperties.map(p => [p, []]));
-    for (const family of Object.keys(Schema) as TokenFamily[]) {
-        for (const token of Schema[family].tokens) {
-            const cssTokens = lookupPrimitiveCssTokens(family, token);
-            const values = lookupPrimitiveCssValues(family, token);
-            for (const cssProperty of Object.keys(cssTokens) as CSSProperty[]) {
-                groups[cssProperty].push([cssTokens[cssProperty], values[cssProperty]]);
-            }
-        }
-    }
-    return createObjectFromEntries(CSSProperties.flatMap(p => groups[p]));
-}
-export const primitiveCssDeclarations: CSSTokenDeclarations = buildPrimitiveCssDeclarations();
+// Grouped by CSS property: every font-size, then every line-height, and so on.
+export const primitiveCssDeclarations: CSSTokenDeclarations = createObjectFromEntries(
+    Object.values(AliasProperties).flat().flatMap(cssProperty => PrimitiveTokens.flatMap(token => {
+        const cssToken = primitiveCustomProperties[token][cssProperty];
+        return cssToken ? [[cssToken, (primitiveValues[token] as Record<CSSProperty, CSSValue>)[cssProperty]] as const] : [];
+    }))
+);
 
-function buildSemanticCssDeclarations(): CSSTokenDeclarations {
-    return ObjectStream.of(SemanticToPrimitiveMap)
-        .flatMap(token => {
-            const cssTokens = lookupSemanticCssTokens(token);
-            const values = lookupSemanticCssValues(token);
-            return ObjectStream.of(cssTokens)
-                .mapKeyToEntry(cssProperty => [cssTokens[cssProperty], values[cssProperty]]);
-        })
-        .collect();
+function resolvePrimitiveTokenRef(ref: Partial<PrimitiveTokenRef>): { [CP in CSSProperty]?: CSSValue } {
+    return Object.assign({}, ...(Object.entries(ref) as [AliasProperty, string][])
+        .map(([aliasProperty, token]) => toVarRefs(primitiveCustomProperties[(primitiveTokens[aliasProperty] as Record<string, PrimitiveToken>)[token]]))
+    );
 }
-export const semanticCssDeclarations: CSSTokenDeclarations = buildSemanticCssDeclarations();
+function pairUp(cssTokens: { [CP in CSSProperty]: CSSToken }, values: { [CP in CSSProperty]?: CSSValue }): CSSTokenDeclarations {
+    return ObjectStream.of(cssTokens).mapEntries((cssProperty, cssToken) => {
+        const value = values[cssProperty];
+        if (value === undefined) throw new Error(`No value resolved for ${cssToken}.`);
+        return [cssToken, value];
+    }).collect();
+}
+
+export const semanticCssDeclarations: CSSTokenDeclarations = ObjectStream.of(semanticMapping)
+    .flatMap((token, ref) => pairUp(aliasCustomProperties[token], resolvePrimitiveTokenRef(ref)))
+    .collect();
+
+export const contextualCssDeclarations: CSSTokenDeclarations = ObjectStream.of(contextualMapping)
+    .flatMap((token, {tokenRef, primitiveOverrides}) => pairUp(aliasCustomProperties[token], {
+        ...toVarRefs(aliasCustomProperties[tokenRef]),
+        ...resolvePrimitiveTokenRef(primitiveOverrides ?? {})
+    }))
+    .collect();

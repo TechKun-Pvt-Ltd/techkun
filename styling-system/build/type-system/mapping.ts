@@ -1,56 +1,37 @@
-import type {PrimitiveMapping, SemanticMapping, TypeSizeToken, WeightToken} from "./types.ts";
-import {ObjectStream} from "../../../lib/object-stream.ts";
+import {flatten, semanticTokens} from "./schema.ts";
+import type {AliasTokenRef, ContextualMapping, PrimitiveTokenRef, SemanticMapping, SemanticToken, TokenOf} from "./schema.ts";
 
-const SemanticToPrimitiveGrouped = {
+const semanticMappingGrouped: SemanticMapping = {
     display: {
-        sm: primitiveMapping("5xl")
+        sm: primitive("5xl")
     },
     heading: {
-        sm: primitiveMapping("xl"),
-        md: primitiveMapping("2xl"),
-        lg: primitiveMapping("3xl"),
-        xl: primitiveMapping("4xl")
+        sm: primitive("xl"),
+        md: primitive("2xl"),
+        lg: primitive("3xl"),
+        xl: primitive("4xl")
     },
     body: {
-        sm: primitiveMapping("sm"),
-        md: primitiveMapping("base"),
-        lg: primitiveMapping("lg")
+        sm: primitive("sm"),
+        md: primitive("base"),
+        lg: primitive("lg")
     }
-} satisfies { [role: string]: { [key: string]: PrimitiveMapping } };
+};
 
-const ContextualToSemantic = {
-    "hero-heading": semanticMapping("type-display-sm"),
-    "section-title": semanticMapping("type-heading-xl"),
-    "section-subtitle": semanticMapping("type-heading-md"),
-    "item-title": semanticMapping("type-heading-lg"),
-    "item-subtitle": semanticMapping("type-heading-sm"),
-    "logo-text": semanticMapping("type-body-lg", {weight: "medium"})
-} satisfies { [key: string]: SemanticMapping };
+export const contextualMapping: ContextualMapping = {
+    "hero-heading": alias(semanticTokens.display.sm),
+    "section-title": alias(semanticTokens.heading.xl),
+    "section-subtitle": alias(semanticTokens.heading.md),
+    "item-title": alias(semanticTokens.heading.lg),
+    "item-subtitle": alias(semanticTokens.heading.sm),
+    "logo-text": alias(semanticTokens.body.lg, {weight: "medium"})
+};
 
-function primitiveMapping(typeSizeToken: TypeSizeToken, weightToken: WeightToken = "regular"): PrimitiveMapping {
-    return {typeSize: typeSizeToken, weight: weightToken};
+function primitive(typeSize: TokenOf<"typeSize">, weight: TokenOf<"weight"> = "regular"): PrimitiveTokenRef {
+    return {typeSize, weight};
 }
-function semanticMapping(semanticToken: SemanticToken, primitiveOverrides?: SemanticMapping["primitiveOverrides"]): SemanticMapping {
-    return {semanticToken, primitiveOverrides};
+function alias(tokenRef: SemanticToken, primitiveOverrides?: AliasTokenRef["primitiveOverrides"]): AliasTokenRef {
+    return {tokenRef, primitiveOverrides};
 }
-type Grouped = typeof SemanticToPrimitiveGrouped;
 
-
-export type SemanticToken = {
-    [R in keyof Grouped & string]: `type-${R}-${keyof Grouped[R] & string}`
-}[keyof Grouped & string];
-export type SemanticToPrimitiveMap = { [K in SemanticToken]: PrimitiveMapping; };
-
-export type ContextualToken = keyof typeof ContextualToSemantic;
-export type ContextualToSemanticMap = { [K in ContextualToken]: SemanticMapping; };
-
-export const SemanticToPrimitiveMap: SemanticToPrimitiveMap = ObjectStream
-    .of(SemanticToPrimitiveGrouped)
-    .flatMap((role, sizes) => ObjectStream
-        .of(sizes)
-        .mapKeys(size => `type-${role}-${size}`)
-    )
-    .collect();
-export const ContextualToSemanticMap: ContextualToSemanticMap = ContextualToSemantic;
-
-export const SemanticTokens = Object.keys(SemanticToPrimitiveMap) as SemanticToken[];
+export const semanticMapping = flatten(semanticTokens, semanticMappingGrouped);
