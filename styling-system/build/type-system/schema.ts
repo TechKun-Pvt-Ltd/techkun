@@ -1,7 +1,6 @@
 import {createObjectFromEntries} from "../shared/utils.ts";
 import type {CSSValue} from "../shared/types.ts";
-import {ObjectStream} from "../../../lib/object-stream.ts";
-import type {Value} from "../../../lib/object-stream.ts";
+import {ObjectStream, type Value} from "../../../lib/object-stream.ts";
 
 /* Every token of every level. Primitive tokens are grouped by alias property - a group of CSS properties
    a token sets together. Semantic tokens are grouped by role. Contextual tokens are a flat list. Semantic and
@@ -42,6 +41,7 @@ export type AliasProperty = keyof Schema["primitive"];
 export type TokenOf<P extends AliasProperty> = Schema["primitive"][P]["tokens"][number];
 export type PropertyOf<P extends AliasProperty> = Schema["primitive"][P]["properties"][number];
 export type CSSProperty = PropertyOf<AliasProperty>;
+
 type Role = keyof Schema["semantic"];
 type VariantOf<R extends Role> = Schema["semantic"][R][number];
 
@@ -50,11 +50,6 @@ export type SemanticToken = { [R in Role]: `${R}-${VariantOf<R>}` }[Role];
 export type ContextualToken = Schema["contextual"][number];
 export type AliasToken = SemanticToken | ContextualToken;
 
-// Flat token names of each level, filled in as the lookups below are built.
-export const PrimitiveTokensList: PrimitiveToken[] = [];
-export const SemanticTokensList: SemanticToken[] = [];
-export const ContextualTokensList: ContextualToken[] = [...schema.contextual];
-
 /* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
    `semanticTokens.heading.xl` is `"heading-xl"`. */
 type PrimitiveTokenLookup = { [P in AliasProperty]: { [T in TokenOf<P>]: `${P}-${T}` } };
@@ -62,27 +57,24 @@ type SemanticTokenLookup = { [R in Role]: { [V in VariantOf<R>]: `${R}-${V}` } }
 
 export const primitiveTokens = ObjectStream.of(schema.primitive)
     .mapEntryToValue((aliasProperty, value) => createObjectFromEntries(
-        value.tokens.map(token => {
-            const flatToken = `${aliasProperty}-${token}` as PrimitiveToken;
-            PrimitiveTokensList.push(flatToken);
-            return [token, flatToken] as const;
-        })
+        value.tokens.map(token => [token, `${aliasProperty}-${token}` as PrimitiveToken] as const)
     ))
     .collect() as PrimitiveTokenLookup;
 export const semanticTokens = ObjectStream.of(schema.semantic)
     .mapEntryToValue((role, value) => createObjectFromEntries(
-        value.map(variant => {
-            const flatToken = `${role}-${variant}` as SemanticToken;
-            SemanticTokensList.push(flatToken);
-            return [variant, flatToken] as const;
-        })
+        value.map(variant => [variant, `${role}-${variant}` as SemanticToken] as const)
     ))
     .collect() as SemanticTokenLookup;
 
+// Flat token names of each level, filled in as the lookups below are built.
+export const PrimitiveTokensList: PrimitiveToken[] = Object.values(primitiveTokens).flatMap(Object.values);
+export const SemanticTokensList: SemanticToken[] = Object.values(semanticTokens).flatMap(Object.values);
+export const ContextualTokensList: ContextualToken[] = [...schema.contextual];
+
 // Alias property -> the CSS properties it aliases.
-export const AliasProperties = createObjectFromEntries((Object.keys(schema.primitive) as AliasProperty[])
-    .map(aliasProperty => [aliasProperty, schema.primitive[aliasProperty].properties])
-) as { [P in AliasProperty]: Schema["primitive"][P]["properties"] };
+export const AliasProperties = ObjectStream.of(schema.primitive)
+    .mapValues(value => value.properties)
+    .collect() as { [P in AliasProperty]: Schema["primitive"][P]["properties"] };
 
 /* Refs: how a higher level points at a lower one. Primitive tokens are referenced by their raw token per
    alias property. */
@@ -96,6 +88,7 @@ export type AliasTokenRef = {
 export type PrimitiveValues = { [P in AliasProperty]: { [T in TokenOf<P>]: { [CP in PropertyOf<P>]: CSSValue } } };
 export type SemanticMapping = Shaped<SemanticTokenLookup, PrimitiveTokenRef>;
 export type ContextualMapping = { [T in ContextualToken]: AliasTokenRef };
+
 
 /* Flattens a structure declared in a lookup's shape into a map from the lookup's flat token names to the
    values at the same paths. Driven by the lookup, so values can be objects themselves. */
