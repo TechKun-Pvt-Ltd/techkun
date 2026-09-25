@@ -1,36 +1,34 @@
 import {flattenComponentMapping, flattenSemanticMapping, primitiveTokens, semanticTokens} from "./schema.ts";
-import type {ComponentMapping, SemanticMapping, Theme, TokenRef} from "./schema.ts";
-import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {ComponentMapping, SemanticMapping, TokenRef} from "./schema.ts";
 
-const darkSemanticMapping: SemanticMapping = {
-    bg: {
-        canvas: ref(primitiveTokens.neutral["950"]),
-        surface: ref(primitiveTokens.neutral["900"]),
-        "surface-raised": ref(primitiveTokens.neutral["800"]),
-        overlay: ref(primitiveTokens["brand-2"]["950"], 0.96),
-        accent: ref(primitiveTokens["brand-2"]["900"]),
-        selection: ref(primitiveTokens["brand-1"]["950"])
-    },
-    text: {
-        primary: ref(primitiveTokens.neutral["50"]),
-        secondary: ref(primitiveTokens["neutral-tinted"]["300"]),
-        tertiary: ref(primitiveTokens.neutral["500"]),
-        accent: ref(primitiveTokens["brand-1"]["300"]),
-        "on-accent": ref(primitiveTokens["brand-2"]["50"])
-    },
-    border: {
-        default: ref(primitiveTokens.neutral["800"]),
-        strong: ref(primitiveTokens["neutral-tinted"]["700"]),
-        accent: ref(primitiveTokens["brand-2"]["900"])
-    },
-    brand: {
-        "1": ref(primitiveTokens["brand-1"]["500"]),
-        "2": ref(primitiveTokens["brand-2"]["500"]),
-        "3": ref(primitiveTokens["brand-3"]["500"])
+const semanticMappingGrouped: SemanticMapping = {
+    dark: {
+        bg: {
+            canvas: ref(primitiveTokens.neutral["950"]),
+            surface: ref(primitiveTokens.neutral["900"]),
+            "surface-raised": ref(primitiveTokens.neutral["800"]),
+            overlay: ref(primitiveTokens["brand-2"]["950"], 0.96),
+            accent: ref(primitiveTokens["brand-2"]["900"]),
+            selection: ref(primitiveTokens["brand-1"]["950"])
+        },
+        text: {
+            primary: ref(primitiveTokens.neutral["50"]),
+            secondary: ref(primitiveTokens["neutral-tinted"]["300"]),
+            tertiary: ref(primitiveTokens.neutral["500"]),
+            accent: ref(primitiveTokens["brand-1"]["300"]),
+            "on-accent": ref(primitiveTokens["brand-2"]["50"])
+        },
+        border: {
+            default: ref(primitiveTokens.neutral["800"]),
+            strong: ref(primitiveTokens["neutral-tinted"]["700"]),
+            accent: ref(primitiveTokens["brand-2"]["900"])
+        },
+        brand: {
+            "1": ref(primitiveTokens["brand-1"]["500"]),
+            "2": ref(primitiveTokens["brand-2"]["500"]),
+            "3": ref(primitiveTokens["brand-3"]["500"])
+        }
     }
-};
-const semanticMappingByTheme: { [T in Theme]: SemanticMapping } = {
-    dark: darkSemanticMapping
 };
 
 const componentMappingGrouped: ComponentMapping = {
@@ -56,7 +54,5 @@ function ref(tokenRef: TokenRef["tokenRef"], alpha?: number): TokenRef {
     return {tokenRef, alpha};
 }
 
-export const semanticMapping = ObjectStream.of(semanticMappingByTheme)
-    .mapValues(flattenSemanticMapping)
-    .collect();
+export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);
 export const componentMapping = flattenComponentMapping(componentMappingGrouped);

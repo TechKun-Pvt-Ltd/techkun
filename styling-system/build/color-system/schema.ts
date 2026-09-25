@@ -115,12 +115,12 @@ export type TokenRef = {
 
 // Shapes values and mappings are declared in.
 export type PrimitiveValues = { [R in RampKey]: { [S in StepOf<R>]: CSSValue } };
-export type SemanticMapping = { [G in SemanticGroup]: { [V in RoleOf<G>]: TokenRef } };
+export type SemanticMapping = { [Th in Theme]: { [G in SemanticGroup]: { [V in RoleOf<G>]: TokenRef } } };
 export type ComponentMapping = { [C in Component]: { [T in TargetOf<C>]: TokenRef } };
 
 // Flat counterparts: keyed by flat token name.
 export type FlatPrimitiveValues = { [T in PrimitiveToken]: CSSValue };
-export type FlatSemanticMapping = { [T in SemanticToken]: TokenRef };
+export type FlatSemanticMapping = { [Th in Theme]: { [T in SemanticToken]: TokenRef } };
 export type FlatComponentMapping = { [T in ComponentToken]: TokenRef };
 
 /* Flatten values/mappings declared in a level's nested shape into maps keyed by flat token name, by walking
@@ -135,11 +135,14 @@ export function flattenPrimitiveValues(values: PrimitiveValues): FlatPrimitiveVa
         .collect() as FlatPrimitiveValues;
 }
 export function flattenSemanticMapping(mapping: SemanticMapping): FlatSemanticMapping {
-    return ObjectStream.of(semanticTokens)
-        .flatMap((group, roles) => ObjectStream.of(roles)
-            .mapEntries((role, flatToken) => [
-                flatToken, (mapping[group] as Record<string, TokenRef>)[role]
-            ])
+    return ObjectStream.of(mapping)
+        .mapValues(themeMapping => ObjectStream.of(semanticTokens)
+            .flatMap((group, roles) => ObjectStream.of(roles)
+                .mapEntries((role, flatToken) => [
+                    flatToken, (themeMapping[group] as Record<string, TokenRef>)[role]
+                ])
+            )
+            .collect()
         )
         .collect() as FlatSemanticMapping;
 }
