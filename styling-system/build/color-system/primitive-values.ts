@@ -1,6 +1,6 @@
 import {cubicBezierEasing} from "times-fps";
 import {flattenPrimitiveValues, primitiveTokens} from "./schema.ts";
-import type {PrimitiveValues, RampKey} from "./schema.ts";
+import type {GroupedPrimitiveValues, RampKey} from "./schema.ts";
 import {generateRamp} from "./generation/generate.ts";
 import type {RampGenerationConfig} from "./generation/config.ts";
 import type {CSSCustomProperty, CSSValue} from "../shared/types.ts";
@@ -59,6 +59,6 @@ const primitiveValuesGrouped = ObjectStream.of(primitiveTokens)
             throw new Error(`Ramp "${rampKey}" has ${stepKeys.length} steps but generated ${values.length} colors.`);
         return createObjectFromEntries(stepKeys.map((step, i) => [step, values[i]] as const));
     })
-    .collect() as PrimitiveValues;
+    .collect() as GroupedPrimitiveValues;
 const primitiveValues = flattenPrimitiveValues(primitiveValuesGrouped);
 export default primitiveValues;

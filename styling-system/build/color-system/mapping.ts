@@ -1,7 +1,7 @@
 import {flattenComponentMapping, flattenSemanticMapping, primitiveTokens, semanticTokens} from "./schema.ts";
-import type {ComponentMapping, SemanticMapping, TokenRef} from "./schema.ts";
+import type {GroupedComponentMapping, GroupedSemanticMapping, TokenRef} from "./schema.ts";
 
-const semanticMappingGrouped: SemanticMapping = {
+const semanticMappingGrouped: GroupedSemanticMapping = {
     dark: {
         bg: {
             canvas: ref(primitiveTokens.neutral["950"]),
@@ -31,7 +31,7 @@ const semanticMappingGrouped: SemanticMapping = {
     }
 };
 
-const componentMappingGrouped: ComponentMapping = {
+const componentMappingGrouped: GroupedComponentMapping = {
     "btn-primary": {
         bg: ref(semanticTokens.bg.accent),
         text: ref(semanticTokens.text["on-accent"])

@@ -29,8 +29,10 @@ export type GetGroupedSemanticMapping<S extends SchemaShape> = {
 export type GetSemanticMapping<S extends SchemaShape> = { [T in GetSemanticToken<S>]: GetPrimitiveTokenRef<S> };
 export type GetContextualMapping<S extends SchemaShape> = { [T in GetContextualToken<S>]: GetAliasTokenRef<S> };
 
-export function getSemanticMappingFlattener<S extends SchemaShape>(semanticTokens: GetSemanticTokenLookup<S>) {
-    return (mapping: GetGroupedSemanticMapping<S>) => ObjectStream.of(semanticTokens)
+type SemanticMappingFlattener<S extends SchemaShape> = (mapping: GetGroupedSemanticMapping<S>) => GetSemanticMapping<S>;
+
+export function getSemanticMappingFlattener<S extends SchemaShape>(semanticTokens: GetSemanticTokenLookup<S>): SemanticMappingFlattener<S> {
+    return mapping => ObjectStream.of(semanticTokens)
         .flatMap((group, variants) => ObjectStream.of(variants)
             .mapEntries<GetSemanticToken<S>, GetPrimitiveTokenRef<S>>((variant, token) => [
                 token, (mapping[group] as Record<string, GetPrimitiveTokenRef<S>>)[variant]

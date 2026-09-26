@@ -1,10 +1,5 @@
-import {ComponentTokensList, PrimitiveTokensList, SemanticTokensList} from "./schema.ts";
-import type {Token} from "./schema.ts";
-import {createObjectFromEntries} from "../shared/utils.ts";
-import type {CSSCustomProperty} from "../shared/types.ts";
+import {buildCustomProperties, type CustomProperties} from "./schema.ts";
 
 /* Naming only: the CSS custom property each token, of any level, is declared as. */
 
-export const cssCustomProperties: { [T in Token]: CSSCustomProperty } = createObjectFromEntries(
-    [...PrimitiveTokensList, ...SemanticTokensList, ...ComponentTokensList].map(token => [token, `--color-${token}`] as const)
-);
+export const cssCustomProperties: CustomProperties = buildCustomProperties(token => `--color-${token}`);

@@ -52,7 +52,7 @@ export function getSemanticTokenLookup<S extends SchemaShape>(schema: S) {
 export type GetContextualToken<S extends SchemaShape> = S["contextual"][number];
 
 export type FormatToken<S1 extends string, S2 extends string> = `${S1}-${S2}`;
-function formatToken<S1 extends string, S2 extends string>(string1: S1, string2: S2): FormatToken<S1, S2> {
+export function formatToken<S1 extends string, S2 extends string>(string1: S1, string2: S2): FormatToken<S1, S2> {
     return `${string1}-${string2}`;
 }
 

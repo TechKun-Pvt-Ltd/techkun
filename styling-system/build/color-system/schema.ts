@@ -1,5 +1,32 @@
+import {
+    type GetComponentTokenGroup,
+    type GetComponentTokenVariant,
+    type GetPrimitiveToken,
+    getPrimitiveTokenLookup,
+    type GetPrimitiveTokenGroup,
+    type GetPrimitiveTokenVariant,
+    type GetSemanticToken,
+    getSemanticTokenLookup,
+    type GetTheme,
+    type SchemaShape
+} from "../shared/value-tokens/schema-shape.ts";
+import {
+    type GetGroupedPrimitiveValues,
+    type GetPrimitiveValues,
+    getPrimitiveValuesFlattener
+} from "../shared/value-tokens/values-schema.ts";
+import {
+    type GetGroupedComponentMapping,
+    type GetGroupedSemanticMapping,
+    type GetSemanticMapping,
+    getSemanticMappingFlattener,
+    type GetTokenRef
+} from "../shared/value-tokens/mapping-schema.ts";
+import {
+    getCustomPropertiesBuilder,
+    type GetCustomProperties
+} from "../shared/value-tokens/css-custom-properties-schema.ts";
 import {createObjectFromEntries} from "../shared/utils.ts";
-import type {CSSValue} from "../shared/types.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
 // Targets: the part of a token's name that says which CSS property it colors.
@@ -42,46 +69,29 @@ const schema = {
         "toolbar-divider": ["bg"]
     },
     themes: ["dark"]
-} as const satisfies {
-    primitive: { [rampKey: string]: readonly string[] };
-    semantic: { [group: string]: readonly string[] };
-    component: { [component: string]: readonly Target[] };
-    themes: readonly string[];
-};
+} as const satisfies SchemaShape & { component: { [component: string]: readonly Target[] } };
 type Schema = typeof schema;
 
-export type RampKey = keyof Schema["primitive"];
-export type StepOf<R extends RampKey> = Schema["primitive"][R][number];
+export type RampKey = GetPrimitiveTokenGroup<Schema>;
+export type StepOf<R extends RampKey> = GetPrimitiveTokenVariant<Schema, R>;
 
-type SemanticGroup = keyof Schema["semantic"];
-type RoleOf<G extends SemanticGroup> = Schema["semantic"][G][number];
+type Component = GetComponentTokenGroup<Schema>;
+type ComponentTokenVariant<C extends Component> = GetComponentTokenVariant<Schema, C>;
 
-type Component = keyof Schema["component"];
-type TargetOf<C extends Component> = Schema["component"][C][number];
+export type Theme = GetTheme<Schema>;
 
-export type Theme = Schema["themes"][number];
-
-export type PrimitiveToken = { [R in RampKey]: `${R}-${StepOf<R>}` }[RampKey];
-export type SemanticToken = { [G in SemanticGroup]: `${G}-${RoleOf<G>}` }[SemanticGroup];
-export type ComponentToken = { [C in Component]: `${TargetOf<C>}-${C}` }[Component];
+export type PrimitiveToken = GetPrimitiveToken<Schema>;
+export type SemanticToken = GetSemanticToken<Schema>;
+// Target first, like semantic tokens grouped by target: the target is what TargetProperties reads off.
+export type ComponentToken = { [C in Component]: `${ComponentTokenVariant<C>}-${C}` }[Component];
 export type Token = PrimitiveToken | SemanticToken | ComponentToken;
 
 /* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
    `semanticTokens.bg.canvas` is `"bg-canvas"`, `componentTokens["btn-primary"].bg` is `"bg-btn-primary"`. */
-type PrimitiveTokenLookup = { [R in RampKey]: { [S in StepOf<R>]: `${R}-${S}` } };
-type SemanticTokenLookup = { [G in SemanticGroup]: { [V in RoleOf<G>]: `${G}-${V}` } };
-type ComponentTokenLookup = { [C in Component]: { [T in TargetOf<C>]: `${T}-${C}` } };
+type ComponentTokenLookup = { [C in Component]: { [T in ComponentTokenVariant<C>]: `${T}-${C}` } };
 
-export const primitiveTokens = ObjectStream.of(schema.primitive)
-    .mapEntryToValue((rampKey, steps) => createObjectFromEntries(
-        steps.map(step => [step, `${rampKey}-${step}` as PrimitiveToken] as const)
-    ))
-    .collect() as PrimitiveTokenLookup;
-export const semanticTokens = ObjectStream.of(schema.semantic)
-    .mapEntryToValue((group, roles) => createObjectFromEntries(
-        roles.map(role => [role, `${group}-${role}` as SemanticToken] as const)
-    ))
-    .collect() as SemanticTokenLookup;
+export const primitiveTokens = getPrimitiveTokenLookup(schema);
+export const semanticTokens = getSemanticTokenLookup(schema);
 export const componentTokens = ObjectStream.of(schema.component)
     .mapEntryToValue((component, componentTargets) => createObjectFromEntries(
         componentTargets.map(target => [target, `${target}-${component}` as ComponentToken] as const)
@@ -107,51 +117,29 @@ export const TargetProperties: { [T in SemanticToken | ComponentToken]?: TargetP
         .collect()
 };
 
+export type GroupedPrimitiveValues = GetGroupedPrimitiveValues<Schema>;
+export type PrimitiveValues = GetPrimitiveValues<Schema>;
+export const flattenPrimitiveValues = getPrimitiveValuesFlattener(primitiveTokens);
+
 // A mapped token points at one lower-level color, optionally at a reduced alpha.
-export type TokenRef = {
-    tokenRef: PrimitiveToken | SemanticToken;
-    alpha?: number;
-};
+export type TokenRef = GetTokenRef<Schema> & { alpha?: number };
 
-// Shapes values and mappings are declared in.
-export type PrimitiveValues = { [R in RampKey]: { [S in StepOf<R>]: CSSValue } };
-export type SemanticMapping = { [Th in Theme]: { [G in SemanticGroup]: { [V in RoleOf<G>]: TokenRef } } };
-export type ComponentMapping = { [C in Component]: { [T in TargetOf<C>]: TokenRef } };
+export type GroupedSemanticMapping = GetGroupedSemanticMapping<Schema, TokenRef>;
+export type SemanticMapping = GetSemanticMapping<Schema, TokenRef>;
+export const flattenSemanticMapping = getSemanticMappingFlattener<Schema, TokenRef>(semanticTokens);
 
-// Flat counterparts: keyed by flat token name.
-export type FlatPrimitiveValues = { [T in PrimitiveToken]: CSSValue };
-export type FlatSemanticMapping = { [Th in Theme]: { [T in SemanticToken]: TokenRef } };
-export type FlatComponentMapping = { [T in ComponentToken]: TokenRef };
-
-/* Flatten values/mappings declared in a level's nested shape into maps keyed by flat token name, by walking
-   that level's lookup. */
-export function flattenPrimitiveValues(values: PrimitiveValues): FlatPrimitiveValues {
-    return ObjectStream.of(primitiveTokens)
-        .flatMap((rampKey, steps) => ObjectStream.of(steps)
-            .mapEntries((step, flatToken) => [
-                flatToken, (values[rampKey] as Record<string, CSSValue>)[step]
-            ])
-        )
-        .collect() as FlatPrimitiveValues;
-}
-export function flattenSemanticMapping(mapping: SemanticMapping): FlatSemanticMapping {
-    return ObjectStream.of(mapping)
-        .mapValues(themeMapping => ObjectStream.of(semanticTokens)
-            .flatMap((group, roles) => ObjectStream.of(roles)
-                .mapEntries((role, flatToken) => [
-                    flatToken, (themeMapping[group] as Record<string, TokenRef>)[role]
-                ])
-            )
-            .collect()
-        )
-        .collect() as FlatSemanticMapping;
-}
-export function flattenComponentMapping(mapping: ComponentMapping): FlatComponentMapping {
+export type GroupedComponentMapping = GetGroupedComponentMapping<Schema, TokenRef>;
+export type ComponentMapping = { [T in ComponentToken]: TokenRef };
+export function flattenComponentMapping(mapping: GroupedComponentMapping): ComponentMapping {
     return ObjectStream.of(componentTokens)
         .flatMap((component, tokens) => ObjectStream.of(tokens)
             .mapEntries((target, flatToken) => [
                 flatToken, (mapping[component] as Record<string, TokenRef>)[target]
             ])
         )
-        .collect() as FlatComponentMapping;
+        .collect() as ComponentMapping;
 }
+
+
+export type CustomProperties = GetCustomProperties<Schema, ComponentToken>;
+export const buildCustomProperties = getCustomPropertiesBuilder<Schema, ComponentToken>(PrimitiveTokensList, SemanticTokensList, ComponentTokensList);
