@@ -2,7 +2,7 @@ import type {Theme, TokenRef} from "./schema.ts";
 import primitiveValues, {seedValues} from "./primitive-values.ts";
 import {componentMapping, semanticMapping} from "./mapping.ts";
 import {cssCustomProperties} from "./css-custom-properties.ts";
-import type {CSSPropertyRegistration, CSSToken, CSSTokenDeclarations, CSSValue} from "../shared/types.ts";
+import type {CSSPropertyRegistration, CSSCustomProperty, CSSCustomPropertyDeclarations, CSSValue} from "../shared/types.ts";
 import {toVarRef} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
@@ -19,17 +19,17 @@ const seedCssProperties = {
     "--color-brand-3-hue": {value: seedValues.brand3Hue, registration: HUE},
     "--color-brand-lightness": {value: seedValues.brandLightness, registration: FRACTION},
     "--color-brand-chroma": {value: seedValues.brandChroma, registration: FRACTION}
-} satisfies { [K in CSSToken]: { value: CSSValue; registration: CSSPropertyRegistration } };
+} satisfies { [K in CSSCustomProperty]: { value: CSSValue; registration: CSSPropertyRegistration } };
 
 // Themes: where each theme's semantic tokens are declared, and the color-scheme declared with them.
 const themes = {
     dark: {selector: ":root", colorScheme: "dark"}
 } as const satisfies { [T in Theme]: { selector: string; colorScheme: string } };
 
-export const seedCssDeclarations: CSSTokenDeclarations = ObjectStream.of(seedCssProperties)
+export const seedCssDeclarations: CSSCustomPropertyDeclarations = ObjectStream.of(seedCssProperties)
     .mapValues(({value}) => value)
     .collect();
-export const seedCssRegistrations: Record<CSSToken, CSSPropertyRegistration> = ObjectStream.of(seedCssProperties)
+export const seedCssRegistrations: Record<CSSCustomProperty, CSSPropertyRegistration> = ObjectStream.of(seedCssProperties)
     .mapValues(({registration}) => registration)
     .collect();
 
@@ -38,7 +38,7 @@ function resolveTokenRef({tokenRef, alpha}: TokenRef): CSSValue {
     return alpha === undefined ? varRef : `oklch(from ${varRef} l c h / ${alpha})`;
 }
 
-export const primitiveCssDeclarations: CSSTokenDeclarations = ObjectStream.of(primitiveValues)
+export const primitiveCssDeclarations: CSSCustomPropertyDeclarations = ObjectStream.of(primitiveValues)
     .mapKeys(token => cssCustomProperties[token])
     .collect();
 
@@ -47,10 +47,10 @@ export const themeCssDeclarations = ObjectStream.of(themes)
         ...spec,
         declarations: ObjectStream.of(semanticMapping[theme])
             .mapEntries((token, ref) => [cssCustomProperties[token], resolveTokenRef(ref)])
-            .collect() as CSSTokenDeclarations
+            .collect() as CSSCustomPropertyDeclarations
     }))
     .collect();
 
-export const componentCssDeclarations: CSSTokenDeclarations = ObjectStream.of(componentMapping)
+export const componentCssDeclarations: CSSCustomPropertyDeclarations = ObjectStream.of(componentMapping)
     .mapEntries((token, ref) => [cssCustomProperties[token], resolveTokenRef(ref)])
     .collect();

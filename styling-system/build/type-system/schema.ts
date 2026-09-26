@@ -1,10 +1,38 @@
-import {createObjectFromEntries} from "../shared/utils.ts";
-import type {CSSValue} from "../shared/types.ts";
-import {ObjectStream} from "../../../lib/object-stream.ts";
+import {
+    type GetContextualToken,
+    type GetCSSPropertyOf,
+    type GetPrimitiveToken,
+    getPrimitiveTokenLookup,
+    type GetPrimitiveTokenVariant,
+    getPropertyProxyMap,
+    type GetPropertyProxyMap,
+    type GetProxyProperty,
+    type GetSemanticToken,
+    getSemanticTokenLookup,
+    type SchemaShape
+} from "../shared/composite-tokens/schema-shape.ts";
+import {
+    type GetGroupedPrimitiveValues,
+    type GetPrimitiveValues,
+    getPrimitiveValuesFlattener
+} from "../shared/composite-tokens/values-schema.ts";
+import {
+    type GetAliasTokenRef,
+    type GetContextualMapping,
+    type GetGroupedSemanticMapping,
+    type GetPrimitiveTokenRef,
+    getSemanticMappingFlattener
+} from "../shared/composite-tokens/mapping-schema.ts";
+import {
+    type GetAliasCustomProperties,
+    getAliasCustomPropertiesBuilder,
+    type GetPrimitiveCustomProperties,
+    getPrimitiveCustomPropertiesBuilder
+} from "../shared/composite-tokens/css-custom-properties-schema.ts";
 
-/* Every token of every level. Primitive tokens are grouped by alias property - a group of CSS properties
+/* Every token of every level. Primitive tokens are grouped by proxy property - a group of CSS properties
    a token sets together. Semantic tokens are grouped by role. Contextual tokens are a flat list. Semantic and
-   contextual tokens set every alias property. This structure stays internal: it's transformed below into
+   contextual tokens set every proxy property. This structure stays internal: it's transformed below into
    the flat token names, lookups for them, and the shapes mappings and values must adhere to. */
 const schema = {
     primitive: {
@@ -23,96 +51,49 @@ const schema = {
         body: ["sm", "md", "lg"]
     },
     contextual: ["hero-heading", "section-title", "section-subtitle", "item-title", "item-subtitle", "logo-text"]
-} as const satisfies {
-    primitive: { [aliasProperty: string]: { tokens: readonly string[]; properties: readonly string[] } };
-    semantic: { [role: string]: readonly string[] };
-    contextual: readonly string[];
-};
+} as const satisfies SchemaShape;
 type Schema = typeof schema;
 
-// type KebabCase<S extends string> = S extends `${infer Head}${infer Tail}`
-//     ? `${Head extends Lowercase<Head> ? Head : `-${Lowercase<Head>}`}${KebabCase<Tail>}`
-//     : S;
-// function kebabCase<S extends string>(s: S): KebabCase<S> {
-//     return s.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`) as KebabCase<S>;
-// }
+export type ProxyProperty = GetProxyProperty<Schema>;
+export type PrimitiveTokenVariant<P extends ProxyProperty> = GetPrimitiveTokenVariant<Schema, P>;
+export type CSSPropertyOf<P extends ProxyProperty> = GetCSSPropertyOf<Schema, P>;
+export type CSSProperty = CSSPropertyOf<ProxyProperty>;
 
-export type AliasProperty = keyof Schema["primitive"];
-export type TokenOf<P extends AliasProperty> = Schema["primitive"][P]["tokens"][number];
-export type PropertyOf<P extends AliasProperty> = Schema["primitive"][P]["properties"][number];
-export type CSSProperty = PropertyOf<AliasProperty>;
-
-type Role = keyof Schema["semantic"];
-type VariantOf<R extends Role> = Schema["semantic"][R][number];
-
-export type PrimitiveToken = { [P in AliasProperty]: `${P}-${TokenOf<P>}` }[AliasProperty];
-export type SemanticToken = { [R in Role]: `${R}-${VariantOf<R>}` }[Role];
-export type ContextualToken = Schema["contextual"][number];
+export type PrimitiveToken = GetPrimitiveToken<Schema>;
+export type SemanticToken = GetSemanticToken<Schema>;
+export type ContextualToken = GetContextualToken<Schema>;
 export type AliasToken = SemanticToken | ContextualToken;
 
 /* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
    `semanticTokens.heading.xl` is `"heading-xl"`. */
-type PrimitiveTokenLookup = { [P in AliasProperty]: { [T in TokenOf<P>]: `${P}-${T}` } };
-type SemanticTokenLookup = { [R in Role]: { [V in VariantOf<R>]: `${R}-${V}` } };
+export const primitiveTokens = getPrimitiveTokenLookup(schema);
+export const semanticTokens = getSemanticTokenLookup(schema);
 
-export const primitiveTokens = ObjectStream.of(schema.primitive)
-    .mapEntryToValue((aliasProperty, value) => createObjectFromEntries(
-        value.tokens.map(token => [token, `${aliasProperty}-${token}` as PrimitiveToken] as const)
-    ))
-    .collect() as PrimitiveTokenLookup;
-export const semanticTokens = ObjectStream.of(schema.semantic)
-    .mapEntryToValue((role, value) => createObjectFromEntries(
-        value.map(variant => [variant, `${role}-${variant}` as SemanticToken] as const)
-    ))
-    .collect() as SemanticTokenLookup;
+// Flat token names of each level, read off the lookups.
+export const primitiveTokensList: PrimitiveToken[] = Object.values(primitiveTokens).flatMap(Object.values);
+export const semanticTokensList: SemanticToken[] = Object.values(semanticTokens).flatMap(Object.values);
+export const contextualTokensList: ContextualToken[] = [...schema.contextual];
 
-// Flat token names of each level, filled in as the lookups below are built.
-export const PrimitiveTokensList: PrimitiveToken[] = Object.values(primitiveTokens).flatMap(Object.values);
-export const SemanticTokensList: SemanticToken[] = Object.values(semanticTokens).flatMap(Object.values);
-export const ContextualTokensList: ContextualToken[] = [...schema.contextual];
+export type PropertyProxyMap = GetPropertyProxyMap<Schema>;
+// Proxy property -> the CSS properties it stands in for.
+export const propertyProxyMap: PropertyProxyMap = getPropertyProxyMap(schema);
 
-// Alias property -> the CSS properties it aliases.
-export const AliasProperties = ObjectStream.of(schema.primitive)
-    .mapValues(value => value.properties)
-    .collect() as { [P in AliasProperty]: Schema["primitive"][P]["properties"] };
 
-/* Refs: how a higher level points at a lower one. Primitive tokens are referenced by their raw token per
-   alias property. */
-export type PrimitiveTokenRef = { [P in AliasProperty]: TokenOf<P> };
-export type AliasTokenRef = {
-    tokenRef: SemanticToken;
-    primitiveOverrides?: Partial<PrimitiveTokenRef>;
-};
+export type GroupedPrimitiveValues = GetGroupedPrimitiveValues<Schema>;
+export type PrimitiveValues = GetPrimitiveValues<Schema>;
+export const flattenPrimitiveValues = getPrimitiveValuesFlattener(primitiveTokens);
 
-// Shapes values and mappings are declared in.
-export type PrimitiveValues = { [P in AliasProperty]: { [T in TokenOf<P>]: { [CP in PropertyOf<P>]: CSSValue } } };
-export type SemanticMapping = { [R in Role]: { [V in VariantOf<R>]: PrimitiveTokenRef } };
-export type ContextualMapping = { [T in ContextualToken]: AliasTokenRef };
 
-// Flat counterparts: keyed by flat token name. A primitive token's values set only its own alias property's CSS properties.
-type PrimitiveValuesOf<T extends PrimitiveToken> = {
-    [P in AliasProperty]: T extends `${P}-${TokenOf<P>}` ? { [CP in PropertyOf<P>]: CSSValue } : never
-}[AliasProperty];
-export type FlatPrimitiveValues = { [T in PrimitiveToken]: PrimitiveValuesOf<T> };
-export type FlatSemanticMapping = { [T in SemanticToken]: PrimitiveTokenRef };
+export type PrimitiveTokenRef = GetPrimitiveTokenRef<Schema>;
+export type AliasTokenRef = GetAliasTokenRef<Schema>;
 
-/* Flatten values/mappings declared in a level's nested shape into maps keyed by flat token name, by walking
-   that level's lookup. */
-export function flattenPrimitiveValues(values: PrimitiveValues) {
-    return ObjectStream.of(primitiveTokens)
-        .flatMap((aliasProperty, tokens) => ObjectStream.of(tokens)
-            .mapEntries((token, flatToken) => [
-                flatToken, (values[aliasProperty] as Record<string, unknown>)[token]
-            ])
-        )
-        .collect() as FlatPrimitiveValues;
-}
-export function flattenSemanticMapping(mapping: SemanticMapping): FlatSemanticMapping {
-    return ObjectStream.of(semanticTokens)
-        .flatMap((role, variants) => ObjectStream.of(variants)
-            .mapEntries((variant, flatToken) => [
-                flatToken, (mapping[role] as Record<string, PrimitiveTokenRef>)[variant]
-            ])
-        )
-        .collect() as FlatSemanticMapping;
-}
+export type GroupedSemanticMapping = GetGroupedSemanticMapping<Schema>;
+export const flattenSemanticMapping = getSemanticMappingFlattener(semanticTokens);
+
+export type ContextualMapping = GetContextualMapping<Schema>;
+
+
+export type PrimitiveCustomProperties = GetPrimitiveCustomProperties<Schema>;
+export type AliasCustomProperties = GetAliasCustomProperties<Schema>;
+export const buildPrimitiveCustomProperties = getPrimitiveCustomPropertiesBuilder(primitiveTokens, propertyProxyMap);
+export const buildAliasCustomProperties = getAliasCustomPropertiesBuilder<Schema>(semanticTokensList, contextualTokensList, propertyProxyMap);

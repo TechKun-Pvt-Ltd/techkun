@@ -1,7 +1,7 @@
 import {flattenSemanticMapping, semanticTokens} from "./schema.ts";
-import type {AliasTokenRef, ContextualMapping, PrimitiveTokenRef, SemanticMapping, SemanticToken, TokenOf} from "./schema.ts";
+import type {AliasTokenRef, ContextualMapping, PrimitiveTokenRef, GroupedSemanticMapping, SemanticToken, PrimitiveTokenVariant} from "./schema.ts";
 
-const semanticMappingGrouped: SemanticMapping = {
+const semanticMappingGrouped: GroupedSemanticMapping = {
     display: {
         sm: primitive("5xl")
     },
@@ -27,7 +27,7 @@ export const contextualMapping: ContextualMapping = {
     "logo-text": alias(semanticTokens.body.lg, {weight: "medium"})
 };
 
-function primitive(typeSize: TokenOf<"type-size">, weight: TokenOf<"weight"> = "regular"): PrimitiveTokenRef {
+function primitive(typeSize: PrimitiveTokenVariant<"type-size">, weight: PrimitiveTokenVariant<"weight"> = "regular"): PrimitiveTokenRef {
     return {"type-size": typeSize, weight};
 }
 function alias(tokenRef: SemanticToken, primitiveOverrides?: AliasTokenRef["primitiveOverrides"]): AliasTokenRef {

@@ -1,7 +1,7 @@
-export type CSSToken = `--${string}`;
+export type CSSCustomProperty = `--${string}`;
 export type CSSValue = string | number;
-export type CSSTokenDeclarations = {
-    [K in CSSToken]: CSSValue;
+export type CSSCustomPropertyDeclarations = {
+    [K in CSSCustomProperty]: CSSValue;
 };
 export type CSSRules = {
     [selector: string]: {

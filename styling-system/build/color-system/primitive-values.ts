@@ -3,7 +3,7 @@ import {flattenPrimitiveValues, primitiveTokens} from "./schema.ts";
 import type {PrimitiveValues, RampKey} from "./schema.ts";
 import {generateRamp} from "./generation/generate.ts";
 import type {RampGenerationConfig} from "./generation/config.ts";
-import type {CSSToken, CSSValue} from "../shared/types.ts";
+import type {CSSCustomProperty, CSSValue} from "../shared/types.ts";
 import {createObjectFromEntries} from "../shared/utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 
@@ -23,7 +23,7 @@ const brandEasing = {
     tints: cubicBezierEasing(0.3, 0.2, 1, 1),
     shades: cubicBezierEasing(0, 0, 0.7, 0.8)
 };
-function brandRamp(hue: CSSToken): RampGenerationConfig {
+function brandRamp(hue: CSSCustomProperty): RampGenerationConfig {
     return {
         type: "tints-shades",
         baseColor: `oklch(var(--color-brand-lightness) var(--color-brand-chroma) var(${hue}))`,

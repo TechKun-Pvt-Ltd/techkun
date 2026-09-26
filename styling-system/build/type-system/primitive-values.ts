@@ -1,6 +1,8 @@
 import {round} from "svg-path-kit/numbers";
-import {flattenPrimitiveValues} from "./schema.ts";
-import type {PrimitiveValues, TokenOf} from "./schema.ts";
+import type {GroupedPrimitiveValues, PrimitiveTokenVariant} from "./schema.ts";
+import {type CSSPropertyOf, flattenPrimitiveValues} from "./schema.ts";
+import {ObjectStream} from "../../../lib/object-stream.ts";
+import type {CSSValue} from "../shared/types.ts";
 
 /* Scale ratio — choose a musical interval:
    Minor Second:   1.067  (1 semitone)
@@ -19,7 +21,7 @@ const BASE_LETTER_SPACING = 0.035;
 const LS_OFFSET = 0.01;
 
 // Size token -> power of the scale ratio its values derive from.
-const TOKEN_TO_POWER: Record<TokenOf<"type-size">, number> = {
+const TOKEN_TO_POWER: Record<PrimitiveTokenVariant<"type-size">, number> = {
     xs: -2,
     sm: -1,
     base: 0,
@@ -31,28 +33,29 @@ const TOKEN_TO_POWER: Record<TokenOf<"type-size">, number> = {
     "5xl": 6,
     "6xl": 7
 };
-function createCssTypeScale(): PrimitiveValues["type-size"] {
-    const values = Object.fromEntries(Object.keys(TOKEN_TO_POWER).map(token => [token, {}])) as PrimitiveValues["type-size"];
+function createCssTypeScale(): GroupedPrimitiveValues["type-size"] {
     const lhAddend = BASE_LINE_HEIGHT - 1;
-    for (const [token, power] of Object.entries(TOKEN_TO_POWER) as [TokenOf<"type-size">, number][]) {
-        const tokenValues = values[token];
-        if (token === "base") {
-            tokenValues["font-size"] = "1rem";
-            tokenValues["line-height"] = BASE_LINE_HEIGHT;
-            tokenValues["letter-spacing"] = `${BASE_LETTER_SPACING}em`;
-            continue;
-        }
+    return ObjectStream.of(TOKEN_TO_POWER)
+        .mapEntryToValue((variant, power): { [P in CSSPropertyOf<"type-size">]: CSSValue; } => {
+            if (variant === "base")
+                return {
+                    "font-size": "1rem",
+                    "line-height": BASE_LINE_HEIGHT,
+                    "letter-spacing": `${BASE_LETTER_SPACING}em`
+                };
 
-        // language=CSS prefix="div { --var: " suffix="; }"
-        const operand = power === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${power})`;
-        // language=CSS prefix="div { --var: " suffix="; }"
-        tokenValues["font-size"] = `round(var(--font-size-base) * ${operand}, 1px)`;
+            const scaleRatioInverse = Math.pow(MAX_SCALE_RATIO, -power);
+            // language=CSS prefix="div { --var: " suffix="; }"
+            const operand = power === 1 ? "var(--scale-ratio)" : `pow(var(--scale-ratio), ${power})`;
 
-        const scaleRatioInverse = Math.pow(MAX_SCALE_RATIO, -power);
-        tokenValues["line-height"] = round(1 + lhAddend * scaleRatioInverse, 1e-1);
-        tokenValues["letter-spacing"] = `${round((BASE_LETTER_SPACING + LS_OFFSET) * scaleRatioInverse - LS_OFFSET, 1e-4)}em`;
-    }
-    return values;
+            // language=CSS prefix="div { --var: " suffix="; }"
+            return {
+                "font-size": `round(var(--font-size-base) * ${operand}, 1px)`,
+                "line-height": round(1 + lhAddend * scaleRatioInverse, 1e-1),
+                "letter-spacing": `${round((BASE_LETTER_SPACING + LS_OFFSET) * scaleRatioInverse - LS_OFFSET, 1e-4)}em`
+            };
+        })
+        .collect() as GroupedPrimitiveValues["type-size"];
 }
 
 export const standaloneValues = {
@@ -60,7 +63,7 @@ export const standaloneValues = {
     scaleRatio: `calc(${MIN_SCALE_RATIO} + ${MAX_SCALE_RATIO - MIN_SCALE_RATIO} * var(--mobile-s-to-laptop-mid))`,
     letterSpacingOffset: `${LS_OFFSET}em`
 };
-const primitiveValuesGrouped: PrimitiveValues = {
+const primitiveValuesGrouped: GroupedPrimitiveValues = {
     "type-size": createCssTypeScale(),
     weight: {
         regular: {"font-weight": 400},
