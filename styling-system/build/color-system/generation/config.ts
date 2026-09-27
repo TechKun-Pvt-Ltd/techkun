@@ -12,7 +12,7 @@ export type TintsShadesConfig = {
     mixStrength: PerSide<number>;
     easing?: PerSide<EasingFunction>;
     // How many steps come before the base color. Defaults to an even split; shades take the rest.
-    tints?: number;
+    tintSteps?: number;
     whiteOverride?: string;
     blackOverride?: string;
 };

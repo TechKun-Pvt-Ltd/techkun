@@ -14,7 +14,7 @@ export type GetPrimitiveToken<S extends SchemaShape> = S["primitive"][number];
 export type GetSemanticToken<S extends SchemaShape> = S["semantic"][number];
 export type GetComponentToken<S extends SchemaShape> = S["component"] extends readonly string[] ? S["component"][number] : never;
 
-export type GetToken<S extends SchemaShape> = GetPrimitiveToken<S> | GetSemanticToken<S> | GetComponentToken<S>;
+type GetToken<S extends SchemaShape> = GetPrimitiveToken<S> | GetSemanticToken<S> | GetComponentToken<S>;
 
 export type GetPrimitiveValues<S extends SchemaShape> = {
     [PT in GetPrimitiveToken<S>]: CSSValue;

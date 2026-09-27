@@ -2,11 +2,19 @@ import {round} from "svg-path-kit/numbers";
 import type {EasingFunction} from "times-fps";
 import type {BlendConfig, PerSide, RampGenerationConfig, TintsShadesConfig} from "./config.ts";
 import type {CSSValue} from "../../shared/types.ts";
+import {createObjectFromEntries} from "../../shared/utils.ts";
 
-/* Turns one ramp's config into its ordered list of colors, lightest first. Knows nothing about what the ramp
-   or its steps are called - the caller zips the list with its step names. */
+/* Turns one ramp's config into its colors, lightest first, keyed by the step names the caller passes in.
+   Knows nothing about what the ramp is called. */
 
-export function generateRamp(config: RampGenerationConfig, count: number): CSSValue[] {
+export function generateRampSteps<S extends string>(config: RampGenerationConfig, steps: readonly S[]): { [K in S]: CSSValue } {
+    const values = generateRamp(config, steps.length);
+    if (values.length !== steps.length)
+        throw new Error(`A ramp of ${steps.length} steps generated ${values.length} colors.`);
+    return createObjectFromEntries(steps.map((step, i) => [step, values[i]] as const));
+}
+
+function generateRamp(config: RampGenerationConfig, count: number): CSSValue[] {
     return config.type === "tints-shades" ? generateTintsShades(config, count) : generateBlend(config, count);
 }
 
@@ -22,10 +30,10 @@ function perSide<T extends number | EasingFunction>(value: PerSide<T>, side: "ti
 }
 
 function generateTintsShades(
-    {baseColor, mixStrength, easing = linear, tints: tintsCount, whiteOverride, blackOverride}: TintsShadesConfig,
+    {baseColor, mixStrength, easing = linear, tintSteps, whiteOverride, blackOverride}: TintsShadesConfig,
     count: number
 ): CSSValue[] {
-    const tintsTotal = tintsCount ?? Math.floor((count - 1) / 2);
+    const tintsTotal = tintSteps ?? Math.floor((count - 1) / 2);
     const shadesTotal = count - 1 - tintsTotal;
     if (tintsTotal < 0 || shadesTotal < 0) throw new Error(`A tints-shades ramp of ${count} steps can't have ${tintsTotal} tints.`);
 
