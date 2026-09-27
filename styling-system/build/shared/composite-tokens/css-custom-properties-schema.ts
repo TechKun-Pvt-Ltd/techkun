@@ -15,8 +15,8 @@ import {createObjectFromEntries} from "../utils.ts";
 
 export type GetPrimitiveCustomProperties<S extends SchemaShape> = {
     [T in GetPrimitiveToken<S>]: {
-    [CP in GetCSSPropertyOf<S, GetProxyProperty<S>>]?: CSSCustomProperty;
-} & Record<string, CSSCustomProperty>
+        [CP in GetCSSPropertyOf<S, GetProxyProperty<S>>]?: CSSCustomProperty;
+    } & Record<string, CSSCustomProperty>
 };
 
 export function getPrimitiveCustomPropertiesBuilder<S extends SchemaShape>(

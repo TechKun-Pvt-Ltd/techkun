@@ -14,3 +14,6 @@ export type CSSPropertyRegistration = {
     inherits: boolean;
     initialValue: CSSValue;
 };
+
+type ReservedRefKey = "ref" | "modifiers";
+export type NoReservedRefKeys<A> = [Extract<keyof A, ReservedRefKey>] extends [never] ? object : never;

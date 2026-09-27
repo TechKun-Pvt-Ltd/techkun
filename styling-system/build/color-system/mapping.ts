@@ -1,5 +1,5 @@
 import {flattenComponentMapping, flattenSemanticMapping, primitiveTokens, semanticTokens} from "./schema.ts";
-import type {GroupedComponentMapping, GroupedSemanticMapping, TokenRef} from "./schema.ts";
+import type {GroupedComponentMapping, GroupedSemanticMapping, SemanticMappingTokenRef} from "./schema.ts";
 
 const semanticMappingGrouped: GroupedSemanticMapping = {
     dark: {
@@ -50,8 +50,8 @@ const componentMappingGrouped: GroupedComponentMapping = {
     }
 };
 
-function ref(tokenRef: TokenRef["tokenRef"], alpha?: number): TokenRef {
-    return {tokenRef, alpha};
+function ref(tokenRef: SemanticMappingTokenRef["ref"], alpha?: number): SemanticMappingTokenRef {
+    return {ref: tokenRef, alpha};
 }
 
 export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);

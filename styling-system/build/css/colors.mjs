@@ -1,5 +1,5 @@
 // This module is the parser.
-import {declarations, registrations, rules, themes} from "../color-system/index.ts";
+import {declarations, customPropertyRegistrations, rules, themeDeclarations} from "../color-system/index.ts";
 
 /**
  * @param {Record<string, string | number>} record
@@ -11,7 +11,7 @@ const printDeclarations = (record, indent) => Object.entries(record)
 
 // language=CSS
 export default `
-${Object.entries(registrations)
+${Object.entries(customPropertyRegistrations)
     .map(([name, {syntax, inherits, initialValue}]) =>
         `@property ${name} {\n\tsyntax: "${syntax}";\n\tinherits: ${inherits};\n\tinitial-value: ${initialValue};\n}`
     ).join("\n")}
@@ -19,7 +19,7 @@ ${Object.entries(registrations)
     :root {
         ${printDeclarations(declarations, "\t\t")}
     }
-    ${Object.values(themes)
+    ${Object.values(themeDeclarations)
         .map(({selector, colorScheme, declarations}) =>
             `${selector} {\n\t\tcolor-scheme: ${colorScheme};\n\t\t${printDeclarations(declarations, "\t\t")}\n\t}`
         ).join("\n\t")}

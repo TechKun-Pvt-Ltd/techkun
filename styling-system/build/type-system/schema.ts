@@ -37,11 +37,11 @@ import {
 const schema = {
     primitive: {
         "type-size": {
-            tokens: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
+            variants: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
             properties: ["font-size", "line-height", "letter-spacing"]
         },
         weight: {
-            tokens: ["regular", "medium", "semibold", "bold"],
+            variants: ["regular", "medium", "semibold", "bold"],
             properties: ["font-weight"]
         }
     },

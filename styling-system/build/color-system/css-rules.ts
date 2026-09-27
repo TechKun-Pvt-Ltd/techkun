@@ -1,8 +1,8 @@
-import {ComponentTokensList, SemanticTokensList, TargetProperties} from "./schema.ts";
+import {componentTokensList, semanticTokensList, TargetProperties} from "./schema.ts";
 import type {ComponentToken, SemanticToken} from "./schema.ts";
 import {cssCustomProperties} from "./css-custom-properties.ts";
 import type {CSSRules} from "../shared/types.ts";
-import {createObjectFromEntries, toVarRef} from "../shared/utils.ts";
+import {createObjectFromEntries, mergeAll, toVarRef} from "../shared/utils.ts";
 
 /* Rules: one utility per semantic/component token, setting its target property to the token's own custom
    property. Tokens without a target property (brand) are skipped. Theme-independent, since a token's custom
@@ -22,5 +22,7 @@ function cssRulesOf<T extends SemanticToken | ComponentToken>(tokens: T[], selec
     }));
 }
 
-export const semanticCssRules: CSSRules = cssRulesOf(SemanticTokensList, selectors.semantic);
-export const componentCssRules: CSSRules = cssRulesOf(ComponentTokensList, selectors.component);
+const semanticCssRules: CSSRules = cssRulesOf(semanticTokensList, selectors.semantic);
+const componentCssRules: CSSRules = cssRulesOf(componentTokensList, selectors.component);
+
+export const rules = mergeAll([semanticCssRules, componentCssRules]);
