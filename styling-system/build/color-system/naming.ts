@@ -1,23 +1,21 @@
-import type {AliasToken} from "./schema/lookups.ts";
-import {buildCssCustomProperties, type CSSCustomProperties} from "./schema/shapes.ts";
-import type {CSSValue} from "../shared/types.ts";
-import {toVarRef} from "../shared/utils.ts";
+import type {SimpleCustomPropertyNaming} from "../shared/simple-tokens/custom-properties.ts";
+import type {SimpleSelectorNaming} from "../shared/simple-tokens/emitter.ts";
+import type {FlatSchema, Theme} from "./system.ts";
+import type {Seed} from "./custom-properties.ts";
 
-/* Naming only: the CSS custom property each token, of any level, is declared as, how it's referenced, and the
-   utility selector each semantic/component token gets. */
+/* Naming only, in one place: the custom property each seed and token is declared as, and the selectors they're
+   used from. Entity 2 sees only the custom-property half, entity 4 only the selector half. */
 
 const PREFIX = "color";
 
-export const cssCustomProperties: CSSCustomProperties = buildCssCustomProperties(token => `--${PREFIX}-${token}`);
+// Where each theme's semantic tokens are declared.
+const themeSelectors = {
+    dark: ":root"
+} as const satisfies { [T in Theme]: string };
 
-export function tokenVar(token: keyof CSSCustomProperties): CSSValue {
-    return toVarRef(cssCustomProperties[token]);
-}
-
-export function seedProperty<S extends string>(seed: S) {
-    return `--${PREFIX}-${seed}` as const;
-}
-
-export function utilitySelector(token: AliasToken) {
-    return `.${PREFIX}-${token}` as const;
-}
+export const colorNaming = {
+    standalone: seed => `--${PREFIX}-${seed}`,
+    token: token => `--${PREFIX}-${token}`,
+    utilitySelector: token => `.${PREFIX}-${token}`,
+    contextSelector: ({theme}) => themeSelectors[theme]
+} satisfies SimpleCustomPropertyNaming<FlatSchema, Seed> & SimpleSelectorNaming<FlatSchema>;

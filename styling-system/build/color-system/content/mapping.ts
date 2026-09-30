@@ -1,8 +1,5 @@
-import {primitiveTokens, semanticTokens} from "../schema/lookups.ts";
-import {flattenComponentMapping, flattenSemanticMapping} from "../schema/shapes.ts";
-import type {GroupedComponentMapping, GroupedSemanticMapping, SemanticMappingTokenRef, ComponentMappingTokenRef} from "../schema/shapes.ts";
-import {assertNoCycles} from "../../shared/utils.ts";
-import {ObjectStream} from "../../../../lib/object-stream.ts";
+import {colorSchema} from "../spec.ts";
+import type {ComponentMappingTokenRef, GroupedComponentMapping, GroupedSemanticMapping, SemanticMappingTokenRef} from "../system.ts";
 
 function ref<R extends ComponentMappingTokenRef["ref"]>(tokenRef: R, alpha?: number): { ref: R; alpha?: number } {
     return {ref: tokenRef, alpha};
@@ -10,7 +7,9 @@ function ref<R extends ComponentMappingTokenRef["ref"]>(tokenRef: R, alpha?: num
 const semanticRef = ref<SemanticMappingTokenRef["ref"]>;
 const componentRef = ref<ComponentMappingTokenRef["ref"]>;
 
-const semanticMappingGrouped: GroupedSemanticMapping = {
+const {primitive: primitiveTokens, semantic: semanticTokens} = colorSchema;
+
+export const semanticMapping: GroupedSemanticMapping = {
     dark: {
         bg: {
             canvas: semanticRef(primitiveTokens.neutral[950]),
@@ -40,7 +39,7 @@ const semanticMappingGrouped: GroupedSemanticMapping = {
     }
 };
 
-const componentMappingGrouped: GroupedComponentMapping = {
+export const componentMapping: GroupedComponentMapping = {
     "btn-primary": {
         bg: componentRef(semanticTokens.bg.accent),
         text: componentRef(semanticTokens.text["on-accent"])
@@ -58,12 +57,3 @@ const componentMappingGrouped: GroupedComponentMapping = {
         bg: componentRef(semanticTokens.border.accent)
     }
 };
-
-export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);
-export const componentMapping = flattenComponentMapping(componentMappingGrouped);
-
-// Primitive tokens aren't mapped, so a ref to one ends the chain.
-assertNoCycles({
-    ...ObjectStream.of(semanticMapping).mapValues(({ref}) => ref).collect(),
-    ...ObjectStream.of(componentMapping).mapValues(({ref}) => ref).collect()
-}, "color token reference");

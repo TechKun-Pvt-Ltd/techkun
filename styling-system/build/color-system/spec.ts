@@ -1,6 +1,4 @@
-// Targets: the part of a token's name that says which CSS property it colors.
-export const TARGETS = ["bg", "text", "border", "fill", "stroke"] as const;
-export type Target = typeof TARGETS[number];
+import {ColorSchema, type Target} from "./system.ts";
 
 type ColorSystemSchemaShape = {
     primitive: { [group: string]: readonly string[] };
@@ -11,7 +9,7 @@ type ColorSystemSchemaShape = {
 
 const STEPS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] as const;
 
-export const spec = {
+const spec = {
     primitive: {
         "brand-1": STEPS,
         "brand-2": STEPS,
@@ -34,3 +32,5 @@ export const spec = {
     themes: ["dark"]
 } as const satisfies ColorSystemSchemaShape;
 export type Spec = typeof spec;
+
+export const colorSchema = new ColorSchema(spec);

@@ -1,9 +1,10 @@
 import {cubicBezierEasing} from "times-fps";
-import {primitiveTokens, type RampKey} from "../schema/lookups.ts";
-import {flattenPrimitiveValues, type GroupedPrimitiveValues} from "../schema/shapes.ts";
+import {colorSchema} from "../spec.ts";
+import type {GroupedPrimitiveValues, RampKey} from "../system.ts";
+import type {Seed} from "../custom-properties.ts";
+import {seedVar} from "./seeds.ts";
 import {generateRampSteps} from "../generation/generate.ts";
 import type {RampGenerationConfig} from "../generation/config.ts";
-import {seedVar, type Seed} from "./seeds.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 
 const brandEasing = {
@@ -38,8 +39,7 @@ const rampConfigs: Record<RampKey, RampGenerationConfig> = {
     }
 };
 
-const primitiveValuesGrouped = ObjectStream.of(primitiveTokens)
+const primitiveValues = ObjectStream.of(colorSchema.primitive)
     .mapEntryToValue((rampKey, steps) => generateRampSteps(rampConfigs[rampKey], Object.keys(steps)))
     .collect() as GroupedPrimitiveValues;
-const primitiveValues = flattenPrimitiveValues(primitiveValuesGrouped);
 export default primitiveValues;

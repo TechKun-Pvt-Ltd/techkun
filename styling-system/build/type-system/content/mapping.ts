@@ -1,8 +1,7 @@
-import {type ComponentToken, type SemanticToken, semanticTokens} from "../schema/lookups.ts";
-import {flattenSemanticMapping } from "../schema/shapes.ts";
-import type {PrimitiveTokenRef, AliasTokenRef, ComponentMapping, ComponentMappingTokenRef, GroupedSemanticMapping} from "../schema/shapes.ts";
-import {assertNoCycles} from "../../shared/utils.ts";
-import {ObjectStream} from "../../../../lib/object-stream.ts";
+import {typeSchema} from "../spec.ts";
+import type {AliasTokenRef, ComponentMapping, ComponentToken, GroupedSemanticMapping, PrimitiveTokenRef, SemanticToken} from "../system.ts";
+
+const semanticTokens = typeSchema.semantic;
 
 function primitive(typeSize: PrimitiveTokenRef["ref"]["type-size"], weight: PrimitiveTokenRef["ref"]["weight"] = "regular"): PrimitiveTokenRef {
     return {kind: "primitive", ref: {"type-size": typeSize, weight}};
@@ -19,7 +18,7 @@ const componentRef = {
     alias: aliasRef<AliasTokenRef<SemanticToken | ComponentToken>>
 };
 
-const semanticMappingGrouped: GroupedSemanticMapping = {
+export const semanticMapping: GroupedSemanticMapping = {
     display: {
         sm: semanticRef.primitive("5xl")
     },
@@ -44,14 +43,3 @@ export const componentMapping: ComponentMapping = {
     "item-subtitle": componentRef.alias(semanticTokens.heading.sm),
     "logo-text": componentRef.alias(semanticTokens.body.lg, {weight: "medium"})
 };
-
-export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);
-
-// A primitive ref ends the chain; an alias ref continues it at the token it aliases.
-function aliasedToken(ref: ComponentMappingTokenRef) {
-    return ref.kind === "alias" ? ref.ref : undefined;
-}
-assertNoCycles({
-    ...ObjectStream.of(semanticMapping).mapValues(aliasedToken).collect(),
-    ...ObjectStream.of(componentMapping).mapValues(aliasedToken).collect()
-}, "type token reference");

@@ -1,9 +1,8 @@
 import {round} from "svg-path-kit/numbers";
-import type {CSSPropertyOf, PrimitiveTokenVariant} from "../schema/lookups.ts";
-import type {PrimitiveValues} from "../schema/shapes.ts";
+import type {CSSPropertyOf, PrimitiveTokenVariant, PrimitiveValues} from "../system.ts";
+import {typeProperties} from "../custom-properties.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import type {CSSValue} from "../../shared/types.ts";
-import {primitiveVars} from "../naming.ts";
 import {LS_OFFSET, MAX_SCALE_RATIO, standaloneVar} from "./standalones.ts";
 
 // Inputs of the scale.
@@ -40,7 +39,7 @@ function createCssTypeScale(): PrimitiveValues["type-size"] {
 
             // language=CSS prefix="div { --var: " suffix="; }"
             return {
-                "font-size": `round(${primitiveVars("type-size", "base")["font-size"]} * ${operand}, 1px)`,
+                "font-size": `round(${typeProperties.primitiveVars("type-size", "base")["font-size"]} * ${operand}, 1px)`,
                 "line-height": round(1 + lhAddend * scaleRatioInverse, 1e-1),
                 "letter-spacing": `${round((BASE_LETTER_SPACING + LS_OFFSET) * scaleRatioInverse - LS_OFFSET, 1e-4)}em`
             };

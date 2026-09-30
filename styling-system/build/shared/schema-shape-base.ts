@@ -24,3 +24,34 @@ export type GetTokenRef<S extends SchemaShapeBase, T, A extends NoReservedRefKey
     ref: T;
     modifiers?: GetModifiersRef<S>;
 } & A;
+
+
+/* The token lists every schema has, whatever its primitives look like. */
+export abstract class Schema<S extends SchemaShapeBase> {
+    readonly shape: S;
+
+    protected constructor(shape: S) {
+        this.shape = shape;
+    }
+
+    get semanticTokens(): GetSemanticToken<S>[] {
+        return [...this.shape.semantic];
+    }
+    get componentTokens(): GetComponentToken<S>[] {
+        // TS can't narrow an optional level of a generic shape, hence the cast.
+        return [...(this.shape.component ?? [])] as GetComponentToken<S>[];
+    }
+    get aliasTokens(): GetAliasToken<S>[] {
+        return [...this.semanticTokens, ...this.componentTokens];
+    }
+    // Every combination of one context per modifier - `[{theme: "dark"}]`. Empty for a schema without modifiers.
+    get modifierContexts(): GetModifiersRef<S>[] {
+        const modifiers = Object.entries(this.shape.modifiers ?? {});
+        if (modifiers.length === 0) return [];
+        return modifiers.reduce<{ [modifier: string]: string }[]>(
+            (combinations, [modifier, contexts]) => combinations.flatMap(combination =>
+                contexts.map(context => ({...combination, [modifier]: context}))),
+            [{}]
+        ) as GetModifiersRef<S>[];
+    }
+}

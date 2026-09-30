@@ -1,4 +1,5 @@
-import type {CompositeSchemaShape} from "../../shared/composite-tokens/schema-shape.ts";
+import type {CompositeSchemaShape} from "../shared/composite-tokens/schema.ts";
+import {TypeSchema} from "./system.ts";
 
 type TypeSystemSchemaShape = {
     primitive: CompositeSchemaShape["primitive"];
@@ -8,9 +9,9 @@ type TypeSystemSchemaShape = {
 
 /* Every token of every level. Primitive tokens are grouped by proxy property - a group of CSS properties
    a token sets together. Semantic tokens are grouped by role. Component tokens are a flat list. Semantic and
-   component tokens set every proxy property. This structure stays internal: lookups.ts transforms it into the
-   flat token names and lookups for them, and shapes.ts into the shapes mappings and values must adhere to. */
-export const spec = {
+   component tokens set every proxy property. This structure stays internal: TypeSchema transforms it into the
+   flat schema and the lookups for it. */
+const spec = {
     primitive: {
         "type-size": {
             variants: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
@@ -29,3 +30,5 @@ export const spec = {
     component: ["hero-heading", "section-title", "section-subtitle", "item-title", "item-subtitle", "logo-text"]
 } as const satisfies TypeSystemSchemaShape;
 export type Spec = typeof spec;
+
+export const typeSchema = new TypeSchema(spec);

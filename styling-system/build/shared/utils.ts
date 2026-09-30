@@ -75,3 +75,14 @@ export function assertNoCycles(next: { [key: string]: string | undefined }, desc
         for (const key of path) settled.add(key);
     }
 }
+
+/* Flattening nested content goes through `as` casts, so a missing or stray key can slip past the types. Flattening
+   walks the schema's lookups, so a gap in the content shows up as a key holding `undefined` rather than a missing
+   key. Throws unless the record has exactly the expected keys, each holding a value. */
+export function assertComplete(expected: readonly string[], record: object, description: string): void {
+    for (const key of expected)
+        if ((record as { [key: string]: unknown })[key] === undefined) throw new Error(`Missing ${description} "${key}".`);
+    const expectedKeys = new Set(expected);
+    for (const key of Object.keys(record))
+        if (!expectedKeys.has(key)) throw new Error(`Unexpected ${description} "${key}".`);
+}

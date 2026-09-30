@@ -1,20 +1,9 @@
-// This module is the parser.
-import { declarations, rules } from "../type-system/index.ts";
+// This module is the parser: it decides which layer each group lands in, then prints.
+import {typeEmitter} from "../type-system/index.ts";
+import {layer, printCSS} from "../shared/css.ts";
 
-// language=CSS
-export default `
-@layer base {
-    :root {
-        ${Object.entries(declarations).map(([name, value]) => `${name}: ${value};`).join("\n\t\t")}
-    }
-}
-@layer utilities {
-    ${Object.entries(rules)
-        .map(([selector, rules]) =>
-            `${selector} {\n\t\t${Object
-                .entries(rules)
-                .map(([property, value]) => `${property}: ${value};`).join("\n\t\t")
-            }\n\t}`
-        ).join("\n\t")}
-}
-`.trim();
+export default printCSS([
+    ...typeEmitter.registrations(),
+    layer("base", typeEmitter.declarations()),
+    layer("utilities", typeEmitter.utilities())
+]);
