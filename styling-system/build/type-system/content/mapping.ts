@@ -1,20 +1,22 @@
-import {semanticTokens} from "../schema/lookups.ts";
+import {type ComponentToken, type SemanticToken, semanticTokens} from "../schema/lookups.ts";
 import {flattenSemanticMapping } from "../schema/shapes.ts";
-import type {PrimitiveTokenRef, AliasTokenRef, ComponentMapping, ComponentMappingTokenRef, GroupedSemanticMapping, SemanticMappingTokenRef} from "../schema/shapes.ts";
+import type {PrimitiveTokenRef, AliasTokenRef, ComponentMapping, ComponentMappingTokenRef, GroupedSemanticMapping} from "../schema/shapes.ts";
+import {assertNoCycles} from "../../shared/utils.ts";
+import {ObjectStream} from "../../../../lib/object-stream.ts";
 
 function primitive(typeSize: PrimitiveTokenRef["ref"]["type-size"], weight: PrimitiveTokenRef["ref"]["weight"] = "regular"): PrimitiveTokenRef {
     return {kind: "primitive", ref: {"type-size": typeSize, weight}};
 }
-function aliasRef<R extends ComponentMappingTokenRef>(tokenRef: R["ref"], override?: AliasTokenRef["override"]) {
+function aliasRef<R extends AliasTokenRef>(tokenRef: R["ref"], override?: AliasTokenRef["override"]) {
     return {kind: "alias", ref: tokenRef, override} as R;
 }
 const semanticRef = {
     primitive,
-    alias: aliasRef<SemanticMappingTokenRef>
+    alias: aliasRef<AliasTokenRef<SemanticToken>>
 };
 const componentRef = {
     primitive,
-    alias: aliasRef<ComponentMappingTokenRef>
+    alias: aliasRef<AliasTokenRef<SemanticToken | ComponentToken>>
 };
 
 const semanticMappingGrouped: GroupedSemanticMapping = {
@@ -44,3 +46,12 @@ export const componentMapping: ComponentMapping = {
 };
 
 export const semanticMapping = flattenSemanticMapping(semanticMappingGrouped);
+
+// A primitive ref ends the chain; an alias ref continues it at the token it aliases.
+function aliasedToken(ref: ComponentMappingTokenRef) {
+    return ref.kind === "alias" ? ref.ref : undefined;
+}
+assertNoCycles({
+    ...ObjectStream.of(semanticMapping).mapValues(aliasedToken).collect(),
+    ...ObjectStream.of(componentMapping).mapValues(aliasedToken).collect()
+}, "type token reference");

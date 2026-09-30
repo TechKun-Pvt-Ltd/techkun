@@ -1,16 +1,11 @@
-import type {
-    GetComponentToken,
-    GetPrimitiveToken,
-    GetSemanticToken, SchemaShape
-} from "../../shared/simple-tokens/schema-shape.ts";
-import {createObjectFromEntries} from "../../shared/utils.ts";
+import type {GetPrimitiveToken, SimpleSchemaShape} from "../../shared/simple-tokens/schema-shape.ts";
+import type {GetComponentToken, GetSemanticToken} from "../../shared/schema-shape-base.ts";
+import {assertUnique, createObjectFromEntries, hyphenJoin, type HyphenJoin} from "../../shared/utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import {spec, TARGETS, type Spec, type Target} from "./spec.ts";
 
-type FormatToken<S1 extends string, S2 extends string> = `${S1}-${S2}`;
-function formatToken<S1 extends string, S2 extends string>(string1: S1, string2: S2): FormatToken<S1, S2> {
-    return `${string1}-${string2}`;
-}
+type FormatToken<S1 extends string, S2 extends string> = HyphenJoin<S1, S2>;
+const formatToken = hyphenJoin;
 
 /* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
    `semanticTokens.bg.canvas` is `"bg-canvas"`, `componentTokens["btn-primary"].bg` is `"bg-btn-primary"`. */
@@ -45,7 +40,7 @@ export type Component = keyof Spec["component"];
 export type ComponentTokenVariant<C extends Component> = Spec["component"][C][number];
 type ComponentTokenLookup = {
     [C in Component]: {
-        [T in ComponentTokenVariant<C>]: `${T}-${C}`
+        [T in ComponentTokenVariant<C>]: FormatToken<T, C & string>;
     }
 };
 export const componentTokens = ObjectStream.of(spec.component)
@@ -61,8 +56,9 @@ const flatSchema = {
     semantic: Object.values(semanticTokens).flatMap(variants => Object.values(variants)),
     component: Object.values(componentTokens).flatMap(variants => Object.values(variants)),
     modifiers: { theme: spec.themes }
-} as const satisfies SchemaShape;
+} as const satisfies SimpleSchemaShape;
 export type FlatSchema = typeof flatSchema;
+assertUnique([...flatSchema.primitive, ...flatSchema.semantic, ...flatSchema.component], "color token");
 
 export type PrimitiveToken = GetPrimitiveToken<FlatSchema>;
 export const primitiveTokensList: PrimitiveToken[] = flatSchema.primitive;

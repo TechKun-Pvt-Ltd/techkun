@@ -6,7 +6,7 @@ type ColorSystemSchemaShape = {
     primitive: { [group: string]: readonly string[] };
     semantic: { [G in Target]?: readonly string[] } & { [group: string]: readonly string[] };
     component: { [component: string]: readonly Target[] };
-    themes: readonly string[];
+    themes: readonly ("light" | "dark")[];
 };
 
 const STEPS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] as const;

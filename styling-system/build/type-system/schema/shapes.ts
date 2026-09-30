@@ -1,11 +1,11 @@
 import type {
     GetAliasCSSCustomProperties,
     GetAliasTokenRef,
-    GetComponentMapping,
+    GetComponentMapping, GetComponentMappingTokenRef,
     GetPrimitiveCSSCustomProperties,
     GetPrimitiveTokenRef,
     GetPrimitiveValues,
-    GetSemanticMapping
+    GetSemanticMapping, GetSemanticMappingTokenRef
 } from "../../shared/composite-tokens/schema-shape.ts";
 import {createObjectFromEntries} from "../../shared/utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
@@ -58,10 +58,10 @@ export function buildAliasCustomProperties(
 // ========== Mapping ==========
 
 export type PrimitiveTokenRef = GetPrimitiveTokenRef<FlatSchema>;
-export type AliasTokenRef = GetAliasTokenRef<FlatSchema>;
+export type AliasTokenRef<T extends AliasToken = AliasToken> = GetAliasTokenRef<FlatSchema, T>;
 
 export type SemanticMapping = GetSemanticMapping<FlatSchema>;
-export type SemanticMappingTokenRef = SemanticMapping[SemanticToken];
+export type SemanticMappingTokenRef = GetSemanticMappingTokenRef<FlatSchema>;
 export type GroupedSemanticMapping = {
     [G in SemanticTokenGroup]: {
         [V in SemanticTokenVariant<G>]: SemanticMappingTokenRef
@@ -78,4 +78,4 @@ export function flattenSemanticMapping(mapping: GroupedSemanticMapping): Semanti
 }
 
 export type ComponentMapping = GetComponentMapping<FlatSchema>;
-export type ComponentMappingTokenRef = ComponentMapping[ComponentToken];
+export type ComponentMappingTokenRef = GetComponentMappingTokenRef<FlatSchema>;

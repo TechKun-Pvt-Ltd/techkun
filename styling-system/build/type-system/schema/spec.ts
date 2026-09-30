@@ -1,7 +1,7 @@
-import type {SchemaShape} from "../../shared/composite-tokens/schema-shape.ts";
+import type {CompositeSchemaShape} from "../../shared/composite-tokens/schema-shape.ts";
 
 type TypeSystemSchemaShape = {
-    primitive: SchemaShape["primitive"];
+    primitive: CompositeSchemaShape["primitive"];
     semantic: { [role: string]: readonly string[] };
     component: readonly string[];
 };

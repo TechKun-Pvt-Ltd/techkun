@@ -1,21 +1,18 @@
 import type {
-    GetComponentToken,
+    CompositeSchemaShape,
     GetCSSPropertyOf,
     GetPropertyProxyMap,
     GetProxyProperty,
-    GetSemanticToken,
-    GetVariantOf,
-    SchemaShape
+    GetVariantOf
 } from "../../shared/composite-tokens/schema-shape.ts";
 import {getPropertyProxyMap} from "../../shared/composite-tokens/schema-shape.ts";
-import {createObjectFromEntries} from "../../shared/utils.ts";
+import type {GetComponentToken, GetSemanticToken} from "../../shared/schema-shape-base.ts";
+import {assertUnique, createObjectFromEntries, hyphenJoin, type HyphenJoin} from "../../shared/utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import {spec, type Spec} from "./spec.ts";
 
-type FormatToken<S1 extends string, S2 extends string> = `${S1}-${S2}`;
-function formatToken<S1 extends string, S2 extends string>(string1: S1, string2: S2): FormatToken<S1, S2> {
-    return `${string1}-${string2}`;
-}
+type FormatToken<S1 extends string, S2 extends string> = HyphenJoin<S1, S2>;
+const formatToken = hyphenJoin;
 
 /* Lookups: the nested structure a level is declared in, with the flat token name at each leaf -
    `semanticTokens.heading.xl` is `"heading-xl"`. */
@@ -37,8 +34,12 @@ const flatSchema = {
     primitive: spec.primitive,
     semantic: Object.values(semanticTokens).flatMap(variants => Object.values(variants)),
     component: spec.component
-} as const satisfies SchemaShape;
+} as const satisfies CompositeSchemaShape;
 export type FlatSchema = typeof flatSchema;
+// A primitive token is a variant of its proxy property, so its name only has to be unique within that property.
+for (const [proxyProperty, {variants}] of Object.entries(flatSchema.primitive))
+    assertUnique(variants, `${proxyProperty} token`);
+assertUnique([...flatSchema.semantic, ...flatSchema.component], "type alias token");
 
 export type ProxyProperty = GetProxyProperty<FlatSchema>;
 export type PrimitiveTokenVariant<P extends ProxyProperty> = GetVariantOf<FlatSchema, P>;

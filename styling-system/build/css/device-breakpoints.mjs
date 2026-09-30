@@ -1,17 +1,14 @@
-import {deviceBreakpoint} from "../../../app/utils/css/device-query.ts";
+import {deviceBreakpoint} from "../device-breakpoints.ts";
+import {toKebabCase} from "../shared/utils.ts";
+
+const breakpointProperties = Object.entries(deviceBreakpoint)
+    .map(([device, value]) => `--${toKebabCase(device)}: ${value}rem`);
 
 // language=CSS
 export default `
 @layer base {
     :root {
-        --mobile-s: ${deviceBreakpoint.mobileS}rem;
-        --mobile-m: ${deviceBreakpoint.mobileM}rem;
-        --mobile-l: ${deviceBreakpoint.mobileL}rem;
-        --tablet: ${deviceBreakpoint.tablet}rem;
-        --laptop: ${deviceBreakpoint.laptop}rem;
-        --laptop-mid: ${deviceBreakpoint.laptopMid}rem;
-        --laptop-l: ${deviceBreakpoint.laptopL}rem;
-        --desktop: ${deviceBreakpoint.desktop}rem;
+        ${breakpointProperties.join(";\n        ")};
     }
 }
 `;

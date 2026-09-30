@@ -14,7 +14,7 @@ export default `
             `${selector} {\n\t\t${Object
                 .entries(rules)
                 .map(([property, value]) => `${property}: ${value};`).join("\n\t\t")
-            };\n\t}`
+            }\n\t}`
         ).join("\n\t")}
 }
 `.trim();
