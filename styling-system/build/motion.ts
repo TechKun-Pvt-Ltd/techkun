@@ -1,5 +1,10 @@
-// Cubic-bezier control points (x1, y1, x2, y2) of the standard Penner curves, named by curve.
-export const motionEasing = {
+// Cubic-bezier control points (x1, y1, x2, y2) of the CSS keyword curves and the standard Penner curves,
+// named by curve. `default` is CSS's `ease`, its default timing function.
+export const easing = {
+    default: [0.25, 0.1, 0.25, 1],
+    out: [0, 0, 0.58, 1],
+    inOut: [0.42, 0, 0.58, 1],
+
     inQuad: [0.55, 0.085, 0.68, 0.53],
     inCubic: [0.55, 0.055, 0.675, 0.19],
     inQuart: [0.895, 0.03, 0.685, 0.22],

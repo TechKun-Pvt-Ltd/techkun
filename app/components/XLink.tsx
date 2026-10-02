@@ -5,7 +5,7 @@ import {X_LOGO_PATH_HREF} from "@/app/(site)/components/Shared.tsx";
 import {css} from "@emotion/react";
 
 const linkCss = css`
-    transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: 0.3s var(--ease-out-cubic);
     transition-property: ${gradientColor1}, ${gradientColor2};
     ${gradientColor1}: currentColor;
     ${gradientColor2}: currentColor;

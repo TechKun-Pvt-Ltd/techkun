@@ -1,7 +1,7 @@
-import {motionEasing} from "../motion.ts";
+import {easing} from "../motion.ts";
 import {toKebabCase} from "../shared/utils.ts";
 
-const easingProperties = Object.entries(motionEasing)
+const easingProperties = Object.entries(easing)
     .map(([curve, points]) => `--ease-${toKebabCase(curve)}: cubic-bezier(${points.join(", ")})`);
 
 // language=CSS

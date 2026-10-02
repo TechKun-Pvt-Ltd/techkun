@@ -3,6 +3,7 @@ import React, {ReactNode} from "react";
 import {css} from "@emotion/react";
 import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
 import cssSupports from "@/app/utils/css/supports";
+import {easing} from "@/styling-system/build/motion.ts";
 
 const INITIAL = "initial";
 const FOCUSED = "focused";
@@ -16,7 +17,7 @@ const transition: {
     ease: Easing;
 } = {
     duration: 0.15,
-    ease: [0.215, 0.61, 0.355, 1]
+    ease: easing.outCubic
 };
 
 const buttonCss = css`
