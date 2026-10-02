@@ -1,7 +1,7 @@
 import type {CSSValue, NoReservedRefKeys} from "../types.ts";
 import type {GetComponentToken, GetSemanticToken} from "../schema-shape-base.ts";
 import type {StandaloneValues} from "../standalones.ts";
-import {assertComplete, assertNoCycles} from "../utils.ts";
+import {assertComplete, assertMapped, assertNoCycles} from "../utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import type {
     CompositeSchema, CompositeSchemaShape, GetComponentMappingTokenRef, GetCSSPropertyOf, GetProxyProperty,
@@ -19,10 +19,10 @@ export type GetPrimitiveValues<S extends CompositeSchemaShape> = {
     };
 };
 export type GetSemanticMapping<S extends CompositeSchemaShape, A extends NoReservedRefKeys<A> = {}> = {
-    [ST in GetSemanticToken<S>]: GetSemanticMappingTokenRef<S, A>;
+    [ST in GetSemanticToken<S>]: readonly GetSemanticMappingTokenRef<S, A>[];
 };
 export type GetComponentMapping<S extends CompositeSchemaShape, A extends NoReservedRefKeys<A> = {}> = {
-    [CT in GetComponentToken<S>]: GetComponentMappingTokenRef<S, A>;
+    [CT in GetComponentToken<S>]: readonly GetComponentMappingTokenRef<S, A>[];
 };
 
 export type CompositeTokenContent<S extends CompositeSchemaShape, N extends string, A extends NoReservedRefKeys<A>> = {
@@ -32,9 +32,10 @@ export type CompositeTokenContent<S extends CompositeSchemaShape, N extends stri
     component: GetComponentMapping<S, A>;
 };
 
-// A primitive ref ends the chain; an alias ref continues it at the token it aliases.
-function aliasedToken(ref: { kind: "primitive" | "alias"; ref: unknown }): string | undefined {
-    return ref.kind === "alias" ? ref.ref as string : undefined;
+// A primitive ref ends the chain; an alias ref continues it at the token it aliases. Every ref of a token counts,
+// whatever its modifiers.
+function aliasedTokens(refs: readonly { kind: "primitive" | "alias"; ref: unknown }[]): string[] {
+    return refs.flatMap(ref => ref.kind === "alias" ? [ref.ref as string] : []);
 }
 
 export class CompositeTokenStore<S extends CompositeSchemaShape, N extends string = never, A extends NoReservedRefKeys<A> = {}> {
@@ -59,9 +60,11 @@ export class CompositeTokenStore<S extends CompositeSchemaShape, N extends strin
         }
         assertComplete(schema.semanticTokens, this.semantic, `${description} semantic mapping`);
         assertComplete(schema.componentTokens, this.component, `${description} component mapping`);
+        assertMapped(this.semantic, `${description} semantic token`);
+        assertMapped(this.component, `${description} component token`);
         assertNoCycles({
-            ...ObjectStream.of(this.semantic).mapValues(aliasedToken).collect(),
-            ...ObjectStream.of(this.component).mapValues(aliasedToken).collect()
+            ...ObjectStream.of(this.semantic).mapValues(aliasedTokens).collect(),
+            ...ObjectStream.of(this.component).mapValues(aliasedTokens).collect()
         }, `${description} token reference`);
     }
 }

@@ -142,22 +142,21 @@ function flattenByLookup(lookup: object, grouped: object) {
         .collect();
 }
 
+// Every theme's ref for a token, each under that theme.
 function flattenSemanticMapping(semanticTokens: SemanticTokenLookup, mapping: GroupedSemanticMapping): GetSemanticMapping<FlatSchema, Adjustments> {
-    return ObjectStream.of(mapping)
-        .flatMap((theme, themeMapping) => ObjectStream.of(semanticTokens)
-            .flatMap((group, variants) => {
-                const themeMappingElement = themeMapping[group] as Record<SemanticTokenVariant<SemanticTokenGroup>, SemanticMappingTokenRef>;
-                return ObjectStream.of(variants)
-                    .mapEntries((variant, token) => {
-                        const mappingTokenRef = themeMappingElement[variant];
-                        return [
-                            token,
-                            {...mappingTokenRef, modifiers: {...mappingTokenRef.modifiers, theme}}
-                        ] as const;
-                    });
-            })
-        )
-        .collect();
+    const flat: { [T in Leaf<SemanticTokenLookup>]?: SemanticMappingTokenRef[] } = {};
+    for (const [theme, themeMapping] of Object.entries(mapping) as [Theme, GroupedSemanticMapping[Theme]][]) {
+        const themeRefs = flattenByLookup(semanticTokens, themeMapping) as { [T in Leaf<SemanticTokenLookup>]?: SemanticMappingTokenRef };
+        for (const [token, ref] of Object.entries(themeRefs) as [Leaf<SemanticTokenLookup>, SemanticMappingTokenRef | undefined][])
+            if (ref !== undefined) (flat[token] ??= []).push({...ref, modifiers: {...ref.modifiers, theme}});
+    }
+    return flat as GetSemanticMapping<FlatSchema, Adjustments>;
+}
+
+// A component token has the one ref it's declared with, under every theme.
+function flattenComponentMapping(componentTokens: ComponentTokenLookup, mapping: GroupedComponentMapping): GetComponentMapping<FlatSchema, Adjustments> {
+    const refs = flattenByLookup(componentTokens, mapping) as { [T in Leaf<ComponentTokenLookup>]?: ComponentMappingTokenRef };
+    return ObjectStream.of(refs).mapValues(ref => ref === undefined ? undefined : [ref]).collect() as GetComponentMapping<FlatSchema, Adjustments>;
 }
 
 export class ColorTokenStore extends SimpleTokenStore<FlatSchema, Seed, Adjustments> {
@@ -166,7 +165,7 @@ export class ColorTokenStore extends SimpleTokenStore<FlatSchema, Seed, Adjustme
             standalones: content.seeds,
             primitive: flattenByLookup(schema.primitive, content.primitive) as GetPrimitiveValues<FlatSchema>,
             semantic: flattenSemanticMapping(schema.semantic, content.semantic),
-            component: flattenByLookup(schema.component, content.component) as GetComponentMapping<FlatSchema, Adjustments>
+            component: flattenComponentMapping(schema.component, content.component)
         }, "color");
     }
 }

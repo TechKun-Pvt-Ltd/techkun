@@ -58,22 +58,28 @@ export function assertUnique(names: readonly string[], description: string): voi
     }
 }
 
-/* Each key points at the next key it references, or at nothing. A key missing from the record ends a chain,
-   so references to another level can be passed through as they are. Throws if a chain comes back around -
-   CSS would silently resolve every custom property on it to the guaranteed-invalid value. */
-export function assertNoCycles(next: { [key: string]: string | undefined }, description: string): void {
+/* Each key points at the keys it references. A key missing from the record ends a chain, so references to another
+   level can be passed through as they are. Throws if a chain comes back around - CSS would silently resolve every
+   custom property on it to the guaranteed-invalid value. */
+export function assertNoCycles(next: { [key: string]: readonly string[] }, description: string): void {
     const settled = new Set<string>();
-    for (const start of Object.keys(next)) {
-        const path: string[] = [];
-        let current: string | undefined = start;
-        while (current !== undefined && Object.hasOwn(next, current) && !settled.has(current)) {
-            const repeat = path.indexOf(current);
-            if (repeat !== -1) throw new Error(`Cyclic ${description}: ${[...path.slice(repeat), current].join(" -> ")}.`);
-            path.push(current);
-            current = next[current];
-        }
-        for (const key of path) settled.add(key);
-    }
+    const path: string[] = [];
+    const visit = (key: string): void => {
+        if (settled.has(key) || !Object.hasOwn(next, key)) return;
+        const repeat = path.indexOf(key);
+        if (repeat !== -1) throw new Error(`Cyclic ${description}: ${[...path.slice(repeat), key].join(" -> ")}.`);
+        path.push(key);
+        for (const nextKey of next[key]) visit(nextKey);
+        path.pop();
+        settled.add(key);
+    };
+    for (const key of Object.keys(next)) visit(key);
+}
+
+// A mapped token without a single ref would be declared nowhere.
+export function assertMapped(mapping: { [token: string]: readonly unknown[] }, description: string): void {
+    for (const [token, refs] of Object.entries(mapping))
+        if (refs.length === 0) throw new Error(`No refs for ${description} "${token}".`);
 }
 
 /* Flattening nested content goes through `as` casts, so a missing or stray key can slip past the types. Flattening

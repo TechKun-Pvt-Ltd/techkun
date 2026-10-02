@@ -18,7 +18,7 @@ export type GetAliasToken<S extends SchemaShapeBase> = GetSemanticToken<S> | Get
 type GetModifier<S extends SchemaShapeBase> = S["modifiers"] extends {} ? keyof S["modifiers"] : never;
 type GetModifierContext<S extends SchemaShapeBase, M extends GetModifier<S>> = S["modifiers"] extends {} ? S["modifiers"][M][number] : never;
 export type GetModifiersRef<S extends SchemaShapeBase> = {
-    [M in GetModifier<S>]: GetModifierContext<S, M>;
+    [M in GetModifier<S>]?: GetModifierContext<S, M>;
 };
 export type GetTokenRef<S extends SchemaShapeBase, T, A extends NoReservedRefKeys<A> = {}> = {
     ref: T;
@@ -43,15 +43,5 @@ export abstract class Schema<S extends SchemaShapeBase> {
     }
     get aliasTokens(): GetAliasToken<S>[] {
         return [...this.semanticTokens, ...this.componentTokens];
-    }
-    // Every combination of one context per modifier - `[{theme: "dark"}]`. Empty for a schema without modifiers.
-    get modifierContexts(): GetModifiersRef<S>[] {
-        const modifiers = Object.entries(this.shape.modifiers ?? {});
-        if (modifiers.length === 0) return [];
-        return modifiers.reduce<{ [modifier: string]: string }[]>(
-            (combinations, [modifier, contexts]) => combinations.flatMap(combination =>
-                contexts.map(context => ({...combination, [modifier]: context}))),
-            [{}]
-        ) as GetModifiersRef<S>[];
     }
 }

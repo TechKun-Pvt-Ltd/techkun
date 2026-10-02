@@ -17,5 +17,5 @@ export const colorNaming = {
     standalone: seed => `--${PREFIX}-${seed}`,
     token: token => `--${PREFIX}-${token}`,
     utilitySelector: token => `.${PREFIX}-${token}`,
-    contextSelector: ({theme}) => themeSelectors[theme]
-} satisfies SimpleCustomPropertyNaming<FlatSchema, Seed> & SimpleSelectorNaming<FlatSchema>;
+    themeSelector: theme => themeSelectors[theme]
+} satisfies SimpleCustomPropertyNaming<FlatSchema, Seed> & SimpleSelectorNaming<FlatSchema> & { themeSelector(theme: Theme): string };

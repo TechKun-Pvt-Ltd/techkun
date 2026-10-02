@@ -1,7 +1,7 @@
 import type {CSSCustomProperty, CSSValue, NoReservedRefKeys} from "../types.ts";
 import type {GetComponentToken, GetSemanticToken} from "../schema-shape-base.ts";
 import {rule, type CSSDeclarations, type CSSRule} from "../css.ts";
-import {TokenCSSEmitter, type ContextSelectorNaming, type TokenEmitterConfig} from "../emitter.ts";
+import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming} from "../emitter.ts";
 import {assertUnique, createObjectFromEntries, toVarRefs} from "../utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import type {CompositeSchemaShape, GetComponentMappingTokenRef, GetProxyProperty, GetVariantOf} from "./schema.ts";
@@ -11,7 +11,7 @@ import type {CompositeTokenStore} from "./token-store.ts";
 /* Entity 4 (composite). */
 
 // The selector half of a system's naming. A level or proxy property left out gets no utilities.
-export interface CompositeSelectorNaming<S extends CompositeSchemaShape> extends ContextSelectorNaming<S> {
+export interface CompositeSelectorNaming<S extends CompositeSchemaShape> extends SelectorNaming {
     primitiveUtilitySelectors?: { [P in GetProxyProperty<S>]?: (variant: GetVariantOf<S, P>) => string };
     semanticUtilitySelector?(token: GetSemanticToken<S>): string;
     componentUtilitySelector?(token: GetComponentToken<S>): string;
@@ -28,26 +28,27 @@ export class CompositeCSSEmitter<S extends CompositeSchemaShape, N extends strin
         properties: CompositeCustomProperties<S, N>,
         tokens: CompositeTokenStore<S, N, A>,
         naming: CompositeSelectorNaming<S>,
-        config: TokenEmitterConfig<S> = {}
+        strategy?: ModifierStrategy<S>
     ) {
-        super(tokens.schema, tokens.standalones, naming, config);
+        super(tokens.standalones, naming, strategy);
         this.properties = properties;
         this.tokens = tokens;
         this.naming = naming;
     }
 
-    // Each CSS property of the token's bundle, declared as a reference to whatever the mapping resolves it to.
-    #mappingDeclarations(mapping: { [token: string]: GetComponentMappingTokenRef<S, A> }): CSSDeclarations {
-        return ObjectStream.of(mapping)
-            .flatMap((token, ref) => {
-                const values: { [cssProperty: string]: CSSValue } = toVarRefs(this.properties.resolve(ref));
-                return ObjectStream.of(this.properties.alias(token as any) as Bundle).mapEntries((cssProperty, customProperty) => {
+    // Each CSS property of the token's bundle, with a value for each ref: a reference to whatever the ref resolves it to.
+    #mappingPropertyValues(mapping: { [token: string]: readonly GetComponentMappingTokenRef<S, A>[] }): GetAliasCSSCustomPropertyValues<S>[] {
+        return Object.entries(mapping).flatMap(([token, refs]) => {
+            const resolved = refs.map(ref => ({modifiers: ref.modifiers, values: toVarRefs(this.properties.resolve(ref)) as { [cssProperty: string]: CSSValue }}));
+            return Object.entries(this.properties.alias(token as any) as Bundle).map(([cssProperty, customProperty]) => ({
+                property: customProperty,
+                values: resolved.map(({modifiers, values}) => {
                     const value = values[cssProperty];
                     if (value === undefined) throw new Error(`No value resolved for ${customProperty}.`);
-                    return [customProperty, value];
-                });
-            })
-            .collect();
+                    return {modifiers, value};
+                })
+            }));
+        });
     }
 
     protected standaloneProperty(name: string): CSSCustomProperty {
@@ -64,11 +65,8 @@ export class CompositeCSSEmitter<S extends CompositeSchemaShape, N extends strin
             ] as const));
         }));
     }
-    protected semanticDeclarations(): CSSDeclarations {
-        return this.#mappingDeclarations(this.tokens.semantic);
-    }
-    protected componentDeclarations(): CSSDeclarations {
-        return this.#mappingDeclarations(this.tokens.component);
+    protected aliasPropertyValues(): GetAliasCSSCustomPropertyValues<S>[] {
+        return [...this.#mappingPropertyValues(this.tokens.semantic), ...this.#mappingPropertyValues(this.tokens.component)];
     }
 
     utilities(): CSSRule[] {

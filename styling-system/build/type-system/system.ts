@@ -66,7 +66,7 @@ export type ComponentMapping = GetComponentMapping<FlatSchema>;
 
 export type GroupedSemanticMapping = {
     [G in SemanticTokenGroup]: {
-        [V in SemanticTokenVariant<G>]: SemanticMappingTokenRef
+        [V in SemanticTokenVariant<G>]: readonly SemanticMappingTokenRef[]
     }
 };
 export type GroupedContent = {
@@ -80,7 +80,7 @@ function flattenSemanticMapping(semanticTokens: SemanticTokenLookup, mapping: Gr
     return ObjectStream.of(semanticTokens)
         .flatMap((group, variants) => ObjectStream.of(variants)
             .mapEntries((variant, token) => [
-                token, (mapping[group] as Record<string, SemanticMappingTokenRef>)[variant]
+                token, (mapping[group] as Record<string, readonly SemanticMappingTokenRef[]>)[variant]
             ])
         )
         .collect() as GetSemanticMapping<FlatSchema>;

@@ -1,7 +1,7 @@
 import type {CSSCustomProperty, CSSValue, NoReservedRefKeys} from "../types.ts";
 import type {GetAliasToken} from "../schema-shape-base.ts";
 import {rule, type CSSDeclarations, type CSSRule} from "../css.ts";
-import {TokenCSSEmitter, type ContextSelectorNaming, type TokenEmitterConfig} from "../emitter.ts";
+import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming} from "../emitter.ts";
 import {assertUnique, toVarRef} from "../utils.ts";
 import {ObjectStream} from "../../../../lib/object-stream.ts";
 import type {GetComponentMappingTokenRef, SimpleSchemaShape} from "./schema.ts";
@@ -11,7 +11,7 @@ import type {SimpleTokenStore} from "./token-store.ts";
 /* Entity 4 (simple). */
 
 // The selector half of a system's naming. Only alias tokens that affect a CSS property get a utility.
-export interface SimpleSelectorNaming<S extends SimpleSchemaShape> extends ContextSelectorNaming<S> {
+export interface SimpleSelectorNaming<S extends SimpleSchemaShape> extends SelectorNaming {
     utilitySelector?(token: GetAliasToken<S>): string;
 }
 
@@ -24,9 +24,9 @@ export class SimpleCSSEmitter<S extends SimpleSchemaShape, N extends string = ne
         properties: SimpleCustomProperties<S, N>,
         tokens: SimpleTokenStore<S, N, A>,
         naming: SimpleSelectorNaming<S>,
-        config: TokenEmitterConfig<S> = {}
+        strategy?: ModifierStrategy<S>
     ) {
-        super(tokens.schema, tokens.standalones, naming, config);
+        super(tokens.standalones, naming, strategy);
         this.properties = properties;
         this.tokens = tokens;
         this.naming = naming;
@@ -37,10 +37,11 @@ export class SimpleCSSEmitter<S extends SimpleSchemaShape, N extends string = ne
         return toVarRef(this.properties.resolve(ref));
     }
 
-    #mappingDeclarations(mapping: { [token: string]: GetComponentMappingTokenRef<S, A> }): CSSDeclarations {
-        return ObjectStream.of(mapping)
-            .mapEntries((token, ref) => [this.properties.of(token as GetAliasToken<S>), this.resolveRefValue(ref)])
-            .collect();
+    #mappingPropertyValues(mapping: { [token: string]: readonly GetComponentMappingTokenRef<S, A>[] }): GetAliasCSSCustomPropertyValues<S>[] {
+        return Object.entries(mapping).map(([token, refs]) => ({
+            property: this.properties.of(token as GetAliasToken<S>),
+            values: refs.map(ref => ({modifiers: ref.modifiers, value: this.resolveRefValue(ref)}))
+        }));
     }
 
     protected standaloneProperty(name: string): CSSCustomProperty {
@@ -49,11 +50,8 @@ export class SimpleCSSEmitter<S extends SimpleSchemaShape, N extends string = ne
     protected primitiveDeclarations(): CSSDeclarations {
         return ObjectStream.of(this.tokens.primitive).mapKeys(token => this.properties.of(token)).collect();
     }
-    protected semanticDeclarations(): CSSDeclarations {
-        return this.#mappingDeclarations(this.tokens.semantic);
-    }
-    protected componentDeclarations(): CSSDeclarations {
-        return this.#mappingDeclarations(this.tokens.component);
+    protected aliasPropertyValues(): GetAliasCSSCustomPropertyValues<S>[] {
+        return [...this.#mappingPropertyValues(this.tokens.semantic), ...this.#mappingPropertyValues(this.tokens.component)];
     }
 
     utilities(): CSSRule[] {
