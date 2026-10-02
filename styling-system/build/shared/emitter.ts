@@ -36,12 +36,22 @@ export interface ModifierStrategy<S extends SchemaShapeBase> {
 }
 
 type MapFromObject<O extends object> = Map<keyof O, O[keyof O]>;
-function namedModifiers<S extends SchemaShapeBase>(modifiers: GetModifiersRef<S> | undefined): MapFromObject<GetModifiersRef<S>> {
-    return new Map(
-        Object.entries(modifiers ?? {})
-        .filter(([, context]) => context !== undefined)
-        .sort(([a], [b]) => a.localeCompare(b))
-    ) as any;
+// Map and Set compare object keys by identity, so equal conditions are interned: every call with the same named
+// modifiers returns the same Map. One interner per emit keeps the cache from outliving it.
+function createModifiersInterner<S extends SchemaShapeBase>(): (modifiers: GetModifiersRef<S> | undefined) => MapFromObject<GetModifiersRef<S>> {
+    const interned = new Map<string, MapFromObject<GetModifiersRef<S>>>();
+    return modifiers => {
+        const entries = Object.entries(modifiers ?? {})
+            .filter(([, context]) => context !== undefined)
+            .sort(([a], [b]) => a.localeCompare(b));
+        const key = JSON.stringify(entries);
+        let named = interned.get(key);
+        if (named === undefined) {
+            named = new Map(entries) as any as MapFromObject<GetModifiersRef<S>>;
+            interned.set(key, named);
+        }
+        return named;
+    };
 }
 
 export abstract class TokenCSSEmitter<S extends SchemaShapeBase> {
@@ -81,17 +91,18 @@ export abstract class TokenCSSEmitter<S extends SchemaShapeBase> {
         type Modifiers = MapFromObject<GetModifiersRef<S>>;
         const defaults: Declarations = new Map();
         const conditions = new Map<Modifiers, Declarations>();
+        const namedModifiers = createModifiersInterner<S>();
 
         for (const {property, values} of this.aliasPropertyValues()) {
             const declared = this.strategy?.combine(values) ?? values;
             const seen = new Set<Modifiers>();
             for (const {modifiers, value} of declared) {
-                const named = namedModifiers<S>(modifiers);
+                const named = namedModifiers(modifiers);
                 if (seen.has(named))
-                    throw new Error(`${property} has more than one value for the condition ${JSON.stringify(named)}.`);
+                    throw new Error(`${property} has more than one value for the condition ${JSON.stringify([...named])}.`);
                 seen.add(named);
 
-                if (modifiers === undefined) {
+                if (named.size === 0) {
                     defaults.set(property, value);
                     continue;
                 }
