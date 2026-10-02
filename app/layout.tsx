@@ -5,14 +5,12 @@ import "@/styling-system/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
 import {OnceProvider} from "@/components/Once.tsx";
 
-// Do not import local files with transitive imports in any of the css files
-// The only job of these files is to export CSS strings
-// TODO: Figure out an alternative with Linaria or Wyw-in-js
 import "@/styling-system/build/css/typography";
 import "@/styling-system/build/css/colors";
 import "@/styling-system/build/css/spacing";
 import "@/styling-system/build/css/radius";
 import "@/styling-system/build/css/device-breakpoints";
+import "@/styling-system/build/css/motion";
 
 // const Quicksand = localFont({
 //     src: "../../fonts/Quicksand-VariableFont_wght.ttf",
