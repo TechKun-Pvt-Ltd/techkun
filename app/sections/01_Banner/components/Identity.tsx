@@ -238,7 +238,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 			color: transparent;
 			--x-offset: 6%;
 
-			svg.icon {
+			svg.glyph-overlay {
 				transform-box: view-box;
 				position: absolute;
 				inset: 0 0 0 var(--x-offset);
@@ -311,7 +311,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 				}
             }
 		`}>
-			<svg className="icon bulb-icon"
+			<svg className="glyph-overlay bulb-icon"
 				 xmlns="http://www.w3.org/2000/svg"
 				 viewBox="0 0 24 24" fill="currentColor"
 				 style={{ "--i": DOT_COUNT } as React.CSSProperties}
@@ -320,7 +320,7 @@ export default forwardRef<IdentityRef, React.ComponentPropsWithoutRef<"span">>(f
 					d="M 4.41 9.59 C 4.41 5.3982 7.8082 2 12 2 C 16.1918 2 19.59 5.3982 19.59 9.59 C 19.59 11.603 18.7903 13.5336 17.3669 14.9569 C 15.9436 16.3803 15.1439 18.3109 15.1439 20.3239 C 15.1439 21.1623 14.4643 21.8419 13.6259 21.8419 L 10.3741 21.8419 C 9.5357 21.8419 8.8561 21.1623 8.8561 20.3239 C 8.8561 18.3109 8.0564 16.3803 6.6331 14.9569 C 5.2097 13.5336 4.41 11.603 4.41 9.59"
 				/>
 			</svg>
-			<svg className="icon dots" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+			<svg className="glyph-overlay dots" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
 				{Array.from({length: DOT_COUNT}).map((_, i) => (
 					<circle
 						key={i}

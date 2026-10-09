@@ -1,0 +1,53 @@
+/* Presentation of the <svg> that <Icon> renders. The rules behind these values are in SPEC.md. */
+
+@layer base {
+    :root {
+        /* Stroke widths are in grid units of the 24-unit canvas: stroke px × 24 / size px. */
+        --icon-size-sm: 16px;
+        --icon-stroke-sm: 2.25;
+        --icon-size-md: 20px;
+        --icon-stroke-md: 1.8;
+        --icon-size-lg: 24px;
+        --icon-stroke-lg: 2;
+        --icon-size-xl: 32px;
+        --icon-stroke-xl: 1.5;
+    }
+}
+
+@layer components {
+    /* Without a size step, the icon is text-relative: 1em (or a length <Icon> sets on --icon-size)
+       with a fixed 2-unit stroke that scales with the text. */
+    .icon {
+        width: var(--icon-size, 1em);
+        height: var(--icon-size, 1em);
+        fill: none;
+        stroke: var(--icon-paint, currentColor);
+        stroke-width: var(--icon-stroke, 2);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    /* Filled icons and brand marks. */
+    .icon-solid {
+        fill: var(--icon-paint, currentColor);
+        stroke: none;
+    }
+
+    .icon-sm { --icon-size: var(--icon-size-sm); --icon-stroke: var(--icon-stroke-sm); }
+    .icon-md { --icon-size: var(--icon-size-md); --icon-stroke: var(--icon-stroke-md); }
+    .icon-lg { --icon-size: var(--icon-size-lg); --icon-stroke: var(--icon-stroke-lg); }
+    .icon-xl { --icon-size: var(--icon-size-xl); --icon-stroke: var(--icon-stroke-xl); }
+
+    /* An inline svg sits with its bottom edge on the baseline; raising it by half the letter height
+       minus half its own size centers it on the letters. Baseline alignment is the default, so it has no class. */
+    .icon-align-cap { vertical-align: calc((1cap - var(--icon-size, 1em)) / 2); }
+    .icon-align-ex { vertical-align: calc((1ex - var(--icon-size, 1em)) / 2); }
+
+    /* Loops stop and state changes land immediately on their end state. Layered !important
+       outranks the unlayered glyph styles. SMIL and motion animations are not covered: see SPEC.md. */
+    @media (prefers-reduced-motion: reduce) {
+        .icon, .icon * {
+            animation: none !important;
+            transition: none !important;
+        }
+    }
+}

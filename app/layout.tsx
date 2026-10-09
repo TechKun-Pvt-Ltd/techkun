@@ -12,6 +12,8 @@ import "@/styling-system/build/css/radius";
 import "@/styling-system/build/css/device-breakpoints";
 import "@/styling-system/build/css/motion";
 
+import "@/iconography/icons.css";
+
 // const Quicksand = localFont({
 //     src: "../../fonts/Quicksand-VariableFont_wght.ttf",
 //     weight: "100 900"
