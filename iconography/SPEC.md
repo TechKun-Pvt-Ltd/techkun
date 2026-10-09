@@ -38,7 +38,7 @@ A square looks larger than a circle of the same width, so it is drawn smaller; t
 
 UI glyphs are outlines: one stroke weight, round ends, round corners, no fills except small solid details.
 
-- **Stroke weight:** one weight per glyph, set by the size it renders at (see [Sizing](#sizing)), never by the glyph itself. Glyph data carries no `stroke-width`.
+- **Stroke weight:** one weight per glyph, set by the size it renders at or, for text-relative icons, by the host (see [Sizing](#sizing)); never by the glyph itself. Glyph data carries no `stroke-width`.
 - **Caps and joins:** `round` caps, `round` joins, everywhere.
 - **Corner radius:** 2 units on the corners of rectangular forms. Smaller rectangles (under 6 units a side) use 1 unit.
 - **Gaps:** where two strokes nearly touch or one passes behind another, leave a gap of at least 2 units so they don't merge at small sizes.
@@ -69,7 +69,8 @@ stroke (grid units) = stroke (px) × 24 / size (px)
 ### Text-relative
 
 - **Size:** set freely per usage in text units: `1em`, `1.2em`, `1cap`, `1lh`. The system doesn't standardize it.
-- **Stroke:** a fixed 2 grid units, so it scales with the text the way letter weight does. At `1em` in 16px text that is about 1.33px on screen.
+- **Stroke:** 2 grid units by default, so it scales with the text the way letter weight does. At `1em` in 16px text that is about 1.33px on screen.
+- **Host stroke:** a host may set `--icon-stroke` (in grid units) to match the weight of its text, e.g. a bold button label. It reaches text-relative icons only; size steps keep their own strokes, because their classes set `--icon-stroke` on the icon itself.
 - **Alignment:** one of the named modes in the next section. This is the part the system standardizes.
 
 ## Alignment with text
@@ -145,7 +146,11 @@ The system standardizes how an animation is triggered and what happens under red
 
 - **States:** a glyph declares its states; the first is the initial one. The icon component puts the current state on the `<svg>` as `data-state`.
 - **`state` prop:** controlled from JS, typed to the glyph's states. It overrides the mount trigger.
-- **Host trigger:** the glyph names the state it takes while an ancestor with the `iconHost` class is hovered or focused (`:focus-visible`). It is pure CSS, so the parent needs no JS.
+- **Host trigger:** the glyph names the state it takes while its host is hovered or focused (`:focus-visible`). The host is wired up through the glyph's host bindings (below).
+- **Host bindings:** the glyph maps keys to binders, functions that receive its `name`, `kind`, `states` and `triggers` and generate what one kind of host needs. Each result is set on the component under its key, and the host spreads it:
+    - `cssHost` → `Bell.host`: the `icon-host` class, to add to the host's own `className`. Pure CSS, so the host needs no JS.
+    - `motionHost` → `Bell.motionHost`: `{initial, whileHover, whileFocus, whileTap}`, variant labels named after the glyph's states, for a `motion` host to spread.
+    - Any other binder a glyph needs, e.g. for another animation library. Keys that would overwrite the component's own properties (`name`, `displayName`, …) fail type-checking.
 - **Mount trigger:** the glyph names the state it switches to on the first frame after mount, so a transition runs from the initial state.
 - **Progress:** the icon component sets `--icon-progress` on the `<svg>`, so glyph CSS can drive e.g. `stroke-dashoffset` with no JS per frame; the value is also in the render context.
 - **Selecting a state in glyph CSS:** `inState("ringing")`, from the render context, matches both `data-state` and the host trigger. It is typed to the glyph's states.
@@ -157,7 +162,7 @@ Any technique a glyph needs: CSS transitions and keyframes, SMIL, `motion`, `d` 
 - **Timing:** easing comes from the motion tokens (`--ease-*`, `easing.*` in `styling-system/build/motion.ts`). Duration is set per glyph, since there are no duration tokens.
 - **`d` morphs:** every state has the same number of path commands, of the same types in the same order, and the same number of subpaths. Case (absolute vs relative) may differ: `EmailLink`'s `M c l …` and `M C L …` match. Where CSS `d` transitions aren't supported, the morph runs through `motion`, as `EmailLink` does today.
 - **Grid still applies:** every state follows the Grid and Stroke rules on its own.
-- **`motion` and the host trigger:** CSS hover can't drive `motion`, so a `motion`-animated glyph gets the host trigger only when its host is a `motion` element whose variants pass down.
+- **`motion` and the host trigger:** CSS hover can't drive `motion`, so a `motion`-animated glyph gets the host trigger only from a `motion` host spreading its `motionHost` binding, whose variant labels pass down.
 
 ### Reduced motion
 
@@ -190,6 +195,7 @@ The system lives in a top-level `/iconography` module: one `createIcon` factory 
 iconography/
   glyph.ts         the glyph contract: types only
   create-icon.tsx  createIcon(glyph) → icon component; iconHost
+  host-bindings.ts the shared binders: cssHost, motionHost
   IconGradient.tsx the shared gradient, for use inside a glyph's <defs>
   glyphs/          one file per glyph, each exporting its icon component
   icons.css        tokens, .icon base, size steps, alignment modes
@@ -203,9 +209,11 @@ The frame, rendered by every component `createIcon` returns, owns the `<svg view
 // iconography/glyphs/bell.tsx
 "use client"
 export default createIcon({
+    name: "bell",
     kind: "outline",
     states: ["idle", "ringing"],
     triggers: {host: "ringing"},
+    hostBindings: {host: cssHost, motionHost},
     styles: ({inState}) => css`
         .bell-swing { transform-origin: 12px 4.5px; }
         ${inState("ringing")} {
@@ -226,11 +234,13 @@ export default createIcon({
 
 | Field | Holds |
 | --- | --- |
+| `name` | The glyph's name, per [Naming](#naming); also the component's `displayName` |
 | `kind` | `outline` \| `filled` \| `brand`; non-outline glyphs get `.icon-solid` |
 | `states` | Optional; the first is the initial state |
 | `triggers` | Optional `host` and `mount` states; type-checked against `states` |
 | `styles` | Optional emotion styles applied to the `<svg>`, or a function building them from the render context |
 | `render` | Rendered as a component inside the frame, so it may use hooks |
+| `hostBindings` | Optional map of binders; see [Motion](#motion) |
 
 - **Render context:** `id(local)` scopes a `<defs>` id to the rendered icon, so two icons on a page never share a mask; `url(local)` is its `url(#…)`; `inState(state)` is the state selector (see [Motion](#motion)); plus `state` and `progress`.
 - **Stroke and fill:** shapes inherit stroke from `.icon`. A part that should be solid sets `fill="currentColor"` on itself.
@@ -239,11 +249,13 @@ export default createIcon({
 
 ```tsx
 import Bell from "@/iconography/glyphs/bell";
-import {iconHost} from "@/iconography/create-icon";
 
-<button className={iconHost} aria-label="Notifications">
+<button className={Bell.host} aria-label="Notifications">
     <Bell size="md" />
 </button>
+<motion.button className={Bell.host} {...Bell.motionHost} aria-label="Notifications">
+    <Bell size="md" />
+</motion.button>
 <Bell state="ringing" label="Unread notifications" />
 ```
 
@@ -291,4 +303,4 @@ The icon component sets `--icon-size` inline for a CSS-length size, and `--icon-
 - [x] Padding and keylines are measured at the stroke's centerline.
 - [x] `Identity.tsx`'s `icon` class, which collided with `.icon` from `icons.css`, is renamed `glyph-overlay`.
 - [ ] Redraw `mail`'s paper-plane state on the grid: it is off the half-unit grid and reaches past the live area (x 22.2, y 1.8).
-- [ ] Migrate onto the glyph components, one at a time with approval: `EmailLink`, `XLink`, `LinkedInLink`, `MainCTA`.
+- [x] `EmailLink`, `XLink`, `LinkedInLink` and `MainCTA` use the glyph components.

@@ -1,27 +1,13 @@
 'use client'
 import React, {ReactNode} from "react";
 import {css} from "@emotion/react";
-import {Easing, mapEasingToNativeEasing, motion} from "motion/react";
-import cssSupports from "@/app/utils/css/supports";
-import {easing} from "@/styling-system/build/motion.ts";
-
-const INITIAL = "initial";
-const FOCUSED = "focused";
-
-const variants = {
-    [INITIAL]: { d: "m 2 4 l 8 8 l -8 8 m 8 -8 h 0" },
-    [FOCUSED]: { d: "m 14 4 l 8 8 l -8 8 m 8 -8 h -20" }
-};
-const transition: {
-    duration: number;
-    ease: Easing;
-} = {
-    duration: 0.15,
-    ease: easing.outCubic
-};
+import {motion} from "motion/react";
+import ArrowRight from "@/iconography/glyphs/arrow-right";
 
 const buttonCss = css`
     color: var(--color-text-btn-primary);
+    /* The arrow's stroke, in grid units, matched to the label's weight. */
+    --icon-stroke: 3.5;
     background: transparent;
     padding-block: 0.75rem;
     padding-inline: 1.6em 1.4em;
@@ -39,14 +25,6 @@ const buttonCss = css`
 
     & > svg {
         margin-inline-start: 0.4375em;
-        width: 0.6em;
-    }
-
-    & .arrow {
-        transition: d ${transition.duration}s ${mapEasingToNativeEasing(transition.ease, transition.duration)};
-    }
-    &:hover .arrow, &:focus-visible .arrow {
-        d: path("${variants[FOCUSED].d}");
     }
 `;
 
@@ -54,17 +32,13 @@ export default function MainCTA(
     {children, className, ...props}: { children: ReactNode; } & React.ComponentPropsWithoutRef<typeof motion.button>
 ) {
     return <motion.button
-        className={"bi-layered-button " + className}
-        css={buttonCss} initial={INITIAL}
-        whileHover={FOCUSED} whileFocus={FOCUSED} whileTap={FOCUSED}
+        className={["bi-layered-button", ArrowRight.host, className].filter(Boolean).join(" ")}
+        css={buttonCss}
+        // Drives the glyph's motion fallback where CSS `d` transitions aren't supported.
+        {...ArrowRight.motionHost}
         {...props}
     >
         {children}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-            <motion.path className="arrow"
-                d={variants[INITIAL].d}
-                {...(cssSupports.d ? null : { variants, transition })}
-            ></motion.path>
-        </svg>
+        <ArrowRight size="0.6em" />
     </motion.button>;
 };

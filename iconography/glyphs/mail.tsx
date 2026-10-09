@@ -4,6 +4,7 @@ import {motion} from "motion/react";
 import cssSupports from "@/app/utils/css/supports";
 import {easing} from "@/styling-system/build/motion.ts";
 import createIcon from "@/iconography/create-icon";
+import {cssHost, motionHost} from "@/iconography/host-bindings";
 import IconGradient from "@/iconography/IconGradient";
 
 // Morph pair: same command sequence (case aside), same subpaths.
@@ -14,6 +15,7 @@ const shapes = {
 const duration = 0.3;
 
 export default createIcon({
+    name: "mail",
     kind: "outline",
     states: ["envelope", "paper-plane"],
     triggers: {host: "paper-plane"},
@@ -28,6 +30,7 @@ export default createIcon({
             }
         }
     `,
+    hostBindings: {host: cssHost, motionHost},
     render: ({id}) => <>
         <defs>
             <IconGradient id={id("paint")} />

@@ -1,5 +1,6 @@
 import React, {useEffect, useId, useState} from "react";
-import type {Glyph, GlyphContext} from "@/iconography/glyph";
+import type {Glyph, GlyphContext, HostBinders, NoReservedHostBindingKeys} from "@/iconography/glyph";
+import {ObjectStream} from "@/lib/object-stream.ts";
 
 // Class for the interactive element whose :hover / :focus-visible drives its icons' host trigger.
 export const iconHost = "icon-host";
@@ -42,10 +43,10 @@ function useMounted(enabled: boolean) {
 
 // Returns the component that renders the glyph inside the icon frame. Glyph modules calling it
 // are client modules ("use client"): the component uses hooks and emotion's css prop.
-export default function createIcon<const S extends string = never>(glyph: Glyph<S>) {
+export default function createIcon<const S extends string = never, const B extends HostBinders & NoReservedHostBindingKeys<B> = {}>(glyph: Glyph<S, B>) {
     const Render = glyph.render;
 
-    return function Icon({size, align, label, state, progress, className, style, ...props}: IconProps<S>) {
+    function Icon({size, align, label, state, progress, className, style, ...props}: IconProps<S>) {
         const scope = useId().replace(/[^\w-]/g, "");
         const mounted = useMounted(glyph.triggers?.mount !== undefined && state === undefined);
 
@@ -87,5 +88,13 @@ export default function createIcon<const S extends string = never>(glyph: Glyph<
         >
             <Render {...context} />
         </svg>;
-    };
+    }
+    Icon.displayName = glyph.name;
+
+    const descriptor = {name: glyph.name, kind: glyph.kind, states: glyph.states, triggers: glyph.triggers};
+    const bindings = ObjectStream.of<HostBinders>(glyph.hostBindings ?? {})
+    .mapValues(bind => bind(descriptor))
+    .collect() as {readonly [K in keyof B]: B[K] extends (...args: never) => infer R ? R : never};
+
+    return Object.assign(Icon, bindings);
 }

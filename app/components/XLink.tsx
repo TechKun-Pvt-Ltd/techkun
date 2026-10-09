@@ -1,8 +1,8 @@
 import Link from "next/link";
-import React, {useId} from "react";
+import React from "react";
 import {gradientColor1, gradientColor2} from "@/app/utils/css/custom-properties";
-import {X_LOGO_PATH_HREF} from "@/app/(site)/components/Shared.tsx";
 import {css} from "@emotion/react";
+import LogoX from "@/iconography/glyphs/logo-x";
 
 const linkCss = css`
     transition: 0.3s var(--ease-out-cubic);
@@ -15,20 +15,11 @@ const linkCss = css`
     }
 `;
 export default function XLink(props: React.ComponentProps<typeof Link>) {
-    const FILL_GRADIENT_ID = "x-fill-gradient" + useId();
     return <Link
         target="_blank" rel="noopener noreferrer"
         aria-label="Find us on X"
         css={linkCss} {...props}
     >
-        <svg className="link-icon" width="1em" viewBox="0 0 24 24" style={{ display: "block" }} xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id={FILL_GRADIENT_ID} x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="20%" stopColor={`var(${gradientColor1})`} />
-                    <stop offset="80%" stopColor={`var(${gradientColor2})`} />
-                </linearGradient>
-            </defs>
-            <use href={X_LOGO_PATH_HREF} fill={`url(#${FILL_GRADIENT_ID})`} />
-        </svg>
+        <LogoX style={{ display: "block" }} />
     </Link>
 }

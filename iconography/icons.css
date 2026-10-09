@@ -15,8 +15,8 @@
 }
 
 @layer components {
-    /* Without a size step, the icon is text-relative: 1em (or a length <Icon> sets on --icon-size)
-       with a fixed 2-unit stroke that scales with the text. */
+    /* Without a size step, the icon is text-relative: 1em (or a length the icon component sets on --icon-size)
+       with a 2-unit stroke that scales with the text, unless a host sets --icon-stroke. */
     .icon {
         width: var(--icon-size, 1em);
         height: var(--icon-size, 1em);

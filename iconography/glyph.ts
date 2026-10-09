@@ -24,7 +24,29 @@ type GlyphStylesBuilder<S extends string> = {
     build(context: GlyphContext<S>): SerializedStyles;
 }["build"];
 
-export type Glyph<S extends string = string> = {
+// What a host binder receives: the glyph's identity and how its states are reached.
+export type GlyphDescriptor<S extends string> = {
+    readonly name: string;
+    readonly kind: GlyphKind;
+    readonly states: readonly [S, ...S[]] | undefined;
+    readonly triggers: Glyph<S>["triggers"];
+};
+
+// Generates what one kind of host (CSS, Motion, …) needs to drive the icon. Its states are typed as
+// plain strings: a binder written inline in a glyph can't be typed from states inferred in the same call.
+export type HostBinder = (glyph: GlyphDescriptor<string>) => unknown;
+
+export type HostBinders = {
+    readonly [key: string]: HostBinder;
+};
+
+// Keys that would overwrite a function component's own properties.
+type ReservedHostBindingKey = Extract<keyof Function, string> | "displayName" | "propTypes" | "defaultProps" | "contextTypes";
+export type NoReservedHostBindingKeys<B> = [Extract<keyof B, ReservedHostBindingKey>] extends [never] ? object : never;
+
+export type Glyph<S extends string = string, B extends HostBinders & NoReservedHostBindingKeys<B> = HostBinders> = {
+    // Kebab-case, as in Naming; also the component's displayName.
+    readonly name: string;
     readonly kind: GlyphKind;
     // The first state is the initial one.
     readonly states?: readonly [S, ...S[]];
@@ -38,4 +60,7 @@ export type Glyph<S extends string = string> = {
     readonly styles?: SerializedStyles | GlyphStylesBuilder<NoInfer<S>>;
     // Rendered as a component inside the <svg>, so it may use hooks.
     render(context: GlyphContext<NoInfer<S>>): React.ReactNode;
+    // Each binder's result is set on the component under the binder's key, e.g. Mail.motion.
+    // Intersected with HostBinders so binders written inline get their parameter typed.
+    readonly hostBindings?: B & HostBinders;
 };

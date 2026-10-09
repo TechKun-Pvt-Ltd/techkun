@@ -4,6 +4,7 @@ import {motion} from "motion/react";
 import cssSupports from "@/app/utils/css/supports";
 import {easing} from "@/styling-system/build/motion.ts";
 import createIcon from "@/iconography/create-icon";
+import {cssHost, motionHost} from "@/iconography/host-bindings";
 
 // Morph pair: the chevron at the start of the line, then pushed to its end, drawing the shaft behind it.
 const shapes = {
@@ -13,6 +14,7 @@ const shapes = {
 const duration = 0.15;
 
 export default createIcon({
+    name: "arrow-right",
     kind: "outline",
     states: ["chevron", "arrow"],
     triggers: {host: "arrow"},
@@ -26,6 +28,7 @@ export default createIcon({
             }
         }
     `,
+    hostBindings: {host: cssHost, motionHost},
     render: () => <>
         {/* Without CSS `d`, motion morphs it, driven by a motion host's variants named after the states. */}
         <motion.path
