@@ -18,7 +18,7 @@ Every icon on TechKun surfaces is drawn on one grid, with one stroke language, s
 Every glyph is drawn on a `0 0 24 24` canvas, inside a 20-unit live area centered by 2 units of padding on each side.
 
 - **Canvas:** 24 × 24 units. The `viewBox` is always `0 0 24 24`; never cropped or offset.
-- **Padding:** 2 units on all sides. Padding and keylines are measured at the stroke's centerline: a stroke may extend into the padding by half its width (at most 1.125 units, at the sm step).
+- **Padding:** 2 units on all sides. Padding and keylines are measured at the stroke's centerline: a stroke may extend into the padding by half its width (at most 1.125 units, at the xl stroke step).
 - **Live area:** 20 × 20 units, from (2, 2) to (22, 22).
 - **Coordinates:** every point and control point lands on a whole or half unit (e.g. 7, 7.5). Curve control points may break this only where a whole/half value visibly distorts the curve.
 - **Keylines:** the base shape a glyph is built on, so glyphs of different shapes carry the same visual weight.
@@ -38,7 +38,7 @@ A square looks larger than a circle of the same width, so it is drawn smaller; t
 
 UI glyphs are outlines: one stroke weight, round ends, round corners, no fills except small solid details.
 
-- **Stroke weight:** one weight per glyph, set by the size it renders at or, for text-relative icons, by the host (see [Sizing](#sizing)); never by the glyph itself. Glyph data carries no `stroke-width`.
+- **Stroke weight:** one weight per glyph, set by the icon's `stroke` prop or by the host (see [Sizing](#sizing)); never by the glyph itself. Glyph data carries no `stroke-width`.
 - **Caps and joins:** `round` caps, `round` joins, everywhere.
 - **Corner radius:** 2 units on the corners of rectangular forms. Smaller rectangles (under 6 units a side) use 1 unit.
 - **Gaps:** where two strokes nearly touch or one passes behind another, leave a gap of at least 2 units so they don't merge at small sizes.
@@ -47,30 +47,41 @@ UI glyphs are outlines: one stroke weight, round ends, round corners, no fills e
 
 ## Sizing
 
-Icons are sized one of two ways: on a fixed four-step scale for standalone icons, or in text units for icons that sit in a line of text.
+Icons are sized one of two ways: on a fixed four-step scale for standalone icons, or in text units for icons that sit in a line of text. Stroke is set separately, on its own scale, at any size.
 
 ### Fixed scale
 
-Each step pairs a size with a stroke weight, so strokes look right at every size instead of thickening as the icon grows.
+| Step | Size (px) |
+| --- | --- |
+| sm | 16 |
+| md | 20 |
+| lg | 24 |
+| xl | 32 |
 
-| Step | Size (px) | Stroke on screen (px) | Stroke (grid units) |
-| --- | --- | --- | --- |
-| sm | 16 | 1.5 | 2.25 |
-| md | 20 | 1.5 | 1.8 |
-| lg | 24 | 2 | 2 |
-| xl | 32 | 2 | 1.5 |
+### Stroke scale
 
-Stroke is stored in grid units, because `stroke-width` on a `0 0 24 24` canvas is measured in those units:
+Independent of the size scale: any stroke step works with any size.
+
+| Step | Stroke (grid units) |
+| --- | --- |
+| sm | 1.5 |
+| md | 1.75 |
+| lg | 2 |
+| xl | 2.25 |
+
+Stroke is stored in grid units, because `stroke-width` on a `0 0 24 24` canvas is measured in those units, so it scales with the icon's size. On screen:
 
 ```
-stroke (grid units) = stroke (px) × 24 / size (px)
+stroke (px) = stroke (grid units) × size (px) / 24
 ```
+
+- **Default:** 2 grid units when neither the icon nor a host sets a stroke. At `1em` in 16px text that is about 1.33px on screen.
+- **Host stroke:** a host may set `--icon-stroke` (in grid units) to match the weight of its text, e.g. a bold button label. It reaches every icon inside it that has no `stroke` prop.
+- **Stroke prop:** an icon's `stroke` prop overrides the host: a stroke step (`stroke="sm"`) or a width in grid units (`stroke={1.5}`).
 
 ### Text-relative
 
 - **Size:** set freely per usage in text units: `1em`, `1.2em`, `1cap`, `1lh`. The system doesn't standardize it.
-- **Stroke:** 2 grid units by default, so it scales with the text the way letter weight does. At `1em` in 16px text that is about 1.33px on screen.
-- **Host stroke:** a host may set `--icon-stroke` (in grid units) to match the weight of its text, e.g. a bold button label. It reaches text-relative icons only; size steps keep their own strokes, because their classes set `--icon-stroke` on the icon itself.
 - **Alignment:** one of the named modes in the next section. This is the part the system standardizes.
 
 ## Alignment with text
@@ -198,7 +209,7 @@ iconography/
   host-bindings.ts the shared binders: cssHost, motionHost
   gradients/       shared gradients, for use inside a glyph's <defs>: SVGBrandGradient
   glyphs/          one file per glyph, each exporting its icon component
-  icons.css        tokens, .icon base, size steps, alignment modes
+  icons.css        tokens, .icon base, size and stroke steps, alignment modes
 ```
 
 ### Glyphs
@@ -264,6 +275,7 @@ import Bell from "@/iconography/glyphs/bell";
 | Prop | Values | Default |
 | --- | --- | --- |
 | `size` | `sm` \| `md` \| `lg` \| `xl`, or a CSS length (`1.2em`) | `1em` |
+| `stroke` | `sm` \| `md` \| `lg` \| `xl` (stroke scale), or a width in grid units (`1.5`) | A host's `--icon-stroke`, else 2 |
 | `align` | `cap` \| `ex` \| `baseline` | `cap` for text-relative sizes; `baseline` for fixed steps |
 | `label` | Text | None → decorative (`aria-hidden`) |
 | `state` | One of the glyph's states | The mount trigger's state after mount, else the first state |
@@ -277,15 +289,16 @@ The rules are in [`icons.css`](icons.css):
 
 | Rule | Layer | Does |
 | --- | --- | --- |
-| `--icon-size-*`, `--icon-stroke-*` on `:root` | `base` | The fixed-scale tokens |
+| `--icon-size-*`, `--icon-stroke-*` on `:root` | `base` | The size and stroke scale tokens |
 | `.icon` | `components` | Size from `--icon-size` (default `1em`), stroke from `--icon-stroke` (default 2), round caps and joins, paint from `--icon-paint` (default `currentColor`; a glyph's styles can set it, e.g. to its gradient) |
 | `.icon-solid` | `components` | Fill instead of stroke, for `filled` and `brand` glyphs |
-| `.icon-sm` … `.icon-xl` | `components` | Set `--icon-size` and `--icon-stroke` to a step |
+| `.icon-size-sm` … `.icon-size-xl` | `components` | Set `--icon-size` to a step |
+| `.icon-stroke-sm` … `.icon-stroke-xl` | `components` | Set `--icon-stroke` to a stroke step |
 | `.icon-align-cap`, `.icon-align-ex` | `components` | The alignment formulas; baseline is the default and has no class |
 
 A reduced-motion rule turns off CSS animations and transitions inside `.icon` (see [Motion](#motion)).
 
-The icon component sets `--icon-size` inline for a CSS-length size, and `--icon-progress` when `progress` is set. `icons.css` is imported in `app/layout.tsx`.
+The icon component sets `--icon-size` inline for a CSS-length size, `--icon-stroke` inline for a literal stroke, and `--icon-progress` when `progress` is set. `icons.css` is imported in `app/layout.tsx`.
 
 ### Delivery
 

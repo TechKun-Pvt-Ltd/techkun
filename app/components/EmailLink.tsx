@@ -13,12 +13,13 @@ export default function EmailLink(
 		iconSize?: IconProps<never>["size"];
 		iconSide?: "left" | "right";
 		// In grid units of the 24-unit canvas.
-		iconStrokeWidth?: string | number;
+		iconStrokeWidth?: IconProps<never>["strokeWidth"];
 		gap?: string;
 	} & React.ComponentProps<typeof MotionLink>
 ) {
 	const icon = <Mail
 		size={iconSize}
+		strokeWidth={iconStrokeWidth}
 		style={{
 			display: children ? undefined : "block",
 			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: children ? gap : "0"
@@ -31,7 +32,6 @@ export default function EmailLink(
 			className={[Mail.host, SVGBrandGradient.host, className].filter(Boolean).join(" ")}
 			css={css`
 				cursor: pointer;
-				--icon-stroke: ${iconStrokeWidth};
 				text-decoration: none;
 			`}
 			aria-label={children ? undefined : `Email us at ${address}`}

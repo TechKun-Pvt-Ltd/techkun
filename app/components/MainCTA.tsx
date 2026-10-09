@@ -7,7 +7,6 @@ import ArrowRight from "@/iconography/glyphs/arrow-right";
 const buttonCss = css`
     color: var(--color-text-btn-primary);
     /* The arrow's stroke, in grid units, matched to the label's weight. */
-    --icon-stroke: 3.5;
     background: transparent;
     padding-block: 0.75rem;
     padding-inline: 1.6em 1.4em;
@@ -39,6 +38,6 @@ export default function MainCTA(
         {...props}
     >
         {children}
-        <ArrowRight size="0.6em" />
+        <ArrowRight size="0.6em" strokeWidth={3.5} />
     </motion.button>;
 };

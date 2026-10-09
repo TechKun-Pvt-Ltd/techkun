@@ -6,13 +6,16 @@ import {cssHost} from "@/iconography/host-bindings.ts";
 // Class for the interactive element whose :hover / :focus-visible drives its icons' host trigger.
 export const iconHostClassNameSuffix = "-host";
 
-const SIZE_STEPS = ["sm", "md", "lg", "xl"] as const;
-type SizeStep = typeof SIZE_STEPS[number];
+const SCALE_STEPS = ["sm", "md", "lg", "xl"] as const;
+type ScaleStep = typeof SCALE_STEPS[number];
 type Alignment = "cap" | "ex" | "baseline";
 
 export type IconProps<S extends string> = {
     // A step of the fixed scale, or a CSS length for a text-relative size. Omitted: 1em.
-    size?: SizeStep | (string & {});
+    size?: ScaleStep | (string & {});
+    // A step of the stroke scale, or a stroke width in grid units of the 24-unit canvas.
+    // Omitted: a host's --icon-stroke, else 2.
+    strokeWidth?: ScaleStep | (string & {}) | number;
     // Omitted: cap for text-relative sizes, baseline for size steps.
     align?: Alignment;
     // Omitted: the icon is decorative and hidden from assistive technology.
@@ -21,10 +24,10 @@ export type IconProps<S extends string> = {
     state?: S;
     // 0–1, for progress-driven glyphs.
     progress?: number;
-} & Omit<React.SVGProps<SVGSVGElement>, "viewBox" | "children" | "role" | "aria-label" | "aria-hidden" | "focusable">;
+} & Omit<React.SVGProps<SVGSVGElement>, "viewBox" | "children" | "strokeWidth" | "role" | "aria-label" | "aria-hidden" | "focusable">;
 
-function isSizeStep(size: string): size is SizeStep {
-    return (SIZE_STEPS as readonly string[]).includes(size);
+function isScaleStep(value: string | number): value is ScaleStep {
+    return (SCALE_STEPS as readonly (string | number)[]).includes(value);
 }
 
 // True from the first frame after mount, so a mount transition starts from the committed initial state.
@@ -43,13 +46,14 @@ function useMounted(enabled: boolean) {
 export default function createIcon<const S extends string = never, const B extends HostBinders & NoReservedHostBindingKeys<B> = {}>(glyph: Glyph<S, B>) {
     const Render = glyph.render;
 
-    function Icon({size, align, label, state, progress, className, style, ...props}: IconProps<S>) {
+    function Icon({size, strokeWidth, align, label, state, progress, className, style, ...props}: IconProps<S>) {
         const scope = useId().replace(/[^\w-]/g, "");
         const mounted = useMounted(glyph.triggers?.mount !== undefined && state === undefined);
 
         const currentState = state ?? (mounted ? glyph.triggers?.mount : undefined) ?? glyph.states?.[0];
-        const step = size !== undefined && isSizeStep(size) ? size : undefined;
-        const alignment = align ?? (step ? "baseline" : "cap");
+        const sizeStep = size !== undefined && isScaleStep(size) ? size : undefined;
+        const strokeStep = strokeWidth !== undefined && isScaleStep(strokeWidth) ? strokeWidth : undefined;
+        const alignment = align ?? (sizeStep ? "baseline" : "cap");
 
         const iconHostClassName = cssHost(descriptor);
         const context: GlyphContext<S> = {
@@ -66,12 +70,14 @@ export default function createIcon<const S extends string = never, const B exten
         const classNames = [
             "icon",
             glyph.kind !== "outline" && "icon-solid",
-            step && `icon-${step}`,
+            sizeStep && `icon-size-${sizeStep}`,
+            strokeStep && `icon-stroke-${strokeStep}`,
             alignment !== "baseline" && `icon-align-${alignment}`,
             className
         ].filter(Boolean).join(" ");
         const customProperties = {
-            ...(size !== undefined && !step ? {"--icon-size": size} : null),
+            ...(size !== undefined && !sizeStep ? {"--icon-size": size} : null),
+            ...(strokeWidth !== undefined && !strokeStep ? {"--icon-stroke": strokeWidth} : null),
             ...(progress !== undefined ? {"--icon-progress": progress} : null)
         };
 

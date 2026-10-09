@@ -2,21 +2,22 @@
 
 @layer base {
     :root {
-        /* Stroke widths are in grid units of the 24-unit canvas: stroke px × 24 / size px. */
         --icon-size-sm: 16px;
-        --icon-stroke-sm: 2.25;
         --icon-size-md: 20px;
-        --icon-stroke-md: 1.8;
         --icon-size-lg: 24px;
-        --icon-stroke-lg: 2;
         --icon-size-xl: 32px;
-        --icon-stroke-xl: 1.5;
+
+        /* Stroke widths are in grid units of the 24-unit canvas, so they scale with the icon's size. */
+        --icon-stroke-sm: 1.5;
+        --icon-stroke-md: 1.75;
+        --icon-stroke-lg: 2;
+        --icon-stroke-xl: 2.25;
     }
 }
 
 @layer components {
     /* Without a size step, the icon is text-relative: 1em (or a length the icon component sets on --icon-size)
-       with a 2-unit stroke that scales with the text, unless a host sets --icon-stroke. */
+       with a 2-unit stroke that scales with the text, unless a host or the icon component sets --icon-stroke. */
     .icon {
         width: var(--icon-size, 1em);
         height: var(--icon-size, 1em);
@@ -32,10 +33,15 @@
         stroke: none;
     }
 
-    .icon-sm { --icon-size: var(--icon-size-sm); --icon-stroke: var(--icon-stroke-sm); }
-    .icon-md { --icon-size: var(--icon-size-md); --icon-stroke: var(--icon-stroke-md); }
-    .icon-lg { --icon-size: var(--icon-size-lg); --icon-stroke: var(--icon-stroke-lg); }
-    .icon-xl { --icon-size: var(--icon-size-xl); --icon-stroke: var(--icon-stroke-xl); }
+    .icon-size-sm { --icon-size: var(--icon-size-sm); }
+    .icon-size-md { --icon-size: var(--icon-size-md); }
+    .icon-size-lg { --icon-size: var(--icon-size-lg); }
+    .icon-size-xl { --icon-size: var(--icon-size-xl); }
+
+    .icon-stroke-sm { --icon-stroke: var(--icon-stroke-sm); }
+    .icon-stroke-md { --icon-stroke: var(--icon-stroke-md); }
+    .icon-stroke-lg { --icon-stroke: var(--icon-stroke-lg); }
+    .icon-stroke-xl { --icon-stroke: var(--icon-stroke-xl); }
 
     /* An inline svg sits with its bottom edge on the baseline; raising it by half the letter height
        minus half its own size centers it on the letters. Baseline alignment is the default, so it has no class. */
