@@ -1,7 +1,7 @@
 "use client"
 import {css} from "@emotion/react";
 import createIcon from "@/iconography/create-icon";
-import IconGradient from "@/iconography/IconGradient";
+import SVGBrandGradient from "@/iconography/gradients/SVGBrandGradient";
 import {LINKEDIN_LOGO_PATH_HREF} from "@/app/(site)/components/Shared.tsx";
 
 export default createIcon({
@@ -12,7 +12,7 @@ export default createIcon({
     `,
     render: ({id}) => <>
         <defs>
-            <IconGradient id={id("paint")} />
+            <SVGBrandGradient id={id("paint")} />
         </defs>
         <use href={LINKEDIN_LOGO_PATH_HREF} />
     </>

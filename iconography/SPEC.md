@@ -95,7 +95,7 @@ Icons take their color from the text around them (`currentColor`); a glyph may a
 
 - **Default:** stroke (or fill, for filled icons and brand marks) is `currentColor`. To recolor an icon, set `color` on it or its parent.
 - **No literal paint on visible elements:** a glyph paints only with `currentColor`, `var(--icon-paint)` or a gradient or pattern it defines itself. Mask content is exempt: its black and white are transparency, not color.
-- **Shared gradient:** `<IconGradient>` replaces the copy in `XLink`, `LinkedInLink` and `EmailLink`. A glyph that needs it renders it in its own `<defs>` with a scoped id. Its stops read the existing `gradientColor1` / `gradientColor2` custom properties; both default to `currentColor`, so the gradient is invisible until a parent sets them (e.g. to `--color-brand-1` / `--color-brand-3` on hover).
+- **Shared gradient:** `<SVGBrandGradient>` replaces the copy in `XLink`, `LinkedInLink` and `EmailLink`. A glyph that needs it renders it in its own `<defs>` with a scoped id. Its stops read two custom properties local to it; both default to `currentColor`, so the gradient is invisible until an element with the `SVGBrandGradient.host` class is hovered or focused, which sets them to `--color-brand-1` / `--color-brand-3`. The stops transition `stop-color` themselves, since the unregistered properties can't interpolate.
 - **Painting with it:** either reference it on an element (`stroke={url("paint")}`), or set `--icon-paint` to it in the glyph's styles function, which repaints everything that uses the default paint.
 - **Transitions:** color changes animate the custom properties, as the links do today, with timing from the motion tokens.
 
@@ -181,7 +181,7 @@ Brand marks keep their official shapes, so they skip the drawing rules but follo
 | Coordinate snapping | No | Official geometry is kept as is |
 | Stroke and form | No | Usually filled |
 | Sizing and alignment | Yes | Same scale and modes as UI glyphs |
-| Color | Yes | `currentColor` or `<IconGradient>`; no hard-coded brand colors |
+| Color | Yes | `currentColor` or `<SVGBrandGradient>`; no hard-coded brand colors |
 | Accessibility, naming | Yes | `logo-` prefix |
 
 - Marks that repeat on a page (TechKun, X, LinkedIn today) are delivered through the shared sprite in `Shared.tsx`, referenced with `<use>`.
@@ -196,7 +196,7 @@ iconography/
   glyph.ts         the glyph contract: types only
   create-icon.tsx  createIcon(glyph) → icon component; iconHost
   host-bindings.ts the shared binders: cssHost, motionHost
-  IconGradient.tsx the shared gradient, for use inside a glyph's <defs>
+  gradients/       shared gradients, for use inside a glyph's <defs>: SVGBrandGradient
   glyphs/          one file per glyph, each exporting its icon component
   icons.css        tokens, .icon base, size steps, alignment modes
 ```

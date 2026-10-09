@@ -1,9 +1,10 @@
 import React, {useEffect, useId, useState} from "react";
 import type {Glyph, GlyphContext, HostBinders, NoReservedHostBindingKeys} from "@/iconography/glyph";
 import {ObjectStream} from "@/lib/object-stream.ts";
+import {cssHost} from "@/iconography/host-bindings.ts";
 
 // Class for the interactive element whose :hover / :focus-visible drives its icons' host trigger.
-export const iconHost = "icon-host";
+export const iconHostClassNameSuffix = "-host";
 
 const SIZE_STEPS = ["sm", "md", "lg", "xl"] as const;
 type SizeStep = typeof SIZE_STEPS[number];
@@ -24,10 +25,6 @@ export type IconProps<S extends string> = {
 
 function isSizeStep(size: string): size is SizeStep {
     return (SIZE_STEPS as readonly string[]).includes(size);
-}
-
-function inState(state: string): string {
-    return `&[data-state="${state}"], .${iconHost}:is(:hover, :focus-visible) &[data-host-state="${state}"]`;
 }
 
 // True from the first frame after mount, so a mount transition starts from the committed initial state.
@@ -54,12 +51,15 @@ export default function createIcon<const S extends string = never, const B exten
         const step = size !== undefined && isSizeStep(size) ? size : undefined;
         const alignment = align ?? (step ? "baseline" : "cap");
 
+        const iconHostClassName = cssHost(descriptor);
         const context: GlyphContext<S> = {
             id: local => `${local}-${scope}`,
             url: local => `url(#${local}-${scope})`,
             state: currentState,
             progress,
-            inState
+            inState: function (state: string): string {
+                return `&[data-state="${state}"], .${iconHostClassName}:is(:hover, :focus-visible) &[data-host-state="${state}"]`;
+            }
         };
         const styles = typeof glyph.styles === "function" ? glyph.styles(context) : glyph.styles;
 

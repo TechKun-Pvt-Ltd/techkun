@@ -1,10 +1,10 @@
-import {iconHost} from "@/iconography/create-icon";
 import type {GlyphDescriptor} from "@/iconography/glyph";
+import {iconHostClassNameSuffix} from "@/iconography/create-icon.tsx";
 
 // A host whose :hover / :focus-visible drives the host trigger through CSS: the class to add to the host,
 // alongside its own.
-export function cssHost() {
-    return iconHost;
+export function cssHost({name}: GlyphDescriptor<string>) {
+    return name + iconHostClassNameSuffix;
 }
 
 // A Motion host: variant labels named after the glyph's states, for glyphs animated with motion
