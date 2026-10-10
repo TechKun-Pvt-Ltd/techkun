@@ -6,6 +6,7 @@ import ArrowRight from "@/iconography/glyphs/arrow-right";
 
 const primaryCss = css`
     color: var(--color-text-btn-primary);
+	font-weight: var(--font-weight-medium);
 
     &::before {
         background: var(--color-bg-btn-primary) padding-box;

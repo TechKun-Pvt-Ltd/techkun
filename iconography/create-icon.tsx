@@ -53,7 +53,7 @@ export default function createIcon<const S extends string = never, const B exten
         const currentState = state ?? (mounted ? glyph.triggers?.mount : undefined) ?? glyph.states?.[0];
         const sizeStep = size !== undefined && isScaleStep(size) ? size : undefined;
         const strokeStep = strokeWidth !== undefined && isScaleStep(strokeWidth) ? strokeWidth : undefined;
-        const alignment = align ?? (sizeStep ? "baseline" : "cap");
+        const alignment = align ?? "baseline";
 
         const iconHostClassName = cssHost(descriptor);
         const context: GlyphContext<S> = {
