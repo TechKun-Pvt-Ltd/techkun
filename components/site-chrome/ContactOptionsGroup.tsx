@@ -1,11 +1,11 @@
 'use client';
 import {css} from "@emotion/react";
 import React, {useImperativeHandle, useRef} from "react";
-import MainCTA from "@/app/components/MainCTA.tsx";
+import PrimaryButton from "@/components/links/PrimaryButton.tsx";
 import EmailLink from "@/app/components/EmailLink.tsx";
 import LinkedInLink from "@/app/components/LinkedInLink.tsx";
 import XLink from "@/app/components/XLink.tsx";
-import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants.ts";
+import {callBookingUrl, contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants.ts";
 
 const groupCss = css`
     pointer-events: auto;
@@ -86,7 +86,7 @@ export default function ContactOptionsGroup(
 		};
 	}, []);
 
-	const cta = <MainCTA className="contact-option">Let's talk</MainCTA>;
+	const cta = <PrimaryButton className="contact-option" href={callBookingUrl}>Let's talk</PrimaryButton>;
 	const socialLinks = <SocialLinksGroup />;
 
 	return <div

@@ -7,7 +7,7 @@ import type {motionHost} from "@/iconography/host-bindings";
 import SVGBrandGradient from "@/iconography/gradients/SVGBrandGradient";
 
 // A glyph component, with the host bindings it may carry.
-type IconComponent = React.ComponentType<IconProps<never>> & {
+export type IconComponent = React.ComponentType<IconProps<never>> & {
 	host?: string;
 	motionHost?: ReturnType<typeof motionHost>;
 };

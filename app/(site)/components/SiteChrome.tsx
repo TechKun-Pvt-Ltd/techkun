@@ -5,7 +5,7 @@ import {usePathname} from "next/navigation";
 import Header, {type HeaderHandle} from "@/components/site-chrome/Header.tsx";
 import BottomNav, {type BottomNavHandle} from "@/components/site-chrome/BottomNav.tsx";
 import Footer from "@/app/(site)/components/Footer.tsx";
-import SVGSprite from "@/app/components/SVGSprite.tsx";
+import SVGSprite from "@/iconography/SVGSprite.tsx";
 import {useMediaQuery} from "@/hooks/use-media-query.ts";
 import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 import {linkedInAccountUrl, siteUrl, xAccountUrl} from "@/app/utils/constants.ts";

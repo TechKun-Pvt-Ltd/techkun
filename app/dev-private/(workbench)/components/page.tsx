@@ -1,7 +1,10 @@
 "use client";
 import {css} from "@emotion/react";
 import React from "react";
+import ButtonLink from "@/components/links/ButtonLink.tsx";
 import IconLink from "@/components/links/IconLink.tsx";
+import PrimaryButton from "@/components/links/PrimaryButton.tsx";
+import ArrowRight from "@/iconography/glyphs/arrow-right";
 import LogoLinkedin from "@/iconography/glyphs/logo-linkedin";
 import LogoX from "@/iconography/glyphs/logo-x";
 import Mail from "@/iconography/glyphs/mail";
@@ -35,6 +38,13 @@ export default function ComponentsPage() {
 			<IconLink icon={Mail} href="mailto:hello@example.com" iconSize="lg" iconStrokeWidth="sm">Size lg, stroke sm</IconLink>
 			<IconLink icon={LogoX} href="https://x.com" label="X" external />
 			<IconLink icon={LogoLinkedin} href="https://linkedin.com" label="LinkedIn" external />
+		</Entry>
+		<Entry title="ButtonLink">
+			<ButtonLink icon={ArrowRight} href="https://example.com">Unstyled</ButtonLink>
+		</Entry>
+		<Entry title="PrimaryButton">
+			<PrimaryButton href="https://example.com">External (default)</PrimaryButton>
+			<PrimaryButton href="/" external={false}>Internal</PrimaryButton>
 		</Entry>
 	</main>;
 }

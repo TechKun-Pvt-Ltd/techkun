@@ -1,7 +1,7 @@
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import logoPath from "@/public/logo-path.json";
 import React from "react";
-import {TECHKUN_LOGO_PATH_HREF} from "@/app/components/SVGSprite.tsx";
+import {TECHKUN_LOGO_PATH_HREF} from "@/iconography/SVGSprite.tsx";
 
 export default function TechKunLogo(props: React.ComponentProps<"svg">) {
     return <svg

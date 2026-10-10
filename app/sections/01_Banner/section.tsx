@@ -4,11 +4,11 @@ import {css, keyframes} from "@emotion/react";
 import Precision, {PrecisionRef} from "./components/Precision";
 import Beauty, {BeautyRef} from "./components/Beauty";
 import Identity, {IdentityRef} from "./components/Identity";
-import MainCTA from "@/app/components/MainCTA";
+import PrimaryButton from "@/components/links/PrimaryButton.tsx";
 import EmailLink from "@/app/components/EmailLink";
 import BANNER_ANIMATION from "@/app/animations/banner";
 import {inView} from "motion/react";
-import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
+import {callBookingUrl, contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
 import {deviceBreakpoint} from "@/styling-system/build/device-breakpoints.ts";
@@ -150,9 +150,9 @@ export default function Banner() {
 						flex-direction: row;
 					}
 				`}>
-					<MainCTA className="cta" style={{ width: "max-content" }}>
+					<PrimaryButton className="cta" style={{ width: "max-content" }} href={callBookingUrl}>
 						Let's get on call
-					</MainCTA>
+					</PrimaryButton>
 					<div className="gap-3 font-medium" style={{ color: "var(--color-text-secondary)", width: "max-content", display: "flex", alignItems: "center" }}>
 						<p>or chat on</p>
 						<XLink href={xAccountUrl} />

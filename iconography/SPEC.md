@@ -10,8 +10,8 @@ Every icon on TechKun surfaces is drawn on one grid, with one stroke language, s
 | --- | --- | --- |
 | UI glyphs | arrow, mail, close, external | All standards |
 | Brand marks | TechKun, X, LinkedIn | Sizing, alignment, color, accessibility, naming; exempt from stroke and grid snapping |
-| Animated glyphs | mail → send morph in `EmailLink`, a ringing bell, a spinner | All standards + Motion |
-| Illustrations | `RevolutionWheel`, `PolarSpace`, banner graphics (incl. `Identity`'s arrow, bulb and dots) | Out of scope |
+| Animated glyphs | a mail → send morph, a ringing bell, a spinner | All standards + Motion |
+| Illustrations | section illustrations and decorative graphics | Out of scope |
 
 ## Grid and keylines
 
@@ -97,7 +97,7 @@ An inline icon uses one of three alignment modes; each is a fixed formula that w
 Why the formula works: an inline `<svg>` sits with its bottom edge on the baseline. Raising it by half the letter height, minus half its own size, puts its center at the middle of the letters.
 
 - The icon always sets `--icon-size` (default `1em`), so the formula has a size to read in both sizing modes.
-- `cap-center` is the existing `EmailLink` calculation, `-(size / 2 - 0.5cap)`, written once.
+- `cap-center` is `-(size / 2 - 0.5cap)`.
 - Gap between icon and text is spacing, not alignment: set it on the parent with the spacing tokens, not on the icon.
 
 ## Color
@@ -106,7 +106,7 @@ Icons take their color from the text around them (`currentColor`); a glyph may a
 
 - **Default:** stroke (or fill, for filled icons and brand marks) is `currentColor`. To recolor an icon, set `color` on it or its parent.
 - **No literal paint on visible elements:** a glyph paints only with `currentColor`, `var(--icon-paint)` or a gradient or pattern it defines itself. Mask content is exempt: its black and white are transparency, not color.
-- **Shared gradient:** `<SVGBrandGradient>` replaces the copy in `XLink`, `LinkedInLink` and `EmailLink`. A glyph that needs it renders it in its own `<defs>` with a scoped id. Its stops read two custom properties local to it; both default to `currentColor`, so the gradient is invisible until an element with the `SVGBrandGradient.host` class is hovered or focused, which sets them to `--color-brand-1` / `--color-brand-3`. The stops transition `stop-color` themselves, since the unregistered properties can't interpolate.
+- **Shared gradient:** a glyph that needs `<SVGBrandGradient>` renders it in its own `<defs>` with a scoped id. Its stops read two custom properties local to it; both default to `currentColor`, so the gradient is invisible until an element with the `SVGBrandGradient.host` class is hovered or focused, which sets them to `--color-brand-1` / `--color-brand-3`. The stops transition `stop-color` themselves, since the unregistered properties can't interpolate.
 - **Painting with it:** either reference it on an element (`stroke={url("paint")}`), or set `--icon-paint` to it in the glyph's styles function, which repaints everything that uses the default paint.
 - **Transitions:** color changes animate the custom properties, as the links do today, with timing from the motion tokens.
 
@@ -171,7 +171,7 @@ The system standardizes how an animation is triggered and what happens under red
 Any technique a glyph needs: CSS transitions and keyframes, SMIL, `motion`, `d` morphs, `stroke-dashoffset` draw-ons, animated masks.
 
 - **Timing:** easing comes from the motion tokens (`--ease-*`, `easing.*` in `styling-system/build/motion.ts`). Duration is set per glyph, since there are no duration tokens.
-- **`d` morphs:** every state has the same number of path commands, of the same types in the same order, and the same number of subpaths. Case (absolute vs relative) may differ: `EmailLink`'s `M c l …` and `M C L …` match. Where CSS `d` transitions aren't supported, the morph runs through `motion`, as `EmailLink` does today.
+- **`d` morphs:** every state has the same number of path commands, of the same types in the same order, and the same number of subpaths. Case (absolute vs relative) may differ: `M c l …` and `M C L …` match. Where CSS `d` transitions aren't supported, the morph runs through `motion`.
 - **Grid still applies:** every state follows the Grid and Stroke rules on its own.
 - **`motion` and the host trigger:** CSS hover can't drive `motion`, so a `motion`-animated glyph gets the host trigger only from a `motion` host spreading its `motionHost` binding, whose variant labels pass down.
 
@@ -196,7 +196,7 @@ Brand marks keep their official shapes, so they skip the drawing rules but follo
 | Accessibility, naming | Yes | `logo-` prefix |
 
 - Marks that repeat on a page (TechKun, X, LinkedIn today) are delivered through the sprite in `SVGSprite.tsx`, referenced with `<use>`.
-- The full TechKun logo lockup (`TechKunLogo`) is a logo, not an icon, and stays outside this system.
+- The full TechKun logo lockup is a logo, not an icon, and stays outside this system.
 
 ## Implementation
 
@@ -210,6 +210,7 @@ iconography/
   gradients/       shared gradients, for use inside a glyph's <defs>: SVGBrandGradient
   glyphs/          one file per glyph, each exporting its icon component
   icons.css        tokens, .icon base, size and stroke steps, alignment modes
+  SVGSprite.tsx    the sprite for marks that repeat on a page, referenced with <use>
 ```
 
 ### Glyphs
@@ -298,12 +299,12 @@ The rules are in [`icons.css`](icons.css):
 
 A reduced-motion rule turns off CSS animations and transitions inside `.icon` (see [Motion](#motion)).
 
-The icon component sets `--icon-size` inline for a CSS-length size, `--icon-stroke` inline for a literal stroke, and `--icon-progress` when `progress` is set. `icons.css` is imported in `app/layout.tsx`.
+The icon component sets `--icon-size` inline for a CSS-length size, `--icon-stroke` inline for a literal stroke, and `--icon-progress` when `progress` is set. `icons.css` is imported once, globally.
 
 ### Delivery
 
 - **UI and animated glyphs:** inline `<svg>`, rendered by each glyph's component, so glyphs can be styled and animated.
-- **Repeating brand marks:** the existing sprite in `SVGSprite.tsx`, referenced with `<use>`.
+- **Repeating brand marks:** the sprite in `SVGSprite.tsx`, referenced with `<use>`.
 
 ## Open items
 
@@ -314,6 +315,4 @@ The icon component sets `--icon-size` inline for a CSS-length size, `--icon-stro
 - [ ] Build check script: on hold, to revisit.
 - [x] Glyphs are components, and animations have three triggers: `state` prop, host, mount.
 - [x] Padding and keylines are measured at the stroke's centerline.
-- [x] `Identity.tsx`'s `icon` class, which collided with `.icon` from `icons.css`, is renamed `glyph-overlay`.
 - [ ] Redraw `mail`'s paper-plane state on the grid: it is off the half-unit grid and reaches past the live area (x 22.2, y 1.8).
-- [x] `EmailLink`, `XLink`, `LinkedInLink` and `MainCTA` use the glyph components.

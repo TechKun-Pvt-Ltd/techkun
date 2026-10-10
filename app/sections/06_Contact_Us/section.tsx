@@ -5,7 +5,7 @@ import React, {useEffect, useRef} from "react";
 import {createAnimationsFromSequence} from "framer-motion/internals";
 import Link from "next/link";
 import useAbortSignal from "@/hooks/use-abort-signal";
-import {contactMailAddress} from "@/app/utils/constants";
+import {callBookingUrl, contactMailAddress} from "@/app/utils/constants";
 
 const rotateConicGradient = keyframes`
     0% {
@@ -224,12 +224,15 @@ function ContactOptions() {
                 </filter>
             </defs>
         </svg>
-        <button
+        <Link
             className="type-body-lg font-medium contact-option tri-layered-button" css={contactOptionCss}
-            style={{ [opacityProp]: "1" } as React.CSSProperties}
+            style={{ textDecoration: 'none', [opacityProp]: "1" } as React.CSSProperties}
+            href={callBookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
         >
             Schedule a quick call with us
-        </button>
+        </Link>
         <p className="type-body-lg" css={css`
             color: var(--color-text-tertiary);
             line-height: 1;
