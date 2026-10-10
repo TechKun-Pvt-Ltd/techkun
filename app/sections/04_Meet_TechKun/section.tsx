@@ -4,10 +4,10 @@ import React, {useEffect} from "react";
 import logoAnimation from "@/public/logo-animation.json";
 import {viewBoxString} from "@/app/utils/graphics-utils";
 import {inView, motion, useAnimate} from "motion/react";
-import {BR_BRAND_GRADIENT_HREF} from "@/app/(site)/components/Shared.tsx";
 import useBrowserDetection, {BrowserName} from "@/hooks/use-browser-detection";
 
 const ANIMATED_LOGO_CLIP_PATH_ID = "animated-logo-clip-path";
+const BR_BRAND_GRADIENT_ID = "br-brand-gradient";
 
 const STARS_COUNT = 50;
 
@@ -205,6 +205,12 @@ export default function MeetTechKun() {
                             opacity="0"
                         />}
                         <defs>
+                            <linearGradient id={BR_BRAND_GRADIENT_ID} x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="var(--color-brand-1)" />
+                                <stop offset="50%" stopColor="var(--color-brand-1)" />
+                                <stop offset="70%" stopColor="var(--color-brand-2)" />
+                                <stop offset="100%" stopColor="var(--color-brand-3)" />
+                            </linearGradient>
                             <clipPath id={ANIMATED_LOGO_CLIP_PATH_ID}>
                                 <motion.path
                                     d={logoAnimation.frames[0].value}
@@ -216,7 +222,7 @@ export default function MeetTechKun() {
                         </defs>
                         <rect
                             {...logoAnimation.viewBox}
-                            fill={`url(${BR_BRAND_GRADIENT_HREF})`} clipPath={`url(#${ANIMATED_LOGO_CLIP_PATH_ID})`}
+                            fill={`url(#${BR_BRAND_GRADIENT_ID})`} clipPath={`url(#${ANIMATED_LOGO_CLIP_PATH_ID})`}
                         ></rect>
                     </motion.svg>
                 </div>

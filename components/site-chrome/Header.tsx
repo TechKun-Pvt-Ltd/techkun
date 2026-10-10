@@ -1,6 +1,6 @@
 'use client';
 import {css} from "@emotion/react";
-import HomeLink, {type HomeLinkHandle} from "@/components/links/home-link/HomeLink.tsx";
+import HomeLink, {type HomeLinkHandle} from "@/components/links/HomeLink.tsx";
 import React, {useImperativeHandle, useRef} from "react";
 import ContactOptionsGroup, {type ContactOptionsGroupHandle} from "@/components/site-chrome/ContactOptionsGroup.tsx";
 

@@ -195,7 +195,7 @@ Brand marks keep their official shapes, so they skip the drawing rules but follo
 | Color | Yes | `currentColor` or `<SVGBrandGradient>`; no hard-coded brand colors |
 | Accessibility, naming | Yes | `logo-` prefix |
 
-- Marks that repeat on a page (TechKun, X, LinkedIn today) are delivered through the shared sprite in `Shared.tsx`, referenced with `<use>`.
+- Marks that repeat on a page (TechKun, X, LinkedIn today) are delivered through the sprite in `SVGSprite.tsx`, referenced with `<use>`.
 - The full TechKun logo lockup (`TechKunLogo`) is a logo, not an icon, and stays outside this system.
 
 ## Implementation
@@ -303,7 +303,7 @@ The icon component sets `--icon-size` inline for a CSS-length size, `--icon-stro
 ### Delivery
 
 - **UI and animated glyphs:** inline `<svg>`, rendered by each glyph's component, so glyphs can be styled and animated.
-- **Repeating brand marks:** the existing sprite in `Shared.tsx`, referenced with `<use>`.
+- **Repeating brand marks:** the existing sprite in `SVGSprite.tsx`, referenced with `<use>`.
 
 ## Open items
 

@@ -1,47 +1,9 @@
-'use client'
-import {css} from "@emotion/react";
 import React from "react";
-import {MotionLink} from "@/app/components/MotionLink";
-import type {IconProps} from "@/iconography/create-icon";
+import IconLink from "@/components/links/IconLink.tsx";
 import Mail from "@/iconography/glyphs/mail";
-import SVGBrandGradient from "@/iconography/gradients/SVGBrandGradient";
 
 export default function EmailLink(
-	{address, children, iconSize, iconSide = "left", gap = "10px", iconStrokeWidth = 1.6, className, ...props}: {
-		address: string;
-		children?: string;
-		iconSize?: IconProps<never>["size"];
-		iconSide?: "left" | "right";
-		// In grid units of the 24-unit canvas.
-		iconStrokeWidth?: IconProps<never>["strokeWidth"];
-		gap?: string;
-	} & React.ComponentProps<typeof MotionLink>
+	{address, ...props}: {address: string} & Omit<React.ComponentProps<typeof IconLink>, "icon" | "label" | "href">
 ) {
-	const icon = <Mail
-		size={iconSize}
-		strokeWidth={iconStrokeWidth}
-		style={{
-			display: children ? undefined : "block",
-			[iconSide === "left" ? "marginInlineEnd" : "marginInlineStart"]: children ? gap : "0"
-		}}
-	/>;
-
-	return <>
-		<MotionLink
-			href={`mailto:${address}`}
-			className={[Mail.host, SVGBrandGradient.host, className].filter(Boolean).join(" ")}
-			css={css`
-				cursor: pointer;
-				text-decoration: none;
-			`}
-			aria-label={children ? undefined : `Email us at ${address}`}
-			{...props}
-			// Drives the glyph's motion fallback where CSS `d` transitions aren't supported.
-			{...Mail.motionHost}
-		>
-			{iconSide === "left" && icon}
-			<span>{children}</span>
-			{iconSide === "right" && icon}
-		</MotionLink>
-	</>
+	return <IconLink icon={Mail} label={`Email us at ${address}`} href={`mailto:${address}`} {...props} />;
 };

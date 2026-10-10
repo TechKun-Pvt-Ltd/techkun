@@ -159,7 +159,7 @@ export default function Banner() {
 						<LinkedInLink href={linkedInAccountUrl} />
 						<EmailLink
 							address={contactMailAddress}
-							// gap="8px" iconSide="right" iconStrokeWidth={1.6}
+							// gap="8px" iconPosition="end" iconStrokeWidth={1.6}
 						/>
 					</div>
 				</div>

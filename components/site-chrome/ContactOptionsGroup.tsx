@@ -7,7 +7,7 @@ import LinkedInLink from "@/app/components/LinkedInLink.tsx";
 import XLink from "@/app/components/XLink.tsx";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants.ts";
 
-const baseGroupCss = css`
+const groupCss = css`
     pointer-events: auto;
     display: flex;
     gap: var(--space-3);
@@ -15,18 +15,17 @@ const baseGroupCss = css`
     opacity: var(--_switch);
     transition: 0.3s ease;
     transition-property: transform, opacity;
-`;
-// "header": slides down out of the sticky header. "bottom-nav": slides up out of the sticky bottom bar,
-// and (unlike the header) spans the full bar width, so its children get pushed to opposite ends.
-const variantCss = {
-	header: css`
+
+    // "header": slides down out of the sticky header. "bottom-nav": slides up out of the sticky bottom bar,
+    // and (unlike the header) spans the full bar width, so its children get pushed to opposite ends.
+    &[data-variant="header"] {
         transform: translateY(calc((1 - var(--_switch)) * -150%));
-    `,
-	"bottom-nav": css`
+    }
+    &[data-variant="bottom-nav"] {
         justify-content: space-between;
         transform: translateY(calc((1 - var(--_switch)) * 150%));
-    `
-};
+    }
+`;
 const socialLinksGroupCss = css`
     display: flex;
     align-items: center;
@@ -57,7 +56,7 @@ function SocialLinksGroup() {
 	</div>;
 }
 
-type ContactOptionsGroupVariant = keyof typeof variantCss;
+type ContactOptionsGroupVariant = "header" | "bottom-nav";
 
 export type ContactOptionsGroupHandle = {
 	show(): void;
@@ -95,7 +94,8 @@ export default function ContactOptionsGroup(
 		className={className}
 		style={{'--_switch': isVisible ? "1" : "0"} as React.CSSProperties}
 		inert={!isVisible}
-		css={[baseGroupCss, variantCss[variant]]}
+		data-variant={variant}
+		css={groupCss}
 	>
 		{variant === "header" ? <>{socialLinks}{cta}</> : <>{cta}{socialLinks}</>}
 	</div>;

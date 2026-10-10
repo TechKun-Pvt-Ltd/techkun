@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import createIcon from "@/iconography/create-icon";
 import SVGBrandGradient from "@/iconography/gradients/SVGBrandGradient";
-import {LINKEDIN_LOGO_PATH_HREF} from "@/app/(site)/components/Shared.tsx";
+import {LINKEDIN_LOGO_PATH_HREF} from "@/app/components/SVGSprite.tsx";
 
 export default createIcon({
     name: "logo-linkedin",
