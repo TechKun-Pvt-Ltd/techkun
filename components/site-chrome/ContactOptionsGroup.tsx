@@ -1,12 +1,11 @@
 'use client';
 import {css} from "@emotion/react";
-import React, {useRef} from "react";
+import React, {useImperativeHandle, useRef} from "react";
 import MainCTA from "@/app/components/MainCTA.tsx";
 import EmailLink from "@/app/components/EmailLink.tsx";
 import LinkedInLink from "@/app/components/LinkedInLink.tsx";
 import XLink from "@/app/components/XLink.tsx";
 import {contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants.ts";
-import useContactOptionsSwitch from "@/app/components/contact-options/use-contact-options-switch.ts";
 
 const baseGroupCss = css`
     pointer-events: auto;
@@ -60,15 +59,33 @@ function SocialLinksGroup() {
 
 type ContactOptionsGroupVariant = keyof typeof variantCss;
 
+export type ContactOptionsGroupHandle = {
+	show(): void;
+	hide(): void;
+};
+
 export default function ContactOptionsGroup(
-	{isHomepage, variant, className}: {
-		isHomepage: boolean;
+	{ref, isVisible, variant, className}: {
+		ref?: React.Ref<ContactOptionsGroupHandle>;
+		isVisible: boolean;
 		variant: ContactOptionsGroupVariant;
 		className?: string;
 	}
 ) {
 	const containerRef = useRef<HTMLDivElement>(null);
-	useContactOptionsSwitch(containerRef, isHomepage);
+
+	useImperativeHandle(ref, () => {
+		function setVisible(visible: boolean) {
+			const containerElement = containerRef.current;
+			if (!containerElement) return;
+			containerElement.inert = !visible;
+			containerElement.style.setProperty("--_switch", visible ? "1" : "0");
+		}
+		return {
+			show: () => setVisible(true),
+			hide: () => setVisible(false)
+		};
+	}, []);
 
 	const cta = <MainCTA className="contact-option">Let's talk</MainCTA>;
 	const socialLinks = <SocialLinksGroup />;
@@ -76,7 +93,8 @@ export default function ContactOptionsGroup(
 	return <div
 		ref={containerRef}
 		className={className}
-		style={{'--_switch': isHomepage ? "0" : "1"} as React.CSSProperties}
+		style={{'--_switch': isVisible ? "1" : "0"} as React.CSSProperties}
+		inert={!isVisible}
 		css={[baseGroupCss, variantCss[variant]]}
 	>
 		{variant === "header" ? <>{socialLinks}{cta}</> : <>{cta}{socialLinks}</>}

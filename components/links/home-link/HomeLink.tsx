@@ -1,6 +1,6 @@
 import {css} from "@emotion/react";
-import React, {useEffect, useRef, useState} from "react";
-import TechKunLogo from "@/app/components/TechKunLogo";
+import React, {useImperativeHandle, useRef, useState} from "react";
+import TechKunLogo from "@/components/TechKunLogo.tsx";
 import {
 	calcGeneratorDuration,
 	maxGeneratorDuration,
@@ -8,9 +8,7 @@ import {
 	spring
 } from "motion/react";
 import {generateLinearEasing} from "motion";
-import {usePathname} from "next/navigation";
 import Link from "next/link";
-import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 
 const ENTER_DURATION = 0.6;
 const EXIT_DURATION = 0.4;
@@ -119,39 +117,41 @@ const disappearingTextCss = css`
 		--gradient-progress: 0%;
 	}
 `;
-export default function LogoButton(props: Partial<React.ComponentProps<typeof Link>>) {
-	const pathname = usePathname();
+export type HomeLinkHandle = {
+	// Shows the wordmark beside the logo.
+	expand(): void;
+	// Hides the wordmark, except while it's hovered.
+	collapse(): void;
+};
+
+export default function HomeLink(
+	{ref, ...props}: {
+		ref?: React.Ref<HomeLinkHandle>;
+	} & Partial<Omit<React.ComponentProps<typeof Link>, "ref">>
+) {
 	const textHovered = useRef(false);
-	const aboveThreshold = useRef(true);
+	const expanded = useRef(true);
 	const [textState, setTextState] = useState<TextState>(TextState.VISIBLE);
 
 	function animateIn() {
 		setTextState(TextState.ENTER);
 	}
 	function animateOut() {
-		// the text element cannot be animated out by other events if it's hovered or above the threshold.
-		if (aboveThreshold.current || textHovered.current) return;
+		// the text element cannot be animated out by other events if it's hovered or expanded.
+		if (expanded.current || textHovered.current) return;
 		setTextState(TextState.EXIT);
 	}
 
-	useEffect(() => {
-		if (pathname !== "/") {
-			const intersectionObserver = new IntersectionObserver(
-				entries => {
-					if ((aboveThreshold.current = entries.at(0)?.isIntersecting ?? false)) animateIn();
-					else animateOut();
-				},
-				{ threshold: 0.5 }
-			);
-			intersectionObserver.observe(document.documentElement);
-			return () => intersectionObserver.unobserve(document.documentElement);
+	useImperativeHandle(ref, () => ({
+		expand() {
+			expanded.current = true;
+			animateIn();
+		},
+		collapse() {
+			expanded.current = false;
+			animateOut();
 		}
-
-		return navbarThresholdStatus.onChange(crossed => {
-			aboveThreshold.current = !crossed;
-			crossed ? animateOut() : animateIn();
-		});
-	}, [pathname]);
+	}));
 
 	return <Link
 		css={linkCss}

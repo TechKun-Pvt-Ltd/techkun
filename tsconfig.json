@@ -42,7 +42,6 @@
   "exclude": [
     "node_modules",
     "styling-system",
-    "components/palette-preview",
-    "components/CubicBezierEditor.tsx"
+    "palette-preview"
   ]
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import type { Metadata } from "next";
 import "@/styling-system/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
-import {OnceProvider} from "@/components/Once.tsx";
+import {OnceProvider} from "@/components/render-control/Once.tsx";
 
 import "@/styling-system/build/css/typography";
 import "@/styling-system/build/css/colors";
