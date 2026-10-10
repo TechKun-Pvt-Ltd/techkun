@@ -2,8 +2,12 @@
 import {typeEmitter} from "../typography/index.ts";
 import {layer, printCSS} from "../../styling-system/shared/css.ts";
 
+const utilities = typeEmitter.utilities();
+
 export default printCSS([
     ...typeEmitter.registrations(),
-    layer("base", typeEmitter.declarations()),
-    layer("utilities", typeEmitter.utilities())
+    layer("tokens", typeEmitter.declarations()),
+    layer("components", utilities.component),
+    layer("utilities.semantic", utilities.semantic),
+    layer("utilities.primitive", utilities.primitive)
 ]);

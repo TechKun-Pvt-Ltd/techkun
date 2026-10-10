@@ -290,7 +290,7 @@ The rules are in [`icons.css`](icons.css):
 
 | Rule | Layer | Does |
 | --- | --- | --- |
-| `--icon-size-*`, `--icon-stroke-*` on `:root` | `base` | The size and stroke scale tokens |
+| `--icon-size-*`, `--icon-stroke-*` on `:root` | `tokens` | The size and stroke scale tokens |
 | `.icon` | `components` | Size from `--icon-size` (default `1em`), stroke from `--icon-stroke` (default 2), round caps and joins, paint from `--icon-paint` (default `currentColor`; a glyph's styles can set it, e.g. to its gradient) |
 | `.icon-solid` | `components` | Fill instead of stroke, for `filled` and `brand` glyphs |
 | `.icon-size-sm` … `.icon-size-xl` | `components` | Set `--icon-size` to a step |

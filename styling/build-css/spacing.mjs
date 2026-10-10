@@ -35,12 +35,12 @@ const utilityRules = UTILITY_PROPERTIES.flatMap(({ prefix, property }) =>
 
 // language=CSS
 export default `
-@layer base {
+@layer tokens {
     :root {
         ${spacingProperties.join(";\n        ")};
     }
 }
-@layer utilities {
+@layer utilities.primitive {
     ${utilityRules.join("\n    ")}
 }
 `;

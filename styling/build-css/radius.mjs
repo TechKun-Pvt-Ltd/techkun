@@ -22,12 +22,12 @@ const utilityRules = Object.keys(RADIUS_SCALE)
 
 // language=CSS
 export default `
-@layer base {
+@layer tokens {
     :root {
         ${radiusProperties.join(";\n        ")};
     }
 }
-@layer utilities {
+@layer utilities.primitive {
     ${utilityRules.join("\n    ")}
 }
 `;

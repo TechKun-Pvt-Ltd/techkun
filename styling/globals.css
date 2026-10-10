@@ -1,9 +1,8 @@
-@layer reset, base, components, utilities;
+@layer reset, tokens, base, components, utilities.semantic, utilities.primitive;
 
 @import "reset.css" layer(reset);
 @import "base/base.css" layer(base);
 @import "components.css" layer(components);
-@import "utilities.css" layer(utilities);
 
 /**, *::before, *::after {*/
 /*    background-color: oklch(0.5 0.2 240 / 0.2);*/

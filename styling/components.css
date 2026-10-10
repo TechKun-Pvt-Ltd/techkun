@@ -53,3 +53,35 @@
 .bi-layered-button:active::before, .tri-layered-button:active::before, .tri-layered-button:active::after {
     transform: scale(0.97);
 }
+
+/* Visually hides content while keeping it readable by assistive tech. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@property --font-index {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+.indexed-font {
+    --_scale-ratio: pow(var(--scale-ratio), var(--font-index));
+    font-size: round(var(--font-size-base) * var(--_scale-ratio), 1px);
+    line-height: round(1 + (var(--line-height-base) - 1) / var(--_scale-ratio), 0.1);
+    letter-spacing: calc((var(--letter-spacing-base) + var(--ls-offset)) / var(--_scale-ratio) - var(--ls-offset));
+}
+
+.section-subtitle {
+    color: var(--color-text-secondary);
+}
+.item-subtitle {
+    color: var(--color-text-secondary);
+}

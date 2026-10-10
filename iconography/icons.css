@@ -1,6 +1,6 @@
 /* Presentation of the <svg> that <Icon> renders. The rules behind these values are in SPEC.md. */
 
-@layer base {
+@layer tokens {
     :root {
         --icon-size-sm: 16px;
         --icon-size-md: 20px;

@@ -6,7 +6,7 @@ const easingProperties = Object.entries(easing)
 
 // language=CSS
 export default `
-@layer base {
+@layer tokens {
     :root {
         ${easingProperties.join(";\n        ")};
     }

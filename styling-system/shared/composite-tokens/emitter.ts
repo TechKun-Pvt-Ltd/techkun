@@ -1,7 +1,7 @@
 import type {CSSCustomProperty, CSSValue, NoReservedRefKeys} from "../types.ts";
 import type {GetComponentToken, GetSemanticToken} from "../schema-shape-base.ts";
-import {rule, type CSSDeclarations, type CSSRule} from "../css.ts";
-import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming} from "../emitter.ts";
+import {rule, type CSSDeclarations} from "../css.ts";
+import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming, type UtilityRules} from "../emitter.ts";
 import {assertUnique, createObjectFromEntries, toVarRefs} from "../utils.ts";
 import type {CompositeSchemaShape, GetComponentMappingTokenRef, GetProxyProperty, GetVariantOf} from "./schema.ts";
 import type {CompositeCustomProperties} from "./custom-properties.ts";
@@ -68,19 +68,19 @@ export class CompositeCSSEmitter<S extends CompositeSchemaShape, N extends strin
         return [...this.#mappingPropertyValues(this.tokens.semantic), ...this.#mappingPropertyValues(this.tokens.component)];
     }
 
-    utilities(): CSSRule[] {
+    utilities(): UtilityRules {
         const {schema} = this.tokens;
         const {primitiveUtilitySelectors = {}, semanticUtilitySelector, componentUtilitySelector} = this.naming;
-        const rules = [
-            ...schema.proxyProperties.flatMap(proxyProperty => {
+        const utilities = {
+            primitive: schema.proxyProperties.flatMap(proxyProperty => {
                 const selector = (primitiveUtilitySelectors as { [proxyProperty: PropertyKey]: ((variant: string) => string) | undefined })[proxyProperty];
                 return selector === undefined ? [] : schema.variantsOf(proxyProperty)
                     .map(variant => rule(selector(variant), toVarRefs(this.properties.primitive(proxyProperty, variant))));
             }),
-            ...(semanticUtilitySelector ? schema.semanticTokens.map(token => rule(semanticUtilitySelector(token), toVarRefs(this.properties.alias(token)))) : []),
-            ...(componentUtilitySelector ? schema.componentTokens.map(token => rule(componentUtilitySelector(token), toVarRefs(this.properties.alias(token)))) : [])
-        ];
-        assertUnique(rules.map(({selector}) => selector), "utility selector");
-        return rules;
+            semantic: semanticUtilitySelector ? schema.semanticTokens.map(token => rule(semanticUtilitySelector(token), toVarRefs(this.properties.alias(token)))) : [],
+            component: componentUtilitySelector ? schema.componentTokens.map(token => rule(componentUtilitySelector(token), toVarRefs(this.properties.alias(token)))) : []
+        };
+        assertUnique([...utilities.primitive, ...utilities.semantic, ...utilities.component].map(({selector}) => selector), "utility selector");
+        return utilities;
     }
 }

@@ -6,7 +6,7 @@ const breakpointProperties = Object.entries(deviceBreakpoint)
 
 // language=CSS
 export default `
-@layer base {
+@layer tokens {
     :root {
         ${breakpointProperties.join(";\n        ")};
     }

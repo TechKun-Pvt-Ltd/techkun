@@ -1,7 +1,7 @@
 import type {CSSCustomProperty, CSSValue, NoReservedRefKeys} from "../types.ts";
 import type {GetAliasToken} from "../schema-shape-base.ts";
 import {rule, type CSSDeclarations, type CSSRule} from "../css.ts";
-import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming} from "../emitter.ts";
+import {TokenCSSEmitter, type GetAliasCSSCustomPropertyValues, type ModifierStrategy, type SelectorNaming, type UtilityRules} from "../emitter.ts";
 import {assertUnique, toVarRef} from "../utils.ts";
 import {ObjectStream} from "../../../lib/object-stream.ts";
 import type {GetComponentMappingTokenRef, SimpleSchemaShape} from "./schema.ts";
@@ -54,14 +54,16 @@ export class SimpleCSSEmitter<S extends SimpleSchemaShape, N extends string = ne
         return [...this.#mappingPropertyValues(this.tokens.semantic), ...this.#mappingPropertyValues(this.tokens.component)];
     }
 
-    utilities(): CSSRule[] {
+    // Primitives don't affect a CSS property, so they get no utilities.
+    utilities(): UtilityRules {
         const {utilitySelector} = this.naming;
-        if (utilitySelector === undefined) return [];
-        const rules = this.tokens.schema.aliasTokens.flatMap(token => {
-            const property = this.tokens.schema.propertyOf(token);
+        const {schema} = this.tokens;
+        const rules = (tokens: readonly GetAliasToken<S>[]): CSSRule[] => utilitySelector === undefined ? [] : tokens.flatMap(token => {
+            const property = schema.propertyOf(token);
             return property === undefined ? [] : [rule(utilitySelector(token), {[property]: this.properties.var(token)})];
         });
-        assertUnique(rules.map(({selector}) => selector), "utility selector");
-        return rules;
+        const utilities = {primitive: [], semantic: rules(schema.semanticTokens), component: rules(schema.componentTokens)};
+        assertUnique([...utilities.semantic, ...utilities.component].map(({selector}) => selector), "utility selector");
+        return utilities;
     }
 }

@@ -35,6 +35,13 @@ export interface ModifierStrategy<S extends SchemaShapeBase> {
     rootDeclarations?(): CSSDeclarations;
 }
 
+// Utility rules by the level of the tokens they apply.
+export type UtilityRules = {
+    readonly primitive: readonly CSSRule[];
+    readonly semantic: readonly CSSRule[];
+    readonly component: readonly CSSRule[];
+};
+
 type MapFromObject<O extends object> = Map<keyof O, O[keyof O]>;
 // Map and Set compare object keys by identity, so equal conditions are interned: every call with the same named
 // modifiers returns the same Map. One interner per emit keeps the cache from outliving it.
@@ -73,7 +80,7 @@ export abstract class TokenCSSEmitter<S extends SchemaShapeBase> {
     protected abstract primitiveDeclarations(): CSSDeclarations;
     // Semantic, then component.
     protected abstract aliasPropertyValues(): GetAliasCSSCustomPropertyValues<S>[];
-    abstract utilities(): CSSRule[];
+    abstract utilities(): UtilityRules;
 
     registrations(): CSSAtRule[] {
         return Object.entries(this.standalones).flatMap(([name, {registration}]) =>
