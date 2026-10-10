@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import {motion} from "motion/react";
 import cssSupports from "@/app/utils/css/supports";
-import {easing} from "@/styling-system/build/motion.ts";
+import {easing} from "@/styling/motion.ts";
 import createIcon from "@/iconography/create-icon";
 import {cssHost, motionHost} from "@/iconography/host-bindings";
 import SVGBrandGradient from "@/iconography/gradients/SVGBrandGradient";

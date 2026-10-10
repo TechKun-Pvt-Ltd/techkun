@@ -161,7 +161,7 @@ export default function HomeLink(
 			window.scrollTo({top: 0, behavior: "smooth"});
 		}}
 		{...props}
-		href="/public"
+		href="/"
 		onPointerEnter={_ => {
 			textHovered.current = true;
 			animateIn();

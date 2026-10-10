@@ -170,7 +170,7 @@ The system standardizes how an animation is triggered and what happens under red
 
 Any technique a glyph needs: CSS transitions and keyframes, SMIL, `motion`, `d` morphs, `stroke-dashoffset` draw-ons, animated masks.
 
-- **Timing:** easing comes from the motion tokens (`--ease-*`, `easing.*` in `styling-system/build/motion.ts`). Duration is set per glyph, since there are no duration tokens.
+- **Timing:** easing comes from the motion tokens. Duration is set per glyph, since there are no duration tokens.
 - **`d` morphs:** every state has the same number of path commands, of the same types in the same order, and the same number of subpaths. Case (absolute vs relative) may differ: `M c l …` and `M C L …` match. Where CSS `d` transitions aren't supported, the morph runs through `motion`.
 - **Grid still applies:** every state follows the Grid and Stroke rules on its own.
 - **`motion` and the host trigger:** CSS hover can't drive `motion`, so a `motion`-animated glyph gets the host trigger only from a `motion` host spreading its `motionHost` binding, whose variant labels pass down.

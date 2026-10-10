@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import {viewBoxString} from "@/app/utils/graphics-utils.ts";
 import logoPath from "@/public/logo-path.json";
-import {SEED} from "@/styling-system/build/color-system/index.ts";
+import {SEED} from "@/styling/colors/index.ts";
 import {oklchToHex} from "@/app/seo-utils/color-conversion.ts";
 
 export const SOCIAL_CARD_ALT = "TechKun — we build software with beauty, precision, and identity.";

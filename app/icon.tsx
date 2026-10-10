@@ -1,6 +1,6 @@
 import logoPath from "@/public/logo-path.json";
 import {viewBoxString} from "@/app/utils/graphics-utils.ts";
-import {SEED} from "@/styling-system/build/color-system/index.ts";
+import {SEED} from "@/styling/colors/index.ts";
 
 export const contentType = "image/svg+xml";
 

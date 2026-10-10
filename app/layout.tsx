@@ -1,16 +1,16 @@
 /** @jsxImportSource react */
 import React from 'react';
 import type { Metadata } from "next";
-import "@/styling-system/globals.css";
+import "@/styling/globals.css";
 import {siteUrl} from "@/app/utils/constants.ts";
 import {OnceProvider} from "@/components/render-control/Once.tsx";
 
-import "@/styling-system/build/css/typography";
-import "@/styling-system/build/css/colors";
-import "@/styling-system/build/css/spacing";
-import "@/styling-system/build/css/radius";
-import "@/styling-system/build/css/device-breakpoints";
-import "@/styling-system/build/css/motion";
+import "@/styling/build-css/typography";
+import "@/styling/build-css/colors";
+import "@/styling/build-css/spacing";
+import "@/styling/build-css/radius";
+import "@/styling/build-css/device-breakpoints";
+import "@/styling/build-css/motion";
 
 import "@/iconography/icons.css";
 

@@ -1,4 +1,4 @@
-import {deviceBreakpoint} from "@/styling-system/build/device-breakpoints.ts";
+import {deviceBreakpoint} from "@/styling/device-breakpoints.ts";
 
 export const deviceQuery = {
     mobileS: `(min-width: ${deviceBreakpoint.mobileS}rem)`,

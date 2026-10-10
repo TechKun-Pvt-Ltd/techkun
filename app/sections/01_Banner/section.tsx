@@ -11,7 +11,7 @@ import {inView} from "motion/react";
 import {callBookingUrl, contactMailAddress, linkedInAccountUrl, xAccountUrl} from "@/app/utils/constants";
 import LinkedInLink from "@/app/components/LinkedInLink";
 import XLink from "@/app/components/XLink";
-import {deviceBreakpoint} from "@/styling-system/build/device-breakpoints.ts";
+import {deviceBreakpoint} from "@/styling/device-breakpoints.ts";
 import navbarThresholdStatus from "@/app/utils/navbar-threshold-status";
 
 const BREAKPOINT_QUERY = `(min-width: ${(deviceBreakpoint.tablet + deviceBreakpoint.laptop) * 0.5}rem)`;
