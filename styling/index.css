@@ -1,4 +1,4 @@
-@layer reset, tokens, base, components, utilities.semantic, utilities.primitive;
+@import "layers.css";
 
 @import "reset.css" layer(reset);
 @import "base/base.css" layer(base);

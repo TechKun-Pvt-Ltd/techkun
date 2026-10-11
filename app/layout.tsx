@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import React from 'react';
 import type { Metadata } from "next";
-import "@/styling/globals.css";
+import "@/styling/index.css";
 import {siteUrl} from "@/app/utils/constants.ts";
 import {OnceProvider} from "@/components/render-control/Once.tsx";
 

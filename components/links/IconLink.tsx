@@ -39,6 +39,7 @@ export default function IconLink(
 	const icon = <Icon
 		size={iconSize}
 		strokeWidth={iconStrokeWidth}
+		align="cap"
 		style={{
 			display: children ? undefined : "block",
 			[iconPosition === "start" ? "marginInlineEnd" : "marginInlineStart"]: children ? gap : "0"
