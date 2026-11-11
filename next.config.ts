@@ -1,5 +1,6 @@
 export default {
 	reactStrictMode: false,
+	experimental: {agentUpgrade: "security"},
 	compiler: {
 		// autoLabel defaults to 'dev-only', but that check doesn't currently fire under
 		// `next dev` with Turbopack (verified: default produces zero labels in dev here) —
